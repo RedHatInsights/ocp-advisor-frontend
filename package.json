@@ -63,7 +63,7 @@
     "stylelint-scss": "3.19.0",
     "webpack-bundle-analyzer": "4.4.2"
   },
-  "openshift": {
+  "insights": {
     "appname": "ocp-advisor"
   }
 }

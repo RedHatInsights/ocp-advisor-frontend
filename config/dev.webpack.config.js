@@ -4,6 +4,7 @@ const { config: webpackConfig, plugins } = config({
   rootFolder: resolve(__dirname, '../'),
   debug: true,
   https: true,
+  appUrl: '/openshift/insights/advisor',
   useFileHash: false,
   deployment: process.env.BETA ? 'beta/apps' : 'apps',
   ...(process.env.PROXY && {

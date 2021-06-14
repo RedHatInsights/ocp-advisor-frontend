@@ -1,11 +1,12 @@
-import React, { Fragment, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
-import { Routes } from './Routes';
 import './App.scss';
 
-import { getRegistry } from '@redhat-cloud-services/frontend-components-utilities/Registry';
+import React, { Fragment, useEffect } from 'react';
+
 import NotificationsPortal from '@redhat-cloud-services/frontend-components-notifications/NotificationPortal';
+import { Routes } from './Routes';
+import { getRegistry } from '@redhat-cloud-services/frontend-components-utilities/Registry';
 import { notificationsReducer } from '@redhat-cloud-services/frontend-components-notifications/redux';
+import { useHistory } from 'react-router-dom';
 
 const App = (props) => {
   const history = useHistory();
@@ -15,8 +16,7 @@ const App = (props) => {
     registry.register({ notifications: notificationsReducer });
     insights.chrome.init();
 
-    // TODO change this to your appname
-    insights.chrome.identifyApp('starter');
+    insights.chrome.identifyApp('ocp-advisor');
     return insights.chrome.on('APP_NAVIGATION', (event) =>
       history.push(`/${event.navId}`)
     );
