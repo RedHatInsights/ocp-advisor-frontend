@@ -1,5 +1,5 @@
-const SECTION = 'insights';
-const APP_ID = 'starter';
+const SECTION = 'openshift';
+const APP_ID = 'ocp-advisor';
 const FRONTEND_PORT = 8002;
 const routes = {};
 
