@@ -17,9 +17,12 @@ const App = (props) => {
     insights.chrome.init();
 
     insights.chrome.identifyApp('ocp-advisor');
-    return insights.chrome.on('APP_NAVIGATION', (event) =>
+    const unregister = insights.chrome.on('APP_NAVIGATION', (event) =>
       history.push(`/${event.navId}`)
     );
+    return () => {
+      unregister();
+    };
   }, []);
 
   return (
