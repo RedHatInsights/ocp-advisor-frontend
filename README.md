@@ -1,16 +1,14 @@
-[![Build Status](https://travis-ci.org/RedHatInsights/frontend-starter-app.svg?branch=master)](https://travis-ci.org/RedHatInsights/frontend-starter-app)
+# OCP Advisor Frontend
 
-# frontend-starter-app
+[![Build Status](https://travis-ci.com/RedHatInsights/ocp-advisor-frontend.svg?branch=master)](https://travis-ci.com/RedHatInsights/ocp-advisor-frontend)
 
-React.js starter app for Red Hat Insights products that includes Patternfly 4 and shared Red Hat cloud service frontend components.
+## Run locally
 
-## Getting started
+1. `npm install`
 
-1. ```npm install```
+2. `npm run start:proxy`
 
-2. ```npm run start:proxy``` / ```npm run start:beta:proxy```
-
-Update `config/dev.webpack.config.js` according to your application URL. [Read more](https://github.com/RedHatInsights/frontend-components/tree/master/packages/config#useproxy).
+3. Open the preferred environment
 
 ## Run with insights-proxy
 
@@ -25,17 +23,20 @@ You'll need to clone:
 SPANDX_CONFIG="./profiles/local-frontend.js" bash $PROXY_PATH/scripts/run.sh
 ```
 
-2. ```npm install```
+2. `npm install`
 
-3. ```npm run start```
+3. `npm run start`
 
-4. Open one of the following environments behind the Red Hat VPN and accept the certs:
-  - https://ci.foo.redhat.com:1337/beta/staging/starter
-  - https://qa.foo.redhat.com:1337/beta/staging/starter
-  - https://stage.foo.redhat.com:1337/beta/staging/starter
-  - https://prod.foo.redhat.com:1337/beta/staging/starter
+4. Open the preferred environment
 
 Should you need more help, there is a [comprehensive quick start guide in the Storybook Documentation.](https://github.com/RedHatInsights/insights-frontend-storybook/blob/master/src/docs/welcome/quickStart/DOC.md)
+
+## Environments (local)
+
+- https://ci.foo.redhat.com:1337/beta/openshift/insights/advisor
+- https://qa.foo.redhat.com:1337/beta/openshift/insights/advisor
+- https://stage.foo.redhat.com:1337/beta/openshift/insights/advisor
+- https://prod.foo.redhat.com:1337/beta/openshift/insights/advisor
 
 ### Testing
 
@@ -52,4 +53,3 @@ Should you need more help, there is a [comprehensive quick start guide in the St
     - `prod-beta` (deployed by pushing to `prod-beta` on this repo)
     - `prod-stable` (deployed by pushing to `prod-stable` on this repo)
 - Travis uploads results to RedHatInight's [codecov](https://codecov.io) account. To change the account, modify CODECOV_TOKEN on https://travis-ci.com/.
-
