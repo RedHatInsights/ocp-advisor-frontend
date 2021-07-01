@@ -41,7 +41,7 @@ export const getAdvisorStore = (previousState) => (
       return state.set('clusterFetchStatus', 'pending');
     case `${ActionTypes.CLUSTER_FETCH}_FULFILLED`:
       return Immutable.merge(state, {
-        system: action.payload,
+        cluster: action.payload,
         clusterFetchStatus: 'fulfilled',
       });
     case `${ActionTypes.CLUSTER_FETCH}_REJECTED`:
