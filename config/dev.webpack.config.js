@@ -5,12 +5,18 @@ const { config: webpackConfig, plugins } = config({
   debug: true,
   https: true,
   appUrl: '/openshift/insights/advisor',
-  useFileHash: false,
   deployment: process.env.BETA ? 'beta/apps' : 'apps',
-  ...(process.env.PROXY && {
-    useProxy: true,
-    appUrl: process.env.BETA ? '/beta/staging/starter' : '/staging/starter',
-  }),
+  useProxy: process.env.API_ENDPOINT ? true : false,
+  customProxy: process.env.API_ENDOINT
+    ? [
+        {
+          context: ['/api'],
+          target: process.env.API_ENDPOINT,
+          secure: false,
+          changeOrigin: true,
+        },
+      ]
+    : [],
 });
 
 plugins.push(
