@@ -7,12 +7,12 @@ const { config: webpackConfig, plugins } = config({
   appUrl: '/openshift/insights/advisor',
   deployment: process.env.BETA ? 'beta/apps' : 'apps',
   useProxy: process.env.API_ENDPOINT ? true : false,
-  customProxy: process.env.API_ENDOINT
+  customProxy: process.env.API_ENDPOINT
     ? [
         {
           context: ['/api'],
           target: process.env.API_ENDPOINT,
-          secure: false,
+          secure: true,
           changeOrigin: true,
         },
       ]
