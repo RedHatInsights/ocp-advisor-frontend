@@ -10,7 +10,7 @@ const { config: webpackConfig, plugins } = config({
   customProxy: process.env.API_ENDPOINT
     ? [
         {
-          context: ['/api'],
+          context: (path) => path.includes('/api/'),
           target: process.env.API_ENDPOINT,
           secure: true,
           changeOrigin: true,
