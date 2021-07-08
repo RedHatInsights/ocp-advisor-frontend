@@ -10,7 +10,6 @@ import routerParams from '@redhat-cloud-services/frontend-components-utilities/R
 
 import * as AppActions from '../../AppActions';
 import messages from '../../Messages';
-import { Main } from '@redhat-cloud-services/frontend-components/Main';
 
 const ClusterDetails = ({ cluster, match }) => {
   const intl = useIntl();
