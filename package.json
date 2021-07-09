@@ -26,6 +26,7 @@
     "@redhat-cloud-services/frontend-components-translations": "3.2.2",
     "@redhat-cloud-services/frontend-components-utilities": "3.2.3",
     "@redhat-cloud-services/rule-components": "3.2.1",
+    "@reduxjs/toolkit": "1.6.0",
     "axios": "0.21.1",
     "classnames": "2.3.1",
     "qs": "6.10.1",
@@ -35,9 +36,7 @@
     "react-redux": "7.2.4",
     "react-router-dom": "5.2.0",
     "redux": "4.1.0",
-    "redux-logger": "3.0.6",
-    "redux-promise-middleware": "6.1.2",
-    "seamless-immutable": "7.1.4"
+    "redux-logger": "3.0.6"
   },
   "devDependencies": {
     "@babel/core": "7.14.6",
