@@ -1,7 +1,12 @@
+import {
+  notifications,
+  notificationsMiddleware,
+} from '@redhat-cloud-services/frontend-components-notifications/';
+
+import { compose } from 'redux';
+import { getAdvisorStore } from '../AppReducer';
 import { getRegistry } from '@redhat-cloud-services/frontend-components-utilities/Registry';
 import promiseMiddleware from 'redux-promise-middleware';
-import notificationsMiddleware from '@redhat-cloud-services/frontend-components-notifications/notificationsMiddleware';
-import { compose } from 'redux';
 
 let registry;
 
@@ -19,11 +24,21 @@ export function init(...middleware) {
     [
       ...middleware,
       promiseMiddleware,
-      notificationsMiddleware({ errorDescriptionKey: ['detail', 'stack'] }),
+      notificationsMiddleware({
+        errorTitleKey: ['message'],
+        errorDescriptionKey: ['response.data.detail'],
+      }),
       localStorage,
     ],
     composeEnhancers
   );
+
+  const previousAdvisorStore = JSON.parse(
+    sessionStorage.getItem('AdvisorStore')
+  );
+  registry.register({ AdvisorStore: getAdvisorStore(previousAdvisorStore) });
+  registry.register({ notifications });
+
   return registry;
 }
 
