@@ -25,6 +25,7 @@
     "@redhat-cloud-services/frontend-components-notifications": "3.2.2",
     "@redhat-cloud-services/frontend-components-translations": "3.2.2",
     "@redhat-cloud-services/frontend-components-utilities": "3.2.3",
+    "@redhat-cloud-services/rule-components": "3.2.1",
     "axios": "0.21.1",
     "classnames": "2.3.1",
     "qs": "6.10.1",
