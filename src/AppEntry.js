@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { init } from './Store';
+import store from './Store';
 import App from './App';
 import { getBaseName } from '@redhat-cloud-services/frontend-components-utilities/helpers';
 import { IntlProvider } from '@redhat-cloud-services/frontend-components-translations/';
@@ -13,7 +13,7 @@ const AppEntry = () => (
     messages={messages}
     onError={console.log}
   >
-    <Provider store={init().getStore()}>
+    <Provider store={store}>
       <Router basename={getBaseName(window.location.pathname)}>
         <App />
       </Router>
