@@ -1,11 +1,17 @@
-import React, { Suspense, lazy } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
-
+import React, { Suspense, lazy } from 'react';
 import { Bullseye, Spinner } from '@patternfly/react-core';
 
-const SamplePage = lazy(() =>
-  import(/* webpackChunkName: "SamplePage" */ './Routes/SamplePage/SamplePage')
+const Clusters = lazy(() =>
+  import(
+    /* webpackChunkName: "Clusters" */ './SmartComponents/Clusters/Clusters'
+  )
 );
+
+const paths = [
+  { title: 'Clusters', path: '/advisor/clusters', component: Clusters },
+  { title: 'Clusters', path: '/advisor/clusters:?', component: Clusters },
+];
 
 /**
  * the Switch component changes routes depending on the path.
@@ -24,11 +30,11 @@ export const Routes = () => (
     }
   >
     <Switch>
-      <Route path="/sample" component={SamplePage} />
+      {paths.map((path) => (
+        <Route key={path.title} path={path.path} component={path.component} />
+      ))}
       {/* Finally, catch all unmatched routes */}
-      <Route>
-        <Redirect to="/sample" />
-      </Route>
+      <Redirect to="/advisor" />
     </Switch>
   </Suspense>
 );
