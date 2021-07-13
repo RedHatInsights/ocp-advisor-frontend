@@ -14,7 +14,7 @@ const AppEntry = () => (
     onError={console.log}
   >
     <Provider store={init().getStore()}>
-      <Router basename={getBaseName(window.location.pathname)}>
+      <Router basename={getBaseName(window.location.pathname, 3)}>
         <App />
       </Router>
     </Provider>
