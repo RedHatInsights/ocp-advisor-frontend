@@ -8,6 +8,7 @@ const insightsProxy = {
 
 const webpackProxy = {
   deployment: process.env.BETA ? 'beta/apps' : 'apps',
+  env: process.env.BETA ? 'ci-beta' : 'ci-stable',
   useProxy: true,
   useCloud: true,
   appUrl: process.env.BETA
