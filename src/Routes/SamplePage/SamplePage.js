@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useEffect } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
@@ -16,7 +16,7 @@ import {
 } from '@redhat-cloud-services/frontend-components/PageHeader';
 import { addNotification } from '@redhat-cloud-services/frontend-components-notifications/redux';
 
-const SampleComponent = () => <div>Sample Component</div>
+const SampleComponent = () => <div>Sample Component</div>;
 
 import './sample-page.scss';
 
