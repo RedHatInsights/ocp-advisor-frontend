@@ -9,8 +9,8 @@ const Clusters = lazy(() =>
 );
 
 const paths = [
-  { title: 'Clusters', path: '/advisor/clusters', component: Clusters },
-  { title: 'Clusters', path: '/advisor/clusters:?', component: Clusters },
+  { title: 'Clusters', path: '/clusters', component: Clusters },
+  { title: 'Clusters', path: '/clusters:?', component: Clusters },
 ];
 
 /**
@@ -34,7 +34,7 @@ export const Routes = () => (
         <Route key={path.title} path={path.path} component={path.component} />
       ))}
       {/* Finally, catch all unmatched routes */}
-      <Redirect to="/advisor" />
+      <Redirect to="/clusters" />
     </Switch>
   </Suspense>
 );
