@@ -1,7 +1,8 @@
 import React, { Suspense, lazy } from 'react';
-import { Redirect, Route, Switch } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 
 import Loading from '../../PresentationalComponents/Loading/Loading';
+import SamplePage from '../../Routes/SamplePage/SamplePage';
 
 const Details = lazy(() =>
   import(
@@ -20,7 +21,9 @@ const Clusters = () => (
       path="/advisor/clusters/:clusterId"
       component={() => suspenseHelper(<Details />)}
     />
-    <Redirect path="*" to="/sample" push />
+    <Route>
+      <SamplePage />
+    </Route>
   </Switch>
 );
 

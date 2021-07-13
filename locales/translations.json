@@ -1,0 +1,15 @@
+{
+  "actions": "Actions",
+  "added": "Added",
+  "clusters": "Clusters",
+  "documentTitle": "{subnav} - OCP Advisor | Red Hat Insights",
+  "filterBy": "Filter by name",
+  "insightsHeader": "Advisor",
+  "lastSeen": "Last seen",
+  "loading": "Loading",
+  "name": "Name",
+  "recommendation": "Recommendation",
+  "recommendations": "Recommendations",
+  "totalRisk": "Total risk",
+  "unknown": "Unknown"
+}
