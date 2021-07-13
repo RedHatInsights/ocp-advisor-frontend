@@ -8,7 +8,7 @@ import { getRegistry } from '@redhat-cloud-services/frontend-components-utilitie
 import { notificationsReducer } from '@redhat-cloud-services/frontend-components-notifications/redux';
 import { useHistory } from 'react-router-dom';
 
-const App = (props) => {
+const App = () => {
   const history = useHistory();
 
   useEffect(() => {
@@ -28,7 +28,7 @@ const App = (props) => {
   return (
     <Fragment>
       <NotificationsPortal />
-      <Routes childProps={props} />
+      <Routes />
     </Fragment>
   );
 };
