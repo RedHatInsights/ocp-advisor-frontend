@@ -20,6 +20,15 @@ const { config: webpackConfig, plugins } = config({
   rootFolder: resolve(__dirname, '../'),
   debug: true,
   ...(process.env.PROXY ? webpackProxy : insightsProxy),
+  customProxy: [
+    {
+      context: ['/api'],
+      target: 'https://qa.cloud.redhat.com/',
+      secure: true,
+      changeOrigin: true,
+      autoRewrite: true,
+    },
+  ],
 });
 
 plugins.push(
