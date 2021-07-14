@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { List } from 'react-content-loader';
 import RuleTable from '@redhat-cloud-services/rule-components/RuleTable/RuleTable';
 import InsightsLabel from '@redhat-cloud-services/frontend-components/InsightsLabel';
 import ReportDetails from '../ReportDetails/ReportDetails';
@@ -35,7 +34,7 @@ const ClusterRecommendations = ({ cluster }) => {
           },
           {
             title: intl.formatMessage(messages.added),
-            selector: 'created_at',
+            selector: ({ created_at }) => new Date(created_at).toLocaleString(),
           },
           {
             title: intl.formatMessage(messages.totalRisk),

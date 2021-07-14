@@ -54,7 +54,7 @@ const ClusterDetails = ({ match }) => {
           <Main>
             <Grid hasGutter>
               <GridItem span={12}>
-                {/*<ClusterRecommendations cluster={cluster} />*/}
+                <ClusterRecommendations cluster={cluster} />
               </GridItem>
             </Grid>
           </Main>
