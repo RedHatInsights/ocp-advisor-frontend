@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { List } from 'react-content-loader';
-import RuleTable from '@redhat-cloud-services/rule-components/RuleTable';
+import RuleTable from '@redhat-cloud-services/rule-components/RuleTable/RuleTable';
 import InsightsLabel from '@redhat-cloud-services/frontend-components/InsightsLabel';
 import ReportDetails from '../ReportDetails/ReportDetails';
 
@@ -11,30 +11,37 @@ import {
   categoryFilter,
   ruleStatusFilter,
 } from '@redhat-cloud-services/rule-components/RuleFilters';
+import { useIntl } from 'react-intl';
+import messages from '../../Messages';
+import { Card } from '@patternfly/react-core';
 
 const totalRiskSelector = ({ total_risk }) => (
   <InsightsLabel value={total_risk} />
 );
 
 const ClusterRecommendations = ({ cluster, clusterFetchStatus }) => {
+  const intl = useIntl();
+
   return (
     <React.Fragment>
       {clusterFetchStatus !== 'fulfilled ' ? (
-        <List />
+        <Card>
+          <List />
+        </Card>
       ) : (
         <RuleTable
           rules={{ meta: cluster.meta, data: cluster.data }}
           columns={[
             {
-              title: 'Name',
+              title: intl.formatMessage(messages.name),
               selector: 'description',
             },
             {
-              title: 'Added',
+              title: intl.formatMessage(messages.added),
               selector: 'created_at',
             },
             {
-              title: 'Total risk',
+              title: intl.formatMessage(messages.totalRisk),
               selector: totalRiskSelector,
             },
           ]}
