@@ -21,7 +21,7 @@ export default defineMessages({
   loading: {
     id: 'loading',
     description: 'Loading text',
-    defaultMessage: 'Loading...',
+    defaultMessage: 'Loading',
   },
   lastSeen: {
     id: 'lastSeen',
@@ -65,5 +65,10 @@ export default defineMessages({
     id: 'insightsHeader',
     description: 'Header for the application title',
     defaultMessage: 'Advisor',
+  },
+  unknown: {
+    id: 'unknown',
+    description: 'Unknown',
+    defaultMessage: 'Unknown',
   },
 });
