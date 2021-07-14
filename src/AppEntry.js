@@ -7,11 +7,14 @@ import { getBaseName } from '@redhat-cloud-services/frontend-components-utilitie
 import { IntlProvider } from '@redhat-cloud-services/frontend-components-translations/';
 import messages from '../locales/data.json';
 
-const AppEntry = () => (
+const translations = {
+  en: require('../compiled-lang/en.json'),
+};
   <IntlProvider
     locale={navigator.language.slice(0, 2)}
-    messages={messages}
-    onError={console.log}
+    defaultLocale="en"
+    messages={translations[navigator.language.slice(0, 2)]}
+    onError={console.error}
   >
     <Provider store={init().getStore()}>
       <Router basename={getBaseName(window.location.pathname, 3)}>
