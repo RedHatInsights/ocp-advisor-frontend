@@ -2,7 +2,8 @@ import React, { useEffect } from 'react';
 import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { Grid, GridItem } from '@patternfly/react-core';
+import { Card, Grid, GridItem } from '@patternfly/react-core';
+import { List } from 'react-content-loader';
 
 import PageHeader from '@redhat-cloud-services/frontend-components/PageHeader';
 import Main from '@redhat-cloud-services/frontend-components/Main';
@@ -37,24 +38,23 @@ const ClusterDetails = ({ match }) => {
       {cluster && cluster.fetchStatus === 'rejected' && (
         <Main>Cluster not found</Main> // TODO: Create empty states
       )}
-      {cluster && ['pending', 'fulfilled'].includes(cluster.fetchStatus) && (
+      {cluster && cluster.fetchStatus === 'pending' && (
+        <Card>
+          <List />
+        </Card>
+      )}
+      {cluster && cluster.fetchStatus === 'fulfilled' && (
         <React.Fragment>
           <PageHeader className="pf-m-light ins-inventory-detail">
             {cluster && (
               <Breadcrumbs current={match.params.clusterId} match={match} />
             )}
-            <ClusterDetailHead
-              cluster={cluster}
-              clusterFetchStatus={cluster.fetchStatus}
-            />
+            <ClusterDetailHead uuid={match.params.clusterId} />
           </PageHeader>
           <Main>
             <Grid hasGutter>
               <GridItem span={12}>
-                <ClusterRecommendations
-                  cluster={cluster}
-                  clusterFetchStatus={cluster.fetchStatus}
-                />
+                {/*<ClusterRecommendations cluster={cluster} />*/}
               </GridItem>
             </Grid>
           </Main>
