@@ -3,9 +3,13 @@ import logger from 'redux-logger';
 
 import getAdvisorStore from '../AppReducer';
 
-const store = configureStore({
-  reducer: getAdvisorStore(),
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
-});
+const getStore = (useLogger) =>
+  configureStore({
+    reducer: getAdvisorStore(),
+    middleware: (getDefaultMiddleware) =>
+      useLogger
+        ? getDefaultMiddleware().concat(logger)
+        : getDefaultMiddleware(),
+  });
 
-export default store;
+export default getStore;
