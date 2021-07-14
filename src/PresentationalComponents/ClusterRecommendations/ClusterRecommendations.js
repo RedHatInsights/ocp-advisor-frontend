@@ -13,57 +13,52 @@ import {
 } from '@redhat-cloud-services/rule-components/RuleFilters';
 import { useIntl } from 'react-intl';
 import messages from '../../Messages';
-import { Card } from '@patternfly/react-core';
 
 const totalRiskSelector = ({ total_risk }) => (
   <InsightsLabel value={total_risk} />
 );
 
-const ClusterRecommendations = ({ cluster, clusterFetchStatus }) => {
+const ClusterRecommendations = ({ cluster }) => {
   const intl = useIntl();
 
   return (
     <React.Fragment>
-      {clusterFetchStatus !== 'fulfilled ' ? (
-        <Card>
-          <List />
-        </Card>
-      ) : (
-        <RuleTable
-          rules={{ meta: cluster.meta, data: cluster.data }}
-          columns={[
-            {
-              title: intl.formatMessage(messages.name),
-              selector: 'description',
-            },
-            {
-              title: intl.formatMessage(messages.added),
-              selector: 'created_at',
-            },
-            {
-              title: intl.formatMessage(messages.totalRisk),
-              selector: totalRiskSelector,
-            },
-          ]}
-          detail={(report) => <ReportDetails report={report} />}
-          filters={{
-            descriptionFilter,
-            totalRiskFilter,
-            categoryFilter,
-            ruleStatusFilter,
-          }} // TODO: AddedFilter?
-          filterValues={{
-            ruleStatusFilter: 'enabled',
-          }}
-        />
-      )}
+      <RuleTable
+        rules={{
+          meta: cluster.data.report.meta,
+          data: cluster.data.report.data,
+        }}
+        columns={[
+          {
+            title: intl.formatMessage(messages.name),
+            selector: 'description',
+          },
+          {
+            title: intl.formatMessage(messages.added),
+            selector: 'created_at',
+          },
+          {
+            title: intl.formatMessage(messages.totalRisk),
+            selector: totalRiskSelector,
+          },
+        ]}
+        detail={(report) => <ReportDetails report={report} />}
+        filters={{
+          descriptionFilter,
+          totalRiskFilter,
+          categoryFilter,
+          ruleStatusFilter,
+        }} // TODO: AddedFilter?
+        filterValues={{
+          ruleStatusFilter: 'enabled',
+        }}
+      />
     </React.Fragment>
   );
 };
 
 ClusterRecommendations.propTypes = {
   cluster: PropTypes.object.isRequired,
-  clusterFetchStatus: PropTypes.string.isRequired,
 };
 
 export default ClusterRecommendations;

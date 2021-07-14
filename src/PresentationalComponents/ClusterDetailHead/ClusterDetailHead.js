@@ -1,36 +1,38 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Grid, GridItem } from '@patternfly/react-core';
-import Skeleton from '@redhat-cloud-services/frontend-components/Skeleton';
+import {
+  Grid,
+  GridItem,
+  Stack,
+  StackItem,
+  Title,
+} from '@patternfly/react-core';
 import { useIntl } from 'react-intl';
 import messages from '../../Messages';
 
-const ClusterDetailHead = ({ cluster, clusterFetchStatus }) => {
+const ClusterDetailHead = ({ uuid, lastSeen }) => {
   const intl = useIntl();
 
   return (
     <React.Fragment>
-      <Grid md={6}>
+      <Grid md={12} hasGutter>
         <GridItem>
-          <span>UUID</span>
-          <span>
-            {clusterFetchStatus !== 'fulfilled' ? (
-              <Skeleton size="md" />
-            ) : (
-              cluster.cluster_id && intl.formatMessage(messages.unknown)
-            )}
-          </span>
+          <Title size="2xl" headingLevel="h1">
+            {uuid}
+          </Title>
         </GridItem>
         <GridItem>
-          <span>{intl.formatMessage(messages.lastSeen)}:</span>
-          <span>
-            {clusterFetchStatus !== 'fulfilled' ? (
-              <Skeleton size="md" />
-            ) : (
-              cluster.last_seen && intl.formatMessage(messages.unknown)
-            )}
-          </span>
+          <Stack>
+            <StackItem>
+              <span>UUID: </span>
+              <span>{uuid || intl.formatMessage(messages.unknown)}</span>
+            </StackItem>
+            <StackItem>
+              <span>{intl.formatMessage(messages.lastSeen)}: </span>
+              <span>{lastSeen || intl.formatMessage(messages.unknown)}</span>
+            </StackItem>
+          </Stack>
         </GridItem>
       </Grid>
     </React.Fragment>
@@ -38,8 +40,8 @@ const ClusterDetailHead = ({ cluster, clusterFetchStatus }) => {
 };
 
 ClusterDetailHead.propTypes = {
-  cluster: PropTypes.object.isRequired,
-  clusterFetchStatus: PropTypes.string.isRequired,
+  uuid: PropTypes.string.isRequired,
+  lastSeen: PropTypes.string,
 };
 
 export default ClusterDetailHead;
