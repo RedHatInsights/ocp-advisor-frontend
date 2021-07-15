@@ -11,7 +11,7 @@ import {
 import { useIntl } from 'react-intl';
 import messages from '../../Messages';
 
-const ClusterDetailHead = ({ uuid, lastSeen }) => {
+const ClusterHeader = ({ uuid, lastSeen }) => {
   const intl = useIntl();
 
   return (
@@ -39,9 +39,9 @@ const ClusterDetailHead = ({ uuid, lastSeen }) => {
   );
 };
 
-ClusterDetailHead.propTypes = {
+ClusterHeader.propTypes = {
   uuid: PropTypes.string.isRequired,
   lastSeen: PropTypes.string,
 };
 
-export default ClusterDetailHead;
+export default ClusterHeader;

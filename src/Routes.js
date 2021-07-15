@@ -3,9 +3,9 @@ import React, { Suspense, lazy } from 'react';
 import { Bullseye, Spinner } from '@patternfly/react-core';
 import { Main } from '@redhat-cloud-services/frontend-components/Main/Main';
 
-const ClusterDetails = lazy(() =>
+const Cluster = lazy(() =>
   import(
-    /* webpackChunkName: "InventoryDetails" */ './PresentationalComponents/ClusterDetails/ClusterDetails'
+    /* webpackChunkName: "ClusterDetails" */ './PresentationalComponents/Cluster/Cluster'
   )
 );
 
@@ -13,7 +13,7 @@ const paths = [
   {
     title: 'Clusters',
     path: '/clusters/:clusterId',
-    component: ClusterDetails,
+    component: Cluster,
   },
 ];
 
@@ -38,7 +38,7 @@ export const Routes = () => (
         <Route key={path.title} path={path.path} component={path.component} />
       ))}
       {/* Finally, catch all unmatched routes */}
-      <Route path="*" component={() => <Main>No match</Main>} />
+      <Route path="*" component={() => <Main>No page found</Main>} />
     </Switch>
   </Suspense>
 );

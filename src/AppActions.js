@@ -19,7 +19,11 @@ export const fetchClusterById = createAsyncThunk(
     condition: (arg, { getState }) => {
       const { clusters } = getState();
       const cluster = clusters[arg];
-      if (cluster && cluster.fetchStatus in ['fulfilled', 'pending']) {
+      if (
+        cluster &&
+        (cluster.fetchStatus === 'fulfilled' ||
+          cluster.fetchStatus === 'pending')
+      ) {
         // Already fetched or in progress, don't need to re-fetch
         return false;
       }
