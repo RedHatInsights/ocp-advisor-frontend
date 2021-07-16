@@ -1,8 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
 import { fetchClusterById } from './AppActions';
 
-import * as ActionTypes from './AppConstants';
-
 const initialState = {
   clusters: {},
 };
