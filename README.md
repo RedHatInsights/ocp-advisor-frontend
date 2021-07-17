@@ -6,7 +6,7 @@
 
 1. `npm install`
 
-2. `npm run start:proxy`
+2. `npm run start:proxy` / `npm run start:beta:proxy`
 
 3. Open the preferred environment
 
