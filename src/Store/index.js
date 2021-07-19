@@ -1,36 +1,15 @@
-import { getRegistry } from '@redhat-cloud-services/frontend-components-utilities/Registry';
-import promiseMiddleware from 'redux-promise-middleware';
-import notificationsMiddleware from '@redhat-cloud-services/frontend-components-notifications/notificationsMiddleware';
-import { compose } from 'redux';
+import { configureStore } from '@reduxjs/toolkit';
+import logger from 'redux-logger';
 
-let registry;
+import getAdvisorStore from '../AppReducer';
 
-const localStorage = (store) => (next) => (action) => {
-  next(action);
-  const activeStore = store.getState().AdvisorStore;
-  sessionStorage.setItem('AdvisorStore', JSON.stringify(activeStore));
-};
+const getStore = (useLogger) =>
+  configureStore({
+    reducer: getAdvisorStore(),
+    middleware: (getDefaultMiddleware) =>
+      useLogger
+        ? getDefaultMiddleware().concat(logger)
+        : getDefaultMiddleware(),
+  });
 
-export function init(...middleware) {
-  const composeEnhancers =
-    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-  registry = getRegistry(
-    {},
-    [
-      ...middleware,
-      promiseMiddleware,
-      notificationsMiddleware({ errorDescriptionKey: ['detail', 'stack'] }),
-      localStorage,
-    ],
-    composeEnhancers
-  );
-  return registry;
-}
-
-export function getStore() {
-  return registry.getStore();
-}
-
-export function register(...args) {
-  return registry.register(...args);
-}
+export default getStore;

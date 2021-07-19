@@ -1,16 +1,20 @@
-import { Redirect, Route, Switch } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import React, { Suspense, lazy } from 'react';
 import { Bullseye, Spinner } from '@patternfly/react-core';
+import { Main } from '@redhat-cloud-services/frontend-components/Main/Main';
 
-const Clusters = lazy(() =>
+const Cluster = lazy(() =>
   import(
-    /* webpackChunkName: "Clusters" */ './SmartComponents/Clusters/Clusters'
+    /* webpackChunkName: "ClusterDetails" */ './Components/Cluster/Cluster'
   )
 );
 
 const paths = [
-  { title: 'Clusters', path: '/clusters', component: Clusters },
-  { title: 'Clusters', path: '/clusters:?', component: Clusters },
+  {
+    title: 'Clusters',
+    path: '/clusters/:clusterId',
+    component: Cluster,
+  },
 ];
 
 /**
@@ -34,7 +38,7 @@ export const Routes = () => (
         <Route key={path.title} path={path.path} component={path.component} />
       ))}
       {/* Finally, catch all unmatched routes */}
-      <Redirect to="/clusters" />
+      <Route path="*" component={() => <Main>No page found</Main>} />
     </Switch>
   </Suspense>
 );
