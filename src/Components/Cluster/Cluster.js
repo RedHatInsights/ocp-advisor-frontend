@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { Grid, GridItem } from '@patternfly/react-core';
 
+import { SearchIcon } from '@patternfly/react-icons';
 import PageHeader from '@redhat-cloud-services/frontend-components/PageHeader';
 import Main from '@redhat-cloud-services/frontend-components/Main';
 import routerParams from '@redhat-cloud-services/frontend-components-utilities/RouterParams';
@@ -15,6 +16,7 @@ import ClusterHeader from '../ClusterHeader/ClusterHeader';
 import ClusterRules from '../ClusterRules/ClusterRules';
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
 import { fetchClusterById } from '../../AppActions';
+import MessageState from '../MessageState/MessageState';
 import Loading from '../Loading/Loading';
 
 const Cluster = ({ match }) => {
@@ -46,7 +48,11 @@ const Cluster = ({ match }) => {
       <Main>
         <React.Fragment>
           {cluster && cluster.fetchStatus === 'rejected' && (
-            <React.Fragment>No data for this cluster available</React.Fragment> // TODO: Create empty states
+            <MessageState
+              title="No recommendations available"
+              text="There was an error fetching recommendations for this cluster. Refresh your page to try again."
+              icon={SearchIcon}
+            />
           )}
           {cluster && cluster.fetchStatus === 'pending' && <Loading />}
           {cluster && cluster.fetchStatus === 'fulfilled' && (
