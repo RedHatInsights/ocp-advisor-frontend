@@ -5,7 +5,7 @@ import { Main } from '@redhat-cloud-services/frontend-components/Main/Main';
 
 const Cluster = lazy(() =>
   import(
-    /* webpackChunkName: "ClusterDetails" */ './PresentationalComponents/Cluster/Cluster'
+    /* webpackChunkName: "ClusterDetails" */ './Components/Cluster/Cluster'
   )
 );
 

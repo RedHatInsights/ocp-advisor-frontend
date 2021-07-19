@@ -1,5 +1,3 @@
-import './_ClusterRules.scss';
-
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { List } from 'react-content-loader';
