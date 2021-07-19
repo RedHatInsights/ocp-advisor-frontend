@@ -3,13 +3,11 @@ import { CardBody } from '@patternfly/react-core/dist/js/components/Card/CardBod
 import { List } from 'react-content-loader';
 import React from 'react';
 const Loading = () => (
-  <React.Fragment>
-    <Card>
-      <CardBody>
-        <List />
-      </CardBody>
-    </Card>
-  </React.Fragment>
+  <Card>
+    <CardBody>
+      <List />
+    </CardBody>
+  </Card>
 );
 
 export default Loading;
