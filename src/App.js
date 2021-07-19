@@ -28,7 +28,9 @@ const App = () => {
   return (
     <React.Fragment>
       <NotificationsPortal />
-      <Routes />
+      <div className="ocp-advisor">
+        <Routes />
+      </div>
     </React.Fragment>
   );
 };
