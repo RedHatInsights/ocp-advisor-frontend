@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 
 import { Breadcrumb } from '@patternfly/react-core/dist/js/components/Breadcrumb/Breadcrumb';
 import { BreadcrumbItem } from '@patternfly/react-core/dist/js/components/Breadcrumb/BreadcrumbItem';
-import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import messages from '../../Messages';
@@ -33,7 +32,8 @@ const Breadcrumbs = ({ current, match, intl }) => {
         <Breadcrumb ouiaId="detail">
           {items.map((oneLink, key) => (
             <BreadcrumbItem key={key}>
-              <Link to={oneLink.navigate}>{oneLink.title}</Link>
+              {/*<Link to={oneLink.navigate}>{oneLink.title}</Link>*/}
+              <span>{oneLink.title}</span>
             </BreadcrumbItem>
           ))}
           <BreadcrumbItem isActive>{current}</BreadcrumbItem>

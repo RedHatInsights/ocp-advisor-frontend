@@ -1,7 +1,13 @@
 import { Route, Switch } from 'react-router-dom';
 import React, { Suspense, lazy } from 'react';
-import { Bullseye, Spinner } from '@patternfly/react-core';
-import { Main } from '@redhat-cloud-services/frontend-components/Main/Main';
+import {
+  Bullseye,
+  EmptyState,
+  EmptyStateBody,
+  Spinner,
+} from '@patternfly/react-core';
+
+import InvalidObject from '@redhat-cloud-services/frontend-components/InvalidObject/InvalidObject';
 
 const Cluster = lazy(() =>
   import(
@@ -38,7 +44,16 @@ export const Routes = () => (
         <Route key={path.title} path={path.path} component={path.component} />
       ))}
       {/* Finally, catch all unmatched routes */}
-      <Route path="*" component={() => <Main>No page found</Main>} />
+      <Route
+        path="*"
+        component={() => (
+          <EmptyState>
+            <EmptyStateBody>
+              <InvalidObject />
+            </EmptyStateBody>
+          </EmptyState>
+        )}
+      />
     </Switch>
   </Suspense>
 );
