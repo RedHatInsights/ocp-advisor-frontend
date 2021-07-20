@@ -1,3 +1,5 @@
+import './_ClusterRules.scss';
+
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { List } from 'react-content-loader';
@@ -427,7 +429,7 @@ const ClusterRulesTable = ({ cluster }) => {
                 icon={CheckIcon}
                 iconClass="ins-c-insights__check"
                 title="No recommendations"
-                text={`No known recommendations affect this cluster`}
+                text={`No known recommendations affect this cluster.`}
               />
             </CardBody>
           </Card>
