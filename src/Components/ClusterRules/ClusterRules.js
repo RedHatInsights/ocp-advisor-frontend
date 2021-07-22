@@ -378,8 +378,8 @@ const ClusterRules = ({ reports }) => {
         pagination={
           <React.Fragment>
             {results === 1
-              ? `${results} Recommendation`
-              : `${results} Recommendations`}
+              ? `${results} ${intl.formatMessage(messages.recommendation)}`
+              : `${results} ${intl.formatMessage(messages.recommendations)}`}
           </React.Fragment>
         }
         activeFiltersConfig={activeFiltersConfig}
@@ -405,8 +405,10 @@ const ClusterRules = ({ reports }) => {
             <Card>
               <CardBody>
                 <MessageState
-                  title="No matching recommendations found"
-                  text={`This filter criteria matches no recommendations. Try changing your filter settings.`}
+                  title={intl.formatMessage(messages.noMatchingRecommendations)}
+                  text={intl.formatMessage(
+                    messages.noMatchingRecommendationsDesc
+                  )}
                 />
               </CardBody>
             </Card>
@@ -419,8 +421,8 @@ const ClusterRules = ({ reports }) => {
             <MessageState
               icon={CheckIcon}
               iconClass="ins-c-insights__check"
-              title="No recommendations"
-              text={`No known recommendations affect this cluster.`}
+              title={intl.formatMessage(messages.noRecommendations)}
+              text={intl.formatMessage(messages.noRecommendationsDesc)}
             />
           </CardBody>
         </Card>
