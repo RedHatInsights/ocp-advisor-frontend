@@ -15,10 +15,6 @@ const intl = createIntl(
 );
 const intlSettings = { locale };
 
-export const CLUSTER_FETCH = 'CLUSTER_FETCH';
-export const BASE_URL = '/api/insights-results-aggregator/v1';
-export const CLUSTER_FETCH_URL = (clusterId) =>
-  `${BASE_URL}/clusters/${clusterId}/report`;
 export const LIKELIHOOD_LABEL = {
   1: intlHelper(intl.formatMessage(messages.low), intlSettings),
   2: intlHelper(intl.formatMessage(messages.medium), intlSettings),

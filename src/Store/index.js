@@ -1,15 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit';
 import logger from 'redux-logger';
 
-import getAdvisorStore from '../AppReducer';
+import { smartProxyApi } from '../Services/SmartProxy';
 
 const getStore = (useLogger) =>
   configureStore({
-    reducer: getAdvisorStore(),
+    reducer: { [smartProxyApi.reducerPath]: smartProxyApi.reducer },
     middleware: (getDefaultMiddleware) =>
       useLogger
-        ? getDefaultMiddleware().concat(logger)
-        : getDefaultMiddleware(),
+        ? getDefaultMiddleware().concat(logger, smartProxyApi.middleware)
+        : getDefaultMiddleware().concat(smartProxyApi.middleware),
   });
 
 export default getStore;

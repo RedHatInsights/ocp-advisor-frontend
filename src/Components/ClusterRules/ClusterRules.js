@@ -2,9 +2,8 @@ import './_ClusterRules.scss';
 
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { List } from 'react-content-loader';
 import { useIntl } from 'react-intl';
-import { CheckIcon, TimesCircleIcon } from '@patternfly/react-icons';
+import { CheckIcon } from '@patternfly/react-icons';
 import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat/DateFormat';
 import InsightsLabel from '@redhat-cloud-services/frontend-components/InsightsLabel';
 import {
@@ -34,7 +33,7 @@ import {
 } from '../../AppConstants';
 import ReportDetails from '../ReportDetails/ReportDetails';
 
-const ClusterRulesTable = ({ cluster }) => {
+const ClusterRules = ({ reports }) => {
   const intl = useIntl();
   const [activeReports, setActiveReports] = useState([]);
   const [sortBy, setSortBy] = useState({});
@@ -365,7 +364,7 @@ const ClusterRulesTable = ({ cluster }) => {
   };
 
   useEffect(() => {
-    const activeReportsData = cluster.data.report.data;
+    const activeReportsData = reports;
     setActiveReports(activeReportsData);
     setRows(buildRows(activeReportsData, filters, rows, searchValue));
   }, []);
@@ -379,68 +378,51 @@ const ClusterRulesTable = ({ cluster }) => {
         pagination={
           <React.Fragment>
             {results === 1
-              ? `${results} Recommendation`
-              : `${results} Recommendations`}
+              ? `${results} ${intl.formatMessage(messages.recommendation)}`
+              : `${results} ${intl.formatMessage(messages.recommendations)}`}
           </React.Fragment>
         }
         activeFiltersConfig={activeFiltersConfig}
       />
-      {cluster.fetchStatus === 'pending' && (
-        <Card>
-          <CardBody>
-            <List />
-          </CardBody>
-        </Card>
-      )}
-      {cluster.fetchStatus === 'fulfilled' &&
-        (activeReports.length > 0 ? (
-          <React.Fragment>
-            <Table
-              aria-label={'Cluster recommendations table'}
-              onSelect={onRowSelect}
-              onCollapse={handleOnCollapse}
-              rows={rows}
-              cells={cols}
-              sortBy={sortBy}
-              canSelectAll={false}
-              onSort={onSort}
-              variant={TableVariant.compact}
-              isStickyHeader
-            >
-              <TableHeader />
-              <TableBody />
-            </Table>
-            {results === 0 && (
-              <Card>
-                <CardBody>
-                  <MessageState
-                    title="No matching recommendations found"
-                    text={`This filter criteria matches no recommendations. Try changing your filter settings.`}
-                  />
-                </CardBody>
-              </Card>
-            )}
-          </React.Fragment>
-        ) : (
-          // ? Welcome to Insights feature for novice clusters with disabled Insights?
-          <Card>
-            <CardBody>
-              <MessageState
-                icon={CheckIcon}
-                iconClass="ins-c-insights__check"
-                title="No recommendations"
-                text={`No known recommendations affect this cluster.`}
-              />
-            </CardBody>
-          </Card>
-        ))}
-      {cluster.fetchStatus === 'rejected' && (
+      {activeReports.length > 0 ? (
+        <React.Fragment>
+          <Table
+            aria-label={'Cluster recommendations table'}
+            onSelect={onRowSelect}
+            onCollapse={handleOnCollapse}
+            rows={rows}
+            cells={cols}
+            sortBy={sortBy}
+            canSelectAll={false}
+            onSort={onSort}
+            variant={TableVariant.compact}
+            isStickyHeader
+          >
+            <TableHeader />
+            <TableBody />
+          </Table>
+          {results === 0 && (
+            <Card>
+              <CardBody>
+                <MessageState
+                  title={intl.formatMessage(messages.noMatchingRecommendations)}
+                  text={intl.formatMessage(
+                    messages.noMatchingRecommendationsDesc
+                  )}
+                />
+              </CardBody>
+            </Card>
+          )}
+        </React.Fragment>
+      ) : (
+        // ? Welcome to Insights feature for novice clusters with disabled Insights?
         <Card>
           <CardBody>
             <MessageState
-              icon={TimesCircleIcon}
-              title="Error getting recommendations"
-              text={`There was an error fetching recommendations for this cluster. Refresh your page to try again.`}
+              icon={CheckIcon}
+              iconClass="ins-c-insights__check"
+              title={intl.formatMessage(messages.noRecommendations)}
+              text={intl.formatMessage(messages.noRecommendationsDesc)}
             />
           </CardBody>
         </Card>
@@ -449,8 +431,12 @@ const ClusterRulesTable = ({ cluster }) => {
   );
 };
 
-ClusterRulesTable.propTypes = {
-  cluster: PropTypes.object.isRequired,
+ClusterRules.propTypes = {
+  reports: PropTypes.array.isRequired,
 };
 
-export default ClusterRulesTable;
+ClusterRules.defaultProps = {
+  reports: [],
+};
+
+export default ClusterRules;

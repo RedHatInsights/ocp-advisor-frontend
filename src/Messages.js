@@ -184,4 +184,24 @@ export default defineMessages({
     description: 'Filter action, reset all filter chips',
     defaultMessage: 'Reset filters',
   },
+  noMatchingRecommendations: {
+    id: 'noMatchingRecommendations',
+    defaultMessage: 'No matching recommendations found',
+  },
+  noMatchingRecommendationsDesc: {
+    id: 'noMatchingRecommendationsDesc',
+    defaultMessage:
+      'This filter criteria matches no recommendations. Try changing your filter settings.',
+  },
+  noRecommendations: {
+    id: 'noRecommendations',
+    description:
+      'Recommendation table, no recommendations message for any known rules, body',
+    defaultMessage:
+      'None of your connected systems are affected by any known recommendations.',
+  },
+  noRecommendationsDesc: {
+    id: 'noRecommendationsDesc',
+    defaultMessage: 'No known recommendations affect this cluster.',
+  },
 });
