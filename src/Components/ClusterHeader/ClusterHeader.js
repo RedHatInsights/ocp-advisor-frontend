@@ -9,18 +9,31 @@ import {
   Title,
 } from '@patternfly/react-core';
 import { useIntl } from 'react-intl';
+import Skeleton from '@redhat-cloud-services/frontend-components/Skeleton';
+
 import messages from '../../Messages';
+import { useGetClusterDisplayNameByIdQuery } from '../../Services/AccountManagementService';
 
 const ClusterHeader = ({ uuid, lastSeen }) => {
   const intl = useIntl();
+  const {
+    data: displayName,
+    isUninitialized,
+    isLoading,
+    isFetching,
+  } = useGetClusterDisplayNameByIdQuery(uuid);
 
   return (
     <React.Fragment>
       <Grid md={12} hasGutter>
         <GridItem>
-          <Title size="2xl" headingLevel="h1">
-            {uuid}
-          </Title>
+          {isUninitialized || isLoading || isFetching ? (
+            <Skeleton size="sm" />
+          ) : (
+            <Title size="2xl" headingLevel="h1">
+              {displayName || uuid}
+            </Title>
+          )}
         </GridItem>
         <GridItem>
           <Stack>
