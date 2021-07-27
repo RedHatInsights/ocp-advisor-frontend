@@ -3,13 +3,15 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Breadcrumb } from '@patternfly/react-core/dist/js/components/Breadcrumb/Breadcrumb';
 import { BreadcrumbItem } from '@patternfly/react-core/dist/js/components/Breadcrumb/BreadcrumbItem';
 import PropTypes from 'prop-types';
-import { injectIntl } from 'react-intl';
-import messages from '../../Messages';
-import routerParams from '@redhat-cloud-services/frontend-components-utilities/RouterParams';
+import { useIntl } from 'react-intl';
 
-const Breadcrumbs = ({ current, match, intl }) => {
+import messages from '../../Messages';
+
+export const Breadcrumbs = ({ current, match }) => {
+  const intl = useIntl();
   const [items, setItems] = useState([]);
   const buildBreadcrumbs = useCallback(() => {
+    console.log('meow');
     const crumbs = [];
     const splitUrl = match.url.split('/');
 
@@ -46,7 +48,4 @@ const Breadcrumbs = ({ current, match, intl }) => {
 Breadcrumbs.propTypes = {
   current: PropTypes.string,
   match: PropTypes.object,
-  intl: PropTypes.any,
 };
-
-export default injectIntl(routerParams(Breadcrumbs));

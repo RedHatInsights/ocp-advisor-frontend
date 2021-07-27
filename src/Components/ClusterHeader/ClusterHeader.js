@@ -12,16 +12,15 @@ import { useIntl } from 'react-intl';
 import Skeleton from '@redhat-cloud-services/frontend-components/Skeleton';
 
 import messages from '../../Messages';
-import { useGetClusterDisplayNameByIdQuery } from '../../Services/AccountManagementService';
 
-const ClusterHeader = ({ uuid, lastSeen }) => {
+export const ClusterHeader = ({ clusterId, lastSeen, displayName }) => {
   const intl = useIntl();
   const {
-    data: displayName,
     isUninitialized,
     isLoading,
     isFetching,
-  } = useGetClusterDisplayNameByIdQuery(uuid);
+    data: clusterName,
+  } = displayName;
 
   return (
     <React.Fragment>
@@ -31,7 +30,7 @@ const ClusterHeader = ({ uuid, lastSeen }) => {
             <Skeleton size="sm" />
           ) : (
             <Title size="2xl" headingLevel="h1">
-              {displayName || uuid}
+              {clusterName || clusterId}
             </Title>
           )}
         </GridItem>
@@ -39,7 +38,7 @@ const ClusterHeader = ({ uuid, lastSeen }) => {
           <Stack>
             <StackItem>
               <span>UUID: </span>
-              <span>{uuid || intl.formatMessage(messages.unknown)}</span>
+              <span>{clusterId || intl.formatMessage(messages.unknown)}</span>
             </StackItem>
             <StackItem>
               <span>{intl.formatMessage(messages.lastSeen)}: </span>
@@ -53,8 +52,7 @@ const ClusterHeader = ({ uuid, lastSeen }) => {
 };
 
 ClusterHeader.propTypes = {
-  uuid: PropTypes.string.isRequired,
+  clusterId: PropTypes.string.isRequired,
+  displayName: PropTypes.object.isRequired,
   lastSeen: PropTypes.string,
 };
-
-export default ClusterHeader;

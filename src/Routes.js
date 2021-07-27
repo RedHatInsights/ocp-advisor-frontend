@@ -10,9 +10,7 @@ import {
 import InvalidObject from '@redhat-cloud-services/frontend-components/InvalidObject/InvalidObject';
 
 const Cluster = lazy(() =>
-  import(
-    /* webpackChunkName: "ClusterDetails" */ './Components/Cluster/Cluster'
-  )
+  import(/* webpackChunkName: "ClusterDetails" */ './Components/Cluster')
 );
 
 const paths = [

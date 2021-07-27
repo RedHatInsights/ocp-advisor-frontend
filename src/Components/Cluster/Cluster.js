@@ -1,51 +1,34 @@
 import './_Cluster.scss';
 
-import React, { useEffect } from 'react';
-import { useIntl } from 'react-intl';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Grid, GridItem } from '@patternfly/react-core';
 
 import { SearchIcon } from '@patternfly/react-icons';
 import PageHeader from '@redhat-cloud-services/frontend-components/PageHeader';
 import Main from '@redhat-cloud-services/frontend-components/Main';
-import routerParams from '@redhat-cloud-services/frontend-components-utilities/RouterParams';
 
-import messages from '../../Messages';
-import ClusterHeader from '../ClusterHeader/ClusterHeader';
+import ClusterHeader from '../ClusterHeader';
 import ClusterRules from '../ClusterRules/ClusterRules';
-import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
+import Breadcrumbs from '../Breadcrumbs';
 import MessageState from '../MessageState/MessageState';
 import Loading from '../Loading/Loading';
-import { useGetClusterByIdQuery } from '../../Services/SmartProxy';
 
-const Cluster = ({ match }) => {
+export const Cluster = ({ cluster, match }) => {
   const {
-    data,
+    isError,
     isUninitialized,
     isLoading,
     isFetching,
     isSuccess,
-    isError,
-    refetch,
-  } = useGetClusterByIdQuery(match.params.clusterId);
-  const intl = useIntl();
-
-  useEffect(() => {
-    if (match.params.clusterId) {
-      const subnav = `${match.params.clusterId} - ${intl.formatMessage(
-        messages.clusters
-      )}`;
-      document.title = intl.formatMessage(messages.documentTitle, { subnav });
-    }
-
-    refetch();
-  }, [match.params.clusterId]);
+    data,
+  } = cluster;
 
   return (
     <React.Fragment>
       <PageHeader className="pf-m-light ins-inventory-detail">
         <Breadcrumbs current={match.params.clusterId} match={match} />
-        <ClusterHeader uuid={match.params.clusterId} />
+        <ClusterHeader />
       </PageHeader>
       <Main>
         <React.Fragment>
@@ -60,7 +43,7 @@ const Cluster = ({ match }) => {
           {isSuccess && (
             <Grid hasGutter>
               <GridItem span={12}>
-                <ClusterRules reports={data?.report?.data} />
+                <ClusterRules reports={data?.report?.data || []} />
               </GridItem>
             </Grid>
           )}
@@ -71,8 +54,6 @@ const Cluster = ({ match }) => {
 };
 
 Cluster.propTypes = {
-  history: PropTypes.object,
-  match: PropTypes.any,
+  cluster: PropTypes.object.isRequired,
+  match: PropTypes.object.isRequired,
 };
-
-export default routerParams(Cluster);
