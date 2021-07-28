@@ -1,16 +1,25 @@
 const { resolve } = require('path');
 const config = require('@redhat-cloud-services/frontend-components-config');
+
+const insightsProxy = {
+  https: false,
+  ...(process.env.BETA && { deployment: 'beta/apps' }),
+};
+
+const webpackProxy = {
+  deployment: process.env.BETA ? 'beta/apps' : 'apps',
+  env: process.env.BETA ? 'ci-beta' : 'ci-stable',
+  useProxy: true,
+  useCloud: true, // Until console.redhat.com is working
+  appUrl: process.env.BETA
+    ? ['/beta/openshift/insights/advisor']
+    : ['/openshift/insights/advisor'],
+};
+
 const { config: webpackConfig, plugins } = config({
   rootFolder: resolve(__dirname, '../'),
   debug: true,
-  https: true,
-  appUrl: '/openshift/insights/advisor',
-  useFileHash: false,
-  deployment: process.env.BETA ? 'beta/apps' : 'apps',
-  ...(process.env.PROXY && {
-    useProxy: true,
-    appUrl: process.env.BETA ? '/beta/staging/starter' : '/staging/starter',
-  }),
+  ...(process.env.PROXY ? webpackProxy : insightsProxy),
 });
 
 plugins.push(
@@ -19,7 +28,7 @@ plugins.push(
       root: resolve(__dirname, '../'),
       useFileHash: false,
       exposes: {
-        './RootApp': resolve(__dirname, '../src/DevEntry'),
+        './RootApp': resolve(__dirname, '../src/AppEntry'),
       },
     }
   )

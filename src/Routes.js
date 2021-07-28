@@ -1,19 +1,25 @@
+import { Route, Switch } from 'react-router-dom';
 import React, { Suspense, lazy } from 'react';
-import { Redirect, Route, Switch } from 'react-router-dom';
+import {
+  Bullseye,
+  EmptyState,
+  EmptyStateBody,
+  Spinner,
+} from '@patternfly/react-core';
 
-import { Bullseye, Spinner } from '@patternfly/react-core';
+import InvalidObject from '@redhat-cloud-services/frontend-components/InvalidObject/InvalidObject';
 
-const SamplePage = lazy(() =>
-  import(/* webpackChunkName: "SamplePage" */ './Routes/SamplePage/SamplePage')
+const Cluster = lazy(() =>
+  import(/* webpackChunkName: "ClusterDetails" */ './Components/Cluster')
 );
-const OopsPage = lazy(() =>
-  import(/* webpackChunkName: "OopsPage" */ './Routes/OopsPage/OopsPage')
-);
-const NoPermissionsPage = lazy(() =>
-  import(
-    /* webpackChunkName: "NoPermissionsPage" */ './Routes/NoPermissionsPage/NoPermissionsPage'
-  )
-);
+
+const paths = [
+  {
+    title: 'Clusters',
+    path: '/clusters/:clusterId',
+    component: Cluster,
+  },
+];
 
 /**
  * the Switch component changes routes depending on the path.
@@ -32,13 +38,20 @@ export const Routes = () => (
     }
   >
     <Switch>
-      <Route path="/sample" component={SamplePage} />
-      <Route path="/oops" component={OopsPage} />
-      <Route path="/no-permissions" component={NoPermissionsPage} />
+      {paths.map((path) => (
+        <Route key={path.title} path={path.path} component={path.component} />
+      ))}
       {/* Finally, catch all unmatched routes */}
-      <Route>
-        <Redirect to="/sample" />
-      </Route>
+      <Route
+        path="*"
+        component={() => (
+          <EmptyState>
+            <EmptyStateBody>
+              <InvalidObject />
+            </EmptyStateBody>
+          </EmptyState>
+        )}
+      />
     </Switch>
   </Suspense>
 );

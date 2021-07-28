@@ -11,4 +11,5 @@ module.exports = {
     '/node_modules/(?!@redhat-cloud-services)',
     '/node_modules/(?!@patternfly)',
   ],
+  snapshotSerializers: ['enzyme-to-json/serializer'],
 };
