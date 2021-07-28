@@ -106,20 +106,20 @@ export default defineMessages({
     description: 'Filter value',
     defaultMessage: 'High',
   },
-  availability: {
-    id: 'availability',
+  serviceAvailability: {
+    id: 'serviceAvailability',
     description: 'Filter value',
-    defaultMessage: 'Availability',
+    defaultMessage: 'Service Availability',
   },
   performance: {
     id: 'performance',
     description: 'Filter value',
     defaultMessage: 'Performance',
   },
-  stability: {
-    id: 'stability',
+  faultTolerance: {
+    id: 'faultTolerance',
     description: 'Filter value',
-    defaultMessage: 'Stability',
+    defaultMessage: 'Fault Tolerance',
   },
   security: {
     id: 'security',

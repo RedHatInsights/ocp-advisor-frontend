@@ -30,6 +30,7 @@ import {
   IMPACT_LABEL,
   LIKELIHOOD_LABEL,
   FILTER_CATEGORIES as FC,
+  RULE_CATEGORIES,
 } from '../../AppConstants';
 import ReportDetails from '../ReportDetails/ReportDetails';
 
@@ -136,12 +137,12 @@ const ClusterRules = ({ reports }) => {
                       <span>
                         The <strong>likelihood</strong> that this will be a
                         problem is{' '}
-                        {rule?.likelihood
-                          ? LIKELIHOOD_LABEL[rule?.likelihood]
+                        {rule.likelihood
+                          ? LIKELIHOOD_LABEL[rule.likelihood]
                           : 'unknown'}
                         . The <strong>impact</strong> of the problem would be{' '}
-                        {rule?.impact ? IMPACT_LABEL[rule?.impact] : 'unknown'}{' '}
-                        if it occurred.
+                        {rule.impact ? IMPACT_LABEL[rule.impact] : 'unknown'} if
+                        it occurred.
                       </span>
                     }
                   >
@@ -173,8 +174,15 @@ const ClusterRules = ({ reports }) => {
             const rowValue = {
               created_at: rule.created_at,
               total_risk: rule.total_risk,
-              tags: rule.tags,
+              category: rule.tags,
             };
+            if (key === 'category') {
+              // in that case, rowValue['category'] is an array of categories (or "tags" in the back-end implementation)
+              // e.g. ['security', 'fault_tolerance']
+              return rowValue[key].find((categoryName) =>
+                filterValues.includes(String(RULE_CATEGORIES[categoryName]))
+              );
+            }
             return filterValues.find(
               (value) => String(value) === String(rowValue[key])
             );
@@ -286,7 +294,7 @@ const ClusterRules = ({ reports }) => {
 
   const filterConfigItems = [
     {
-      label: 'description',
+      label: 'name',
       filterValues: {
         key: 'text-filter',
         onChange: (_e, value) => onInputChange(value),
@@ -304,6 +312,18 @@ const ClusterRules = ({ reports }) => {
           onFilterChange(FC.total_risk.urlParam, values),
         value: filters.total_risk,
         items: FC.total_risk.values,
+      },
+    },
+    {
+      label: FC.category.title,
+      type: FC.category.type,
+      id: FC.category.urlParam,
+      value: `checkbox-${FC.category.urlParam}`,
+      filterValues: {
+        key: `${FC.category.urlParam}-filter`,
+        onChange: (_e, values) => onFilterChange(FC.category.urlParam, values),
+        value: filters.category,
+        items: FC.category.values,
       },
     },
   ];

@@ -39,6 +39,12 @@ export const RISK_OF_CHANGE_LABEL = {
   3: intlHelper(intl.formatMessage(messages.moderate), intlSettings),
   4: intlHelper(intl.formatMessage(messages.high), intlSettings),
 };
+export const RULE_CATEGORIES = {
+  service_availability: 1,
+  security: 2,
+  fault_tolerance: 3,
+  performance: 4,
+};
 export const FILTER_CATEGORIES = {
   total_risk: {
     type: 'checkbox',
@@ -100,6 +106,38 @@ export const FILTER_CATEGORIES = {
       {
         label: intlHelper(intl.formatMessage(messages.disabled), intlSettings),
         value: 'disabled',
+      },
+    ],
+  },
+  category: {
+    type: 'checkbox',
+    title: 'category',
+    urlParam: 'category',
+    values: [
+      {
+        label: intlHelper(
+          intl.formatMessage(messages.serviceAvailability),
+          intlSettings
+        ),
+        value: `${RULE_CATEGORIES.service_availability}`,
+      },
+      {
+        label: intlHelper(
+          intl.formatMessage(messages.performance),
+          intlSettings
+        ),
+        value: `${RULE_CATEGORIES.performance}`,
+      },
+      {
+        label: intlHelper(
+          intl.formatMessage(messages.faultTolerance),
+          intlSettings
+        ),
+        value: `${RULE_CATEGORIES.fault_tolerance}`,
+      },
+      {
+        label: intlHelper(intl.formatMessage(messages.security), intlSettings),
+        value: `${RULE_CATEGORIES.security}`,
       },
     ],
   },
