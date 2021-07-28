@@ -15,7 +15,7 @@
     "start:proxy": "NODE_ENV=development PROXY=true webpack serve --config config/dev.webpack.config.js",
     "start:beta": "NODE_ENV=development BETA=true webpack serve --config config/dev.webpack.config.js",
     "start:beta:proxy": "NODE_ENV=development PROXY=true BETA=true webpack serve --config config/dev.webpack.config.js",
-    "test": "jest --verbose --passWithNoTests",
+    "test": "jest --verbose --passWithNoTests --env=jsdom",
     "translations": "npm-run-all translations:*",
     "translations:extract": "formatjs extract 'src/**/*.js*' --out-file lang/en.json --id-interpolation-pattern '[sha512:contenthash:base64:6]'",
     "translations:compile": "formatjs compile lang/en.json --out-file compiled-lang/en.json",

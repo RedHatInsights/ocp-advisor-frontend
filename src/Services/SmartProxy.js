@@ -15,4 +15,7 @@ export const smartProxyApi = createApi({
 });
 
 // Export hooks for usage in functional components
-export const { useGetClusterByIdQuery } = smartProxyApi;
+export const {
+  useGetClusterByIdQuery,
+  useLazyGetClusterByIdQuery,
+} = smartProxyApi;
