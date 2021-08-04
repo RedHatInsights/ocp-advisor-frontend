@@ -106,25 +106,30 @@ export default defineMessages({
     description: 'Filter value',
     defaultMessage: 'High',
   },
-  availability: {
-    id: 'availability',
+  serviceAvailability: {
+    id: 'serviceAvailability',
     description: 'Filter value',
-    defaultMessage: 'Availability',
+    defaultMessage: 'Service Availability',
   },
   performance: {
     id: 'performance',
     description: 'Filter value',
     defaultMessage: 'Performance',
   },
-  stability: {
-    id: 'stability',
+  faultTolerance: {
+    id: 'faultTolerance',
     description: 'Filter value',
-    defaultMessage: 'Stability',
+    defaultMessage: 'Fault Tolerance',
   },
   security: {
     id: 'security',
     description: 'Filter value',
     defaultMessage: 'Security',
+  },
+  osdEligible: {
+    id: 'osdEligible',
+    description: 'Filter value',
+    defaultMessage: 'OSD Eligible',
   },
   enabled: {
     id: 'enabled',
@@ -203,5 +208,12 @@ export default defineMessages({
   noRecommendationsDesc: {
     id: 'noRecommendationsDesc',
     defaultMessage: 'No known recommendations affect this cluster.',
+  },
+  ruleIsDisabledTooltip: {
+    id: 'ruleIsDisabledTooltip',
+    description:
+      'Disabled badge tooltip explaining the meaning of a disabled recommendation',
+    defaultMessage:
+      'Indicates this recommendation will not be shown for the cluster.',
   },
 });

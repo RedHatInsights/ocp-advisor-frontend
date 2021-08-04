@@ -19,6 +19,7 @@ const webpackProxy = {
 const { config: webpackConfig, plugins } = config({
   rootFolder: resolve(__dirname, '../'),
   debug: true,
+  sassPrefix: '.ocp-advisor, .ocpAdvisor',
   ...(process.env.PROXY ? webpackProxy : insightsProxy),
 });
 
