@@ -44,6 +44,7 @@ export const RULE_CATEGORIES = {
   security: 2,
   fault_tolerance: 3,
   performance: 4,
+  osd_eligible: 5,
 };
 export const FILTER_CATEGORIES = {
   total_risk: {
@@ -138,6 +139,13 @@ export const FILTER_CATEGORIES = {
       {
         label: intlHelper(intl.formatMessage(messages.security), intlSettings),
         value: `${RULE_CATEGORIES.security}`,
+      },
+      {
+        label: intlHelper(
+          intl.formatMessage(messages.osdEligible),
+          intlSettings
+        ),
+        value: `${RULE_CATEGORIES.osd_eligible}`,
       },
     ],
   },

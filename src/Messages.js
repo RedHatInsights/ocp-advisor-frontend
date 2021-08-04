@@ -126,6 +126,11 @@ export default defineMessages({
     description: 'Filter value',
     defaultMessage: 'Security',
   },
+  osdEligible: {
+    id: 'osdEligible',
+    description: 'Filter value',
+    defaultMessage: 'OSD Eligible',
+  },
   enabled: {
     id: 'enabled',
     description: 'Filter value',
