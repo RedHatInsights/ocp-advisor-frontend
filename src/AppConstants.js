@@ -150,3 +150,6 @@ export const FILTER_CATEGORIES = {
     ],
   },
 };
+export const DEFAULT_CLUSTER_RULES_FILTERS = {
+  [FILTER_CATEGORIES.rule_status.urlParam]: 'enabled',
+};

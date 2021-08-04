@@ -209,4 +209,11 @@ export default defineMessages({
     id: 'noRecommendationsDesc',
     defaultMessage: 'No known recommendations affect this cluster.',
   },
+  ruleIsDisabledTooltip: {
+    id: 'ruleIsDisabledTooltip',
+    description:
+      'Disabled badge tooltip explaining the meaning of a disabled recommendation',
+    defaultMessage:
+      'Indicates this recommendation will not be shown for the cluster.',
+  },
 });
