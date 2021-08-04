@@ -9,7 +9,8 @@ export const smartProxyApi = createApi({
   }),
   endpoints: (builder) => ({
     getClusterById: builder.query({
-      query: (id) => `clusters/${id}/report`,
+      query: (id, includeDisabled = true) =>
+        `clusters/${id}/report?get_disabled=${includeDisabled}`,
     }),
   }),
 });

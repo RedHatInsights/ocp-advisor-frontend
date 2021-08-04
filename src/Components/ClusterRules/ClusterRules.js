@@ -30,14 +30,17 @@ import {
   IMPACT_LABEL,
   LIKELIHOOD_LABEL,
   FILTER_CATEGORIES as FC,
+  RULE_CATEGORIES,
+  DEFAULT_CLUSTER_RULES_FILTERS,
 } from '../../AppConstants';
 import ReportDetails from '../ReportDetails/ReportDetails';
+import RuleLabels from '../RuleLabels/RuleLabels';
 
 const ClusterRules = ({ reports }) => {
   const intl = useIntl();
   const [activeReports, setActiveReports] = useState([]);
   const [sortBy, setSortBy] = useState({});
-  const [filters, setFilters] = useState({});
+  const [filters, setFilters] = useState(DEFAULT_CLUSTER_RULES_FILTERS);
   const [searchValue, setSearchValue] = useState('');
   const [isSelected, setIsSelected] = useState(false);
   const [rows, setRows] = useState([]);
@@ -113,7 +116,13 @@ const ClusterRules = ({ reports }) => {
           isOpen,
           selected,
           cells: [
-            { title: <div> {rule.description}</div> },
+            {
+              title: (
+                <div>
+                  {rule.description} <RuleLabels rule={value} />
+                </div>
+              ),
+            },
             {
               title: (
                 <div key={key}>
@@ -136,12 +145,12 @@ const ClusterRules = ({ reports }) => {
                       <span>
                         The <strong>likelihood</strong> that this will be a
                         problem is{' '}
-                        {rule?.likelihood
-                          ? LIKELIHOOD_LABEL[rule?.likelihood]
+                        {rule.likelihood
+                          ? LIKELIHOOD_LABEL[rule.likelihood]
                           : 'unknown'}
                         . The <strong>impact</strong> of the problem would be{' '}
-                        {rule?.impact ? IMPACT_LABEL[rule?.impact] : 'unknown'}{' '}
-                        if it occurred.
+                        {rule.impact ? IMPACT_LABEL[rule.impact] : 'unknown'} if
+                        it occurred.
                       </span>
                     }
                   >
@@ -173,8 +182,19 @@ const ClusterRules = ({ reports }) => {
             const rowValue = {
               created_at: rule.created_at,
               total_risk: rule.total_risk,
-              tags: rule.tags,
+              category: rule.tags,
+              rule_status: rule.disabled ? 'disabled' : 'enabled',
             };
+            if (key === 'category') {
+              // in that case, rowValue['category'] is an array of categories (or "tags" in the back-end implementation)
+              // e.g. ['security', 'fault_tolerance']
+              return rowValue[key].find((categoryName) =>
+                filterValues.includes(String(RULE_CATEGORIES[categoryName]))
+              );
+            }
+            if (key === 'rule_status') {
+              return filterValues === 'all' || rowValue[key] === filterValues;
+            }
             return filterValues.find(
               (value) => String(value) === String(rowValue[key])
             );
@@ -284,9 +304,15 @@ const ClusterRules = ({ reports }) => {
     setFilters(newFilters);
   };
 
+  const toggleRulesDisabled = (rule_status) => {
+    const newFilters = { ...filters, rule_status };
+    setRows(buildRows(activeReports, newFilters, rows, searchValue));
+    setFilters(newFilters);
+  };
+
   const filterConfigItems = [
     {
-      label: 'description',
+      label: 'name',
       filterValues: {
         key: 'text-filter',
         onChange: (_e, value) => onInputChange(value),
@@ -306,20 +332,53 @@ const ClusterRules = ({ reports }) => {
         items: FC.total_risk.values,
       },
     },
+    {
+      label: FC.category.title,
+      type: FC.category.type,
+      id: FC.category.urlParam,
+      value: `checkbox-${FC.category.urlParam}`,
+      filterValues: {
+        key: `${FC.category.urlParam}-filter`,
+        onChange: (_e, values) => onFilterChange(FC.category.urlParam, values),
+        value: filters.category,
+        items: FC.category.values,
+      },
+    },
+    {
+      label: FC.rule_status.title,
+      type: FC.rule_status.type,
+      id: FC.rule_status.urlParam,
+      value: `radio-${FC.rule_status.urlParam}`,
+      filterValues: {
+        key: `${FC.rule_status.urlParam}-filter`,
+        onChange: (_e, value) => toggleRulesDisabled(value),
+        value: filters.rule_status,
+        items: FC.rule_status.values,
+      },
+    },
   ];
 
-  const buildFilterChips = (filters) => {
+  const buildFilterChips = () => {
     const prunedFilters = Object.entries(filters);
     let chips =
       filters && prunedFilters.length > 0
         ? prunedFilters.map((item) => {
             const category = FC[item[0]];
-            const chips = item[1].map((value) => ({
-              name: category.values.find(
-                (values) => values.value === String(value)
-              ).label,
-              value,
-            }));
+            const chips = Array.isArray(item[1])
+              ? item[1].map((value) => ({
+                  name: category.values.find(
+                    (values) => values.value === String(value)
+                  ).label,
+                  value,
+                }))
+              : [
+                  {
+                    name: category.values.find(
+                      (values) => values.value === String(item[1])
+                    ).label,
+                    value: item[1],
+                  },
+                ];
             return {
               category: capitalize(category.title),
               chips,
@@ -338,20 +397,25 @@ const ClusterRules = ({ reports }) => {
   const onChipDelete = (_e, itemsToRemove, isAll) => {
     if (isAll) {
       setRows(buildRows(activeReports, {}, rows, ''));
-      setFilters({});
+      setFilters(DEFAULT_CLUSTER_RULES_FILTERS);
       setSearchValue('');
     } else {
       itemsToRemove.map((item) => {
-        if (item.category === 'Name') {
-          setRows(buildRows(activeReports, filters, rows, ''));
-          setSearchValue('');
-        } else {
-          onFilterChange(
-            item.urlParam,
-            filters[item.urlParam].filter(
-              (value) => String(value) !== String(item.chips[0].value)
-            )
-          );
+        switch (item.category) {
+          case 'Name':
+            setRows(buildRows(activeReports, filters, rows, ''));
+            setSearchValue('');
+            break;
+          case 'Status':
+            onFilterChange(item.urlParam, []);
+            break;
+          default:
+            onFilterChange(
+              item.urlParam,
+              filters[item.urlParam].filter(
+                (value) => String(value) !== String(item.chips[0].value)
+              )
+            );
         }
       });
     }
@@ -359,7 +423,7 @@ const ClusterRules = ({ reports }) => {
 
   const activeFiltersConfig = {
     deleteTitle: intl.formatMessage(messages.resetFilters),
-    filters: buildFilterChips(filters),
+    filters: buildFilterChips(),
     onDelete: onChipDelete,
   };
 

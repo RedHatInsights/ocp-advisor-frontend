@@ -11,7 +11,6 @@ export const Breadcrumbs = ({ current, match }) => {
   const intl = useIntl();
   const [items, setItems] = useState([]);
   const buildBreadcrumbs = useCallback(() => {
-    console.log('meow');
     const crumbs = [];
     const splitUrl = match.url.split('/');
 
