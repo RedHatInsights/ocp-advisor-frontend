@@ -216,4 +216,21 @@ export default defineMessages({
     defaultMessage:
       'Indicates this recommendation will not be shown for the cluster.',
   },
+  rulesDetailsPubishdate: {
+    id: 'rulesdetails.publishdate',
+    description: 'Recommendationsdetails, publish date',
+    defaultMessage: 'Publish date: {date}',
+  },
+  knowledgebaseArticle: {
+    id: 'knowledgebasearticle',
+    description: 'Knowledgebase article',
+    defaultMessage: 'Knowledgebase article',
+  },
+  viewAffectedClusters: {
+    id: 'viewAffectedClusters',
+    description:
+      'Link text to view all clusters that are affected by a recommendation',
+    defaultMessage:
+      'View {clusters, plural, one {the affected cluster} other {# affected clusters}}',
+  },
 });
