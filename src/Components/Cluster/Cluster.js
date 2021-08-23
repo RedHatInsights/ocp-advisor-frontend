@@ -13,8 +13,9 @@ import ClusterRules from '../ClusterRules/ClusterRules';
 import Breadcrumbs from '../Breadcrumbs';
 import MessageState from '../MessageState/MessageState';
 import Loading from '../Loading/Loading';
+import messages from '../../Messages';
 
-export const Cluster = ({ cluster, match }) => {
+export const Cluster = ({ cluster, match, intl }) => {
   const { isError, isUninitialized, isLoading, isFetching, isSuccess, data } =
     cluster;
 
@@ -28,8 +29,8 @@ export const Cluster = ({ cluster, match }) => {
         <React.Fragment>
           {isError && (
             <MessageState
-              title="No recommendations available"
-              text="There was an error fetching recommendations for this cluster. Refresh your page to try again."
+              title={intl.formatMessage(messages.noRecsError)}
+              text={intl.formatMessage(messages.noRecsErrorDesc)}
               icon={SearchIcon}
             />
           )}
@@ -50,4 +51,5 @@ export const Cluster = ({ cluster, match }) => {
 Cluster.propTypes = {
   cluster: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
+  intl: PropTypes.object.isRequired,
 };
