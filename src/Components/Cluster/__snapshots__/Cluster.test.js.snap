@@ -80,7 +80,7 @@ exports[`<Cluster /> test renders correctly when cluster unavailable 1`] = `
     <MessageState
       icon={[Function]}
       text="There was an error fetching recommendations for this cluster. Refresh your page to try again."
-      title="No recommendations available"
+      title="No recommendations available."
       variant="full"
     />
   </Connect(Main)>

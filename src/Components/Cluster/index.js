@@ -23,5 +23,5 @@ export default routerParams(({ match }) => {
     }
   }, [match.params.clusterId]);
 
-  return <Cluster cluster={cluster} match={match} intl={intl} />;
+  return <Cluster cluster={cluster} match={match} />;
 });

@@ -1,12 +1,14 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { useIntl } from 'react-intl';
 
 import { Breadcrumb } from '@patternfly/react-core/dist/js/components/Breadcrumb/Breadcrumb';
 import { BreadcrumbItem } from '@patternfly/react-core/dist/js/components/Breadcrumb/BreadcrumbItem';
 
 import messages from '../../Messages';
 
-export const Breadcrumbs = ({ current, match, intl }) => {
+export const Breadcrumbs = ({ current, match }) => {
+  const intl = useIntl();
   const [items, setItems] = useState([]);
   const buildBreadcrumbs = useCallback(() => {
     const crumbs = [];

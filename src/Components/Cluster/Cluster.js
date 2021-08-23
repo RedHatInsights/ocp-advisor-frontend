@@ -2,6 +2,7 @@ import './_Cluster.scss';
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useIntl } from 'react-intl';
 import { Grid, GridItem } from '@patternfly/react-core';
 
 import { SearchIcon } from '@patternfly/react-icons';
@@ -15,7 +16,8 @@ import MessageState from '../MessageState/MessageState';
 import Loading from '../Loading/Loading';
 import messages from '../../Messages';
 
-export const Cluster = ({ cluster, match, intl }) => {
+export const Cluster = ({ cluster, match }) => {
+  const intl = useIntl();
   const { isError, isUninitialized, isLoading, isFetching, isSuccess, data } =
     cluster;
 
