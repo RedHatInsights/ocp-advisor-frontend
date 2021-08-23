@@ -111,8 +111,6 @@ const Recommendation = ({ rule, intl, match }) => {
                   </p>
                 </React.Fragment>
               }
-              resolutionRisk={content.resolutionRisk}
-              riskOfChangeDesc={'test'} //TODO:  map descriptions
               intl={intl}
             />
           )}
