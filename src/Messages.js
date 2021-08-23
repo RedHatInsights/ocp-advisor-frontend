@@ -126,11 +126,6 @@ export default defineMessages({
     description: 'Filter value',
     defaultMessage: 'Security',
   },
-  osdEligible: {
-    id: 'osdEligible',
-    description: 'Filter value',
-    defaultMessage: 'OSD Eligible',
-  },
   enabled: {
     id: 'enabled',
     description: 'Filter value',
@@ -203,7 +198,7 @@ export default defineMessages({
     description:
       'Recommendation table, no recommendations message for any known rules, body',
     defaultMessage:
-      'None of your connected systems are affected by any known recommendations.',
+      'None of your connected clusters are affected by any known recommendations.',
   },
   noRecommendationsDesc: {
     id: 'noRecommendationsDesc',
@@ -232,5 +227,38 @@ export default defineMessages({
       'Link text to view all clusters that are affected by a recommendation',
     defaultMessage:
       'View {clusters, plural, one {the affected cluster} other {# affected clusters}}',
+  },
+  ruleFetchError: {
+    id: 'ruleFetchError',
+    description: 'Recommendation table, fetch rules, error message',
+    defaultMessage:
+      'There was an error fetching recommendation. Refresh your page to try again.',
+  },
+  affectedClusters: {
+    id: 'affectedClusters',
+    description: 'Affected clusters',
+    defaultMessage: 'Affected clusters',
+  },
+  noRecsError: {
+    id: 'noRecsError',
+    description: 'Recommendations table, cluster recommendations table',
+    defaultMessage: 'No recommendations available.',
+  },
+  noRecsErrorDesc: {
+    id: 'noRecsErrorDesc',
+    description: 'Recommendations table, cluster recommendations table',
+    defaultMessage:
+      'There was an error fetching recommendations for this cluster. Refresh your page to try again.',
+  },
+  noClustersError: {
+    id: 'noClustersError',
+    description: 'Recommendation affected clusters table',
+    defaultMessage: 'No data about affected clusters.',
+  },
+  noClustersErrorDesc: {
+    id: 'noClustersErrorDesc',
+    description: 'Recommendation affected clusters table',
+    defaultMessage:
+      'There was an error fetching affected clusters for this recommendation.',
   },
 });
