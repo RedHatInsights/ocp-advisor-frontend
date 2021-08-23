@@ -5,16 +5,19 @@ import routerParams from '@redhat-cloud-services/frontend-components-utilities/R
 
 import { Recommendation } from './Recommendation';
 import { useGetRuleByIdQuery } from '../../Services/SmartProxy';
+import { getPluginName } from '../../Utilities/RuleName';
 
 const RecommendationWrapper = routerParams(({ match }) => {
   const intl = useIntl();
-  const rule = useGetRuleByIdQuery(match.params.recommendationId);
+  const rule = useGetRuleByIdQuery(
+    getPluginName(match.params.recommendationId)
+  );
 
   useEffect(() => {
     rule.refetch();
   }, [match.params.recommendationId]);
 
-  return <Recommendation rule={rule} intl={intl} />;
+  return <Recommendation rule={rule} intl={intl} match={match} />;
 });
 
 export default RecommendationWrapper;

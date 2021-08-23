@@ -7,5 +7,5 @@ import { useIntl } from 'react-intl';
 
 export default routerParams(({ match, current }) => {
   const intl = useIntl();
-  <Breadcrumbs current={current} match={match} intl={intl} />;
+  return <Breadcrumbs current={current} match={match} intl={intl} />;
 });

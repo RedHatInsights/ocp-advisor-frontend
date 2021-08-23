@@ -6,7 +6,14 @@ import AsyncComponent from '@redhat-cloud-services/frontend-components/AsyncComp
 import Loading from '../Loading/Loading';
 import { IntlProvider } from 'react-intl';
 
-const RuleDetails = ({ rule, intl, header, isDetailsPage }) => {
+const RuleDetails = ({
+  rule,
+  intl,
+  header,
+  isDetailsPage,
+  resolutionRisk,
+  riskOfChangeDesc,
+}) => {
   return (
     <div className="advisor">
       <IntlProvider locale="en">
@@ -19,6 +26,8 @@ const RuleDetails = ({ rule, intl, header, isDetailsPage }) => {
           intlProps={intl}
           isDetailsPage={isDetailsPage}
           header={header}
+          resolutionRisk={resolutionRisk}
+          riskOfChangeDesc={riskOfChangeDesc}
         />
       </IntlProvider>
     </div>
@@ -30,6 +39,8 @@ RuleDetails.propTypes = {
   isDetailsPage: PropTypes.bool.isRequired,
   intl: PropTypes.object.isRequired,
   rule: PropTypes.object.isRequired,
+  resolutionRisk: PropTypes.number,
+  riskOfChangeDesc: PropTypes.string,
 };
 
 export default RuleDetails;
