@@ -4,10 +4,7 @@ import { useIntl } from 'react-intl';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
 import { global_success_color_100 as globalSuccessColor100 } from '@patternfly/react-tokens/dist/js/global_success_color_100';
 import CheckCircleIcon from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
-import {
-  Card,
-  CardBody,
-} from '@patternfly/react-core/dist/js/components/Card';
+import { Card, CardBody } from '@patternfly/react-core/dist/js/components/Card';
 
 import messages from '../../Messages';
 import MessageState from '../MessageState/MessageState';

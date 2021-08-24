@@ -17,10 +17,7 @@ import {
   sortable,
 } from '@patternfly/react-table';
 import { capitalize } from '@patternfly/react-core/dist/js/helpers/util';
-import {
-  Card,
-  CardBody,
-} from '@patternfly/react-core/dist/js/components/Card';
+import { Card, CardBody } from '@patternfly/react-core/dist/js/components/Card';
 import {
   Tooltip,
   TooltipPosition,
