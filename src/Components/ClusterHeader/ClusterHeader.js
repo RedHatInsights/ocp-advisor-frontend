@@ -1,14 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
-import {
-  Grid,
-  GridItem,
-  Stack,
-  StackItem,
-  Title,
-} from '@patternfly/react-core';
 import { useIntl } from 'react-intl';
+
+import { Grid, GridItem } from '@patternfly/react-core/dist/js/layouts/Grid';
+import { Stack, StackItem } from '@patternfly/react-core/dist/js/layouts/Stack';
+import { Title } from '@patternfly/react-core/dist/js/components/Title';
 import Skeleton from '@redhat-cloud-services/frontend-components/Skeleton';
 
 import messages from '../../Messages';

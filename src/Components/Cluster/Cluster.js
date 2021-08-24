@@ -3,12 +3,12 @@ import './_Cluster.scss';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
-import { Grid, GridItem } from '@patternfly/react-core';
 
-import ExclamationCircleIcon from '@patternfly/react-icons/dist/esm/icons/exclamation-circle-icon';
+import { Grid, GridItem } from '@patternfly/react-core/dist/js/layouts/Grid';
+import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import PageHeader from '@redhat-cloud-services/frontend-components/PageHeader';
 import Main from '@redhat-cloud-services/frontend-components/Main';
-import { global_danger_color_100 as globalDangerColor100 } from '@patternfly/react-tokens';
+import { global_danger_color_100 as globalDangerColor100 } from '@patternfly/react-tokens/dist/js/global_danger_color_100';
 
 import ClusterHeader from '../ClusterHeader';
 import ClusterRules from '../ClusterRules/ClusterRules';

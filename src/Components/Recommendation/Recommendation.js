@@ -13,8 +13,8 @@ import { DateFormat } from '@redhat-cloud-services/frontend-components/DateForma
 import { Label } from '@patternfly/react-core/dist/js/components/Label/Label';
 import { Title } from '@patternfly/react-core/dist/js/components/Title/Title';
 import { LabelGroup } from '@patternfly/react-core/dist/js/components/LabelGroup';
-import ExclamationCircleIcon from '@patternfly/react-icons/dist/esm/icons/exclamation-circle-icon';
-import { global_danger_color_100 as globalDangerColor100 } from '@patternfly/react-tokens';
+import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
+import { global_danger_color_100 as globalDangerColor100 } from '@patternfly/react-tokens/dist/js/global_danger_color_100';
 
 import Breadcrumbs from '../Breadcrumbs';
 import RuleLabels from '../RuleLabels/RuleLabels';

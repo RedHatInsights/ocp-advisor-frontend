@@ -3,7 +3,8 @@ import './_ClusterRules.scss';
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
-import CheckIcon from '@patternfly/react-icons/dist/esm/icons/check-icon';
+
+import CheckIcon from '@patternfly/react-icons/dist/js/icons/check-icon';
 import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat/DateFormat';
 import InsightsLabel from '@redhat-cloud-services/frontend-components/InsightsLabel';
 import {
@@ -15,13 +16,15 @@ import {
   cellWidth,
   sortable,
 } from '@patternfly/react-table';
+import { capitalize } from '@patternfly/react-core/dist/js/helpers/util';
 import {
-  capitalize,
   Card,
   CardBody,
+} from '@patternfly/react-core/dist/js/components/Card';
+import {
   Tooltip,
   TooltipPosition,
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/dist/js/components/Tooltip';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
 
 import messages from '../../Messages';
