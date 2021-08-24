@@ -5,9 +5,10 @@ import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
 import { Grid, GridItem } from '@patternfly/react-core';
 
-import { SearchIcon } from '@patternfly/react-icons';
+import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import PageHeader from '@redhat-cloud-services/frontend-components/PageHeader';
 import Main from '@redhat-cloud-services/frontend-components/Main';
+import { global_danger_color_100 as globalDangerColor100 } from '@patternfly/react-tokens';
 
 import ClusterHeader from '../ClusterHeader';
 import ClusterRules from '../ClusterRules/ClusterRules';
@@ -23,29 +24,38 @@ export const Cluster = ({ cluster, match }) => {
 
   return (
     <React.Fragment>
-      <PageHeader className="pf-m-light ins-inventory-detail">
-        <Breadcrumbs current={match.params.clusterId} match={match} />
-        <ClusterHeader />
-      </PageHeader>
-      <Main>
+      {(isUninitialized || isLoading || isFetching) && (
+        <Main>
+          <Loading />
+        </Main>
+      )}
+      {isError && (
+        <Main>
+          <MessageState
+            title={intl.formatMessage(messages.noRecsError)}
+            text={intl.formatMessage(messages.noRecsErrorDesc)}
+            icon={ExclamationCircleIcon}
+            iconStyle={{ color: globalDangerColor100.value }}
+          />
+        </Main>
+      )}
+      {isSuccess && (
         <React.Fragment>
-          {isError && (
-            <MessageState
-              title={intl.formatMessage(messages.noRecsError)}
-              text={intl.formatMessage(messages.noRecsErrorDesc)}
-              icon={SearchIcon}
-            />
-          )}
-          {(isUninitialized || isLoading || isFetching) && <Loading />}
-          {isSuccess && (
-            <Grid hasGutter>
-              <GridItem span={12}>
-                <ClusterRules reports={data?.report?.data || []} />
-              </GridItem>
-            </Grid>
-          )}
+          <PageHeader className="pf-m-light ins-inventory-detail">
+            <Breadcrumbs current={match.params.clusterId} match={match} />
+            <ClusterHeader />
+          </PageHeader>
+          <Main>
+            <React.Fragment>
+              <Grid hasGutter>
+                <GridItem span={12}>
+                  <ClusterRules reports={data?.report?.data || []} />
+                </GridItem>
+              </Grid>
+            </React.Fragment>
+          </Main>
         </React.Fragment>
-      </Main>
+      )}
     </React.Fragment>
   );
 };
