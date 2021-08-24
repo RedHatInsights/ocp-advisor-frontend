@@ -261,4 +261,25 @@ export default defineMessages({
     defaultMessage:
       'There was an error fetching affected clusters for this recommendation.',
   },
+  unableToConnect: {
+    id: 'unableToConnect',
+    description: 'The message shown when there was a fetch error',
+    defaultMessage: 'Unable to connect',
+  },
+  unableToConnectDesc: {
+    id: 'unableToConnectDesc',
+    description: 'The message shown when there was a fetch error',
+    defaultMessage:
+      'There was an error retrieving data. Check your connection and try again.',
+  },
+  noClusters: {
+    id: 'noClusters',
+    description: 'Affected clusters table',
+    defaultMessage: 'No clusters',
+  },
+  noClustersBody: {
+    id: 'noClustersBody',
+    description: 'Affected clusters table',
+    defaultMessage: 'This recommendation doesn’t affect any cluster.',
+  },
 });
