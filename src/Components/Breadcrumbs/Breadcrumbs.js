@@ -47,5 +47,4 @@ export const Breadcrumbs = ({ current, match }) => {
 Breadcrumbs.propTypes = {
   current: PropTypes.string,
   match: PropTypes.object.isRequired,
-  intl: PropTypes.object.isRequired,
 };

@@ -4,6 +4,6 @@ import routerParams from '@redhat-cloud-services/frontend-components-utilities/R
 
 import { Breadcrumbs } from './Breadcrumbs';
 
-export default routerParams(({ match, current }) => {
-  return <Breadcrumbs current={current} match={match} />;
-});
+export default routerParams(({ match, current }) => (
+  <Breadcrumbs current={current} match={match} />
+));
