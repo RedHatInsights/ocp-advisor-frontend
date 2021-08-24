@@ -1,21 +1,19 @@
 import React, { useEffect } from 'react';
 
-import routerParams from '@redhat-cloud-services/frontend-components-utilities/RouterParams';
+import { useParams, useRouteMatch } from 'react-router-dom';
 
 import { Recommendation } from './Recommendation';
 import { useGetRuleByIdQuery } from '../../Services/SmartProxy';
 import { getPluginName } from '../../Utilities/RuleName';
 
-const RecommendationWrapper = routerParams(({ match }) => {
-  const rule = useGetRuleByIdQuery(
-    getPluginName(match.params.recommendationId)
-  );
+const RecommendationWrapper = () => {
+  const rule = useGetRuleByIdQuery(getPluginName(useParams().recommendationId));
 
   useEffect(() => {
     rule.refetch();
-  }, [match.params.recommendationId]);
+  }, [useParams().recommendationId]);
 
-  return <Recommendation rule={rule} match={match} />;
-});
+  return <Recommendation rule={rule} match={useRouteMatch()} />;
+};
 
 export default RecommendationWrapper;
