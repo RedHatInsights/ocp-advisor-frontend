@@ -2,7 +2,6 @@ import './Recommendation.scss';
 
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { SearchIcon } from '@patternfly/react-icons';
 
 import {
   PageHeader,
@@ -12,6 +11,8 @@ import { Main } from '@redhat-cloud-services/frontend-components/Main';
 import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
 import { Label } from '@patternfly/react-core/dist/js/components/Label/Label';
 import { LabelGroup, Title } from '@patternfly/react-core';
+import { ExclamationCircleIcon } from '@patternfly/react-icons';
+import { global_danger_color_100 as globalDangerColor100 } from '@patternfly/react-tokens';
 
 import Breadcrumbs from '../Breadcrumbs';
 import RuleLabels from '../RuleLabels/RuleLabels';
@@ -23,9 +24,9 @@ import {
 import messages from '../../Messages';
 import RuleDetails from './RuleDetails';
 import Loading from '../Loading/Loading';
-import Failed from '../Loading/Failed';
 import { getErrorKey } from '../../Utilities/RuleName';
 import MessageState from '../MessageState/MessageState';
+import AffectedClustersTable from './AffectedClustersTable';
 
 const Recommendation = ({ rule, intl, match }) => {
   const { isError, isUninitialized, isLoading, isFetching, isSuccess, data } =
@@ -53,18 +54,29 @@ const Recommendation = ({ rule, intl, match }) => {
 
   return (
     <React.Fragment>
-      <PageHeader>
-        <Breadcrumbs
-          current={content?.description || match.params.recommendationId}
-        />
-      </PageHeader>
-      <Main className="pf-m-light pf-u-pt-sm">
+      {(isUninitialized || isLoading || isFetching) && (
+        <Main>
+          <Loading />
+        </Main>
+      )}
+      {isError && (
+        <Main>
+          <MessageState
+            title={intl.formatMessage(messages.unableToConnect)}
+            text={intl.formatMessage(messages.unableToConnectDesc)}
+            icon={ExclamationCircleIcon}
+            iconStyle={{ color: globalDangerColor100.value }}
+          />
+        </Main>
+      )}
+      {isSuccess && (
         <React.Fragment>
-          {isError && (
-            <Failed message={intl.formatMessage(messages.ruleFetchError)} />
-          )}
-          {(isUninitialized || isLoading || isFetching) && <Loading />}
-          {isSuccess && (
+          <PageHeader className="pageHeaderOverride">
+            <Breadcrumbs
+              current={content?.description || match.params.recommendationId}
+            />
+          </PageHeader>
+          <Main className="pf-m-light pf-u-pt-sm">
             <RuleDetails
               isOpenShift
               isDetailsPage
@@ -113,25 +125,19 @@ const Recommendation = ({ rule, intl, match }) => {
               }
               intl={intl}
             />
-          )}
-        </React.Fragment>
-      </Main>
-      <Main>
-        <React.Fragment>
-          {isSuccess && (
+          </Main>
+          <Main>
             <React.Fragment>
-              <Title className="titleOverride" headingLevel="h3" size="2xl">
-                {intl.formatMessage(messages.affectedClusters)}
-              </Title>
-              <MessageState
-                title={intl.formatMessage(messages.noClustersError)}
-                text={intl.formatMessage(messages.noClustersErrorDesc)}
-                icon={SearchIcon}
-              />{' '}
+              <React.Fragment>
+                <Title className="titleOverride" headingLevel="h3" size="2xl">
+                  {intl.formatMessage(messages.affectedClusters)}
+                </Title>
+                <AffectedClustersTable />
+              </React.Fragment>
             </React.Fragment>
-          )}
+          </Main>
         </React.Fragment>
-      </Main>
+      )}
     </React.Fragment>
   );
 };
