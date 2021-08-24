@@ -3,7 +3,7 @@ import './_ClusterRules.scss';
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
-import { CheckIcon } from '@patternfly/react-icons';
+import CheckIcon from '@patternfly/react-icons/dist/esm/icons/check-icon';
 import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat/DateFormat';
 import InsightsLabel from '@redhat-cloud-services/frontend-components/InsightsLabel';
 import {

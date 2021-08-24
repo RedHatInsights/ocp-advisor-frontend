@@ -10,8 +10,7 @@ import {
 import { Main } from '@redhat-cloud-services/frontend-components/Main';
 import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
 import { Label } from '@patternfly/react-core/dist/js/components/Label/Label';
-import { LabelGroup, Title } from '@patternfly/react-core';
-import { ExclamationCircleIcon } from '@patternfly/react-icons';
+import ExclamationCircleIcon from '@patternfly/react-icons/dist/esm/icons/exclamation-circle-icon';
 import { global_danger_color_100 as globalDangerColor100 } from '@patternfly/react-tokens';
 
 import Breadcrumbs from '../Breadcrumbs';

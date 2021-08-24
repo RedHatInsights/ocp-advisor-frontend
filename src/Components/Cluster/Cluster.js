@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
 import { Grid, GridItem } from '@patternfly/react-core';
 
-import { ExclamationCircleIcon } from '@patternfly/react-icons';
+import ExclamationCircleIcon from '@patternfly/react-icons/dist/esm/icons/exclamation-circle-icon';
 import PageHeader from '@redhat-cloud-services/frontend-components/PageHeader';
 import Main from '@redhat-cloud-services/frontend-components/Main';
 import { global_danger_color_100 as globalDangerColor100 } from '@patternfly/react-tokens';
@@ -63,5 +63,4 @@ export const Cluster = ({ cluster, match }) => {
 Cluster.propTypes = {
   cluster: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
-  intl: PropTypes.object.isRequired,
 };
