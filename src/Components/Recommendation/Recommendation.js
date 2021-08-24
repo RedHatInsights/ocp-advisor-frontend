@@ -1,6 +1,7 @@
 import './Recommendation.scss';
 
 import React, { useCallback } from 'react';
+import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
 import {
@@ -10,6 +11,8 @@ import {
 import { Main } from '@redhat-cloud-services/frontend-components/Main';
 import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
 import { Label } from '@patternfly/react-core/dist/js/components/Label/Label';
+import { Title } from '@patternfly/react-core/dist/js/components/Title/Title';
+import { LabelGroup } from '@patternfly/react-core/dist/js/components/LabelGroup';
 import ExclamationCircleIcon from '@patternfly/react-icons/dist/esm/icons/exclamation-circle-icon';
 import { global_danger_color_100 as globalDangerColor100 } from '@patternfly/react-tokens';
 
@@ -27,7 +30,8 @@ import { getErrorKey } from '../../Utilities/RuleName';
 import MessageState from '../MessageState/MessageState';
 import AffectedClustersTable from './AffectedClustersTable';
 
-const Recommendation = ({ rule, intl, match }) => {
+const Recommendation = ({ rule, match }) => {
+  const intl = useIntl();
   const { isError, isUninitialized, isLoading, isFetching, isSuccess, data } =
     rule;
   // workaround. Should be removed when https://issues.redhat.com/browse/CCXDEV-5534 is done.
@@ -45,7 +49,6 @@ const Recommendation = ({ rule, intl, match }) => {
     };
     delete adjusted.metadata;
     delete adjusted.error_keys;
-    console.log(adjusted);
     adjusted.tags = [...adjusted.tags, 'fault_tolerance', 'security'];
     return adjusted;
   }, []);
@@ -102,7 +105,6 @@ const Recommendation = ({ rule, intl, match }) => {
                       {Array.isArray(content.tags) ? (
                         content.tags.reduce((labels, tag) => {
                           if (RULE_CATEGORIES[tag]) {
-                            console.log(tag);
                             labels.push(
                               <Label key={`label-${tag}`} color="blue">
                                 {
@@ -122,7 +124,6 @@ const Recommendation = ({ rule, intl, match }) => {
                   </p>
                 </React.Fragment>
               }
-              intl={intl}
             />
           </Main>
           <Main>
@@ -143,7 +144,6 @@ const Recommendation = ({ rule, intl, match }) => {
 
 Recommendation.propTypes = {
   rule: PropTypes.object.isRequired,
-  intl: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
 };
 
