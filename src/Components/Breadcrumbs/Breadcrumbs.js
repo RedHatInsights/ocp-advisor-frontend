@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import { useIntl } from 'react-intl';
 
 import { Breadcrumb } from '@patternfly/react-core/dist/js/components/Breadcrumb/Breadcrumb';
 import { BreadcrumbItem } from '@patternfly/react-core/dist/js/components/Breadcrumb/BreadcrumbItem';
-import PropTypes from 'prop-types';
-import { useIntl } from 'react-intl';
 
 import messages from '../../Messages';
 
@@ -46,5 +46,5 @@ export const Breadcrumbs = ({ current, match }) => {
 
 Breadcrumbs.propTypes = {
   current: PropTypes.string,
-  match: PropTypes.object,
+  match: PropTypes.object.isRequired,
 };

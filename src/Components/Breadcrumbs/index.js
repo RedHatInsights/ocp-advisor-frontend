@@ -1,9 +1,15 @@
 import React from 'react';
-
-import routerParams from '@redhat-cloud-services/frontend-components-utilities/RouterParams';
+import PropTypes from 'prop-types';
+import { useRouteMatch } from 'react-router-dom';
 
 import { Breadcrumbs } from './Breadcrumbs';
 
-export default routerParams(({ match, current }) => (
-  <Breadcrumbs current={current} match={match} />
-));
+const BreadcrumbsWrapper = ({ current }) => (
+  <Breadcrumbs current={current} match={useRouteMatch()} />
+);
+
+BreadcrumbsWrapper.propTypes = {
+  current: PropTypes.string.isRequired,
+};
+
+export default BreadcrumbsWrapper;

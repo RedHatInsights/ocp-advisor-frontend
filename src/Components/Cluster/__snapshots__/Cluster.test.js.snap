@@ -5,7 +5,7 @@ exports[`<Cluster /> test renders correctly 1`] = `
   <PageHeader
     className="pf-m-light ins-inventory-detail"
   >
-    <withRouter(Connect(RouterParams))
+    <BreadcrumbsWrapper
       current="foobar"
       match={
         Object {
@@ -36,22 +36,6 @@ exports[`<Cluster /> test renders correctly 1`] = `
 
 exports[`<Cluster /> test renders correctly when cluster loading 1`] = `
 <Fragment>
-  <PageHeader
-    className="pf-m-light ins-inventory-detail"
-  >
-    <withRouter(Connect(RouterParams))
-      current="foobar"
-      match={
-        Object {
-          "params": Object {
-            "clusterId": "foobar",
-          },
-          "url": "foobar",
-        }
-      }
-    />
-    <mockConstructor />
-  </PageHeader>
   <Connect(Main)>
     <Loading />
   </Connect(Main)>
@@ -60,27 +44,16 @@ exports[`<Cluster /> test renders correctly when cluster loading 1`] = `
 
 exports[`<Cluster /> test renders correctly when cluster unavailable 1`] = `
 <Fragment>
-  <PageHeader
-    className="pf-m-light ins-inventory-detail"
-  >
-    <withRouter(Connect(RouterParams))
-      current="foobar"
-      match={
-        Object {
-          "params": Object {
-            "clusterId": "foobar",
-          },
-          "url": "foobar",
-        }
-      }
-    />
-    <mockConstructor />
-  </PageHeader>
   <Connect(Main)>
     <MessageState
       icon={[Function]}
+      iconStyle={
+        Object {
+          "color": "#c9190b",
+        }
+      }
       text="There was an error fetching recommendations for this cluster. Refresh your page to try again."
-      title="No recommendations available"
+      title="No recommendations available."
       variant="full"
     />
   </Connect(Main)>

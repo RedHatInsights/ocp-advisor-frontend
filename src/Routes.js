@@ -1,11 +1,10 @@
 import { Route, Switch } from 'react-router-dom';
 import React, { Suspense, lazy } from 'react';
-import {
-  Bullseye,
-  EmptyState,
-  EmptyStateBody,
-  Spinner,
-} from '@patternfly/react-core';
+
+import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
+import { EmptyState } from '@patternfly/react-core/dist/js/components/EmptyState';
+import { EmptyStateBody } from '@patternfly/react-core/dist/js/components/EmptyState';
+import { Spinner } from '@patternfly/react-core/dist/js/components/Spinner';
 
 import InvalidObject from '@redhat-cloud-services/frontend-components/InvalidObject/InvalidObject';
 
@@ -13,11 +12,20 @@ const Cluster = lazy(() =>
   import(/* webpackChunkName: "ClusterDetails" */ './Components/Cluster')
 );
 
+const Recommendation = lazy(() =>
+  import(/* webpackChunkName: "Recommendation" */ './Components/Recommendation')
+);
+
 const paths = [
   {
     title: 'Clusters',
     path: '/clusters/:clusterId',
     component: Cluster,
+  },
+  {
+    title: 'Recommendations',
+    path: '/recommendations/:recommendationId',
+    component: Recommendation,
   },
 ];
 

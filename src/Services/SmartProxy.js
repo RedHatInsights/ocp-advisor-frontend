@@ -12,9 +12,14 @@ export const smartProxyApi = createApi({
       query: (id, includeDisabled = true) =>
         `clusters/${id}/report?get_disabled=${includeDisabled}`,
     }),
+    // Get rule's content using id in the rule_plugin_name|error_key format
+    getRuleById: builder.query({ query: (id) => `rules/${id}/content` }),
   }),
 });
 
 // Export hooks for usage in functional components
-export const { useGetClusterByIdQuery, useLazyGetClusterByIdQuery } =
-  smartProxyApi;
+export const {
+  useGetClusterByIdQuery,
+  useLazyGetClusterByIdQuery,
+  useGetRuleByIdQuery,
+} = smartProxyApi;
