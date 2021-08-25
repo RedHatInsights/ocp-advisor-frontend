@@ -3,7 +3,8 @@ import './_ClusterRules.scss';
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
-import { CheckIcon } from '@patternfly/react-icons';
+
+import CheckIcon from '@patternfly/react-icons/dist/js/icons/check-icon';
 import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat/DateFormat';
 import InsightsLabel from '@redhat-cloud-services/frontend-components/InsightsLabel';
 import {
@@ -15,13 +16,12 @@ import {
   cellWidth,
   sortable,
 } from '@patternfly/react-table';
+import { capitalize } from '@patternfly/react-core/dist/js/helpers/util';
+import { Card, CardBody } from '@patternfly/react-core/dist/js/components/Card';
 import {
-  capitalize,
-  Card,
-  CardBody,
   Tooltip,
   TooltipPosition,
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/dist/js/components/Tooltip';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
 
 import messages from '../../Messages';
@@ -137,25 +137,29 @@ const ClusterRules = ({ reports }) => {
             {
               title: (
                 <div key={key} style={{ verticalAlign: 'top' }}>
-                  <Tooltip
-                    key={key}
-                    position={TooltipPosition.bottom}
-                    content={
-                      // TODO: refine fields lookup
-                      <span>
-                        The <strong>likelihood</strong> that this will be a
-                        problem is{' '}
-                        {rule.likelihood
-                          ? LIKELIHOOD_LABEL[rule.likelihood]
-                          : 'unknown'}
-                        . The <strong>impact</strong> of the problem would be{' '}
-                        {rule.impact ? IMPACT_LABEL[rule.impact] : 'unknown'} if
-                        it occurred.
-                      </span>
-                    }
-                  >
+                  {rule?.likelihood && rule?.impact ? (
+                    <Tooltip
+                      key={key}
+                      position={TooltipPosition.bottom}
+                      content={
+                        // TODO: refine fields lookup
+                        <span>
+                          The <strong>likelihood</strong> that this will be a
+                          problem is{' '}
+                          {rule.likelihood
+                            ? LIKELIHOOD_LABEL[rule.likelihood]
+                            : 'unknown'}
+                          . The <strong>impact</strong> of the problem would be{' '}
+                          {rule.impact ? IMPACT_LABEL[rule.impact] : 'unknown'}{' '}
+                          if it occurred.
+                        </span>
+                      }
+                    >
+                      <InsightsLabel value={rule.total_risk} />
+                    </Tooltip>
+                  ) : (
                     <InsightsLabel value={rule.total_risk} />
-                  </Tooltip>
+                  )}
                 </div>
               ),
             },
