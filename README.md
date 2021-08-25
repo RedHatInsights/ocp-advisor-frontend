@@ -1,6 +1,6 @@
 # OCP Advisor Frontend
 
-[![Build Status](https://travis-ci.com/RedHatInsights/ocp-advisor-frontend.svg?branch=master)](https://travis-ci.com/RedHatInsights/ocp-advisor-frontend)
+[![Build Status](https://app.travis-ci.com/RedHatInsights/ocp-advisor-frontend.svg?branch=master)](https://app.travis-ci.com/RedHatInsights/ocp-advisor-frontend)
 
 ## Run locally
 
