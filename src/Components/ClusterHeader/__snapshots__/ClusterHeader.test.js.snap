@@ -139,15 +139,6 @@ exports[`<ClusterHeader /> test renders correctly without last seen available 1`
             foobar
           </span>
         </StackItem>
-        <StackItem>
-          <span>
-            Last seen
-            : 
-          </span>
-          <span>
-            Unknown
-          </span>
-        </StackItem>
       </Stack>
     </GridItem>
   </Grid>

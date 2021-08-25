@@ -137,25 +137,29 @@ const ClusterRules = ({ reports }) => {
             {
               title: (
                 <div key={key} style={{ verticalAlign: 'top' }}>
-                  <Tooltip
-                    key={key}
-                    position={TooltipPosition.bottom}
-                    content={
-                      // TODO: refine fields lookup
-                      <span>
-                        The <strong>likelihood</strong> that this will be a
-                        problem is{' '}
-                        {rule.likelihood
-                          ? LIKELIHOOD_LABEL[rule.likelihood]
-                          : 'unknown'}
-                        . The <strong>impact</strong> of the problem would be{' '}
-                        {rule.impact ? IMPACT_LABEL[rule.impact] : 'unknown'} if
-                        it occurred.
-                      </span>
-                    }
-                  >
+                  {rule?.likelihood && rule?.impact ? (
+                    <Tooltip
+                      key={key}
+                      position={TooltipPosition.bottom}
+                      content={
+                        // TODO: refine fields lookup
+                        <span>
+                          The <strong>likelihood</strong> that this will be a
+                          problem is{' '}
+                          {rule.likelihood
+                            ? LIKELIHOOD_LABEL[rule.likelihood]
+                            : 'unknown'}
+                          . The <strong>impact</strong> of the problem would be{' '}
+                          {rule.impact ? IMPACT_LABEL[rule.impact] : 'unknown'}{' '}
+                          if it occurred.
+                        </span>
+                      }
+                    >
+                      <InsightsLabel value={rule.total_risk} />
+                    </Tooltip>
+                  ) : (
                     <InsightsLabel value={rule.total_risk} />
-                  </Tooltip>
+                  )}
                 </div>
               ),
             },
