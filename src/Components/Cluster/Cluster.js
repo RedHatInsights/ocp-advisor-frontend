@@ -15,14 +15,8 @@ import MessageState from '../MessageState/MessageState';
 import Loading from '../Loading/Loading';
 
 export const Cluster = ({ cluster, match }) => {
-  const {
-    isError,
-    isUninitialized,
-    isLoading,
-    isFetching,
-    isSuccess,
-    data,
-  } = cluster;
+  const { isError, isUninitialized, isLoading, isFetching, isSuccess, data } =
+    cluster;
 
   return (
     <React.Fragment>
