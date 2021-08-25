@@ -36,10 +36,12 @@ export const ClusterHeader = ({ clusterId, lastSeen, displayName }) => {
               <span>UUID: </span>
               <span>{clusterId || intl.formatMessage(messages.unknown)}</span>
             </StackItem>
-            <StackItem>
-              <span>{intl.formatMessage(messages.lastSeen)}: </span>
-              <span>{lastSeen || intl.formatMessage(messages.unknown)}</span>
-            </StackItem>
+            {lastSeen && (
+              <StackItem>
+                <span>{intl.formatMessage(messages.lastSeen)}: </span>
+                <span>{lastSeen || intl.formatMessage(messages.unknown)}</span>
+              </StackItem>
+            )}
           </Stack>
         </GridItem>
       </Grid>
