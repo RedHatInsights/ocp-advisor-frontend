@@ -49,7 +49,6 @@ const Recommendation = ({ rule, match }) => {
     };
     delete adjusted.metadata;
     delete adjusted.error_keys;
-    adjusted.tags = [...adjusted.tags, 'fault_tolerance', 'security'];
     return adjusted;
   }, []);
   const content = isSuccess ? adjustOCPRule(data.content) : undefined;
