@@ -28,7 +28,7 @@ import RuleDetails from './RuleDetails';
 import Loading from '../Loading/Loading';
 import { getErrorKey } from '../../Utilities/RuleName';
 import MessageState from '../MessageState/MessageState';
-import AffectedClustersTable from './AffectedClustersTable';
+import AffectedClustersTable from '../AffectedClustersTable';
 
 const Recommendation = ({ rule, match }) => {
   const intl = useIntl();
@@ -100,26 +100,27 @@ const Recommendation = ({ rule, match }) => {
                         />
                       ),
                     })}
-                    <LabelGroup className="categoryLabels" numLabels={1}>
-                      {Array.isArray(content.tags) ? (
-                        content.tags.reduce((labels, tag) => {
-                          if (RULE_CATEGORIES[tag]) {
-                            labels.push(
-                              <Label key={`label-${tag}`} color="blue">
-                                {
-                                  FILTER_CATEGORIES.category.values[
-                                    RULE_CATEGORIES[tag] - 1
-                                  ].label
-                                }
-                              </Label>
-                            );
-                          }
-                          return labels;
-                        }, [])
+                    {content.tags &&
+                      (Array.isArray(content.tags) ? (
+                        <LabelGroup className="categoryLabels" numLabels={1}>
+                          {content.tags.reduce((labels, tag) => {
+                            if (RULE_CATEGORIES[tag]) {
+                              labels.push(
+                                <Label key={`label-${tag}`} color="blue">
+                                  {
+                                    FILTER_CATEGORIES.category.values[
+                                      RULE_CATEGORIES[tag] - 1
+                                    ].label
+                                  }
+                                </Label>
+                              );
+                            }
+                            return labels;
+                          }, [])}
+                        </LabelGroup>
                       ) : (
                         <Label>{content.tags}</Label>
-                      )}
-                    </LabelGroup>
+                      ))}
                   </p>
                 </React.Fragment>
               }
