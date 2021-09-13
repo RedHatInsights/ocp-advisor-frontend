@@ -1,11 +1,11 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 
-import { useGetAffectedClustersMockedQuery } from '../../Services/SmartProxyMocked';
+import { useGetAffectedClustersQuery } from '../../Services/SmartProxy';
 import { AffectedClustersTable } from './AffectedClustersTable';
 
 const RecommendationWrapper = () => {
-  const affectedClusters = useGetAffectedClustersMockedQuery(
+  const affectedClusters = useGetAffectedClustersQuery(
     useParams().recommendationId
   );
 

@@ -5,18 +5,29 @@ import PropTypes from 'prop-types';
 
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
 import { conditionalFilterType } from '@redhat-cloud-services/frontend-components/ConditionalFilter/conditionalFilterConstants';
+import { EmptyTable } from '@redhat-cloud-services/frontend-components/EmptyTable';
+import { TableToolbar } from '@redhat-cloud-services/frontend-components/TableToolbar';
 
 import { global_success_color_100 as globalSuccessColor100 } from '@patternfly/react-tokens/dist/js/global_success_color_100';
+import { global_danger_color_100 as globalDangerColor100 } from '@patternfly/react-tokens/dist/js/global_danger_color_100';
 import CheckCircleIcon from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
+import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import { Card, CardBody } from '@patternfly/react-core/dist/js/components/Card';
+import { sortable } from '@patternfly/react-table/dist/js/components/Table/utils/decorators/sortable';
+import { Table } from '@patternfly/react-table/dist/js/components/Table/Table';
+import { TableBody } from '@patternfly/react-table/dist/js/components/Table/Body';
+import { TableHeader } from '@patternfly/react-table/dist/js/components/Table/Header';
+import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
 import {
-  TableComposable,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-} from '@patternfly/react-table';
+  EmptyState,
+  EmptyStateVariant,
+} from '@patternfly/react-core/dist/js/components/EmptyState/EmptyState';
+import { EmptyStateBody } from '@patternfly/react-core/dist/js/components/EmptyState';
+import {
+  Pagination,
+  PaginationVariant,
+} from '@patternfly/react-core/dist/js/components/Pagination/Pagination';
+import { Title } from '@patternfly/react-core/dist/js/components/Title';
 
 import messages from '../../Messages';
 import MessageState from '../MessageState/MessageState';
@@ -56,19 +67,23 @@ const AffectedClustersTable = ({ affectedClusters }) => {
     return newChips;
   };
 
-  const onChipDelete = (_e, chipsToDelete) => {
-    console.log(activeChips);
-    console.log(chipsToDelete);
-    const newActiveChips = activeChips;
-    newActiveChips.filter((c) => !chipsToDelete.includes(c));
-    setActiveChips(newActiveChips);
+  // right now, only designed to treat the Name filter
+  const onChipDelete = () => {
+    const newActiveFilters = { ...activeFilters, name: '' };
+    const newFilteredRows = buildFilteredRows(rows, newActiveFilters);
+    const newDisplayedRows = buildDisplayedRows(newFilteredRows, page, perPage);
+    setActiveChips([]);
+    setActiveFilters(newActiveFilters);
+    setFilteredRows(newFilteredRows);
+    setDisplayedRows(newDisplayedRows);
   };
 
   const onNameFilterChange = (value) => {
     const newActiveFilters = { ...activeFilters, name: value };
     const newFilteredRows = buildFilteredRows(rows, newActiveFilters);
-    const newDisplayedRows = buildDisplayedRows(newFilteredRows, page, perPage);
+    const newDisplayedRows = buildDisplayedRows(newFilteredRows, 1, perPage);
     const newActiveChips = updateNameChip(activeChips, value);
+    setPage(1);
     setActiveChips(newActiveChips);
     setActiveFilters(newActiveFilters);
     setFilteredRows(newFilteredRows);
@@ -84,14 +99,6 @@ const AffectedClustersTable = ({ affectedClusters }) => {
           key: 'name-filter',
           onChange: (_e, value) => onNameFilterChange(value),
           value: activeFilters.name,
-        },
-      },
-      {
-        label: 'Version',
-        type: conditionalFilterType.checkbox,
-        filterValues: {
-          value: 'all',
-          items: [{ label: 'All', value: 'all' }],
         },
       },
     ],
@@ -113,13 +120,13 @@ const AffectedClustersTable = ({ affectedClusters }) => {
   };
 
   const onSetPage = (_e, newPage) => {
-    console.log(newPage);
     setDisplayedRows(buildDisplayedRows(filteredRows, newPage, perPage));
     setPage(newPage);
   };
 
   const onSetPerPage = (_e, newPerPage) => {
-    setDisplayedRows(buildDisplayedRows(filteredRows, page, newPerPage));
+    setDisplayedRows(buildDisplayedRows(filteredRows, 1, newPerPage));
+    setPage(1);
     setPerPage(newPerPage);
   };
 
@@ -151,7 +158,6 @@ const AffectedClustersTable = ({ affectedClusters }) => {
 
   return (
     <React.Fragment>
-      {(isUninitialized || isLoading || isFetching) && <Loading />}
       <PrimaryToolbar
         filterConfig={filterConfig}
         pagination={{
@@ -166,39 +172,20 @@ const AffectedClustersTable = ({ affectedClusters }) => {
           onDelete: onChipDelete,
         }}
       />
-      {isSuccess && data?.data && data?.data.length > 0 ? (
-        <TableComposable
-          aria-label="Table of affected clusters"
-          ouiaId="affectedClustersTable"
-          variant="compact"
-        >
-          <Thead>
-            <Tr>
-              <Th
-                sort={{
-                  columnIndex: 0,
-                  sortBy: {
-                    index: activeSortIndex,
-                    direction: activeSortDirection,
-                  },
-                  onSort,
-                }}
-              >
-                Name
-              </Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {displayedRows.map((c) => (
-              <Tr key={c}>
-                <Td>
-                  <Link to={`/clusters/${c}`}>{c}</Link>
-                </Td>
-              </Tr>
-            ))}
-          </Tbody>
-        </TableComposable>
-      ) : (
+      {(isUninitialized || isLoading || isFetching) && <Loading />}
+      {isError && (
+        <Card>
+          <CardBody>
+            <MessageState
+              icon={ExclamationCircleIcon}
+              iconStyle={{ color: globalDangerColor100.value }}
+              title={intl.formatMessage(messages.noClustersError)}
+              text={intl.formatMessage(messages.noClustersErrorDesc)}
+            />
+          </CardBody>
+        </Card>
+      )}
+      {isSuccess && rows.length === 0 && (
         <Card>
           <CardBody>
             <MessageState
@@ -210,6 +197,55 @@ const AffectedClustersTable = ({ affectedClusters }) => {
           </CardBody>
         </Card>
       )}
+      {isSuccess &&
+        rows.length > 0 &&
+        (filteredRows.length > 0 ? (
+          <Table
+            aria-label="Table of affected clusters"
+            ouiaId="affectedClustersTable"
+            variant="compact"
+            cells={[{ title: 'Name', transforms: [sortable] }]}
+            rows={displayedRows.map((c) => ({
+              cells: [
+                <span key={c}>
+                  <Link to={`/clusters/${c}`}>{c}</Link>
+                </span>,
+              ],
+            }))}
+            sortBy={{
+              index: activeSortIndex,
+              direction: activeSortDirection,
+            }}
+            onSort={onSort}
+          >
+            <TableHeader />
+            <TableBody />
+          </Table>
+        ) : (
+          <EmptyTable>
+            <Bullseye>
+              <EmptyState variant={EmptyStateVariant.full}>
+                <Title headingLevel="h5" size="lg">
+                  {intl.formatMessage(messages.noMatchingClusters)}
+                </Title>
+                <EmptyStateBody>
+                  {intl.formatMessage(messages.noMatchingClustersDesc)}
+                </EmptyStateBody>
+              </EmptyState>
+            </Bullseye>
+          </EmptyTable>
+        ))}
+      <TableToolbar isFooter className="ins-c-inventory__table--toolbar">
+        <Pagination
+          variant={PaginationVariant.bottom}
+          itemCount={filteredRows.length}
+          page={page}
+          perPage={perPage}
+          onSetPage={onSetPage}
+          onPerPageSelect={onSetPerPage}
+          onPageInput={onSetPage}
+        />
+      </TableToolbar>
     </React.Fragment>
   );
 };
