@@ -288,9 +288,8 @@ export default defineMessages({
     defaultMessage: 'No matching clusters found',
   },
   noMatchingClustersDesc: {
-    id: 'noMatchingClusters',
+    id: 'noMatchingClustersDesc',
     description: 'No matching clusters message for clusters table',
-    defaultMessage:
-      'This filter criteria matches no clusters. Try changing your filter settings.',
+    defaultMessage: 'To continue, edit your filter settings and search again.',
   },
 });
