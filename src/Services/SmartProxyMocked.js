@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
+// see https://github.com/RedHatInsights/insights-results-aggregator-mock
 const BASE_URL = 'http://localhost:8080/api/insights-results-aggregator/v1';
 
 export const smartProxyMockedApi = createApi({
