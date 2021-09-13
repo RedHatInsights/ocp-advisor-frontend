@@ -253,7 +253,7 @@ export default defineMessages({
   noClustersError: {
     id: 'noClustersError',
     description: 'Recommendation affected clusters table',
-    defaultMessage: 'No data about affected clusters.',
+    defaultMessage: 'No data about affected clusters',
   },
   noClustersErrorDesc: {
     id: 'noClustersErrorDesc',
@@ -281,5 +281,16 @@ export default defineMessages({
     id: 'noClustersBody',
     description: 'Affected clusters table',
     defaultMessage: 'This recommendation doesn’t affect any cluster.',
+  },
+  noMatchingClusters: {
+    id: 'noMatchingClusters',
+    description: 'No matching clusters message for clusters table',
+    defaultMessage: 'No matching clusters found',
+  },
+  noMatchingClustersDesc: {
+    id: 'noMatchingClusters',
+    description: 'No matching clusters message for clusters table',
+    defaultMessage:
+      'This filter criteria matches no clusters. Try changing your filter settings.',
   },
 });
