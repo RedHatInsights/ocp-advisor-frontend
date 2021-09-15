@@ -37,7 +37,6 @@ const AffectedClustersTable = ({ affectedClusters }) => {
   const {
     isError,
     isUninitialized,
-    isLoading,
     isFetching,
     isSuccess,
     data: rows = [],
@@ -150,7 +149,7 @@ const AffectedClustersTable = ({ affectedClusters }) => {
           onDelete: onChipDelete,
         }}
       />
-      {(isUninitialized || isLoading || isFetching) && <Loading />}
+      {(isUninitialized || isFetching) && <Loading />}
       {isError && (
         <Card>
           <CardBody>
