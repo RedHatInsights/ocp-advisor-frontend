@@ -18,6 +18,7 @@ export const SmartProxyApi = createApi({
     }),
     getAffectedClusters: builder.query({
       query: (recId) => `rule/${recId}/clusters_detail`,
+      transformResponse: (response) => response?.data,
     }),
   }),
 });

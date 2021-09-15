@@ -49,7 +49,7 @@ const AffectedClustersTable = ({ affectedClusters }) => {
     isLoading,
     isFetching,
     isSuccess,
-    data: { data: rows = [] } = {},
+    data: rows = [],
   } = affectedClusters;
   const [filteredRows, setFilteredRows] = useState([]);
   const [displayedRows, setDisplayedRows] = useState([]);

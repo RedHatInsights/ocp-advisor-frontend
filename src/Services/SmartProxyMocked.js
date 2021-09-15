@@ -11,6 +11,7 @@ export const SmartProxyMockedApi = createApi({
   endpoints: (builder) => ({
     getAffectedClustersMocked: builder.query({
       query: (recId) => `rule/${recId}/clusters_detail`,
+      transformResponse: (response) => response?.data,
     }),
   }),
 });
