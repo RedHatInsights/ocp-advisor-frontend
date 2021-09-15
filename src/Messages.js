@@ -272,24 +272,35 @@ export default defineMessages({
     defaultMessage:
       'There was an error retrieving data. Check your connection and try again.',
   },
-  noClusters: {
-    id: 'noClusters',
+  noAffectedClustersTitle: {
+    id: 'noAffectedClustersTitle',
     description: 'Affected clusters table',
     defaultMessage: 'No clusters',
   },
-  noClustersBody: {
-    id: 'noClustersBody',
+  noAffectedClustersBody: {
+    id: 'noAffectedClustersBody',
     description: 'Affected clusters table',
     defaultMessage: 'This recommendation doesn’t affect any cluster.',
   },
-  noMatchingClusters: {
-    id: 'noMatchingClusters',
+  noMatchingClustersTitle: {
+    id: 'noMatchingClustersTitle',
     description: 'No matching clusters message for clusters table',
     defaultMessage: 'No matching clusters found',
   },
-  noMatchingClustersDesc: {
+  noMatchingClustersBody: {
     id: 'noMatchingClustersDesc',
     description: 'No matching clusters message for clusters table',
     defaultMessage: 'To continue, edit your filter settings and search again.',
+  },
+  errorStateTitle: {
+    id: 'errorStateTitle',
+    description: 'Generic message suitable for any network request error',
+    defaultMessage: 'Something went wrong',
+  },
+  errorStateBody: {
+    id: 'errorStateBody',
+    description: 'Generic message suitable for any network request error',
+    defaultMessage:
+      'There was a problem processing the request. Please try again.',
   },
 });
