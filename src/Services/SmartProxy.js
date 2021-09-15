@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 const BASE_URL = '/api/insights-results-aggregator/v1';
 
-export const smartProxyApi = createApi({
+export const SmartProxyApi = createApi({
   reducerPath: 'smartProxy',
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_URL,
@@ -28,4 +28,4 @@ export const {
   useLazyGetClusterByIdQuery,
   useGetRuleByIdQuery,
   useGetAffectedClustersQuery,
-} = smartProxyApi;
+} = SmartProxyApi;

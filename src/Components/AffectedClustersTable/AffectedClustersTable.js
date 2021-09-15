@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
 
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
 import { conditionalFilterType } from '@redhat-cloud-services/frontend-components/ConditionalFilter/conditionalFilterConstants';
@@ -32,20 +33,27 @@ import { Title } from '@patternfly/react-core/dist/js/components/Title';
 import messages from '../../Messages';
 import MessageState from '../MessageState/MessageState';
 import Loading from '../Loading/Loading';
+import { updateAffectedClustersFilters } from '../../Services/Filters';
 
 const AffectedClustersTable = ({ affectedClusters }) => {
   const intl = useIntl();
-  const { isError, isUninitialized, isLoading, isFetching, isSuccess, data } =
-    affectedClusters;
-  const rows = data?.data || [];
-  const [activeFilters, setActiveFilters] = useState({ name: '' });
+  const dispatch = useDispatch();
+  const filters = useSelector(({ filters }) => filters.affectedClustersState);
+  const perPage = Number(filters.limit);
+  const page = filters.offset / filters.limit + 1;
+  const setFilters = (filters) =>
+    dispatch(updateAffectedClustersFilters(filters));
+  const {
+    isError,
+    isUninitialized,
+    isLoading,
+    isFetching,
+    isSuccess,
+    data: { data: rows = [] } = {},
+  } = affectedClusters;
   const [filteredRows, setFilteredRows] = useState([]);
   const [displayedRows, setDisplayedRows] = useState([]);
-  const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(10);
-  const [activeSortIndex, setActiveSortIndex] = useState(-1);
-  const [activeSortDirection, setActiveSortDirection] = useState(null);
-  const [activeChips, setActiveChips] = useState([]);
+  const [chips, setChips] = useState([]);
 
   const updateNameChip = (chips, newValue) => {
     const newChips = chips;
@@ -67,27 +75,15 @@ const AffectedClustersTable = ({ affectedClusters }) => {
     return newChips;
   };
 
-  // right now, only designed to treat the Name filter
   const onChipDelete = () => {
-    const newActiveFilters = { ...activeFilters, name: '' };
-    const newFilteredRows = buildFilteredRows(rows, newActiveFilters);
-    const newDisplayedRows = buildDisplayedRows(newFilteredRows, page, perPage);
-    setActiveChips([]);
-    setActiveFilters(newActiveFilters);
-    setFilteredRows(newFilteredRows);
-    setDisplayedRows(newDisplayedRows);
+    // right now, only designed to treat the Name (text) filter
+    const newFilters = { ...filters, text: '' };
+    setFilters(newFilters);
   };
 
   const onNameFilterChange = (value) => {
-    const newActiveFilters = { ...activeFilters, name: value };
-    const newFilteredRows = buildFilteredRows(rows, newActiveFilters);
-    const newDisplayedRows = buildDisplayedRows(newFilteredRows, 1, perPage);
-    const newActiveChips = updateNameChip(activeChips, value);
-    setPage(1);
-    setActiveChips(newActiveChips);
-    setActiveFilters(newActiveFilters);
-    setFilteredRows(newFilteredRows);
-    setDisplayedRows(newDisplayedRows);
+    const newFilters = { ...filters, text: value, offset: 0 };
+    setFilters(newFilters);
   };
 
   const filterConfig = {
@@ -98,63 +94,54 @@ const AffectedClustersTable = ({ affectedClusters }) => {
         filterValues: {
           key: 'name-filter',
           onChange: (_e, value) => onNameFilterChange(value),
-          value: activeFilters.name,
+          value: filters.text,
         },
       },
     ],
-    isDisabled: isError || (data?.data && data?.data.length === 0),
+    isDisabled: isError || (rows && rows.length === 0),
   };
 
   const onSort = (_e, index, direction) => {
-    setActiveSortIndex(index);
-    setActiveSortDirection(direction);
-    // sorts the rows
-    const updatedRows = filteredRows.concat().sort((a, b) => {
-      if (direction === 'asc') {
-        return a.localeCompare(b);
-      }
-      return b.localeCompare(a);
-    });
-    setFilteredRows(updatedRows);
-    setDisplayedRows(buildDisplayedRows(updatedRows, page, perPage));
+    setFilters({ ...filters, sortIndex: index, sortDirection: direction });
   };
 
-  const onSetPage = (_e, newPage) => {
-    setDisplayedRows(buildDisplayedRows(filteredRows, newPage, perPage));
-    setPage(newPage);
+  const onSetPage = (_e, pageNumber) => {
+    const newOffset = pageNumber * filters.limit - filters.limit;
+    setFilters({ ...filters, offset: newOffset });
   };
 
-  const onSetPerPage = (_e, newPerPage) => {
-    setDisplayedRows(buildDisplayedRows(filteredRows, 1, newPerPage));
-    setPage(1);
-    setPerPage(newPerPage);
+  const onSetPerPage = (_e, perPage) => {
+    setFilters({ ...filters, limit: perPage });
   };
 
   // constructs array of rows (from the initial data) checking currently applied filters
   const buildFilteredRows = (allRows, filters) => {
     const rows = allRows;
-    return rows.filter((row) => {
-      return Object.entries(filters).every((filter) => {
-        if (filter[0] === 'name') {
-          const filterNameValue = filter[1];
-          return row.includes(filterNameValue);
+    return rows
+      .filter((row) => {
+        // further filters conditions will be added soon
+        return row.includes(filters.text);
+      })
+      .sort((a, b) => {
+        if (filters.sortDirection === 'asc') {
+          return a.localeCompare(b);
         }
-        return false;
-        // further filters will be added soon
+        return b.localeCompare(a);
       });
-    });
   };
 
-  const buildDisplayedRows = (rows, page, perPage) => {
+  const buildDisplayedRows = (rows) => {
     return rows.slice(perPage * (page - 1), perPage * (page - 1) + perPage);
   };
 
   useEffect(() => {
-    const newFilteredRows = buildFilteredRows(rows, activeFilters);
-    const newDisplayedRows = buildDisplayedRows(newFilteredRows, page, perPage);
+    const newFilteredRows = buildFilteredRows(rows, filters);
+    const newDisplayedRows = buildDisplayedRows(newFilteredRows);
+    const newChips = updateNameChip(chips, filters.text);
     setFilteredRows(newFilteredRows);
     setDisplayedRows(newDisplayedRows);
-  }, [affectedClusters]);
+    setChips(newChips);
+  }, [affectedClusters, filters]);
 
   return (
     <React.Fragment>
@@ -168,7 +155,7 @@ const AffectedClustersTable = ({ affectedClusters }) => {
           onPerPageSelect: onSetPerPage,
         }}
         activeFiltersConfig={{
-          filters: activeChips,
+          filters: chips,
           onDelete: onChipDelete,
         }}
       />
@@ -213,8 +200,8 @@ const AffectedClustersTable = ({ affectedClusters }) => {
               ],
             }))}
             sortBy={{
-              index: activeSortIndex,
-              direction: activeSortDirection,
+              index: filters.sortIndex,
+              direction: filters.sortDirection,
             }}
             onSort={onSort}
           >
