@@ -6,6 +6,7 @@
   "category": "Category",
   "clusters": "Clusters",
   "critical": "Critical",
+  "description": "Description",
   "disabled": "Disabled",
   "documentTitle": "{subnav} - OCP Advisor | Red Hat Insights",
   "enabled": "Enabled",

@@ -40,6 +40,11 @@ export default defineMessages({
       'Used in the cluster table title column, identifying display name of a cluster',
     defaultMessage: 'Name',
   },
+  description: {
+    id: 'description',
+    description: 'Used in the hitting rules table for the single cluster view',
+    defaultMessage: 'Description',
+  },
   filterBy: {
     id: 'filterBy',
     description: 'Filter by name',
