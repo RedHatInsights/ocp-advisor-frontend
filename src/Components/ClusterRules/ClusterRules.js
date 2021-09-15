@@ -285,6 +285,7 @@ const ClusterRules = ({ reports }) => {
     count: selectedItemsLength,
     checked: isSelected,
     onSelect: () => onBulkSelect(!isSelected),
+    ouiaId: 'bulk-selector',
   };
 
   const onInputChange = (value) => {
@@ -456,6 +457,7 @@ const ClusterRules = ({ reports }) => {
         <React.Fragment>
           <Table
             aria-label={'Cluster recommendations table'}
+            ouiaId={'cluster-recommendations'}
             onSelect={onRowSelect}
             onCollapse={handleOnCollapse}
             rows={rows}
@@ -470,7 +472,7 @@ const ClusterRules = ({ reports }) => {
             <TableBody />
           </Table>
           {results === 0 && (
-            <Card>
+            <Card ouiaId={'empty-recommendations'}>
               <CardBody>
                 <MessageState
                   title={intl.formatMessage(messages.noMatchingRecommendations)}
