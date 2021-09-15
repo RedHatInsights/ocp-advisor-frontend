@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -9,10 +8,6 @@ import { conditionalFilterType } from '@redhat-cloud-services/frontend-component
 import { EmptyTable } from '@redhat-cloud-services/frontend-components/EmptyTable';
 import { TableToolbar } from '@redhat-cloud-services/frontend-components/TableToolbar';
 
-import { global_success_color_100 as globalSuccessColor100 } from '@patternfly/react-tokens/dist/js/global_success_color_100';
-import { global_danger_color_100 as globalDangerColor100 } from '@patternfly/react-tokens/dist/js/global_danger_color_100';
-import CheckCircleIcon from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
-import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import { Card, CardBody } from '@patternfly/react-core/dist/js/components/Card';
 import { sortable } from '@patternfly/react-table/dist/js/components/Table/utils/decorators/sortable';
 import { Table } from '@patternfly/react-table/dist/js/components/Table/Table';
@@ -20,23 +15,19 @@ import { TableBody } from '@patternfly/react-table/dist/js/components/Table/Body
 import { TableHeader } from '@patternfly/react-table/dist/js/components/Table/Header';
 import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
 import {
-  EmptyState,
-  EmptyStateVariant,
-} from '@patternfly/react-core/dist/js/components/EmptyState/EmptyState';
-import { EmptyStateBody } from '@patternfly/react-core/dist/js/components/EmptyState';
-import {
   Pagination,
   PaginationVariant,
 } from '@patternfly/react-core/dist/js/components/Pagination/Pagination';
-import { Title } from '@patternfly/react-core/dist/js/components/Title';
 
-import messages from '../../Messages';
-import MessageState from '../MessageState/MessageState';
-import Loading from '../Loading/Loading';
+import {
+  ErrorState,
+  NoAffectedClusters,
+  NoMatchingClusters,
+} from '../MessageState/EmptyStates';
 import { updateAffectedClustersFilters } from '../../Services/Filters';
+import Loading from '../Loading/Loading';
 
 const AffectedClustersTable = ({ affectedClusters }) => {
-  const intl = useIntl();
   const dispatch = useDispatch();
   const filters = useSelector(({ filters }) => filters.affectedClustersState);
   const perPage = Number(filters.limit);
@@ -163,24 +154,14 @@ const AffectedClustersTable = ({ affectedClusters }) => {
       {isError && (
         <Card>
           <CardBody>
-            <MessageState
-              icon={ExclamationCircleIcon}
-              iconStyle={{ color: globalDangerColor100.value }}
-              title={intl.formatMessage(messages.noClustersError)}
-              text={intl.formatMessage(messages.noClustersErrorDesc)}
-            />
+            <ErrorState />
           </CardBody>
         </Card>
       )}
       {isSuccess && rows.length === 0 && (
         <Card>
           <CardBody>
-            <MessageState
-              icon={CheckCircleIcon}
-              iconStyle={{ color: globalSuccessColor100.value }}
-              title={intl.formatMessage(messages.noClusters)}
-              text={intl.formatMessage(messages.noClustersBody)}
-            />
+            <NoAffectedClusters />
           </CardBody>
         </Card>
       )}
@@ -211,14 +192,7 @@ const AffectedClustersTable = ({ affectedClusters }) => {
         ) : (
           <EmptyTable>
             <Bullseye>
-              <EmptyState variant={EmptyStateVariant.full}>
-                <Title headingLevel="h5" size="lg">
-                  {intl.formatMessage(messages.noMatchingClusters)}
-                </Title>
-                <EmptyStateBody>
-                  {intl.formatMessage(messages.noMatchingClustersDesc)}
-                </EmptyStateBody>
-              </EmptyState>
+              <NoMatchingClusters />
             </Bullseye>
           </EmptyTable>
         ))}
