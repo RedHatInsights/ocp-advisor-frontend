@@ -13,6 +13,7 @@
     "nightly": "npm run deploy",
     "start": "webpack serve --config config/dev.webpack.config.js",
     "start:beta": "BETA=true npm start",
+    "start:beta:mock": "BETA=true MOCK=true npm start",
     "test": "jest --verbose --passWithNoTests --env=jsdom",
     "translations": "npm-run-all translations:*",
     "translations:extract": "formatjs extract 'src/**/*.js*' --out-file lang/en.json --id-interpolation-pattern '[sha512:contenthash:base64:6]'",

@@ -20,7 +20,7 @@ You can use the mocked version of Insights Results Aggregator (or Smart Proxy) A
 
 2. Follow "How to build the service" and "How to start the service."
 
-3. Now, you are able to consume the mocked API from `http://localhost:8080/api/insights-results-aggregator/v1/`.
+3. Once having IRA-mock server running locally, run the OCP Advisor with `npm run start:beta:mock`.
 
 It is planned to add a start option for OCP Advisor with custom proxy redirecting requests to the mocked API.
 

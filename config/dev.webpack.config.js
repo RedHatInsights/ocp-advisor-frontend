@@ -11,6 +11,15 @@ const { config: webpackConfig, plugins } = config({
     : ['/openshift/insights/advisor'],
   env: process.env.BETA ? 'qa-beta' : 'qa-stable', // pick chrome env ['ci-beta', 'ci-stable', 'qa-beta', 'qa-stable', 'prod-beta', 'prod-stable']
   sassPrefix: '.ocp-advisor, .ocpAdvisor',
+  ...(process.env.MOCK
+    ? {
+        routes: {
+          '/api/insights-results-aggregator': {
+            host: 'http://localhost:8080',
+          },
+        },
+      }
+    : {}),
 });
 
 plugins.push(
