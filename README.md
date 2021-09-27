@@ -23,27 +23,6 @@ You can use the mocked version of Insights Results Aggregator (or Smart Proxy) A
 3. Now, you are able to consume the mocked API from `http://localhost:8080/api/insights-results-aggregator/v1/`.
 
 It is planned to add a start option for OCP Advisor with custom proxy redirecting requests to the mocked API.
-### Running with insights-proxy
-
-[Insights Proxy](https://github.com/RedHatInsights/insights-proxy) until recently was required to run the c.r.c. frontend applications. If you need to serve OCP Advisor with the insights-proxy, you will need:
-
-1. To clone
-  * [Insights Proxy](https://github.com/RedHatInsights/insights-proxy)
-  * OCP Advisor App (this repo)
-
-2. Run [Insights Proxy](https://github.com/RedHatInsights/insights-proxy) (requires [Docker](https://www.docker.com/) and modifying /etc/hosts). It's recommended to set a PROXY_PATH environment variable in your .bashrc to avoid having to write the full path to where you clone the repo.
-
-```shell
-SPANDX_CONFIG="./profiles/local-frontend.js" bash $PROXY_PATH/scripts/run.sh
-```
-
-3. `npm install`
-
-4. `npm run start:beta:proxy` / `npm run start:proxy`
-
-5. Open the preferred environment
-
-Should you need more help, there is a [comprehensive quick start guide in the Storybook Documentation.](https://github.com/RedHatInsights/insights-frontend-storybook/blob/master/src/docs/welcome/quickStart/DOC.md)
 
 ## Environments (local)
 
