@@ -22,8 +22,6 @@ You can use the mocked version of Insights Results Aggregator (or Smart Proxy) A
 
 3. Once having IRA-mock server running locally, run the OCP Advisor with `npm run start:beta:mock`.
 
-It is planned to add a start option for OCP Advisor with custom proxy redirecting requests to the mocked API.
-
 ## Environments (local)
 
 - https://ci.foo.redhat.com:1337/beta/openshift/insights/advisor
