@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 const BASE_URL = 'https://api.openshift.com/api/accounts_mgmt/v1';
 
-export const amsApi = createApi({
+export const AmsApi = createApi({
   reducerPath: 'ams',
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_URL,
@@ -30,4 +30,4 @@ export const amsApi = createApi({
 });
 
 // Export hooks for usage in functional components
-export const { useGetClusterDisplayNameByIdQuery } = amsApi;
+export const { useGetClusterDisplayNameByIdQuery } = AmsApi;

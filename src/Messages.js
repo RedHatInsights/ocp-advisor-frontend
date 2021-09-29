@@ -40,6 +40,11 @@ export default defineMessages({
       'Used in the cluster table title column, identifying display name of a cluster',
     defaultMessage: 'Name',
   },
+  description: {
+    id: 'description',
+    description: 'Used in the hitting rules table for the single cluster view',
+    defaultMessage: 'Description',
+  },
   filterBy: {
     id: 'filterBy',
     description: 'Filter by name',
@@ -253,7 +258,7 @@ export default defineMessages({
   noClustersError: {
     id: 'noClustersError',
     description: 'Recommendation affected clusters table',
-    defaultMessage: 'No data about affected clusters.',
+    defaultMessage: 'No data about affected clusters',
   },
   noClustersErrorDesc: {
     id: 'noClustersErrorDesc',
@@ -272,14 +277,35 @@ export default defineMessages({
     defaultMessage:
       'There was an error retrieving data. Check your connection and try again.',
   },
-  noClusters: {
-    id: 'noClusters',
+  noAffectedClustersTitle: {
+    id: 'noAffectedClustersTitle',
     description: 'Affected clusters table',
     defaultMessage: 'No clusters',
   },
-  noClustersBody: {
-    id: 'noClustersBody',
+  noAffectedClustersBody: {
+    id: 'noAffectedClustersBody',
     description: 'Affected clusters table',
     defaultMessage: 'This recommendation doesn’t affect any cluster.',
+  },
+  noMatchingClustersTitle: {
+    id: 'noMatchingClustersTitle',
+    description: 'No matching clusters message for clusters table',
+    defaultMessage: 'No matching clusters found',
+  },
+  noMatchingClustersBody: {
+    id: 'noMatchingClustersDesc',
+    description: 'No matching clusters message for clusters table',
+    defaultMessage: 'To continue, edit your filter settings and search again.',
+  },
+  errorStateTitle: {
+    id: 'errorStateTitle',
+    description: 'Generic message suitable for any network request error',
+    defaultMessage: 'Something went wrong',
+  },
+  errorStateBody: {
+    id: 'errorStateBody',
+    description: 'Generic message suitable for any network request error',
+    defaultMessage:
+      'There was a problem processing the request. Please try again.',
   },
 });

@@ -48,7 +48,7 @@ const ClusterRules = ({ reports }) => {
 
   const cols = [
     {
-      title: intl.formatMessage(messages.name),
+      title: intl.formatMessage(messages.description),
       transforms: [sortable],
     },
     {
@@ -285,6 +285,7 @@ const ClusterRules = ({ reports }) => {
     count: selectedItemsLength,
     checked: isSelected,
     onSelect: () => onBulkSelect(!isSelected),
+    ouiaId: 'bulk-selector',
   };
 
   const onInputChange = (value) => {
@@ -316,7 +317,7 @@ const ClusterRules = ({ reports }) => {
 
   const filterConfigItems = [
     {
-      label: 'name',
+      label: 'description',
       filterValues: {
         key: 'text-filter',
         onChange: (_e, value) => onInputChange(value),
@@ -392,7 +393,7 @@ const ClusterRules = ({ reports }) => {
         : [];
     searchValue.length > 0 &&
       chips.push({
-        category: 'Name',
+        category: 'Description',
         chips: [{ name: searchValue, value: searchValue }],
       });
     return chips;
@@ -406,7 +407,7 @@ const ClusterRules = ({ reports }) => {
     } else {
       itemsToRemove.map((item) => {
         switch (item.category) {
-          case 'Name':
+          case 'Description':
             setRows(buildRows(activeReports, filters, rows, ''));
             setSearchValue('');
             break;
@@ -456,6 +457,7 @@ const ClusterRules = ({ reports }) => {
         <React.Fragment>
           <Table
             aria-label={'Cluster recommendations table'}
+            ouiaId={'cluster-recommendations'}
             onSelect={onRowSelect}
             onCollapse={handleOnCollapse}
             rows={rows}
@@ -470,7 +472,7 @@ const ClusterRules = ({ reports }) => {
             <TableBody />
           </Table>
           {results === 0 && (
-            <Card>
+            <Card ouiaId={'empty-recommendations'}>
               <CardBody>
                 <MessageState
                   title={intl.formatMessage(messages.noMatchingRecommendations)}

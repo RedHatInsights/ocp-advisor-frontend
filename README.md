@@ -1,35 +1,26 @@
-# OCP Advisor Frontend
-
 [![Build Status](https://app.travis-ci.com/RedHatInsights/ocp-advisor-frontend.svg?branch=master)](https://app.travis-ci.com/RedHatInsights/ocp-advisor-frontend)
 
-## Run locally
+# OCP Advisor Frontend
+
+## Running locally
 
 1. `npm install`
 
-2. `npm run start:proxy` / `npm run start:beta:proxy`
+2. Check whether `env` in the `dev.webpack.config.js` is set to the preferred chrome + API environment.
 
-3. Open the preferred environment
+3. `npm run start:beta`
 
-## Run with insights-proxy
+4. Open https://prod.foo.redhat.com:1337/beta/openshifts/insights/advisor (or whatever environment is specified). Please, make sure that OCP Advisor is temporarily not available under **non-beta** environments.
 
-You'll need to clone:
+### Using insights-results-aggregator-mock
 
-- [Insights Proxy](https://github.com/RedHatInsights/insights-proxy)
-- Frontend Starter App (this repo)
+You can use the mocked version of Insights Results Aggregator (or Smart Proxy) API.
 
-1. Run [insights-proxy](https://github.com/RedHatInsights/insights-proxy) (requires [Docker](https://www.docker.com/) and modifying /etc/hosts). It's recommended to set a PROXY_PATH environment variable in your .bashrc to avoid having to write the full path to where you clone the repo.
+1. Clone https://github.com/RedHatInsights/insights-results-aggregator-mock.
 
-```shell
-SPANDX_CONFIG="./profiles/local-frontend.js" bash $PROXY_PATH/scripts/run.sh
-```
+2. Follow "How to build the service" and "How to start the service."
 
-2. `npm install`
-
-3. `npm run start`
-
-4. Open the preferred environment
-
-Should you need more help, there is a [comprehensive quick start guide in the Storybook Documentation.](https://github.com/RedHatInsights/insights-frontend-storybook/blob/master/src/docs/welcome/quickStart/DOC.md)
+3. Once having IRA-mock server running locally, run the OCP Advisor with `npm run start:beta:mock`.
 
 ## Environments (local)
 
@@ -53,3 +44,11 @@ Should you need more help, there is a [comprehensive quick start guide in the St
     - `prod-beta` (deployed by pushing to `prod-beta` on this repo)
     - `prod-stable` (deployed by pushing to `prod-stable` on this repo)
 - Travis uploads results to RedHatInsight's [codecov](https://codecov.io) account. To change the account, modify CODECOV_TOKEN on https://travis-ci.com/.
+
+## Recommendation ID examples
+
+- `ccx_rules_ocp.external.rules.nodes_requirements_check|NODES_MINIMUM_REQUIREMENTS_NOT_MET`
+- `ccx_rules_ocp.external.rules.vsphere_upi_machine_is_in_phase|VSPHERE_UPI_MACHINE_WITH_NO_RUNNING_PHASE`
+- `ccx_rules_ocp.external.rules.machineconfig_stuck_by_node_taints|NODE_HAS_TAINTS_APPLIED`
+- `ccx_rules_ocp.external.rules.ocp_version_end_of_life|OCP4X_EOL_APPROACHING`
+- `ccx_rules_ocp.external.rules.ocp_version_end_of_life|OCP4X_BEYOND_EOL`

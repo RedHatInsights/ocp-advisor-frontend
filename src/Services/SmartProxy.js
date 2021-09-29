@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 const BASE_URL = '/api/insights-results-aggregator/v1';
 
-export const smartProxyApi = createApi({
+export const SmartProxyApi = createApi({
   reducerPath: 'smartProxy',
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_URL,
@@ -12,8 +12,14 @@ export const smartProxyApi = createApi({
       query: (id, includeDisabled = true) =>
         `clusters/${id}/report?get_disabled=${includeDisabled}`,
     }),
-    // Get rule's content using id in the rule_plugin_name|error_key format
-    getRuleById: builder.query({ query: (id) => `rules/${id}/content` }),
+    // Get rule's content using id (recId = recommendation id) in the rule_plugin_name|error_key format
+    getRuleById: builder.query({
+      query: (recId) => `rules/${recId}/content`,
+    }),
+    getAffectedClusters: builder.query({
+      query: (recId) => `rule/${recId}/clusters_detail`,
+      transformResponse: (response) => response?.data,
+    }),
   }),
 });
 
@@ -22,4 +28,5 @@ export const {
   useGetClusterByIdQuery,
   useLazyGetClusterByIdQuery,
   useGetRuleByIdQuery,
-} = smartProxyApi;
+  useGetAffectedClustersQuery,
+} = SmartProxyApi;
