@@ -16,6 +16,10 @@ const Recommendation = lazy(() =>
   import(/* webpackChunkName: "Recommendation" */ './Components/Recommendation')
 );
 
+const RecsList = lazy(() =>
+  import(/* webpackChunkName: "RecsList" */ './Components/RecsList/RecsList')
+);
+
 const paths = [
   {
     title: 'Clusters',
@@ -26,6 +30,11 @@ const paths = [
     title: 'Recommendations',
     path: '/recommendations/:recommendationId',
     component: Recommendation,
+  },
+  {
+    title: 'Recommendations',
+    path: '/recommendations',
+    component: RecsList,
   },
 ];
 

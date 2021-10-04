@@ -8,6 +8,11 @@ const filtersInitialState = {
     sortIndex: -1,
     sortDirection: null,
   },
+  recsListState: {
+    limit: 10,
+    offset: 0,
+    text: '',
+  },
 };
 
 const filters = createSlice({
@@ -17,9 +22,13 @@ const filters = createSlice({
     updateAffectedClustersFilters(state, action) {
       state.affectedClustersState = action.payload;
     },
+    updateRecsListFilters(state, action) {
+      state.recsListState = action.payload;
+    },
   },
 });
 
-export const { updateAffectedClustersFilters } = filters.actions;
+export const { updateAffectedClustersFilters, updateRecsListFilters } =
+  filters.actions;
 
 export default filters.reducer;

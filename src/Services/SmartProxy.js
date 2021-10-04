@@ -20,6 +20,23 @@ export const SmartProxyApi = createApi({
       query: (recId) => `rule/${recId}/clusters_detail`,
       transformResponse: (response) => response?.data,
     }),
+    getRecs: builder.query({
+      // ! SHOULD BE CHANGED TO A REAL ENDPOINT BEFORE RELEASE
+      query: () => `content`,
+      // ! ONLY USED TO TRANSFORM MOCKED DATA
+      transformResponse: (response) =>
+        response?.content.flatMap((current) => {
+          const errorKeys = [];
+          Object.entries(current.error_keys).forEach((entry) => {
+            errorKeys.push({
+              rule_id: current.plugin.python_module + '|' + entry[0],
+              ...current.plugin,
+              ...entry[1],
+            });
+          });
+          return errorKeys;
+        }),
+    }),
   }),
 });
 
@@ -29,4 +46,6 @@ export const {
   useLazyGetClusterByIdQuery,
   useGetRuleByIdQuery,
   useGetAffectedClustersQuery,
+  useGetRecsQuery,
+  useLazyGetRecsQuery,
 } = SmartProxyApi;

@@ -141,6 +141,23 @@ export const FILTER_CATEGORIES = {
       },
     ],
   },
+  impacting: {
+    type: 'checkbox',
+    title: 'systems impacted',
+    urlParam: 'impacting',
+    values: [
+      {
+        label: intlHelper(intl.formatMessage(messages.oneOrMore), intlSettings),
+        text: intlHelper(intl.formatMessage(messages.oneOrMore), intlSettings),
+        value: 'true',
+      },
+      {
+        label: intlHelper(intl.formatMessage(messages.none), intlSettings),
+        text: intlHelper(intl.formatMessage(messages.none), intlSettings),
+        value: 'false',
+      },
+    ],
+  },
 };
 export const DEFAULT_CLUSTER_RULES_FILTERS = {
   [FILTER_CATEGORIES.rule_status.urlParam]: 'enabled',
@@ -224,4 +241,19 @@ export const IMPACT_VALUES = {
   'Instance Type Variation': 1,
   'High Cost with Over-provisioned Instance Type Node': 1,
   'Low Density Node': 1,
+};
+export const TOTAL_RISK_LABEL_LOWER = {
+  1: intlHelper(intl.formatMessage(messages.low).toLowerCase(), intlSettings),
+  2: intlHelper(
+    intl.formatMessage(messages.moderate).toLowerCase(),
+    intlSettings
+  ),
+  3: intlHelper(
+    intl.formatMessage(messages.important).toLowerCase(),
+    intlSettings
+  ),
+  4: intlHelper(
+    intl.formatMessage(messages.critical).toLowerCase(),
+    intlSettings
+  ),
 };

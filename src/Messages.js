@@ -308,4 +308,48 @@ export default defineMessages({
     defaultMessage:
       'There was a problem processing the request. Please try again.',
   },
+  riskOfChange: {
+    id: 'riskOfChange',
+    description: 'Used for the recommendations list',
+    defaultMessage: 'Risk of change',
+  },
+  rulesDetailsTotalRiskBody: {
+    id: 'rulesDetailsTotalRiskBody',
+    description: 'Text explaining the total risk value of this recommendation',
+    defaultMessage: `The total risk of this remediation is <strong>{risk}</strong>,
+                        based on the combination of likelihood and impact to remediate.`,
+  },
+  ruleIsDisabledForClusters: {
+    id: 'ruleIsDisabledForClusters',
+    description: 'Exclaiming that the recommendation is disabled for clusters',
+    defaultMessage: 'Recommendation is disabled for some clusters',
+  },
+  ruleIsDisabledForAllClusters: {
+    id: 'ruleIsDisabledForAllClusters',
+    description:
+      'Exclaiming that the recommendation is disabled for all clusters',
+    defaultMessage: 'Recommendation is disabled for all clusters',
+  },
+  ruleIsDisabledForClustersBody: {
+    id: 'ruleIsDisabledForClustersBody',
+    description:
+      'Exclaiming that the recommendation is disabled for clusters (cluster count)',
+    defaultMessage:
+      'Recommendation is disabled for {clusters, plural, one {# cluster} other {# clusters}}',
+  },
+  oneOrMore: {
+    id: 'oneOrMore',
+    description: '1 or more',
+    defaultMessage: '1 or more',
+  },
+  none: {
+    id: 'none',
+    description: 'None',
+    defaultMessage: `None`,
+  },
+  undefined: {
+    id: 'undefined',
+    description: 'Undefined',
+    defaultMessage: 'Undefined',
+  },
 });
