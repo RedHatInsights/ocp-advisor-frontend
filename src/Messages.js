@@ -352,4 +352,9 @@ export default defineMessages({
     description: 'Undefined',
     defaultMessage: 'Undefined',
   },
+  nA: {
+    id: 'nA',
+    description: 'Abreviated as N/A, text equivelent, not applicable',
+    defaultMessage: 'N/A',
+  },
 });

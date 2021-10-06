@@ -2,6 +2,7 @@ import { createIntl, createIntlCache } from 'react-intl';
 import intlHelper from '@redhat-cloud-services/frontend-components-translations/intlHelper';
 
 import messages from './Messages';
+import { cellWidth } from '@patternfly/react-table';
 
 const cache = createIntlCache();
 const locale = navigator.language.slice(0, 2);
@@ -57,6 +58,7 @@ export const FILTER_CATEGORIES = {
       { label: TOTAL_RISK_LABEL[1], value: '1' },
     ],
   },
+  /* Not exposed by API yet
   res_risk: {
     type: 'checkbox',
     title: 'risk of change',
@@ -68,6 +70,7 @@ export const FILTER_CATEGORIES = {
       { label: RISK_OF_CHANGE_LABEL[1], value: '1' },
     ],
   },
+  */
   impact: {
     type: 'checkbox',
     title: 'impact',
@@ -257,3 +260,25 @@ export const TOTAL_RISK_LABEL_LOWER = {
     intlSettings
   ),
 };
+export const RECS_LIST_COLUMNS = [
+  {
+    title: intl.formatMessage(messages.name),
+    transforms: [cellWidth(40)],
+  },
+  {
+    title: intl.formatMessage(messages.added),
+    transforms: [cellWidth(10)],
+  },
+  {
+    title: intl.formatMessage(messages.totalRisk),
+    transforms: [cellWidth(15)],
+  },
+  {
+    title: intl.formatMessage(messages.riskOfChange),
+    transforms: [cellWidth(15)],
+  },
+  {
+    title: intl.formatMessage(messages.clusters),
+    transforms: [cellWidth(20)],
+  },
+];

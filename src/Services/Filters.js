@@ -1,5 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+export const RECS_LIST_INITIAL_STATE = {
+  limit: 10,
+  offset: 0,
+  impacting: ['true'],
+  rule_status: 'enabled',
+};
+
 const filtersInitialState = {
   affectedClustersState: {
     limit: 10,
@@ -8,11 +15,7 @@ const filtersInitialState = {
     sortIndex: -1,
     sortDirection: null,
   },
-  recsListState: {
-    limit: 10,
-    offset: 0,
-    text: '',
-  },
+  recsListState: RECS_LIST_INITIAL_STATE,
 };
 
 const filters = createSlice({
@@ -23,6 +26,7 @@ const filters = createSlice({
       state.affectedClustersState = action.payload;
     },
     updateRecsListFilters(state, action) {
+      console.log(action);
       state.recsListState = action.payload;
     },
   },
