@@ -44,8 +44,8 @@ const Recommendation = ({ rule, match }) => {
       ...errorKeyContent.metadata,
     };
     adjusted.impact = {
-      name: adjusted.impact,
-      impact: IMPACT_VALUES[adjusted.impact],
+      name: IMPACT_VALUES[adjusted.impact],
+      impact: adjusted.impact,
     };
     delete adjusted.metadata;
     delete adjusted.error_keys;
