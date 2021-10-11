@@ -146,7 +146,7 @@ export const FILTER_CATEGORIES = {
   },
   impacting: {
     type: 'checkbox',
-    title: 'systems impacted',
+    title: 'clusters impacted',
     urlParam: 'impacting',
     values: [
       {
@@ -263,7 +263,7 @@ export const TOTAL_RISK_LABEL_LOWER = {
 export const RECS_LIST_COLUMNS = [
   {
     title: intl.formatMessage(messages.name),
-    transforms: [cellWidth(40)],
+    transforms: [cellWidth(70)],
   },
   {
     title: intl.formatMessage(messages.added),
@@ -271,14 +271,14 @@ export const RECS_LIST_COLUMNS = [
   },
   {
     title: intl.formatMessage(messages.totalRisk),
-    transforms: [cellWidth(15)],
+    transforms: [cellWidth(10)],
   },
-  {
+  /*{
     title: intl.formatMessage(messages.riskOfChange),
     transforms: [cellWidth(15)],
-  },
+  },*/
   {
     title: intl.formatMessage(messages.clusters),
-    transforms: [cellWidth(20)],
+    transforms: [cellWidth(10)],
   },
 ];

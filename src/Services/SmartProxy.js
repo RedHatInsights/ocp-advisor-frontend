@@ -21,21 +21,26 @@ export const SmartProxyApi = createApi({
       transformResponse: (response) => response?.data,
     }),
     getRecs: builder.query({
-      // ! SHOULD BE CHANGED TO A REAL ENDPOINT BEFORE RELEASE
+      // ! FIX BEFORE PATCH PUBLISH
       query: () => `content`,
-      // ! ONLY USED TO TRANSFORM MOCKED DATA
+      // ! FIX BEFORE PATCH PUBLISH
       transformResponse: (response) =>
-        response?.content.flatMap((current) => {
-          const errorKeys = [];
-          Object.entries(current.error_keys).forEach((entry) => {
-            errorKeys.push({
-              rule_id: current.plugin.python_module + '|' + entry[0],
-              ...current.plugin,
-              ...entry[1],
+        response?.content
+          .filter((v) =>
+            v.plugin.python_module.startsWith('ccx_rules_ocp.external.rules')
+          )
+          .flatMap((current) => {
+            const errorKeys = [];
+            Object.entries(current.error_keys).forEach((entry) => {
+              errorKeys.push({
+                rule_id: current.plugin.python_module + '|' + entry[0],
+                ...current.plugin,
+                ...entry[1],
+                ...entry[1].metadata,
+              });
             });
-          });
-          return errorKeys;
-        }),
+            return errorKeys;
+          }),
     }),
   }),
 });

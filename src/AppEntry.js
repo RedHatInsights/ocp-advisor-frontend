@@ -13,19 +13,25 @@ const translations = {
   en: require('../compiled-lang/en.json'),
 };
 
-const AppEntry = (useLogger) => (
+export const Intl = ({ children }) => (
   <IntlProvider
     locale={navigator.language.slice(0, 2)}
     defaultLocale="en"
     messages={translations[navigator.language.slice(0, 2)]}
     onError={console.error}
   >
+    {children}
+  </IntlProvider>
+);
+
+const AppEntry = (useLogger) => (
+  <Intl>
     <Provider store={getStore(useLogger)}>
       <Router basename={getBaseName(window.location.pathname, 3)}>
         <App />
       </Router>
     </Provider>
-  </IntlProvider>
+  </Intl>
 );
 
 AppEntry.propTypes = {

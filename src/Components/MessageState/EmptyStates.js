@@ -15,9 +15,11 @@ import { global_danger_color_100 as globalDangerColor100 } from '@patternfly/rea
 
 import DefaultErrorMessage from '@redhat-cloud-services/frontend-components/ErrorState/DefaultErrorMessage';
 
+import MessageState from './MessageState';
 import messages from '../../Messages';
 
-// Analogue for ErroState from the frontend-components without the "Go to homepage" button
+// Analogue for ErrorState from the frontend-components without the "Go to homepage" button
+// TODO: update ErrorState from the frontend-components and remove custom error here
 const ErrorState = () => {
   const intl = useIntl();
   return (
@@ -72,5 +74,17 @@ const NoMatchingClusters = () => {
     </EmptyState>
   );
 };
+// used in the recs list table: no filters match
+const NoMatchingRecs = () => {
+  const intl = useIntl();
+  return (
+    <MessageState
+      title={intl.formatMessage(messages.noMatchingRecsTitle)}
+      text={intl.formatMessage(messages.noMatchingRecsBody)}
+      icon={CheckCircleIcon}
+      iconStyle={{ color: globalSuccessColor100.value }}
+    />
+  );
+};
 
-export { ErrorState, NoAffectedClusters, NoMatchingClusters };
+export { ErrorState, NoAffectedClusters, NoMatchingClusters, NoMatchingRecs };

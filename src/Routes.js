@@ -17,7 +17,7 @@ const Recommendation = lazy(() =>
 );
 
 const RecsList = lazy(() =>
-  import(/* webpackChunkName: "RecsList" */ './Components/RecsList/RecsList')
+  import(/* webpackChunkName: "RecsList" */ './Components/RecsList')
 );
 
 const paths = [

@@ -35,6 +35,7 @@ import {
 } from '../../AppConstants';
 import ReportDetails from '../ReportDetails/ReportDetails';
 import RuleLabels from '../RuleLabels/RuleLabels';
+import { NoMatchingRecs } from '../MessageState/EmptyStates';
 
 const ClusterRules = ({ reports }) => {
   const intl = useIntl();
@@ -474,12 +475,7 @@ const ClusterRules = ({ reports }) => {
           {results === 0 && (
             <Card ouiaId={'empty-recommendations'}>
               <CardBody>
-                <MessageState
-                  title={intl.formatMessage(messages.noMatchingRecommendations)}
-                  text={intl.formatMessage(
-                    messages.noMatchingRecommendationsDesc
-                  )}
-                />
+                <NoMatchingRecs />
               </CardBody>
             </Card>
           )}

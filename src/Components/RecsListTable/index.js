@@ -10,6 +10,8 @@ import {
   TableVariant,
 } from '@patternfly/react-table';
 import {
+  Card,
+  CardBody,
   Pagination,
   PaginationVariant,
   Stack,
@@ -25,7 +27,7 @@ import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryTo
 import {
   FILTER_CATEGORIES as FC,
   RECS_LIST_COLUMNS,
-  RISK_OF_CHANGE_LABEL,
+  RULE_CATEGORIES,
   TOTAL_RISK_LABEL_LOWER,
 } from '../../AppConstants';
 import { useLazyGetRecsQuery } from '../../Services/SmartProxy';
@@ -36,67 +38,59 @@ import {
 } from '../../Services/Filters';
 import RuleLabels from '../RuleLabels/RuleLabels';
 import { strong } from '../../Utilities/intlHelper';
-import RuleDetails from '../Recommendation/RuleDetails';
+import Loading from '../Loading/Loading';
+import { ErrorState, NoMatchingRecs } from '../MessageState/EmptyStates';
 
-const RecsList = () => {
+const RecsListTable = () => {
   const intl = useIntl();
   const dispatch = useDispatch();
-  const [trigger, result, lastPromiseInfo] = useLazyGetRecsQuery();
-  const {
-    isError,
-    isUninitialized,
-    isFetching,
-    isSuccess,
-    data: rows = [],
-  } = result;
-  // filters for this table are stored in the Redux store
+  const [
+    trigger,
+    { isError, isUninitialized, isFetching, isSuccess, data = [] },
+  ] = useLazyGetRecsQuery();
   const filters = useSelector(({ filters }) => filters.recsListState);
   const page = filters.offset / filters.limit + 1;
   const [filteredRows, setFilteredRows] = useState([]);
   const [displayedRows, setDisplayedRows] = useState([]);
-  const [isAllExpanded, setIsAllExpanded] = useState(false);
-
-  const refresh = () => {
-    trigger();
-  };
 
   useEffect(() => {
-    refresh();
+    trigger();
   }, []);
 
   useEffect(() => {
-    const newDisplayedRows = buildDisplayedRows(filteredRows);
-    setDisplayedRows(newDisplayedRows);
+    setDisplayedRows(buildDisplayedRows(filteredRows));
   }, [filteredRows, filters.limit, filters.offset]);
 
   useEffect(() => {
-    const newFilteredRows = buildFilteredRows(rows, filters);
+    const newFilteredRows = buildFilteredRows(data, filters);
     const newDisplayedRows = buildDisplayedRows(newFilteredRows);
-    // const newChips = updateNameChip(chips, filters.text);
     setFilteredRows(newFilteredRows);
     setDisplayedRows(newDisplayedRows);
-    // setChips(newChips);
-  }, [result, filters]);
+  }, [data, filters]);
 
   // constructs array of rows (from the initial data) checking currently applied filters
   const buildFilteredRows = (allRows, filters) => {
-    const filterFunc = (rule) => {
+    const checkFilters = (rule) => {
       return Object.entries(filters).every(([filterKey, filterValue]) => {
         if (filterKey === 'text') {
-          return rule.rule_id.includes(filterValue);
+          return rule.description
+            .toLowerCase()
+            .includes(filterValue.toLowerCase());
         }
         if (filterKey === FC.total_risk.urlParam) {
           return filterValue.includes(String(rule.total_risk));
         }
-        /* if (filterKey === FC.category.urlParam) {
+        if (filterKey === FC.category.urlParam) {
           return rule.tags.find((c) =>
-            filterValue.includes(RULE_CATEGORIES[c])
+            filterValue.includes(String(RULE_CATEGORIES[c]))
           );
-        } */
-        /* if (filterKey === FC.impact.urlParam) {
-          return filterValue.includes(rule.impact.impact);
-        } */
-        /* if (filterKey === FC.impacting.urlParam) {
+        }
+        if (filterKey === FC.impact.urlParam) {
+          return filterValue.includes(String(rule.impact));
+        }
+        if (filterKey === FC.impacting.urlParam) {
+          // ! FIX BEFORE PATCH PUBLISH
+          return true;
           return filterValue.length > 0
             ? filterValue.some((v) => {
                 if (v === 'true') {
@@ -107,27 +101,34 @@ const RecsList = () => {
                 }
               })
             : true;
-        } */
-        if (filterKey === FC.likelihood.urlParam) {
-          return rule.likelihood === filterValue;
         }
-        /* if (filterKey === FC.rule_status.urlParam) {
+        if (filterKey === FC.likelihood.urlParam) {
+          return filterValue.includes(String(rule.likelihood));
+        }
+        /* // ! FIX BEFORE PATCH PUBLISH
+        if (filterKey === FC.rule_status.urlParam) {
           return rule.rule_status === 'all'
             ? true
-            : rule.rule_status === filterValue;
+            : String(rule.rule_status) === filterValue;
         } */
         return true;
       });
     };
-    return allRows.filter(filterFunc).map((value, key) => [
+    return allRows.filter(checkFilters).map((value, key) => [
       {
-        isOpen: isAllExpanded,
+        isOpen: false,
         rule: value,
         cells: [
           {
             title: (
               <span key={key}>
-                <Link key={key} to={`/recommendations/${value.rule_id}`}>
+                <Link
+                  key={key}
+                  to={`/recommendations/${value.rule_id.replaceAll(
+                    '.',
+                    '%2E'
+                  )}`}
+                >
                   {' '}
                   {value?.description || value?.rule_id}{' '}
                 </Link>
@@ -173,23 +174,6 @@ const RecsList = () => {
           },
           {
             title: (
-              <div key={key}>
-                {value?.resolution_risk ? (
-                  <InsightsLabel
-                    // resolution_risk is not yet exposed by API, expect undefined
-                    text={RISK_OF_CHANGE_LABEL[value.resolution_risk]}
-                    value={value.resolution_risk}
-                    hideIcon
-                  />
-                ) : (
-                  intl.formatMessage(messages.nA)
-                )}
-                <div></div>
-              </div>
-            ),
-          },
-          {
-            title: (
               <div key={key}>{`${
                 value?.impacted_clusters_count
                   ? value.impacted_clusters_count.toLocaleString()
@@ -206,8 +190,15 @@ const RecsList = () => {
             title: (
               <Main className="pf-m-light">
                 <Stack hasGutter>
-                  {/* ! impact injection to be removed */}
-                  <RuleDetails isOpenShift rule={{ ...value, impact: 0 }} />
+                  {
+                    // ! FIX BEFORE PATCH PUBLISH
+                    /*          <Intl>
+                    <RuleDetails
+                      isOpenShift
+                      rule={adjustOCPRule(value, value.rule_id)}
+                    />
+                  </Intl> */
+                  }
                 </Stack>
               </Main>
             ),
@@ -238,6 +229,7 @@ const RecsList = () => {
     );
   };
 
+  // TODO: update URL when filters changed
   const addFilterParam = (param, values) => {
     values.length > 0
       ? dispatch(
@@ -256,35 +248,6 @@ const RecsList = () => {
       })
     );
   };
-
-  /*
-  const onSort = (_event, index, direction) => {
-    const sort = () =>
-      filteredRows.concat().sort((firstItem, secondItem) => {
-        // console.log(firstItem, secondItem);
-        const fst = firstItem?.rule?.[sortIndices[index]];
-        const snd = secondItem?.rule?.[sortIndices[index]];
-        if (!fst || !snd) {
-          return 0;
-        }
-        return fst > snd ? 1 : snd > fst ? -1 : 0;
-      });
-    const sorted =
-      direction === SortByDirection.asc ? sort() : sort().reverse();
-    const newDisplayedRows = buildDisplayedRows(sorted);
-    console.log(sorted, newDisplayedRows);
-    dispatch(
-      updateFilters({
-        ...filters,
-        sortIndex: index,
-        sortDirection: direction,
-        offset: 0,
-      })
-    );
-    setFilteredRows(sorted);
-    setDisplayedRows(newDisplayedRows);
-  };
-  */
 
   const filterConfigItems = [
     {
@@ -310,20 +273,6 @@ const RecsList = () => {
         items: FC.total_risk.values,
       },
     },
-    /*
-    {
-      label: FC.res_risk.title,
-      type: FC.res_risk.type,
-      id: FC.res_risk.urlParam,
-      value: `checkbox-${FC.res_risk.urlParam}`,
-      filterValues: {
-        key: `${FC.res_risk.urlParam}-filter`,
-        onChange: (_event, values) =>
-          addFilterParam(FC.res_risk.urlParam, values),
-        value: filters.res_risk,
-        items: FC.res_risk.values,
-      },
-    },*/
     {
       label: FC.impact.title,
       type: FC.impact.type,
@@ -480,84 +429,86 @@ const RecsList = () => {
     },
   };
 
-  const onExpandAllClick = (_e, isOpen) => {
-    const newFilteredRows = [...filteredRows];
-    setIsAllExpanded(isOpen);
-    newFilteredRows.map((row, key) => {
-      if (Object.prototype.hasOwnProperty.call(row[0], 'isOpen')) {
-        newFilteredRows[key][0].isOpen = isOpen;
-      }
-    });
-    setFilteredRows(newFilteredRows);
+  const handleOnCollapse = (_e, rowId, isOpen) => {
+    const collapseRows = [...displayedRows];
+    collapseRows[rowId] = { ...collapseRows[rowId], isOpen };
+    setDisplayedRows(collapseRows);
   };
 
   return (
     <React.Fragment>
-      <Main>
+      <PrimaryToolbar
+        pagination={{
+          itemCount: filteredRows.length,
+          page: filters.offset / filters.limit + 1,
+          perPage: Number(filters.limit),
+          onSetPage(_event, page) {
+            dispatch(
+              updateFilters({
+                ...filters,
+                offset: filters.limit * (page - 1),
+              })
+            );
+          },
+          onPerPageSelect(_event, perPage) {
+            dispatch(updateFilters({ ...filters, limit: perPage, offset: 0 }));
+          },
+          isCompact: true,
+        }}
+        filterConfig={{ items: filterConfigItems }}
+        activeFiltersConfig={activeFiltersConfig}
+      />
+      {(isUninitialized || isFetching) && <Loading />}
+      {(isError || (isSuccess && data.length === 0)) && (
+        <Card>
+          <CardBody>
+            <ErrorState />
+          </CardBody>
+        </Card>
+      )}
+      {isSuccess && data.length > 0 && (
         <React.Fragment>
-          <PrimaryToolbar
-            expandAll={{ isAllExpanded, onClick: onExpandAllClick }}
-            pagination={{
-              itemCount: filteredRows.length,
-              page: filters.offset / filters.limit + 1,
-              perPage: Number(filters.limit),
-              onSetPage(_event, page) {
-                dispatch(
-                  updateFilters({
-                    ...filters,
-                    offset: filters.limit * (page - 1),
-                  })
-                );
-              },
-              onPerPageSelect(_event, perPage) {
-                dispatch(
-                  updateFilters({ ...filters, limit: perPage, offset: 0 })
-                );
-              },
-              isCompact: true,
-            }}
-            filterConfig={{ items: filterConfigItems }}
-            activeFiltersConfig={activeFiltersConfig}
-          />
-          {isSuccess && (
-            <Table
-              aria-label="Table of recommendations"
-              ouiaId="recsListTable"
-              variant={TableVariant.compact}
-              cells={RECS_LIST_COLUMNS}
-              rows={displayedRows}
-              // sortBy={{ index: sortIndex, direction: sortDirection }}
-              // onSort={onSort}
-            >
-              <TableHeader />
-              <TableBody />
-            </Table>
+          <Table
+            aria-label="Table of recommendations"
+            ouiaId="recsListTable"
+            variant={TableVariant.compact}
+            cells={RECS_LIST_COLUMNS}
+            rows={displayedRows}
+            onCollapse={handleOnCollapse}
+          >
+            <TableHeader />
+            <TableBody />
+          </Table>
+          {data.length > 0 && filteredRows.length === 0 && (
+            <Card ouiaId={'empty-recommendations'}>
+              <CardBody>
+                <NoMatchingRecs />
+              </CardBody>
+            </Card>
           )}
-          <Pagination
-            ouiaId="recs-list-pagination-bottom"
-            itemCount={filteredRows.length}
-            page={filters.offset / filters.limit + 1}
-            perPage={Number(filters.limit)}
-            onSetPage={(_e, page) => {
-              dispatch(
-                updateFilters({
-                  ...filters,
-                  offset: filters.limit * (page - 1),
-                })
-              );
-            }}
-            onPerPageSelect={(_e, perPage) => {
-              dispatch(
-                updateFilters({ ...filters, limit: perPage, offset: 0 })
-              );
-            }}
-            widgetId={`pagination-options-menu-bottom`}
-            variant={PaginationVariant.bottom}
-          />
         </React.Fragment>
-      </Main>
+      )}
+      <Pagination
+        ouiaId="recs-list-pagination-bottom"
+        itemCount={filteredRows.length}
+        page={filters.offset / filters.limit + 1}
+        perPage={Number(filters.limit)}
+        onSetPage={(_e, page) => {
+          dispatch(
+            updateFilters({
+              ...filters,
+              offset: filters.limit * (page - 1),
+            })
+          );
+        }}
+        onPerPageSelect={(_e, perPage) => {
+          dispatch(updateFilters({ ...filters, limit: perPage, offset: 0 }));
+        }}
+        widgetId={`pagination-options-menu-bottom`}
+        variant={PaginationVariant.bottom}
+      />
     </React.Fragment>
   );
 };
 
-export default RecsList;
+export default RecsListTable;
