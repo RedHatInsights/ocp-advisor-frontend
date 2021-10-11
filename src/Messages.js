@@ -189,11 +189,11 @@ export default defineMessages({
     description: 'Filter action, reset all filter chips',
     defaultMessage: 'Reset filters',
   },
-  noMatchingRecommendations: {
-    id: 'noMatchingRecommendations',
+  noMatchingRecsTitle: {
+    id: 'noMatchingRecommendationsTitle',
     defaultMessage: 'No matching recommendations found',
   },
-  noMatchingRecommendationsDesc: {
+  noMatchingRecsBody: {
     id: 'noMatchingRecommendationsDesc',
     defaultMessage:
       'This filter criteria matches no recommendations. Try changing your filter settings.',
@@ -285,7 +285,7 @@ export default defineMessages({
   noAffectedClustersBody: {
     id: 'noAffectedClustersBody',
     description: 'Affected clusters table',
-    defaultMessage: 'This recommendation doesn’t affect any cluster.',
+    defaultMessage: 'This recommendation does not affect any cluster.',
   },
   noMatchingClustersTitle: {
     id: 'noMatchingClustersTitle',
