@@ -1,14 +1,14 @@
 import {
   EmptyState,
   EmptyStateVariant,
-} from '@patternfly/react-core/dist/js/components/EmptyState/EmptyState';
+} from "@patternfly/react-core/dist/js/components/EmptyState/EmptyState";
 
-import CubesIcon from '@patternfly/react-icons/dist/js/icons/cubes-icon';
-import { EmptyStateBody } from '@patternfly/react-core/dist/js/components/EmptyState/EmptyStateBody';
-import { EmptyStateIcon } from '@patternfly/react-core/dist/js/components/EmptyState/EmptyStateIcon';
-import PropTypes from 'prop-types';
-import React from 'react';
-import { Title } from '@patternfly/react-core/dist/js/components/Title/Title';
+import CubesIcon from "@patternfly/react-icons/dist/js/icons/cubes-icon";
+import { EmptyStateBody } from "@patternfly/react-core/dist/js/components/EmptyState/EmptyStateBody";
+import { EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState/EmptyStateIcon";
+import PropTypes from "prop-types";
+import React from "react";
+import { Title } from "@patternfly/react-core/dist/js/components/Title/Title";
 
 const MessageState = ({
   className,
@@ -19,15 +19,20 @@ const MessageState = ({
   text,
   title,
   variant,
+  link,
+  linktext,
 }) => (
   <EmptyState className={className} variant={variant}>
-    {icon !== 'none' && (
+    {icon !== "none" && (
       <EmptyStateIcon className={iconClass} style={iconStyle} icon={icon} />
     )}
     <Title headingLevel="h5" size="lg">
       {title}
     </Title>
-    <EmptyStateBody style={{ marginBottom: '16px' }}>{text}</EmptyStateBody>
+    <EmptyStateBody style={{ marginBottom: "16px" }}>
+      {text}
+      <a href={link}>{linktext}</a>
+    </EmptyStateBody>
     {children}
   </EmptyState>
 );
@@ -45,7 +50,7 @@ MessageState.propTypes = {
 
 MessageState.defaultProps = {
   icon: CubesIcon,
-  title: '',
+  title: "",
   variant: EmptyStateVariant.full,
 };
 
