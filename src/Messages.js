@@ -202,8 +202,7 @@ export default defineMessages({
     id: 'noRecommendations',
     description:
       'Recommendation table, no recommendations message for any known rules, body',
-    defaultMessage:
-      'None of your connected clusters are affected by any known recommendations.',
+    defaultMessage: 'The cluster is not affected by any known recommendations',
   },
   noRecommendationsDesc: {
     id: 'noRecommendationsDesc',
