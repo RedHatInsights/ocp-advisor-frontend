@@ -12,7 +12,6 @@ export const RECS_LIST_INITIAL_STATE = {
   limit: 20,
   offset: 0,
   impacting: ['true'],
-  rule_status: 'enabled',
 };
 
 const filtersInitialState = {

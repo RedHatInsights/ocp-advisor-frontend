@@ -30,7 +30,7 @@ import {
   RULE_CATEGORIES,
   TOTAL_RISK_LABEL_LOWER,
 } from '../../AppConstants';
-import { useLazyGetRecsQuery } from '../../Services/SmartProxy';
+import { useGetRecsQuery } from '../../Services/SmartProxy';
 import messages from '../../Messages';
 import {
   RECS_LIST_INITIAL_STATE,
@@ -40,78 +40,68 @@ import RuleLabels from '../RuleLabels/RuleLabels';
 import { strong } from '../../Utilities/intlHelper';
 import Loading from '../Loading/Loading';
 import { ErrorState, NoMatchingRecs } from '../MessageState/EmptyStates';
+import RuleDetails from '../Recommendation/RuleDetails';
 
 const RecsListTable = () => {
   const intl = useIntl();
   const dispatch = useDispatch();
-  const [
-    trigger,
-    { isError, isUninitialized, isFetching, isSuccess, data = [] },
-  ] = useLazyGetRecsQuery();
   const filters = useSelector(({ filters }) => filters.recsListState);
+  const { isError, isUninitialized, isFetching, isSuccess, data } =
+    useGetRecsQuery({ impacting: false });
+  const recs = data?.recommendations || [];
   const page = filters.offset / filters.limit + 1;
   const [filteredRows, setFilteredRows] = useState([]);
   const [displayedRows, setDisplayedRows] = useState([]);
-
-  useEffect(() => {
-    trigger();
-  }, []);
 
   useEffect(() => {
     setDisplayedRows(buildDisplayedRows(filteredRows));
   }, [filteredRows, filters.limit, filters.offset]);
 
   useEffect(() => {
-    const newFilteredRows = buildFilteredRows(data, filters);
+    const newFilteredRows = buildFilteredRows(recs, filters);
     const newDisplayedRows = buildDisplayedRows(newFilteredRows);
     setFilteredRows(newFilteredRows);
     setDisplayedRows(newDisplayedRows);
-  }, [data, filters]);
+  }, [recs, filters]);
 
   // constructs array of rows (from the initial data) checking currently applied filters
   const buildFilteredRows = (allRows, filters) => {
     const checkFilters = (rule) => {
       return Object.entries(filters).every(([filterKey, filterValue]) => {
-        if (filterKey === 'text') {
-          return rule.description
-            .toLowerCase()
-            .includes(filterValue.toLowerCase());
+        switch (filterKey) {
+          case 'text':
+            return rule.description
+              .toLowerCase()
+              .includes(filterValue.toLowerCase());
+          case FC.total_risk.urlParam:
+            return filterValue.includes(String(rule.total_risk));
+          case FC.category.urlParam:
+            return rule.tags.find((c) =>
+              filterValue.includes(String(RULE_CATEGORIES[c]))
+            );
+          case FC.impact.urlParam:
+            return filterValue.includes(String(rule.impact));
+          case FC.impacting.urlParam:
+            return filterValue.length > 0
+              ? filterValue.some((v) => {
+                  if (v === 'true') {
+                    return rule.impacted_clusters_count > 0;
+                  }
+                  if (v === 'false') {
+                    return rule.impacted_clusters_count === 0;
+                  }
+                })
+              : true;
+          case FC.likelihood.urlParam:
+            return filterValue.includes(String(rule.likelihood));
+          /* case FC.rule_status.urlParam:
+            return (
+              rule.rule_status === 'all' ||
+              String(rule.rule_status) === filterValue
+            ); */
+          default:
+            return true;
         }
-        if (filterKey === FC.total_risk.urlParam) {
-          return filterValue.includes(String(rule.total_risk));
-        }
-        if (filterKey === FC.category.urlParam) {
-          return rule.tags.find((c) =>
-            filterValue.includes(String(RULE_CATEGORIES[c]))
-          );
-        }
-        if (filterKey === FC.impact.urlParam) {
-          return filterValue.includes(String(rule.impact));
-        }
-        if (filterKey === FC.impacting.urlParam) {
-          // ! FIX BEFORE PATCH PUBLISH
-          return true;
-          return filterValue.length > 0
-            ? filterValue.some((v) => {
-                if (v === 'true') {
-                  return rule.impacted_clusters_count > 0;
-                }
-                if (v === 'false') {
-                  return rule.impacted_clusters_count === 0;
-                }
-              })
-            : true;
-        }
-        if (filterKey === FC.likelihood.urlParam) {
-          return filterValue.includes(String(rule.likelihood));
-        }
-        /* // ! FIX BEFORE PATCH PUBLISH
-        if (filterKey === FC.rule_status.urlParam) {
-          return rule.rule_status === 'all'
-            ? true
-            : String(rule.rule_status) === filterValue;
-        } */
-        return true;
       });
     };
     return allRows.filter(checkFilters).map((value, key) => [
@@ -124,10 +114,12 @@ const RecsListTable = () => {
               <span key={key}>
                 <Link
                   key={key}
-                  to={`/recommendations/${value.rule_id.replaceAll(
-                    '.',
-                    '%2E'
-                  )}`}
+                  // https://github.com/RedHatInsights/ocp-advisor-frontend/issues/29
+                  to={`/recommendations/${
+                    process.env.NODE_ENV === 'development'
+                      ? value.rule_id.replaceAll('.', '%2E')
+                      : `/recommendations/${value.rule_id}`
+                  }`}
                 >
                   {' '}
                   {value?.description || value?.rule_id}{' '}
@@ -175,7 +167,7 @@ const RecsListTable = () => {
           {
             title: (
               <div key={key}>{`${
-                value?.impacted_clusters_count
+                value?.impacted_clusters_count !== undefined
                   ? value.impacted_clusters_count.toLocaleString()
                   : intl.formatMessage(messages.nA)
               }`}</div>
@@ -190,15 +182,13 @@ const RecsListTable = () => {
             title: (
               <Main className="pf-m-light">
                 <Stack hasGutter>
-                  {
-                    // ! FIX BEFORE PATCH PUBLISH
-                    /*          <Intl>
-                    <RuleDetails
-                      isOpenShift
-                      rule={adjustOCPRule(value, value.rule_id)}
-                    />
-                  </Intl> */
-                  }
+                  <RuleDetails
+                    isOpenShift
+                    rule={{
+                      ...value,
+                      impact: { impact: value.impact },
+                    }}
+                  />
                 </Stack>
               </Main>
             ),
@@ -238,7 +228,7 @@ const RecsListTable = () => {
       : removeFilterParam(param);
   };
 
-  const toggleRulesDisabled = (rule_status) => {
+  /* const toggleRulesDisabled = (rule_status) => {
     dispatch(
       updateFilters({
         ...filters,
@@ -247,7 +237,7 @@ const RecsListTable = () => {
         ...(rule_status !== 'enabled' && { impacting: ['false'] }),
       })
     );
-  };
+  }; */
 
   const filterConfigItems = [
     {
@@ -311,7 +301,7 @@ const RecsListTable = () => {
         value: filters.category,
         items: FC.category.values,
       },
-    },
+    } /*
     {
       label: FC.rule_status.title,
       type: FC.rule_status.type,
@@ -323,7 +313,7 @@ const RecsListTable = () => {
         value: `${filters.rule_status}`,
         items: FC.rule_status.values,
       },
-    },
+    },*/,
     {
       label: FC.impacting.title,
       type: FC.impacting.type,
@@ -402,7 +392,6 @@ const RecsListTable = () => {
     delete localFilters.sortDirection;
     delete localFilters.offset;
     delete localFilters.limit;
-
     return pruneFilters(localFilters, FC);
   };
 
@@ -459,14 +448,14 @@ const RecsListTable = () => {
         activeFiltersConfig={activeFiltersConfig}
       />
       {(isUninitialized || isFetching) && <Loading />}
-      {(isError || (isSuccess && data.length === 0)) && (
+      {(isError || (isSuccess && recs.length === 0)) && (
         <Card>
           <CardBody>
             <ErrorState />
           </CardBody>
         </Card>
       )}
-      {isSuccess && data.length > 0 && (
+      {isSuccess && recs.length > 0 && (
         <React.Fragment>
           <Table
             aria-label="Table of recommendations"
@@ -479,7 +468,7 @@ const RecsListTable = () => {
             <TableHeader />
             <TableBody />
           </Table>
-          {data.length > 0 && filteredRows.length === 0 && (
+          {recs.length > 0 && filteredRows.length === 0 && (
             <Card ouiaId={'empty-recommendations'}>
               <CardBody>
                 <NoMatchingRecs />
