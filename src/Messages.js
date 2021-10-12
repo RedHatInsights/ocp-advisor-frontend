@@ -254,6 +254,17 @@ export default defineMessages({
     defaultMessage:
       'There was an error fetching recommendations for this cluster. Refresh your page to try again.',
   },
+  noRecsFoundError: {
+    id: 'noRecsFoundError',
+    description: 'Recommendations table, cluster recommendations table',
+    defaultMessage: 'No recommendations to display',
+  },
+  noRecsFoundErrorDesc: {
+    id: 'noRecsFoundErrorDesc',
+    description: 'Recommendations table, cluster recommendations table',
+    defaultMessage:
+      'Insights identifies and prioritizes risks to security, performance, availability, and stability of your clusters. This feature uses the Remote Health functionality of OpenShift Container Platform. For further details about Insights, see the',
+  },
   noClustersError: {
     id: 'noClustersError',
     description: 'Recommendation affected clusters table',
