@@ -27,7 +27,6 @@ import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryTo
 import {
   FILTER_CATEGORIES as FC,
   RECS_LIST_COLUMNS,
-  RULE_CATEGORIES,
   TOTAL_RISK_LABEL_LOWER,
 } from '../../AppConstants';
 import { useGetRecsQuery } from '../../Services/SmartProxy';
@@ -41,6 +40,7 @@ import { strong } from '../../Utilities/intlHelper';
 import Loading from '../Loading/Loading';
 import { ErrorState, NoMatchingRecs } from '../MessageState/EmptyStates';
 import RuleDetails from '../Recommendation/RuleDetails';
+import { passFilters } from '../Common/Tables';
 
 const RecsListTable = () => {
   const intl = useIntl();
@@ -66,136 +66,100 @@ const RecsListTable = () => {
 
   // constructs array of rows (from the initial data) checking currently applied filters
   const buildFilteredRows = (allRows, filters) => {
-    const checkFilters = (rule) => {
-      return Object.entries(filters).every(([filterKey, filterValue]) => {
-        switch (filterKey) {
-          case 'text':
-            return rule.description
-              .toLowerCase()
-              .includes(filterValue.toLowerCase());
-          case FC.total_risk.urlParam:
-            return filterValue.includes(String(rule.total_risk));
-          case FC.category.urlParam:
-            return rule.tags.find((c) =>
-              filterValue.includes(String(RULE_CATEGORIES[c]))
-            );
-          case FC.impact.urlParam:
-            return filterValue.includes(String(rule.impact));
-          case FC.impacting.urlParam:
-            return filterValue.length > 0
-              ? filterValue.some((v) => {
-                  if (v === 'true') {
-                    return rule.impacted_clusters_count > 0;
-                  }
-                  if (v === 'false') {
-                    return rule.impacted_clusters_count === 0;
-                  }
-                })
-              : true;
-          case FC.likelihood.urlParam:
-            return filterValue.includes(String(rule.likelihood));
-          /* case FC.rule_status.urlParam:
-            return (
-              rule.rule_status === 'all' ||
-              String(rule.rule_status) === filterValue
-            ); */
-          default:
-            return true;
-        }
-      });
-    };
-    return allRows.filter(checkFilters).map((value, key) => [
-      {
-        isOpen: false,
-        rule: value,
-        cells: [
-          {
-            title: (
-              <span key={key}>
-                <Link
+    return allRows
+      .filter((rule) => passFilters(rule, filters))
+      .map((value, key) => [
+        {
+          isOpen: false,
+          rule: value,
+          cells: [
+            {
+              title: (
+                <span key={key}>
+                  <Link
+                    key={key}
+                    // https://github.com/RedHatInsights/ocp-advisor-frontend/issues/29
+                    to={`/recommendations/${
+                      process.env.NODE_ENV === 'development'
+                        ? value.rule_id.replaceAll('.', '%2E')
+                        : `/recommendations/${value.rule_id}`
+                    }`}
+                  >
+                    {' '}
+                    {value?.description || value?.rule_id}{' '}
+                  </Link>
+                  <RuleLabels rule={value} />
+                </span>
+              ),
+            },
+            {
+              title: value?.publish_date ? (
+                <DateFormat
                   key={key}
-                  // https://github.com/RedHatInsights/ocp-advisor-frontend/issues/29
-                  to={`/recommendations/${
-                    process.env.NODE_ENV === 'development'
-                      ? value.rule_id.replaceAll('.', '%2E')
-                      : `/recommendations/${value.rule_id}`
-                  }`}
-                >
-                  {' '}
-                  {value?.description || value?.rule_id}{' '}
-                </Link>
-                <RuleLabels rule={value} />
-              </span>
-            ),
-          },
-          {
-            title: value?.publish_date ? (
-              <DateFormat
-                key={key}
-                date={value.publish_date}
-                variant="relative"
-              />
-            ) : (
-              intl.formatMessage(messages.nA)
-            ),
-          },
-          {
-            title: (
-              <div key={key}>
-                <Tooltip
-                  key={key}
-                  position={TooltipPosition.bottom}
-                  content={intl.formatMessage(
-                    messages.rulesDetailsTotalRiskBody,
-                    {
-                      risk:
-                        TOTAL_RISK_LABEL_LOWER[value.total_risk] ||
-                        intl.formatMessage(messages.undefined),
-                      strong: (str) => strong(str),
-                    }
-                  )}
-                >
-                  {value?.total_risk ? (
-                    <InsightsLabel value={value.total_risk} />
-                  ) : (
-                    intl.formatMessage(messages.nA)
-                  )}
-                </Tooltip>
-              </div>
-            ),
-          },
-          {
-            title: (
-              <div key={key}>{`${
-                value?.impacted_clusters_count !== undefined
-                  ? value.impacted_clusters_count.toLocaleString()
-                  : intl.formatMessage(messages.nA)
-              }`}</div>
-            ),
-          },
-        ],
-      },
-      {
-        fullWidth: true,
-        cells: [
-          {
-            title: (
-              <Main className="pf-m-light">
-                <Stack hasGutter>
-                  <RuleDetails
-                    isOpenShift
-                    rule={{
-                      ...value,
-                      impact: { impact: value.impact },
-                    }}
-                  />
-                </Stack>
-              </Main>
-            ),
-          },
-        ],
-      },
-    ]);
+                  date={value.publish_date}
+                  variant="relative"
+                />
+              ) : (
+                intl.formatMessage(messages.nA)
+              ),
+            },
+            {
+              title: (
+                <div key={key}>
+                  <Tooltip
+                    key={key}
+                    position={TooltipPosition.bottom}
+                    content={intl.formatMessage(
+                      messages.rulesDetailsTotalRiskBody,
+                      {
+                        risk:
+                          TOTAL_RISK_LABEL_LOWER[value.total_risk] ||
+                          intl.formatMessage(messages.undefined),
+                        strong: (str) => strong(str),
+                      }
+                    )}
+                  >
+                    {value?.total_risk ? (
+                      <InsightsLabel value={value.total_risk} />
+                    ) : (
+                      intl.formatMessage(messages.nA)
+                    )}
+                  </Tooltip>
+                </div>
+              ),
+            },
+            {
+              title: (
+                <div key={key}>{`${
+                  value?.impacted_clusters_count !== undefined
+                    ? value.impacted_clusters_count.toLocaleString()
+                    : intl.formatMessage(messages.nA)
+                }`}</div>
+              ),
+            },
+          ],
+        },
+        {
+          fullWidth: true,
+          cells: [
+            {
+              title: (
+                <Main className="pf-m-light">
+                  <Stack hasGutter>
+                    <RuleDetails
+                      isOpenShift
+                      rule={{
+                        ...value,
+                        impact: { impact: value.impact },
+                      }}
+                    />
+                  </Stack>
+                </Main>
+              ),
+            },
+          ],
+        },
+      ]);
   };
 
   const buildDisplayedRows = (rows) => {
