@@ -25,7 +25,7 @@ import { Main } from '@redhat-cloud-services/frontend-components/Main';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar/PrimaryToolbar';
 
 import {
-  FILTER_CATEGORIES as FC,
+  FILTER_CATEGORIES,
   RECS_LIST_COLUMNS,
   TOTAL_RISK_LABEL_LOWER,
 } from '../../AppConstants';
@@ -219,79 +219,80 @@ const RecsListTable = () => {
       },
     },
     {
-      label: FC.total_risk.title,
-      type: FC.total_risk.type,
-      id: FC.total_risk.urlParam,
-      value: `checkbox-${FC.total_risk.urlParam}`,
+      label: FILTER_CATEGORIES.total_risk.title,
+      type: FILTER_CATEGORIES.total_risk.type,
+      id: FILTER_CATEGORIES.total_risk.urlParam,
+      value: `checkbox-${FILTER_CATEGORIES.total_risk.urlParam}`,
       filterValues: {
-        key: `${FC.total_risk.urlParam}-filter`,
+        key: `${FILTER_CATEGORIES.total_risk.urlParam}-filter`,
         onChange: (_event, values) =>
-          addFilterParam(FC.total_risk.urlParam, values),
+          addFilterParam(FILTER_CATEGORIES.total_risk.urlParam, values),
         value: filters.total_risk,
-        items: FC.total_risk.values,
+        items: FILTER_CATEGORIES.total_risk.values,
       },
     },
     {
-      label: FC.impact.title,
-      type: FC.impact.type,
-      id: FC.impact.urlParam,
-      value: `checkbox-${FC.impact.urlParam}`,
+      label: FILTER_CATEGORIES.impact.title,
+      type: FILTER_CATEGORIES.impact.type,
+      id: FILTER_CATEGORIES.impact.urlParam,
+      value: `checkbox-${FILTER_CATEGORIES.impact.urlParam}`,
       filterValues: {
-        key: `${FC.impact.urlParam}-filter`,
+        key: `${FILTER_CATEGORIES.impact.urlParam}-filter`,
         onChange: (_event, values) =>
-          addFilterParam(FC.impact.urlParam, values),
+          addFilterParam(FILTER_CATEGORIES.impact.urlParam, values),
         value: filters.impact,
-        items: FC.impact.values,
+        items: FILTER_CATEGORIES.impact.values,
       },
     },
     {
-      label: FC.likelihood.title,
-      type: FC.likelihood.type,
-      id: FC.likelihood.urlParam,
-      value: `checkbox-${FC.likelihood.urlParam}`,
+      label: FILTER_CATEGORIES.likelihood.title,
+      type: FILTER_CATEGORIES.likelihood.type,
+      id: FILTER_CATEGORIES.likelihood.urlParam,
+      value: `checkbox-${FILTER_CATEGORIES.likelihood.urlParam}`,
       filterValues: {
-        key: `${FC.likelihood.urlParam}-filter`,
+        key: `${FILTER_CATEGORIES.likelihood.urlParam}-filter`,
         onChange: (_event, values) =>
-          addFilterParam(FC.likelihood.urlParam, values),
+          addFilterParam(FILTER_CATEGORIES.likelihood.urlParam, values),
         value: filters.likelihood,
-        items: FC.likelihood.values,
+        items: FILTER_CATEGORIES.likelihood.values,
       },
     },
     {
-      label: FC.category.title,
-      type: FC.category.type,
-      id: FC.category.urlParam,
-      value: `checkbox-${FC.category.urlParam}`,
+      label: FILTER_CATEGORIES.category.title,
+      type: FILTER_CATEGORIES.category.type,
+      id: FILTER_CATEGORIES.category.urlParam,
+      value: `checkbox-${FILTER_CATEGORIES.category.urlParam}`,
       filterValues: {
-        key: `${FC.category.urlParam}-filter`,
+        key: `${FILTER_CATEGORIES.category.urlParam}-filter`,
         onChange: (_event, values) =>
-          addFilterParam(FC.category.urlParam, values),
+          addFilterParam(FILTER_CATEGORIES.category.urlParam, values),
         value: filters.category,
-        items: FC.category.values,
+        items: FILTER_CATEGORIES.category.values,
       },
     } /*
     {
-      label: FC.rule_status.title,
-      type: FC.rule_status.type,
-      id: FC.rule_status.urlParam,
-      value: `radio-${FC.rule_status.urlParam}`,
+      label: FILTER_CATEGORIES.rule_status.title,
+      type: FILTER_CATEGORIES.rule_status.type,
+      id: FILTER_CATEGORIES.rule_status.urlParam,
+      value: `radio-${FILTER_CATEGORIES.rule_status.urlParam}`,
       filterValues: {
-        key: `${FC.rule_status.urlParam}-filter`,
+        key: `${FILTER_CATEGORIES.rule_status.urlParam}-filter`,
         onChange: (_event, value) => toggleRulesDisabled(value),
         value: `${filters.rule_status}`,
-        items: FC.rule_status.values,
+        items: FILTER_CATEGORIES.rule_status.values,
       },
     },*/,
     {
-      label: FC.impacting.title,
-      type: FC.impacting.type,
-      id: FC.impacting.urlParam,
-      value: `checkbox-${FC.impacting.urlParam}`,
+      label: FILTER_CATEGORIES.impacting.title,
+      type: FILTER_CATEGORIES.impacting.type,
+      id: FILTER_CATEGORIES.impacting.urlParam,
+      value: `checkbox-${FILTER_CATEGORIES.impacting.urlParam}`,
       filterValues: {
-        key: `${FC.impacting.urlParam}-filter`,
-        onChange: (e, values) => addFilterParam(FC.impacting.urlParam, values),
+        key: `${FILTER_CATEGORIES.impacting.urlParam}-filter`,
+        onChange: (e, values) =>
+          addFilterParam(FILTER_CATEGORIES.impacting.urlParam, values),
         value: filters.impacting,
-        items: FC.impacting.values,
+        items: FILTER_CATEGORIES.impacting.values,
       },
     },
   ];
@@ -360,7 +361,7 @@ const RecsListTable = () => {
     delete localFilters.sortDirection;
     delete localFilters.offset;
     delete localFilters.limit;
-    return pruneFilters(localFilters, FC);
+    return pruneFilters(localFilters, FILTER_CATEGORIES);
   };
 
   const activeFiltersConfig = {
