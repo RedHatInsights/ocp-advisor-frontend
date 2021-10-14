@@ -66,100 +66,104 @@ const RecsListTable = () => {
 
   // constructs array of rows (from the initial data) checking currently applied filters
   const buildFilteredRows = (allRows, filters) => {
-    return allRows
-      .filter((rule) => passFilters(rule, filters))
-      .map((value, key) => [
-        {
-          isOpen: false,
-          rule: value,
-          cells: [
-            {
-              title: (
-                <span key={key}>
-                  <Link
+    return (
+      allRows
+        .filter((rule) => passFilters(rule, filters))
+        // TODO: replace with sortable rows
+        .sort((fst, snd) => (fst.total_risk < snd.total_risk ? 1 : -1))
+        .map((value, key) => [
+          {
+            isOpen: false,
+            rule: value,
+            cells: [
+              {
+                title: (
+                  <span key={key}>
+                    <Link
+                      key={key}
+                      // https://github.com/RedHatInsights/ocp-advisor-frontend/issues/29
+                      to={`/recommendations/${
+                        process.env.NODE_ENV === 'development'
+                          ? value.rule_id.replaceAll('.', '%2E')
+                          : `/recommendations/${value.rule_id}`
+                      }`}
+                    >
+                      {' '}
+                      {value?.description || value?.rule_id}{' '}
+                    </Link>
+                    <RuleLabels rule={value} />
+                  </span>
+                ),
+              },
+              {
+                title: value?.publish_date ? (
+                  <DateFormat
                     key={key}
-                    // https://github.com/RedHatInsights/ocp-advisor-frontend/issues/29
-                    to={`/recommendations/${
-                      process.env.NODE_ENV === 'development'
-                        ? value.rule_id.replaceAll('.', '%2E')
-                        : `/recommendations/${value.rule_id}`
-                    }`}
-                  >
-                    {' '}
-                    {value?.description || value?.rule_id}{' '}
-                  </Link>
-                  <RuleLabels rule={value} />
-                </span>
-              ),
-            },
-            {
-              title: value?.publish_date ? (
-                <DateFormat
-                  key={key}
-                  date={value.publish_date}
-                  variant="relative"
-                />
-              ) : (
-                intl.formatMessage(messages.nA)
-              ),
-            },
-            {
-              title: (
-                <div key={key}>
-                  <Tooltip
-                    key={key}
-                    position={TooltipPosition.bottom}
-                    content={intl.formatMessage(
-                      messages.rulesDetailsTotalRiskBody,
-                      {
-                        risk:
-                          TOTAL_RISK_LABEL_LOWER[value.total_risk] ||
-                          intl.formatMessage(messages.undefined),
-                        strong: (str) => strong(str),
-                      }
-                    )}
-                  >
-                    {value?.total_risk ? (
-                      <InsightsLabel value={value.total_risk} />
-                    ) : (
-                      intl.formatMessage(messages.nA)
-                    )}
-                  </Tooltip>
-                </div>
-              ),
-            },
-            {
-              title: (
-                <div key={key}>{`${
-                  value?.impacted_clusters_count !== undefined
-                    ? value.impacted_clusters_count.toLocaleString()
-                    : intl.formatMessage(messages.nA)
-                }`}</div>
-              ),
-            },
-          ],
-        },
-        {
-          fullWidth: true,
-          cells: [
-            {
-              title: (
-                <Main className="pf-m-light">
-                  <Stack hasGutter>
-                    <RuleDetails
-                      isOpenShift
-                      rule={{
-                        ...value,
-                        impact: { impact: value.impact },
-                      }}
-                    />
-                  </Stack>
-                </Main>
-              ),
-            },
-          ],
-        },
-      ]);
+                    date={value.publish_date}
+                    variant="relative"
+                  />
+                ) : (
+                  intl.formatMessage(messages.nA)
+                ),
+              },
+              {
+                title: (
+                  <div key={key}>
+                    <Tooltip
+                      key={key}
+                      position={TooltipPosition.bottom}
+                      content={intl.formatMessage(
+                        messages.rulesDetailsTotalRiskBody,
+                        {
+                          risk:
+                            TOTAL_RISK_LABEL_LOWER[value.total_risk] ||
+                            intl.formatMessage(messages.undefined),
+                          strong: (str) => strong(str),
+                        }
+                      )}
+                    >
+                      {value?.total_risk ? (
+                        <InsightsLabel value={value.total_risk} />
+                      ) : (
+                        intl.formatMessage(messages.nA)
+                      )}
+                    </Tooltip>
+                  </div>
+                ),
+              },
+              {
+                title: (
+                  <div key={key}>{`${
+                    value?.impacted_clusters_count !== undefined
+                      ? value.impacted_clusters_count.toLocaleString()
+                      : intl.formatMessage(messages.nA)
+                  }`}</div>
+                ),
+              },
+            ],
+          },
+          {
+            fullWidth: true,
+            cells: [
+              {
+                title: (
+                  <Main className="pf-m-light">
+                    <Stack hasGutter>
+                      <RuleDetails
+                        isOpenShift
+                        rule={{
+                          ...value,
+                          impact: { impact: value.impact },
+                        }}
+                      />
+                    </Stack>
+                  </Main>
+                ),
+              },
+            ],
+          },
+        ])
+    );
   };
 
   const buildDisplayedRows = (rows) => {
