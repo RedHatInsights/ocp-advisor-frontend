@@ -444,7 +444,7 @@ const ClusterRules = ({ reports }) => {
       <PrimaryToolbar
         actionsConfig={{ actions }}
         bulkSelect={bulkSelect}
-        filterConfig={{ items: filterConfigItems }}
+        filterConfig={{ items: filterConfigItems, isDisabled: results === 0 }}
         pagination={
           <React.Fragment>
             {results === 1
@@ -452,7 +452,7 @@ const ClusterRules = ({ reports }) => {
               : `${results} ${intl.formatMessage(messages.recommendations)}`}
           </React.Fragment>
         }
-        activeFiltersConfig={activeFiltersConfig}
+        activeFiltersConfig={results === 0 ? undefined : activeFiltersConfig}
       />
       {activeReports.length > 0 ? (
         <React.Fragment>
