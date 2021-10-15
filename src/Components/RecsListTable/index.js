@@ -9,15 +9,16 @@ import {
   TableHeader,
   TableVariant,
 } from '@patternfly/react-table';
+import { Card, CardBody } from '@patternfly/react-core/dist/js/components/Card';
 import {
-  Card,
-  CardBody,
   Pagination,
   PaginationVariant,
-  Stack,
+} from '@patternfly/react-core/dist/js/components/Pagination';
+import { Stack } from '@patternfly/react-core/dist/js/layouts/Stack';
+import {
   Tooltip,
   TooltipPosition,
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/dist/js/components/Tooltip';
 
 import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
 import { InsightsLabel } from '@redhat-cloud-services/frontend-components/InsightsLabel';
