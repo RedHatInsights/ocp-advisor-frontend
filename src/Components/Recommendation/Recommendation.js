@@ -1,6 +1,6 @@
 import './Recommendation.scss';
 
-import React, { useCallback } from 'react';
+import React from 'react';
 import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
@@ -18,15 +18,11 @@ import { global_danger_color_100 as globalDangerColor100 } from '@patternfly/rea
 
 import Breadcrumbs from '../Breadcrumbs';
 import RuleLabels from '../RuleLabels/RuleLabels';
-import {
-  FILTER_CATEGORIES,
-  IMPACT_VALUES,
-  RULE_CATEGORIES,
-} from '../../AppConstants';
+import { FILTER_CATEGORIES, RULE_CATEGORIES } from '../../AppConstants';
 import messages from '../../Messages';
 import RuleDetails from './RuleDetails';
 import Loading from '../Loading/Loading';
-import { getErrorKey } from '../../Utilities/RuleName';
+import { adjustOCPRule } from '../../Utilities/Rule';
 import MessageState from '../MessageState/MessageState';
 import AffectedClustersTable from '../AffectedClustersTable';
 
@@ -34,24 +30,9 @@ const Recommendation = ({ rule, match }) => {
   const intl = useIntl();
   const { isError, isUninitialized, isLoading, isFetching, isSuccess, data } =
     rule;
-  // workaround. Should be removed when https://issues.redhat.com/browse/CCXDEV-5534 is done.
-  const adjustOCPRule = useCallback((rule) => {
-    const errorKeyContent =
-      rule.error_keys[getErrorKey(match.params.recommendationId)];
-    const adjusted = {
-      ...rule,
-      ...errorKeyContent,
-      ...errorKeyContent.metadata,
-    };
-    adjusted.impact = {
-      name: IMPACT_VALUES[adjusted.impact],
-      impact: adjusted.impact,
-    };
-    delete adjusted.metadata;
-    delete adjusted.error_keys;
-    return adjusted;
-  }, []);
-  const content = isSuccess ? adjustOCPRule(data.content) : undefined;
+  const content = isSuccess
+    ? adjustOCPRule(data.content, match.params.recommendationId)
+    : undefined;
 
   return (
     <React.Fragment>

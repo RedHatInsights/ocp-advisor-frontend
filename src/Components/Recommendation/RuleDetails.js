@@ -23,10 +23,12 @@ const RuleDetails = ({
         fallback={<Loading />}
         rule={rule}
         customItnl
+        // ! TODO better to compile messages locally and send to async component instead of sharing intl?
         intlProps={intl}
         isDetailsPage={isDetailsPage}
         header={header}
         resolutionRisk={resolutionRisk}
+        isOpenShift
         riskOfChangeDesc={riskOfChangeDesc}
       />
     </div>
