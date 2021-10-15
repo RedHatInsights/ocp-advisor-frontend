@@ -58,11 +58,8 @@ const RecsListTable = () => {
   }, [filteredRows, filters.limit, filters.offset]);
 
   useEffect(() => {
-    const newFilteredRows = buildFilteredRows(recs, filters);
-    const newDisplayedRows = buildDisplayedRows(newFilteredRows);
-    setFilteredRows(newFilteredRows);
-    setDisplayedRows(newDisplayedRows);
-  }, [recs, filters]);
+    setFilteredRows(buildFilteredRows(recs, filters));
+  }, [data, filters]);
 
   // constructs array of rows (from the initial data) checking currently applied filters
   const buildFilteredRows = (allRows, filters) => {
