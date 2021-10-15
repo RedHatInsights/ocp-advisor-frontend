@@ -1,6 +1,6 @@
 import { mount } from 'enzyme';
 import React from 'react';
-
+import { BrowserRouter as Router } from 'react-router-dom';
 import { Breadcrumbs } from './Breadcrumbs';
 
 describe('<Breadcrumbs /> test', () => {
@@ -18,7 +18,11 @@ describe('<Breadcrumbs /> test', () => {
     };
   });
   test('should render breadcrumb with two items', () => {
-    const shallowed = mount(<Breadcrumbs {...props} />);
+    const shallowed = mount(
+      <Router>
+        <Breadcrumbs {...props} />
+      </Router>
+    );
     expect(shallowed.find('BreadcrumbItem')).toHaveLength(2);
   });
 });
