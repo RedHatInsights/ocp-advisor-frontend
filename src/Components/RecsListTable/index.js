@@ -147,7 +147,6 @@ const RecsListTable = () => {
                   <Main className="pf-m-light">
                     <Stack hasGutter>
                       <RuleDetails
-                        isOpenShift
                         rule={{
                           ...value,
                           impact: { impact: value.impact },
