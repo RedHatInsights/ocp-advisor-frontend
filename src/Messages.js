@@ -189,11 +189,11 @@ export default defineMessages({
     description: 'Filter action, reset all filter chips',
     defaultMessage: 'Reset filters',
   },
-  noMatchingRecommendations: {
-    id: 'noMatchingRecommendations',
+  noMatchingRecsTitle: {
+    id: 'noMatchingRecommendationsTitle',
     defaultMessage: 'No matching recommendations found',
   },
-  noMatchingRecommendationsDesc: {
+  noMatchingRecsBody: {
     id: 'noMatchingRecommendationsDesc',
     defaultMessage:
       'This filter criteria matches no recommendations. Try changing your filter settings.',
@@ -284,7 +284,7 @@ export default defineMessages({
   noAffectedClustersBody: {
     id: 'noAffectedClustersBody',
     description: 'Affected clusters table',
-    defaultMessage: 'This recommendation doesn’t affect any cluster.',
+    defaultMessage: 'This recommendation does not affect any cluster.',
   },
   noMatchingClustersTitle: {
     id: 'noMatchingClustersTitle',
@@ -306,5 +306,54 @@ export default defineMessages({
     description: 'Generic message suitable for any network request error',
     defaultMessage:
       'There was a problem processing the request. Please try again.',
+  },
+  riskOfChange: {
+    id: 'riskOfChange',
+    description: 'Used for the recommendations list',
+    defaultMessage: 'Risk of change',
+  },
+  rulesDetailsTotalRiskBody: {
+    id: 'rulesDetailsTotalRiskBody',
+    description: 'Text explaining the total risk value of this recommendation',
+    defaultMessage: `The total risk of this remediation is <strong>{risk}</strong>,
+                        based on the combination of likelihood and impact to remediate.`,
+  },
+  ruleIsDisabledForClusters: {
+    id: 'ruleIsDisabledForClusters',
+    description: 'Exclaiming that the recommendation is disabled for clusters',
+    defaultMessage: 'Recommendation is disabled for some clusters',
+  },
+  ruleIsDisabledForAllClusters: {
+    id: 'ruleIsDisabledForAllClusters',
+    description:
+      'Exclaiming that the recommendation is disabled for all clusters',
+    defaultMessage: 'Recommendation is disabled for all clusters',
+  },
+  ruleIsDisabledForClustersBody: {
+    id: 'ruleIsDisabledForClustersBody',
+    description:
+      'Exclaiming that the recommendation is disabled for clusters (cluster count)',
+    defaultMessage:
+      'Recommendation is disabled for {clusters, plural, one {# cluster} other {# clusters}}',
+  },
+  oneOrMore: {
+    id: 'oneOrMore',
+    description: '1 or more',
+    defaultMessage: '1 or more',
+  },
+  none: {
+    id: 'none',
+    description: 'None',
+    defaultMessage: `None`,
+  },
+  undefined: {
+    id: 'undefined',
+    description: 'Undefined',
+    defaultMessage: 'Undefined',
+  },
+  nA: {
+    id: 'nA',
+    description: 'Abreviated as N/A, text equivelent, not applicable',
+    defaultMessage: 'N/A',
   },
 });
