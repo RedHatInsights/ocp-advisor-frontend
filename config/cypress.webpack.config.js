@@ -1,9 +1,3 @@
-/* eslint-disable camelcase */
-/* global module, __dirname */
-// require('dotenv').config();
-
-// const { resolve } = require('path');
-
 module.exports = {
   module: {
     rules: [
@@ -18,7 +12,7 @@ module.exports = {
       },
       {
         test: /\.s[ac]ss$/i,
-        use: ["style-loader", "css-loader", "sass-loader"],
+        use: ['style-loader', 'css-loader', 'sass-loader'],
       },
       {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
@@ -27,6 +21,6 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: ['*', '.js', '.jsx']
+    extensions: ['*', '.js', '.jsx'],
   },
 };
