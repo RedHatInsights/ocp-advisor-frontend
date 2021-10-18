@@ -83,7 +83,7 @@ const RecsListTable = () => {
                       to={`/recommendations/${
                         process.env.NODE_ENV === 'development'
                           ? value.rule_id.replaceAll('.', '%2E')
-                          : `/recommendations/${value.rule_id}`
+                          : value.rule_id
                       }`}
                     >
                       {' '}
