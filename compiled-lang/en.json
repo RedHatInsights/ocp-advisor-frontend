@@ -45,6 +45,8 @@
   "noRecsErrorDesc": "There was an error fetching recommendations for this cluster. Refresh your page to try again.",
   "noRecsFoundError": "No recommendations to display",
   "noRecsFoundErrorDesc": "Insights identifies and prioritizes risks to security, performance, availability, and stability of your clusters. This feature uses the Remote Health functionality of OpenShift Container Platform. For further details about Insights, see the",
+  "none": "None",
+  "oneOrMore": "1 or more",
   "performance": "Performance",
   "recommendation": "Recommendation",
   "recommendations": "Recommendations",

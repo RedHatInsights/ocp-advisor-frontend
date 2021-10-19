@@ -21,8 +21,15 @@ import messages from '../../Messages';
 
 export const Cluster = ({ cluster, match }) => {
   const intl = useIntl();
-  const { isError, isUninitialized, isLoading, isFetching, isSuccess, data } =
-    cluster;
+  const {
+    isError,
+    isUninitialized,
+    isLoading,
+    isFetching,
+    isSuccess,
+    data,
+    error,
+  } = cluster;
 
   return (
     <React.Fragment>
@@ -32,7 +39,7 @@ export const Cluster = ({ cluster, match }) => {
         </Main>
       )}
       {isError &&
-        (cluster.error?.status === 404 ? (
+        (error?.status === 404 ? (
           <Main>
             <MessageState
               title={intl.formatMessage(messages.noRecsFoundError)}
@@ -41,7 +48,7 @@ export const Cluster = ({ cluster, match }) => {
                   {intl.formatMessage(messages.noRecsFoundErrorDesc)}
                   <a href="https://docs.openshift.com/container-platform/latest/support/getting-support.html">
                     {' '}
-                    OpenShift documentation
+                    OpenShift documentation.
                   </a>
                 </React.Fragment>
               }
