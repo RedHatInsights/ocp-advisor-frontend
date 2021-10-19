@@ -1,15 +1,36 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useRouteMatch } from 'react-router-dom';
+import { useIntl } from 'react-intl';
+import { Link, useLocation } from 'react-router-dom';
 
-import { Breadcrumbs } from './Breadcrumbs';
+import { Breadcrumb } from '@patternfly/react-core/dist/js/components/Breadcrumb/Breadcrumb';
+import { BreadcrumbItem } from '@patternfly/react-core/dist/js/components/Breadcrumb/BreadcrumbItem';
 
-const BreadcrumbsWrapper = ({ current }) => (
-  <Breadcrumbs current={current} match={useRouteMatch()} />
-);
+import messages from '../../Messages';
 
-BreadcrumbsWrapper.propTypes = {
-  current: PropTypes.string.isRequired,
+const Breadcrumbs = ({ current }) => {
+  const intl = useIntl();
+  const location = useLocation();
+  const splitUrl = location.pathname.split('/');
+
+  return (
+    <div ouiaId="breadcrumbs">
+      <Breadcrumb ouiaId="detail">
+        <BreadcrumbItem className="breadcrumb-item">
+          <Link to={`/${splitUrl[1]}`}>
+            {`${intl.formatMessage(messages.insightsHeader)} ${splitUrl[1]}`}
+          </Link>
+        </BreadcrumbItem>
+        <BreadcrumbItem className="breadcrumb-item" isActive>
+          {current}
+        </BreadcrumbItem>
+      </Breadcrumb>
+    </div>
+  );
 };
 
-export default BreadcrumbsWrapper;
+Breadcrumbs.propTypes = {
+  current: PropTypes.string,
+};
+
+export default Breadcrumbs;
