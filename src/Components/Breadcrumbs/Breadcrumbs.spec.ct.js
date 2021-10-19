@@ -1,41 +1,65 @@
-import { mount } from '@cypress/react';
 import React from 'react';
+import { mount } from '@cypress/react';
 import { IntlProvider } from 'react-intl';
-import { MemoryRouter } from 'react-router';
+import { MemoryRouter } from 'react-router-dom';
 
 import Breadcrumbs from './';
 
 describe('breadcrumbs', () => {
   let props;
 
-  beforeEach(() => {
+  it('renders breadcrumbs: single rec page', () => {
     props = {
-      current: 'foobar',
-      match: {
-        url: '/clusters/foobar',
-        params: {
-          clusterId: 'foobar',
-        },
-      },
+      current: 'Cluster upgrade will fail when default SCC gets changed',
     };
-  });
-  it('renders breadcrumbs A', () => {
-    props.current = 'barfoo';
     mount(
-      <MemoryRouter>
+      <MemoryRouter
+        initialEntries={['/recommendations/ccxdev.external.123|ERROR_KEY']}
+        initialIndex={0}
+      >
         <IntlProvider locale="en">
           <Breadcrumbs {...props} />
         </IntlProvider>
       </MemoryRouter>
     );
+    cy.get('.breadcrumb-item').should('have.length', 2);
+    cy.get('.breadcrumb-item')
+      .eq(0)
+      .should('have.text', 'Advisor recommendations');
+    cy.get('.breadcrumb-item')
+      .eq(0)
+      .find('a')
+      .should('have.attr', 'href', '/recommendations');
+    cy.get('.breadcrumb-item')
+      .eq(1)
+      .should(
+        'have.text',
+        'Cluster upgrade will fail when default SCC gets changed'
+      );
+    cy.get('.breadcrumb-item').eq(1).find('span').should('have.length', 1);
   });
-  it('renders breadcrumbs B', () => {
+
+  it('renders breadcrumbs: single cluster page', () => {
+    props = {
+      current: 'Cluster with issues',
+    };
     mount(
-      <MemoryRouter>
+      <MemoryRouter
+        initialEntries={['/clusters/d6964a24-a78c-4bdc-8100-17e797efe3d3']}
+        initialIndex={0}
+      >
         <IntlProvider locale="en">
           <Breadcrumbs {...props} />
         </IntlProvider>
       </MemoryRouter>
     );
+    cy.get('.breadcrumb-item').should('have.length', 2);
+    cy.get('.breadcrumb-item').eq(0).should('have.text', 'Advisor clusters');
+    cy.get('.breadcrumb-item')
+      .eq(0)
+      .find('a')
+      .should('have.attr', 'href', '/clusters');
+    cy.get('.breadcrumb-item').eq(1).should('have.text', 'Cluster with issues');
+    cy.get('.breadcrumb-item').eq(1).find('span').should('have.length', 1);
   });
 });
