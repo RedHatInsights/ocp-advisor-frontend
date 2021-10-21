@@ -440,7 +440,7 @@ const ClusterRules = ({ reports }) => {
   }, []);
 
   return (
-    <div>
+    <div id="cluster-recs-list-table">
       <PrimaryToolbar
         actionsConfig={{ actions }}
         bulkSelect={bulkSelect}
