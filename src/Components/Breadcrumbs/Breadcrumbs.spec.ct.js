@@ -6,6 +6,7 @@ import { MemoryRouter } from 'react-router-dom';
 import Breadcrumbs from './';
 
 describe('breadcrumbs', () => {
+  const BREADCRUMB_ITEM = '.breadcrumb-item';
   let props;
 
   it('renders breadcrumbs: single rec page', () => {
@@ -22,21 +23,21 @@ describe('breadcrumbs', () => {
         </IntlProvider>
       </MemoryRouter>
     );
-    cy.get('.breadcrumb-item').should('have.length', 2);
-    cy.get('.breadcrumb-item')
+    cy.get(BREADCRUMB_ITEM).should('have.length', 2);
+    cy.get(BREADCRUMB_ITEM)
       .eq(0)
       .should('have.text', 'Advisor recommendations');
-    cy.get('.breadcrumb-item')
+    cy.get(BREADCRUMB_ITEM)
       .eq(0)
       .find('a')
       .should('have.attr', 'href', '/recommendations');
-    cy.get('.breadcrumb-item')
+    cy.get(BREADCRUMB_ITEM)
       .eq(1)
       .should(
         'have.text',
         'Cluster upgrade will fail when default SCC gets changed'
       );
-    cy.get('.breadcrumb-item').eq(1).find('span').should('have.length', 1);
+    cy.get(BREADCRUMB_ITEM).eq(1).find('span').should('have.length', 1);
   });
 
   it('renders breadcrumbs: single cluster page', () => {
@@ -53,13 +54,13 @@ describe('breadcrumbs', () => {
         </IntlProvider>
       </MemoryRouter>
     );
-    cy.get('.breadcrumb-item').should('have.length', 2);
-    cy.get('.breadcrumb-item').eq(0).should('have.text', 'Advisor clusters');
-    cy.get('.breadcrumb-item')
+    cy.get(BREADCRUMB_ITEM).should('have.length', 2);
+    cy.get(BREADCRUMB_ITEM).eq(0).should('have.text', 'Advisor clusters');
+    cy.get(BREADCRUMB_ITEM)
       .eq(0)
       .find('a')
       .should('have.attr', 'href', '/clusters');
-    cy.get('.breadcrumb-item').eq(1).should('have.text', 'Cluster with issues');
-    cy.get('.breadcrumb-item').eq(1).find('span').should('have.length', 1);
+    cy.get(BREADCRUMB_ITEM).eq(1).should('have.text', 'Cluster with issues');
+    cy.get(BREADCRUMB_ITEM).eq(1).find('span').should('have.length', 1);
   });
 });

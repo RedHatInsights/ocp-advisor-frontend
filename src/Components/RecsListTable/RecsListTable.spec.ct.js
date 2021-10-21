@@ -8,6 +8,8 @@ import RecsListTable from './';
 import getStore from '../../Store';
 
 describe('recommendations list table', () => {
+  const RECS_LIST_TABLE = 'div[id=recs-list-table]';
+
   beforeEach(() => {
     cy.intercept('*', (req) => {
       req.destroy();
@@ -39,31 +41,35 @@ describe('recommendations list table', () => {
       </IntlProvider>
     );
   });
+
   it('renders table', () => {
-    cy.get('div[id=recs-list-table]').should('have.length', 1);
+    cy.get(RECS_LIST_TABLE).should('have.length', 1);
   });
+
   it('renders Clusters impacted chip group', () => {
-    cy.get('div[id=recs-list-table]').should('have.length', 1);
-    cy.get('div[id=recs-list-table]')
+    cy.get(RECS_LIST_TABLE).should('have.length', 1);
+    cy.get(RECS_LIST_TABLE)
       .find('span[class=pf-c-chip-group__label]')
       .should('have.length', 1)
       .and('have.text', 'Clusters impacted');
-    cy.get('div[id=recs-list-table]')
+    cy.get(RECS_LIST_TABLE)
       .find('li[class=pf-c-chip-group__list-item]')
       .should('have.length', 1)
       .and('have.text', '1 or more');
   });
+
   it('six filters available', () => {
-    cy.get('div[id=recs-list-table]')
+    const FILTERS_DROPDOWN = 'ul[class=pf-c-dropdown__menu]';
+    const FILTER_ITEM = 'button[class=pf-c-dropdown__menu-item]';
+
+    cy.get(RECS_LIST_TABLE)
       .should('have.length', 1)
       .find('button[class=pf-c-dropdown__toggle]')
       .should('have.length', 1)
       .click();
-    cy.get('ul[class=pf-c-dropdown__menu]')
-      .find('button[class=pf-c-dropdown__menu-item]')
-      .should('have.length', 6);
-    cy.get('ul[class=pf-c-dropdown__menu]')
-      .find('button[class=pf-c-dropdown__menu-item]')
+    cy.get(FILTERS_DROPDOWN).find(FILTER_ITEM).should('have.length', 6);
+    cy.get(FILTERS_DROPDOWN)
+      .find(FILTER_ITEM)
       .each(($el) =>
         expect($el.text()).to.be.oneOf([
           'Name',
@@ -75,19 +81,21 @@ describe('recommendations list table', () => {
         ])
       );
   });
+
   it('table has 5 recs', () => {
-    cy.get('table[data-ouia-component-id=recsListTable]')
+    cy.get(RECS_LIST_TABLE)
       .should('have.length', 1)
       .find('tbody[role=rowgroup]')
       .should('have.length', 5);
   });
+
   it('table has 9 recs including non-impacting', () => {
     cy.get('div[class=pf-c-chip]')
       .contains('1 or more')
       .parent()
       .find('button[data-ouia-component-id=close]')
       .click();
-    cy.get('table[data-ouia-component-id=recsListTable]')
+    cy.get(RECS_LIST_TABLE)
       .should('have.length', 1)
       .find('tbody[role=rowgroup]')
       .should('have.length', 9);
