@@ -27,13 +27,13 @@ const App = () => {
   }, []);
 
   return (
-    <React.Fragment>
-      <ErrorBoundary>
-        {new Error('Wahahah')}
+    <ErrorBoundary>
+      {Error('message')}
+      <React.Fragment>
         <NotificationsPortal />
         <Routes />
-      </ErrorBoundary>
-    </React.Fragment>
+      </React.Fragment>
+    </ErrorBoundary>
   );
 };
 

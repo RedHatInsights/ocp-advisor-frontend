@@ -1,5 +1,5 @@
 import React from 'react';
-import { injectIntl, formatMessage } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
 import { Alert } from '@patternfly/react-core';
@@ -10,7 +10,11 @@ import messages from '../Messages';
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { hasError: false, error: null, info: null };
+    this.state = {
+      hasError: false,
+      error: null,
+      info: null,
+    };
   }
 
   componentDidCatch(error, info) {
@@ -22,8 +26,7 @@ class ErrorBoundary extends React.Component {
   }
 
   render() {
-    const intl = this.props.intl;
-    const message = this.props.formatMessage;
+    const { intl } = this.props;
     const { error, info } = this.state;
     if (error) {
       return (
@@ -32,9 +35,9 @@ class ErrorBoundary extends React.Component {
             {this.state.error}
             {info.componentStack}
             <Title headingLevel="h4" size="lg">
-              {intl.message(messages.errorStateTitle)}
+              {intl.formatMessage(messages.errorStateTitle)}
             </Title>
-            <StackItem>{intl.message(messages.errorStateBody)}</StackItem>
+            <StackItem>{intl.formatMessage(messages.errorStateBody)}</StackItem>
           </div>
         </Alert>
       );
