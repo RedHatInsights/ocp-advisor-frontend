@@ -28,7 +28,6 @@ const App = () => {
 
   return (
     <ErrorBoundary>
-      {Error('message')}
       <React.Fragment>
         <NotificationsPortal />
         <Routes />
