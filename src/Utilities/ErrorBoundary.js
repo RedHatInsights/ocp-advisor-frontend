@@ -1,5 +1,5 @@
 import React from 'react';
-import { useIntl } from 'react-intl';
+import { injectIntl, formatMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 
 import { Alert } from '@patternfly/react-core';
@@ -22,18 +22,19 @@ class ErrorBoundary extends React.Component {
   }
 
   render() {
-    const intl = useIntl();
-
-    if (this.state.hasError) {
+    const intl = this.props.intl;
+    const message = this.props.formatMessage;
+    const { error, info } = this.state;
+    if (error) {
       return (
         <Alert>
           <div>
             {this.state.error}
-            {this.state.info.componentStack}
+            {info.componentStack}
             <Title headingLevel="h4" size="lg">
-              {intl.formatMessage(messages.errorStateTitle)}
+              {intl.message(messages.errorStateTitle)}
             </Title>
-            <StackItem>{intl.formatMessage(messages.errorStateBody)}</StackItem>
+            <StackItem>{intl.message(messages.errorStateBody)}</StackItem>
           </div>
         </Alert>
       );
@@ -47,4 +48,4 @@ ErrorBoundary.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-export default ErrorBoundary;
+export default injectIntl(ErrorBoundary);
