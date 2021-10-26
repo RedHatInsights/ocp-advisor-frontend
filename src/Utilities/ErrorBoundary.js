@@ -3,30 +3,30 @@ import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
 import { ErrorState } from '../Components/MessageState/EmptyStates';
+import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye/Bullseye';
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       hasError: false,
-      error: null,
     };
   }
 
-  componentDidCatch(error) {
+  componentDidCatch() {
     this.setState({
       hasError: true,
-      error: error.toString(),
     });
   }
 
   render() {
-    const { error } = this.state;
-    if (error) {
-      return <ErrorState />;
-    }
-
-    return this.props.children;
+    return this.state.hasError ? (
+      <Bullseye>
+        <ErrorState />
+      </Bullseye>
+    ) : (
+      this.props.children
+    );
   }
 }
 

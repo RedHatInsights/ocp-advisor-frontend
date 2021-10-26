@@ -28,10 +28,8 @@ const App = () => {
 
   return (
     <ErrorBoundary>
-      <React.Fragment>
-        <NotificationsPortal />
-        <Routes />
-      </React.Fragment>
+      <NotificationsPortal />
+      <Routes />
     </ErrorBoundary>
   );
 };
