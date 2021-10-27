@@ -1,7 +1,7 @@
 import { mount } from 'enzyme';
 import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { Breadcrumbs } from './Breadcrumbs';
+import Breadcrumbs from './';
 
 describe('<Breadcrumbs /> test', () => {
   let props;

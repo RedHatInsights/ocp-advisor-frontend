@@ -22,7 +22,6 @@ import {
 
 import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
 import { InsightsLabel } from '@redhat-cloud-services/frontend-components/InsightsLabel';
-import { Main } from '@redhat-cloud-services/frontend-components/Main';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar/PrimaryToolbar';
 
 import {
@@ -145,7 +144,7 @@ const RecsListTable = () => {
             cells: [
               {
                 title: (
-                  <Main className="pf-m-light">
+                  <section className="pf-m-light pf-l-page__main-section pf-c-page__main-section">
                     <Stack hasGutter>
                       <RuleDetails
                         rule={{
@@ -154,9 +153,10 @@ const RecsListTable = () => {
                           // TODO: fix <Router> issue in the async component and then remove the line below
                           impacted_clusters_count: undefined,
                         }}
+                        isDetailsPage={false}
                       />
                     </Stack>
-                  </Main>
+                  </section>
                 ),
               },
             ],
@@ -393,7 +393,7 @@ const RecsListTable = () => {
   };
 
   return (
-    <React.Fragment>
+    <div id="recs-list-table">
       <PrimaryToolbar
         pagination={{
           itemCount: filteredRows.length,
@@ -464,7 +464,7 @@ const RecsListTable = () => {
         widgetId={`pagination-options-menu-bottom`}
         variant={PaginationVariant.bottom}
       />
-    </React.Fragment>
+    </div>
   );
 };
 
