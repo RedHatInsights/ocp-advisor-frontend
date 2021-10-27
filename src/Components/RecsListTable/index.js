@@ -48,7 +48,7 @@ const RecsListTable = () => {
   const dispatch = useDispatch();
   const filters = useSelector(({ filters }) => filters.recsListState);
   const { isError, isUninitialized, isFetching, isSuccess, data } =
-    useGetRecsQuery({ impacting: false });
+    useGetRecsQuery();
   const recs = data?.recommendations || [];
   const page = filters.offset / filters.limit + 1;
   const [filteredRows, setFilteredRows] = useState([]);

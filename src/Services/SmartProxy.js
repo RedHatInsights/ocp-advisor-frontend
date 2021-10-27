@@ -21,7 +21,7 @@ export const SmartProxyApi = createApi({
       transformResponse: (response) => response?.data,
     }),
     getRecs: builder.query({
-      query: (params) => `v2/rule?impacting=${params.impacting}`,
+      query: () => `v2/rule`,
     }),
   }),
 });
