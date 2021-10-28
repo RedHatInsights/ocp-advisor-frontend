@@ -31,7 +31,8 @@ You can use the mocked version of Insights Results Aggregator (or Smart Proxy) A
 
 ### Testing
 
-`npm run verify` will run `npm run lint` (eslint) and `npm test` (Jest)
+- Run `npm run test` to execute unit-test suite (Jest + Cypress component testing).
+- Run `npx cypress open-ct` to open Cypress in component tesing mode.
 
 ## Deploying
 
