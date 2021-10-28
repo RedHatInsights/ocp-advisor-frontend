@@ -14,11 +14,9 @@ describe('recommendations list table', () => {
     cy.intercept('*', (req) => {
       req.destroy();
     });
-    cy.intercept(
-      'GET',
-      'api/insights-results-aggregator/v2/rule?impacting=false',
-      { fixture: 'api/insights-results-aggregator/v2/rule.json' }
-    );
+    cy.intercept('GET', 'api/insights-results-aggregator/v2/rule', {
+      fixture: 'api/insights-results-aggregator/v2/rule.json',
+    });
     // tables utilizes federated module and throws error when RHEL Advisor manifestaion not found
     window['__scalprum__'] = {
       apps: {},
