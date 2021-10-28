@@ -1,6 +1,8 @@
-extends: "@redhat-cloud-services/eslint-config-redhat-cloud-services"
+extends:
+  - "@redhat-cloud-services/eslint-config-redhat-cloud-services"
+  - "plugin:cypress/recommended"
 globals:
-  insights: 'readonly'
+  insights: "readonly"
   shallow: readonly
-  render: 'readonly'
-  mount: 'readonly'
+  render: "readonly"
+  mount: "readonly"

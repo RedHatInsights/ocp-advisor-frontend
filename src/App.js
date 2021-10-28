@@ -8,6 +8,7 @@ import { getRegistry } from '@redhat-cloud-services/frontend-components-utilitie
 import { notificationsReducer } from '@redhat-cloud-services/frontend-components-notifications/redux';
 
 import { Routes } from './Routes';
+import ErrorBoundary from './Utilities/ErrorBoundary';
 
 const App = () => {
   const history = useHistory();
@@ -26,10 +27,10 @@ const App = () => {
   }, []);
 
   return (
-    <React.Fragment>
+    <ErrorBoundary>
       <NotificationsPortal />
       <Routes />
-    </React.Fragment>
+    </ErrorBoundary>
   );
 };
 

@@ -1,4 +1,4 @@
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import React, { Suspense, lazy } from 'react';
 
 import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
@@ -16,6 +16,10 @@ const Recommendation = lazy(() =>
   import(/* webpackChunkName: "Recommendation" */ './Components/Recommendation')
 );
 
+const RecsList = lazy(() =>
+  import(/* webpackChunkName: "RecsList" */ './Components/RecsList')
+);
+
 const paths = [
   {
     title: 'Clusters',
@@ -26,6 +30,11 @@ const paths = [
     title: 'Recommendations',
     path: '/recommendations/:recommendationId',
     component: Recommendation,
+  },
+  {
+    title: 'Recommendations',
+    path: '/recommendations',
+    component: RecsList,
   },
 ];
 
@@ -49,6 +58,7 @@ export const Routes = () => (
       {paths.map((path) => (
         <Route key={path.title} path={path.path} component={path.component} />
       ))}
+      <Redirect exact from="/" to="/recommendations" />
       {/* Finally, catch all unmatched routes */}
       <Route
         path="*"

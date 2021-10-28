@@ -35,6 +35,7 @@ import {
 } from '../../AppConstants';
 import ReportDetails from '../ReportDetails/ReportDetails';
 import RuleLabels from '../RuleLabels/RuleLabels';
+import { NoMatchingRecs } from '../MessageState/EmptyStates';
 
 const ClusterRules = ({ reports }) => {
   const intl = useIntl();
@@ -439,11 +440,11 @@ const ClusterRules = ({ reports }) => {
   }, []);
 
   return (
-    <div>
+    <div id="cluster-recs-list-table">
       <PrimaryToolbar
         actionsConfig={{ actions }}
         bulkSelect={bulkSelect}
-        filterConfig={{ items: filterConfigItems }}
+        filterConfig={{ items: filterConfigItems, isDisabled: results === 0 }}
         pagination={
           <React.Fragment>
             {results === 1
@@ -451,7 +452,7 @@ const ClusterRules = ({ reports }) => {
               : `${results} ${intl.formatMessage(messages.recommendations)}`}
           </React.Fragment>
         }
-        activeFiltersConfig={activeFiltersConfig}
+        activeFiltersConfig={results === 0 ? undefined : activeFiltersConfig}
       />
       {activeReports.length > 0 ? (
         <React.Fragment>
@@ -474,12 +475,7 @@ const ClusterRules = ({ reports }) => {
           {results === 0 && (
             <Card ouiaId={'empty-recommendations'}>
               <CardBody>
-                <MessageState
-                  title={intl.formatMessage(messages.noMatchingRecommendations)}
-                  text={intl.formatMessage(
-                    messages.noMatchingRecommendationsDesc
-                  )}
-                />
+                <NoMatchingRecs />
               </CardBody>
             </Card>
           )}
