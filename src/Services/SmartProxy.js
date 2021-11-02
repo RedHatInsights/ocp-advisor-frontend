@@ -14,7 +14,7 @@ export const SmartProxyApi = createApi({
     }),
     // Get rule's content using id (recId = recommendation id) in the rule_plugin_name|error_key format
     getRuleById: builder.query({
-      query: (recId) => `v1/rules/${recId}/content`,
+      query: (recId) => `v2/rule/${recId}`,
     }),
     getAffectedClusters: builder.query({
       query: (recId) => `v2/rule/${recId}/clusters_detail`,
