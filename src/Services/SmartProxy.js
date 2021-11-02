@@ -17,7 +17,7 @@ export const SmartProxyApi = createApi({
       query: (recId) => `v1/rules/${recId}/content`,
     }),
     getAffectedClusters: builder.query({
-      query: (recId) => `v1/rule/${recId}/clusters_detail`,
+      query: (recId) => `v2/rule/${recId}/clusters_detail`,
       transformResponse: (response) => response?.data,
     }),
     getRecs: builder.query({
