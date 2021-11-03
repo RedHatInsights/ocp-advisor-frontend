@@ -1,43 +1,34 @@
 import React from 'react';
 import { mount } from '@cypress/react';
-import { IntlProvider } from 'react-intl';
-import { MemoryRouter, Route } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 
+import { AffectedClustersTable } from './AffectedClustersTable';
+import props from '../../../cypress/fixtures/AffectedClustersTable/data.json';
+import { Intl } from '../../AppEntry';
 import getStore from '../../Store';
-import AffectedClustersTable from './';
 
 describe('affected clusters table', () => {
   const AFFECTED_LIST_TABLE = 'div[id=affected-list-table]';
   const ROW = 'tbody[role=rowgroup]';
 
   beforeEach(() => {
-    cy.intercept('*', (req) => {
-      req.destroy();
-    });
-    cy.intercept(
-      'GET',
-      'api/insights-results-aggregator/v2/rule/external.rules.rule_n_one%7CERROR_KEY_N1/clusters_detail',
-      {
-        fixture:
-          'api/insights-results-aggregator/v2/rule/external.rules.rule_n_one%7CERROR_KEY_N1/clusters_detail.json',
-      }
-    );
     mount(
-      <IntlProvider locale="en">
-        <Provider store={getStore()}>
-          <MemoryRouter
-            initialEntries={[
-              '/recommendations/external.rules.rule_n_one|ERROR_KEY_N1',
-            ]}
-            initialIndex={0}
-          >
-            <Route path="/recommendations/:recommendationId">
-              <AffectedClustersTable />
-            </Route>
-          </MemoryRouter>
-        </Provider>
-      </IntlProvider>
+      <MemoryRouter>
+        <Intl>
+          <Provider store={getStore()}>
+            <AffectedClustersTable
+              query={{
+                isError: false,
+                isFetching: false,
+                isUninitialized: false,
+                isSuccess: true,
+                data: props,
+              }}
+            />
+          </Provider>
+        </Intl>
+      </MemoryRouter>
     );
   });
 
