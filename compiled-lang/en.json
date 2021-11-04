@@ -48,6 +48,8 @@
   "none": "None",
   "oneOrMore": "1 or more",
   "performance": "Performance",
+  "permsBody": "To view the content of this page, you must be granted a minimum of Advisor permissions from your Organization Administrator.",
+  "permsTitle": "You do not have access to Advisor",
   "recommendation": "Recommendation",
   "recommendations": "Recommendations",
   "resetFilters": "Reset filters",
