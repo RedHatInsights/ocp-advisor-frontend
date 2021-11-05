@@ -25,14 +25,15 @@ import Loading from '../Loading/Loading';
 import { adjustOCPRule } from '../../Utilities/Rule';
 import MessageState from '../MessageState/MessageState';
 import AffectedClustersTable from '../AffectedClustersTable';
+import { Post } from '../../Utilities/Api';
+import { BASE_URL } from '../../Services/SmartProxy';
 
 const Recommendation = ({ rule, match }) => {
   const intl = useIntl();
   const { isError, isUninitialized, isLoading, isFetching, isSuccess, data } =
     rule;
-  const content = isSuccess
-    ? adjustOCPRule(data.content, match.params.recommendationId)
-    : undefined;
+  const recId = match.params.recommendationId;
+  const content = isSuccess ? adjustOCPRule(data.content, recId) : undefined;
 
   return (
     <React.Fragment>
@@ -51,12 +52,10 @@ const Recommendation = ({ rule, match }) => {
           />
         </Main>
       )}
-      {isSuccess && (
+      {!(isUninitialized || isLoading || isFetching) && isSuccess && (
         <React.Fragment>
           <PageHeader className="pageHeaderOverride">
-            <Breadcrumbs
-              current={content?.description || match.params.recommendationId}
-            />
+            <Breadcrumbs current={content?.description || recId} />
           </PageHeader>
           <Main className="pf-m-light pf-u-pt-sm">
             <RuleDetails
@@ -104,6 +103,9 @@ const Recommendation = ({ rule, match }) => {
                       ))}
                   </p>
                 </React.Fragment>
+              }
+              onFeedbackChanged={async (rule, rating) =>
+                await Post(`${BASE_URL}/v2/rating`, {}, { rule, rating })
               }
             />
           </Main>

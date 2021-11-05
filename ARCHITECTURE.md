@@ -19,3 +19,12 @@ This repo uses a [shared common config](https://www.npmjs.com/package/@redhat-cl
 
 This repo uses [federated modules](https://webpack.js.org/concepts/module-federation/) to seamlessly load multiple applications at runtime.
 
+## Federated modules
+
+Webpack 5 comes with a feature called "federated modules." The feature is often used within the c.r.c. platform, and both OCP and RHEL Advisors are interchanging some of the common components.
+
+| Module name | Source code |
+| ----------- | ----------- |
+| Rule Details | https://github.com/RedHatInsights/insights-advisor-frontend/blob/master/src/PresentationalComponents/RuleDetails/RuleDetails.js |
+| Report Details | https://github.com/RedHatInsights/insights-advisor-frontend/blob/master/src/PresentationalComponents/ReportDetails/ReportDetails.js
+

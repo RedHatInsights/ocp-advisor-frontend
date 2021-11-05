@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-const BASE_URL = '/api/insights-results-aggregator';
+export const BASE_URL = '/api/insights-results-aggregator';
 
 export const SmartProxyApi = createApi({
   reducerPath: 'smartProxy',
