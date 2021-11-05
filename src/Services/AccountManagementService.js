@@ -1,6 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-const BASE_URL = 'https://api.openshift.com/api/accounts_mgmt/v1';
+const BASE_URL = insights.chrome.isProd
+  ? 'https://api.openshift.com/api/accounts_mgmt/v1'
+  : 'https://api.stage.openshift.com/api/accounts_mgmt/v1';
 
 export const AmsApi = createApi({
   reducerPath: 'ams',

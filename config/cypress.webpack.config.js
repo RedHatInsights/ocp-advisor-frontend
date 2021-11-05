@@ -1,3 +1,5 @@
+const webpack = require('webpack');
+
 module.exports = {
   module: {
     rules: [
@@ -23,4 +25,7 @@ module.exports = {
   resolve: {
     extensions: ['*', '.js', '.jsx'],
   },
+  plugins: [
+    new webpack.DefinePlugin({ insights: { chrome: { isProd: false } } }),
+  ],
 };

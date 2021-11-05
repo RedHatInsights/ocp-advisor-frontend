@@ -195,8 +195,7 @@ export default defineMessages({
   },
   noMatchingRecsBody: {
     id: 'noMatchingRecommendationsDesc',
-    defaultMessage:
-      'This filter criteria matches no recommendations. Try changing your filter settings.',
+    defaultMessage: 'To continue, edit your filter settings and search again.',
   },
   noRecommendations: {
     id: 'noRecommendations',
