@@ -37,7 +37,7 @@
   "noClustersErrorDesc": "There was an error fetching affected clusters for this recommendation.",
   "noMatchingClustersDesc": "To continue, edit your filter settings and search again.",
   "noMatchingClustersTitle": "No matching clusters found",
-  "noMatchingRecommendationsDesc": "This filter criteria matches no recommendations. Try changing your filter settings.",
+  "noMatchingRecommendationsDesc": "To continue, edit your filter settings and search again.",
   "noMatchingRecommendationsTitle": "No matching recommendations found",
   "noRecommendations": "The cluster is not affected by any known recommendations",
   "noRecommendationsDesc": "No known recommendations affect this cluster.",
