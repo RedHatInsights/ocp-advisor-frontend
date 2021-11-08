@@ -4,6 +4,7 @@ import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 
 import {
+  SortByDirection,
   Table,
   TableBody,
   TableHeader,
@@ -53,6 +54,8 @@ const RecsListTable = () => {
   const page = filters.offset / filters.limit + 1;
   const [filteredRows, setFilteredRows] = useState([]);
   const [displayedRows, setDisplayedRows] = useState([]);
+  const [recommendations, setRecommendations] = useState(recs);
+  const [sortBy, setSortBy] = useState({});
 
   useEffect(() => {
     setDisplayedRows(buildDisplayedRows(filteredRows));
@@ -296,6 +299,35 @@ const RecsListTable = () => {
     },
   ];
 
+  const onSort = (event, index, direction) => {
+    const sortedRecommendations = {
+      2: 'name',
+      3: 'added',
+      4: 'total risk',
+      5: 'clusters',
+    };
+    const sort = () =>
+      recommendations
+        .concat()
+        .sort((firstItem, secondItem) =>
+          firstItem[sortedRecommendations[index]] >
+          secondItem[sortedRecommendations[index]]
+            ? 1
+            : secondItem[sortedRecommendations[index]] >
+              firstItem[sortedRecommendations[index]]
+            ? -1
+            : 0
+        );
+    const sortRecsDirection =
+      direction === SortByDirection.asc ? sort() : sort().reverse();
+    setRecommendations(sortRecsDirection);
+    setSortBy({
+      index,
+      direction,
+    });
+    setDisplayedRows(buildDisplayedRows(sortRecsDirection));
+  };
+
   const capitalize = (string) => string[0].toUpperCase() + string.substring(1);
 
   const pruneFilters = (localFilters, filterCategories) => {
@@ -432,6 +464,8 @@ const RecsListTable = () => {
             cells={RECS_LIST_COLUMNS}
             rows={displayedRows}
             onCollapse={handleOnCollapse}
+            sortBy={sortBy}
+            onSort={onSort}
           >
             <TableHeader />
             <TableBody />
