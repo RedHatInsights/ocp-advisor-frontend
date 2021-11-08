@@ -353,7 +353,9 @@ const ClusterRules = ({ reports }) => {
 
   const onChipDelete = (_e, itemsToRemove, isAll) => {
     if (isAll) {
-      setRows(buildRows(activeReports, {}, rows, ''));
+      setRows(
+        buildRows(activeReports, DEFAULT_CLUSTER_RULES_FILTERS, rows, '')
+      );
       setFilters(DEFAULT_CLUSTER_RULES_FILTERS);
       setSearchValue('');
     } else {
@@ -394,7 +396,10 @@ const ClusterRules = ({ reports }) => {
     <div id="cluster-recs-list-table">
       <PrimaryToolbar
         actionsConfig={{ actions }}
-        filterConfig={{ items: filterConfigItems, isDisabled: results === 0 }}
+        filterConfig={{
+          items: filterConfigItems,
+          isDisabled: activeReports.length === 0,
+        }}
         pagination={
           <React.Fragment>
             {results === 1
@@ -402,7 +407,9 @@ const ClusterRules = ({ reports }) => {
               : `${results} ${intl.formatMessage(messages.recommendations)}`}
           </React.Fragment>
         }
-        activeFiltersConfig={results === 0 ? undefined : activeFiltersConfig}
+        activeFiltersConfig={
+          activeReports.length === 0 ? undefined : activeFiltersConfig
+        }
       />
       {activeReports.length > 0 ? (
         <React.Fragment>
