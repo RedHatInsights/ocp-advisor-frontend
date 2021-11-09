@@ -5,8 +5,8 @@ exports[`<Cluster /> test renders correctly 1`] = `
   <PageHeader
     className="pf-m-light ins-inventory-detail"
   >
-    <BreadcrumbsWrapper
-      current="foobar"
+    <Breadcrumbs
+      current="display-name-123"
       match={
         Object {
           "params": Object {
@@ -36,6 +36,22 @@ exports[`<Cluster /> test renders correctly 1`] = `
 
 exports[`<Cluster /> test renders correctly when cluster loading 1`] = `
 <Fragment>
+  <PageHeader
+    className="pf-m-light ins-inventory-detail"
+  >
+    <Breadcrumbs
+      current="display-name-123"
+      match={
+        Object {
+          "params": Object {
+            "clusterId": "foobar",
+          },
+          "url": "foobar",
+        }
+      }
+    />
+    <mockConstructor />
+  </PageHeader>
   <Connect(Main)>
     <Loading />
   </Connect(Main)>
@@ -44,6 +60,22 @@ exports[`<Cluster /> test renders correctly when cluster loading 1`] = `
 
 exports[`<Cluster /> test renders correctly when cluster unavailable 1`] = `
 <Fragment>
+  <PageHeader
+    className="pf-m-light ins-inventory-detail"
+  >
+    <Breadcrumbs
+      current="display-name-123"
+      match={
+        Object {
+          "params": Object {
+            "clusterId": "foobar",
+          },
+          "url": "foobar",
+        }
+      }
+    />
+    <mockConstructor />
+  </PageHeader>
   <Connect(Main)>
     <MessageState
       icon={[Function]}

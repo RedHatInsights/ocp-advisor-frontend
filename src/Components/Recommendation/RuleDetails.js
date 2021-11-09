@@ -12,6 +12,7 @@ const RuleDetails = ({
   isDetailsPage,
   resolutionRisk,
   riskOfChangeDesc,
+  onFeedbackChanged,
 }) => {
   const intl = useIntl();
 
@@ -23,13 +24,13 @@ const RuleDetails = ({
         fallback={<Loading />}
         rule={rule}
         customItnl
-        // ! TODO better to compile messages locally and send to async component instead of sharing intl?
         intlProps={intl}
         isDetailsPage={isDetailsPage}
         header={header}
         resolutionRisk={resolutionRisk}
         isOpenShift
         riskOfChangeDesc={riskOfChangeDesc}
+        onFeedbackChanged={onFeedbackChanged}
       />
     </div>
   );
@@ -41,6 +42,7 @@ RuleDetails.propTypes = {
   rule: PropTypes.object.isRequired,
   resolutionRisk: PropTypes.number,
   riskOfChangeDesc: PropTypes.string,
+  onFeedbackChanged: PropTypes.func,
 };
 
 export default RuleDetails;
