@@ -17,10 +17,10 @@ describe('affected clusters table', () => {
     });
     cy.intercept(
       'GET',
-      'api/insights-results-aggregator/v1/rule/external.rules.rule_n_one%7CERROR_KEY_N1/clusters_detail',
+      'api/insights-results-aggregator/v2/rule/external.rules.rule_n_one%7CERROR_KEY_N1/clusters_detail',
       {
         fixture:
-          'api/insights-results-aggregator/v1/rule/external.rules.rule_n_one%7CERROR_KEY_N1/clusters_detail.json',
+          'api/insights-results-aggregator/v2/rule/external.rules.rule_n_one%7CERROR_KEY_N1/clusters_detail.json',
       }
     );
     mount(

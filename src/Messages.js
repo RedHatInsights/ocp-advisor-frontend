@@ -195,8 +195,7 @@ export default defineMessages({
   },
   noMatchingRecsBody: {
     id: 'noMatchingRecommendationsDesc',
-    defaultMessage:
-      'This filter criteria matches no recommendations. Try changing your filter settings.',
+    defaultMessage: 'To continue, edit your filter settings and search again.',
   },
   noRecommendations: {
     id: 'noRecommendations',
@@ -366,5 +365,16 @@ export default defineMessages({
     id: 'nA',
     description: 'Abreviated as N/A, text equivelent, not applicable',
     defaultMessage: 'N/A',
+  },
+  permsTitle: {
+    id: 'permsTitle',
+    description: 'You do not have access to Advisor',
+    defaultMessage: 'You do not have access to Advisor',
+  },
+  permsBody: {
+    id: 'permsBody',
+    description: 'To view the content',
+    defaultMessage:
+      'To view the content of this page, you must be granted a minimum of Advisor permissions from your Organization Administrator.',
   },
 });

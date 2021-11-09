@@ -18,6 +18,9 @@ describe('<Cluster /> test', () => {
         isSuccess: true,
         data: {},
       },
+      displayName: {
+        data: 'display-name-123',
+      },
       match: {
         params: {
           clusterId: 'foobar',
