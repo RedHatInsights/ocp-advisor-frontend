@@ -54,7 +54,6 @@ const RecsListTable = () => {
   const page = filters.offset / filters.limit + 1;
   const [filteredRows, setFilteredRows] = useState([]);
   const [displayedRows, setDisplayedRows] = useState([]);
-  const [recommendations, setRecommendations] = useState(recs);
   const [sortBy, setSortBy] = useState({});
 
   useEffect(() => {
@@ -299,28 +298,26 @@ const RecsListTable = () => {
     },
   ];
 
-  const onSort = (event, index, direction) => {
+  const onSort = (_e, index, direction) => {
     const sortedRecommendations = {
       2: 'name',
       3: 'added',
       4: 'total risk',
       5: 'clusters',
     };
+    const recommendations = buildFilteredRows(recs, filters);
     const sort = () =>
-      recommendations
-        .concat()
-        .sort((firstItem, secondItem) =>
-          firstItem[sortedRecommendations[index]] >
-          secondItem[sortedRecommendations[index]]
-            ? 1
-            : secondItem[sortedRecommendations[index]] >
-              firstItem[sortedRecommendations[index]]
-            ? -1
-            : 0
-        );
+      recommendations.sort((firstItem, secondItem) =>
+        firstItem[sortedRecommendations[index]] >
+        secondItem[sortedRecommendations[index]]
+          ? 1
+          : secondItem[sortedRecommendations[index]] >
+            firstItem[sortedRecommendations[index]]
+          ? -1
+          : 0
+      );
     const sortRecsDirection =
       direction === SortByDirection.asc ? sort() : sort().reverse();
-    setRecommendations(sortRecsDirection);
     setSortBy({
       index,
       direction,
