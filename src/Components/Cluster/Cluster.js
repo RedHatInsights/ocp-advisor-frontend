@@ -19,7 +19,7 @@ import MessageState from '../MessageState/MessageState';
 import Loading from '../Loading/Loading';
 import messages from '../../Messages';
 
-export const Cluster = ({ cluster, match }) => {
+export const Cluster = ({ cluster, displayName, match }) => {
   const intl = useIntl();
   const {
     isError,
@@ -30,9 +30,17 @@ export const Cluster = ({ cluster, match }) => {
     data,
     error,
   } = cluster;
+  const { data: clusterDisplayName } = displayName;
 
   return (
     <React.Fragment>
+      <PageHeader className="pf-m-light ins-inventory-detail">
+        <Breadcrumbs
+          current={clusterDisplayName || match.params.clusterId}
+          match={match}
+        />
+        <ClusterHeader />
+      </PageHeader>
       {(isUninitialized || isLoading || isFetching) && (
         <Main>
           <Loading />
@@ -69,10 +77,6 @@ export const Cluster = ({ cluster, match }) => {
         ))}
       {isSuccess && (
         <React.Fragment>
-          <PageHeader className="pf-m-light ins-inventory-detail">
-            <Breadcrumbs current={match.params.clusterId} match={match} />
-            <ClusterHeader />
-          </PageHeader>
           <Main>
             <React.Fragment>
               <Grid hasGutter>
@@ -90,5 +94,6 @@ export const Cluster = ({ cluster, match }) => {
 
 Cluster.propTypes = {
   cluster: PropTypes.object.isRequired,
+  displayName: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
 };

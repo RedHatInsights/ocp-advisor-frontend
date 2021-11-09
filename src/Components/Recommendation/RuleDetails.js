@@ -12,6 +12,7 @@ const RuleDetails = ({
   isDetailsPage,
   resolutionRisk,
   riskOfChangeDesc,
+  onFeedbackChanged,
 }) => {
   const intl = useIntl();
 
@@ -30,6 +31,7 @@ const RuleDetails = ({
         resolutionRisk={resolutionRisk}
         isOpenShift
         riskOfChangeDesc={riskOfChangeDesc}
+        onFeedbackChanged={onFeedbackChanged}
       />
     </div>
   );
@@ -41,6 +43,7 @@ RuleDetails.propTypes = {
   rule: PropTypes.object.isRequired,
   resolutionRisk: PropTypes.number,
   riskOfChangeDesc: PropTypes.string,
+  onFeedbackChanged: PropTypes.func,
 };
 
 export default RuleDetails;

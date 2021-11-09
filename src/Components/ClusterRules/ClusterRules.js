@@ -43,7 +43,6 @@ const ClusterRules = ({ reports }) => {
   const [sortBy, setSortBy] = useState({});
   const [filters, setFilters] = useState(DEFAULT_CLUSTER_RULES_FILTERS);
   const [searchValue, setSearchValue] = useState('');
-  const [isSelected, setIsSelected] = useState(false);
   const [rows, setRows] = useState([]);
   const results = rows ? rows.length / 2 : 0;
 
@@ -101,7 +100,6 @@ const ClusterRules = ({ reports }) => {
         (rowVal, rowKey) =>
           rowKey % 2 === 0 && rowVal.rule.rule_id === rule.rule_id && rowVal
       );
-      const selected = entity.length ? entity[0].selected : false;
       const isOpen = rows.length
         ? entity.length
           ? entity[0].isOpen
@@ -115,7 +113,6 @@ const ClusterRules = ({ reports }) => {
           rule,
           resolution,
           isOpen,
-          selected,
           cells: [
             {
               title: (
@@ -218,9 +215,9 @@ const ClusterRules = ({ reports }) => {
 
   const onSort = (_e, index, direction) => {
     const sortedReports = {
-      2: 'description',
-      3: 'created_at',
-      4: 'total_risk',
+      1: 'description',
+      2: 'created_at',
+      3: 'total_risk',
     };
     const sort = () =>
       activeReports
@@ -241,52 +238,6 @@ const ClusterRules = ({ reports }) => {
       direction,
     });
     setRows(buildRows(sortedReportsDirectional, filters, rows, searchValue));
-  };
-
-  const onRowSelect = (_e, isSelected, rowId) =>
-    setRows(
-      buildRows(
-        activeReports,
-        filters,
-        rows.map((row, index) =>
-          index === rowId ? { ...row, selected: isSelected } : row
-        ),
-        searchValue
-      )
-    );
-
-  const getSelectedItems = (rows) => rows.filter((entity) => entity.selected);
-  const selectedItemsLength = getSelectedItems(rows).length;
-
-  const onBulkSelect = (isSelected) => {
-    setIsSelected(isSelected);
-    setRows(
-      buildRows(
-        activeReports,
-        filters,
-        rows.map((row, index) =>
-          index % 2 === 0 ? { ...row, selected: isSelected } : row
-        ),
-        searchValue
-      )
-    );
-  };
-
-  const bulkSelect = {
-    items: [
-      {
-        title: 'Select none',
-        onClick: () => onBulkSelect(false),
-      },
-      {
-        title: 'Select all',
-        onClick: () => onBulkSelect(true),
-      },
-    ],
-    count: selectedItemsLength,
-    checked: isSelected,
-    onSelect: () => onBulkSelect(!isSelected),
-    ouiaId: 'bulk-selector',
   };
 
   const onInputChange = (value) => {
@@ -402,7 +353,9 @@ const ClusterRules = ({ reports }) => {
 
   const onChipDelete = (_e, itemsToRemove, isAll) => {
     if (isAll) {
-      setRows(buildRows(activeReports, {}, rows, ''));
+      setRows(
+        buildRows(activeReports, DEFAULT_CLUSTER_RULES_FILTERS, rows, '')
+      );
       setFilters(DEFAULT_CLUSTER_RULES_FILTERS);
       setSearchValue('');
     } else {
@@ -443,8 +396,10 @@ const ClusterRules = ({ reports }) => {
     <div id="cluster-recs-list-table">
       <PrimaryToolbar
         actionsConfig={{ actions }}
-        bulkSelect={bulkSelect}
-        filterConfig={{ items: filterConfigItems, isDisabled: results === 0 }}
+        filterConfig={{
+          items: filterConfigItems,
+          isDisabled: activeReports.length === 0,
+        }}
         pagination={
           <React.Fragment>
             {results === 1
@@ -452,19 +407,19 @@ const ClusterRules = ({ reports }) => {
               : `${results} ${intl.formatMessage(messages.recommendations)}`}
           </React.Fragment>
         }
-        activeFiltersConfig={results === 0 ? undefined : activeFiltersConfig}
+        activeFiltersConfig={
+          activeReports.length === 0 ? undefined : activeFiltersConfig
+        }
       />
       {activeReports.length > 0 ? (
         <React.Fragment>
           <Table
             aria-label={'Cluster recommendations table'}
             ouiaId={'cluster-recommendations'}
-            onSelect={onRowSelect}
             onCollapse={handleOnCollapse}
             rows={rows}
             cells={cols}
             sortBy={sortBy}
-            canSelectAll={false}
             onSort={onSort}
             variant={TableVariant.compact}
             isStickyHeader
