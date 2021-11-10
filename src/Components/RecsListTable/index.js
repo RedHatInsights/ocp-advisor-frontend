@@ -64,107 +64,110 @@ const RecsListTable = () => {
   }, [data, filters]);
 
   // constructs array of rows (from the initial data) checking currently applied filters
-  const buildFilteredRows = (allRows, filters) => {
-    return (
-      allRows
-        .filter((rule) => passFilters(rule, filters))
-        // TODO: replace with sortable rows
-        .sort((fst, snd) => (fst.total_risk < snd.total_risk ? 1 : -1))
-        .map((value, key) => [
-          {
-            isOpen: false,
-            rule: value,
-            cells: [
-              {
-                title: (
-                  <span key={key}>
-                    <Link
-                      key={key}
-                      // https://github.com/RedHatInsights/ocp-advisor-frontend/issues/29
-                      to={`/recommendations/${
-                        process.env.NODE_ENV === 'development'
-                          ? value.rule_id.replaceAll('.', '%2E')
-                          : value.rule_id
-                      }`}
-                    >
-                      {' '}
-                      {value?.description || value?.rule_id}{' '}
-                    </Link>
-                    <RuleLabels rule={value} />
-                  </span>
-                ),
-              },
-              {
-                title: value?.publish_date ? (
-                  <DateFormat
+  const buildFilteredRows = (allRows, filters, columnSort) => {
+    return allRows
+      .filter((rule) => passFilters(rule, filters))
+      .sort((fst, snd) =>
+        fst[columnSort] < snd[columnSort]
+          ? 1
+          : fst[columnSort] > snd[columnSort]
+          ? -1
+          : 0
+      )
+      .map((value, key) => [
+        {
+          isOpen: false,
+          rule: value,
+          cells: [
+            {
+              title: (
+                <span key={key}>
+                  <Link
                     key={key}
-                    date={value.publish_date}
-                    variant="relative"
-                  />
-                ) : (
-                  intl.formatMessage(messages.nA)
-                ),
-              },
-              {
-                title: (
-                  <div key={key}>
-                    <Tooltip
-                      key={key}
-                      position={TooltipPosition.bottom}
-                      content={intl.formatMessage(
-                        messages.rulesDetailsTotalRiskBody,
-                        {
-                          risk:
-                            TOTAL_RISK_LABEL_LOWER[value.total_risk] ||
-                            intl.formatMessage(messages.undefined),
-                          strong: (str) => strong(str),
-                        }
-                      )}
-                    >
-                      {value?.total_risk ? (
-                        <InsightsLabel value={value.total_risk} />
-                      ) : (
-                        intl.formatMessage(messages.nA)
-                      )}
-                    </Tooltip>
-                  </div>
-                ),
-              },
-              {
-                title: (
-                  <div key={key}>{`${
-                    value?.impacted_clusters_count !== undefined
-                      ? value.impacted_clusters_count.toLocaleString()
-                      : intl.formatMessage(messages.nA)
-                  }`}</div>
-                ),
-              },
-            ],
-          },
-          {
-            fullWidth: true,
-            cells: [
-              {
-                title: (
-                  <section className="pf-m-light pf-l-page__main-section pf-c-page__main-section">
-                    <Stack hasGutter>
-                      <RuleDetails
-                        rule={{
-                          ...value,
-                          impact: { impact: value.impact },
-                          // TODO: fix <Router> issue in the async component and then remove the line below
-                          impacted_clusters_count: undefined,
-                        }}
-                        isDetailsPage={false}
-                      />
-                    </Stack>
-                  </section>
-                ),
-              },
-            ],
-          },
-        ])
-    );
+                    // https://github.com/RedHatInsights/ocp-advisor-frontend/issues/29
+                    to={`/recommendations/${
+                      process.env.NODE_ENV === 'development'
+                        ? value.rule_id.replaceAll('.', '%2E')
+                        : value.rule_id
+                    }`}
+                  >
+                    {' '}
+                    {value?.description || value?.rule_id}{' '}
+                  </Link>
+                  <RuleLabels rule={value} />
+                </span>
+              ),
+            },
+            {
+              title: value?.publish_date ? (
+                <DateFormat
+                  key={key}
+                  date={value.publish_date}
+                  variant="relative"
+                />
+              ) : (
+                intl.formatMessage(messages.nA)
+              ),
+            },
+            {
+              title: (
+                <div key={key}>
+                  <Tooltip
+                    key={key}
+                    position={TooltipPosition.bottom}
+                    content={intl.formatMessage(
+                      messages.rulesDetailsTotalRiskBody,
+                      {
+                        risk:
+                          TOTAL_RISK_LABEL_LOWER[value.total_risk] ||
+                          intl.formatMessage(messages.undefined),
+                        strong: (str) => strong(str),
+                      }
+                    )}
+                  >
+                    {value?.total_risk ? (
+                      <InsightsLabel value={value.total_risk} />
+                    ) : (
+                      intl.formatMessage(messages.nA)
+                    )}
+                  </Tooltip>
+                </div>
+              ),
+            },
+            {
+              title: (
+                <div key={key}>{`${
+                  value?.impacted_clusters_count !== undefined
+                    ? value.impacted_clusters_count.toLocaleString()
+                    : intl.formatMessage(messages.nA)
+                }`}</div>
+              ),
+            },
+          ],
+        },
+        {
+          fullWidth: true,
+          cells: [
+            {
+              title: (
+                <section className="pf-m-light pf-l-page__main-section pf-c-page__main-section">
+                  <Stack hasGutter>
+                    <RuleDetails
+                      rule={{
+                        ...value,
+                        impact: { impact: value.impact },
+                        // TODO: fix <Router> issue in the async component and then remove the line below
+                        impacted_clusters_count: undefined,
+                      }}
+                      isDetailsPage={false}
+                    />
+                  </Stack>
+                </section>
+              ),
+            },
+          ],
+        },
+      ]);
   };
 
   const buildDisplayedRows = (rows) => {
@@ -305,23 +308,25 @@ const RecsListTable = () => {
       4: 'total_risk',
       5: 'clusters',
     };
-    const recommendations = buildFilteredRows(recs, filters);
-    const sort = () =>
-      recommendations.sort((firstItem, secondItem) =>
-        firstItem[sortedRecommendations[index]] >
-        secondItem[sortedRecommendations[index]]
-          ? 1
-          : secondItem[sortedRecommendations[index]] >
-            firstItem[sortedRecommendations[index]]
-          ? -1
-          : 0
-      );
+    const recommendations = buildFilteredRows(
+      recs,
+      filters,
+      sortedRecommendations[index]
+    );
+    console.log(recommendations);
     const sortRecsDirection =
-      direction === SortByDirection.asc ? sort() : sort().reverse();
+      direction === SortByDirection.asc
+        ? buildFilteredRows(recs, filters, sortedRecommendations[index])
+        : buildFilteredRows(
+            recs,
+            filters,
+            sortedRecommendations[index]
+          ).reverse();
     setSortBy({
       index,
       direction,
     });
+    console.log(sortRecsDirection);
     setDisplayedRows(buildDisplayedRows(sortRecsDirection));
   };
 
