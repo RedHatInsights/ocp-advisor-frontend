@@ -64,13 +64,21 @@ const RecsListTable = () => {
   }, [data, filters]);
 
   // constructs array of rows (from the initial data) checking currently applied filters
-  const buildFilteredRows = (allRows, filters, columnSort) => {
+  const buildFilteredRows = (allRows, filters, index) => {
+    const sortedRecommendations = {
+      1: 'description',
+      2: 'publish_date',
+      3: 'total_risk',
+      4: 'impacted_clusters_count',
+    };
     return allRows
       .filter((rule) => passFilters(rule, filters))
-      .sort((fst, snd) =>
-        fst[columnSort] < snd[columnSort]
+      .sort((firstItem, secondItem) =>
+        firstItem[sortedRecommendations[index]] >
+        secondItem[sortedRecommendations[index]]
           ? 1
-          : fst[columnSort] > snd[columnSort]
+          : firstItem[sortedRecommendations[index]] <
+            secondItem[sortedRecommendations[index]]
           ? -1
           : 0
       )
@@ -302,31 +310,14 @@ const RecsListTable = () => {
   ];
 
   const onSort = (_e, index, direction) => {
-    const sortedRecommendations = {
-      2: 'name',
-      3: 'added',
-      4: 'total_risk',
-      5: 'clusters',
-    };
-    const recommendations = buildFilteredRows(
-      recs,
-      filters,
-      sortedRecommendations[index]
-    );
-    console.log(recommendations);
     const sortRecsDirection =
       direction === SortByDirection.asc
-        ? buildFilteredRows(recs, filters, sortedRecommendations[index])
-        : buildFilteredRows(
-            recs,
-            filters,
-            sortedRecommendations[index]
-          ).reverse();
+        ? buildFilteredRows(recs, filters, index)
+        : buildFilteredRows(recs, filters, index).reverse();
     setSortBy({
       index,
       direction,
     });
-    console.log(sortRecsDirection);
     setDisplayedRows(buildDisplayedRows(sortRecsDirection));
   };
 
