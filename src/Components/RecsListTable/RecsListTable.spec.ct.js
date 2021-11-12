@@ -98,4 +98,19 @@ describe('recommendations list table', () => {
       .find('tbody[role=rowgroup]')
       .should('have.length', 9);
   });
+
+  it('Recommendations table should have 4 sortable columns', () => {
+    cy.get('table[class="pf-c-table pf-m-grid-md pf-m-compact"]').should(
+      'have.length',
+      1
+    );
+    cy.get('th[class="pf-c-table__sort pf-m-width-70"]').should(
+      'have.length',
+      1
+    );
+    cy.get('th[class="pf-c-table__sort pf-m-width-10"]').should(
+      'have.length',
+      3
+    );
+  });
 });
