@@ -53,7 +53,7 @@ const RecsListTable = () => {
   const page = filters.offset / filters.limit + 1;
   const [filteredRows, setFilteredRows] = useState([]);
   const [displayedRows, setDisplayedRows] = useState([]);
-  const [sortBy, setSortBy] = useState({});
+  const setRecListState = (filters) => dispatch(updateFilters(filters));
 
   useEffect(() => {
     setDisplayedRows(buildDisplayedRows(filteredRows));
@@ -65,20 +65,14 @@ const RecsListTable = () => {
 
   // constructs array of rows (from the initial data) checking currently applied filters
   const buildFilteredRows = (allRows, filters, index) => {
-    const sortedRecommendations = {
-      1: 'description',
-      2: 'publish_date',
-      3: 'total_risk',
-      4: 'impacted_clusters_count',
-    };
     return allRows
       .filter((rule) => passFilters(rule, filters))
       .sort((firstItem, secondItem) =>
-        firstItem[sortedRecommendations[index]] >
-        secondItem[sortedRecommendations[index]]
+        firstItem[filters.sortIndex[index]] >
+        secondItem[filters.sortIndex[index]]
           ? 1
-          : firstItem[sortedRecommendations[index]] <
-            secondItem[sortedRecommendations[index]]
+          : firstItem[filters.sortIndex[index]] <
+            secondItem[filters.sortIndex[index]]
           ? -1
           : 0
       )
@@ -310,15 +304,13 @@ const RecsListTable = () => {
   ];
 
   const onSort = (_e, index, direction) => {
-    const sortRecsDirection =
-      direction === SortByDirection.asc
+    setRecListState({ ...filters, sortIndex: index, sortDirection: direction });
+    /* const sortRecsDirection =
+      filters.sortDirection === SortByDirection.asc
         ? buildFilteredRows(recs, filters, index)
         : buildFilteredRows(recs, filters, index).reverse();
-    setSortBy({
-      index,
-      direction,
-    });
-    setDisplayedRows(buildDisplayedRows(sortRecsDirection));
+     setDisplayedRows(buildDisplayedRows(sortRecsDirection));
+    setFilteredRows(sortRecsDirection); */
   };
 
   const capitalize = (string) => string[0].toUpperCase() + string.substring(1);
@@ -457,7 +449,10 @@ const RecsListTable = () => {
             cells={RECS_LIST_COLUMNS}
             rows={displayedRows}
             onCollapse={handleOnCollapse}
-            sortBy={sortBy}
+            sortBy={{
+              index: filters.sortIndex,
+              direction: filters.sortDirection,
+            }}
             onSort={onSort}
           >
             <TableHeader />

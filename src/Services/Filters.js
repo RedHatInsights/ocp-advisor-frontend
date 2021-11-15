@@ -12,6 +12,16 @@ export const RECS_LIST_INITIAL_STATE = {
   limit: 20,
   offset: 0,
   impacting: ['true'],
+  sortIndex: [
+    'description',
+
+    'publish_date',
+
+    'total_risk',
+
+    'impacted_clusters_count',
+  ],
+  sortDirection: null,
 };
 
 const filtersInitialState = {
