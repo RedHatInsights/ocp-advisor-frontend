@@ -35,6 +35,8 @@ import messages from '../../Messages';
 import {
   RECS_LIST_INITIAL_STATE,
   updateRecsListFilters as updateFilters,
+  sortTableIndex as SortRecsTableIndex,
+  sortTableDirection as SortRecsTableDirection,
 } from '../../Services/Filters';
 import RuleLabels from '../RuleLabels/RuleLabels';
 import { strong } from '../../Utilities/intlHelper';
@@ -53,10 +55,15 @@ const RecsListTable = () => {
   const page = filters.offset / filters.limit + 1;
   const [filteredRows, setFilteredRows] = useState([]);
   const [displayedRows, setDisplayedRows] = useState([]);
-  const setRecListState = (filters) => dispatch(updateFilters(filters));
+  const setRecListSortIndex = (filters) =>
+    dispatch(SortRecsTableIndex(filters.sortIndex));
+  const setRecListTableDirection = (filters) =>
+    dispatch(SortRecsTableDirection(filters.sortDirection));
 
   useEffect(() => {
-    setDisplayedRows(buildDisplayedRows(filteredRows));
+    setDisplayedRows(
+      buildDisplayedRows(filteredRows, filters.sortIndex, filters.sortDirection)
+    );
   }, [filteredRows, filters.limit, filters.offset]);
 
   useEffect(() => {
@@ -64,18 +71,9 @@ const RecsListTable = () => {
   }, [data, filters]);
 
   // constructs array of rows (from the initial data) checking currently applied filters
-  const buildFilteredRows = (allRows, filters, index) => {
+  const buildFilteredRows = (allRows, filters) => {
     return allRows
       .filter((rule) => passFilters(rule, filters))
-      .sort((firstItem, secondItem) =>
-        firstItem[filters.sortIndex[index]] >
-        secondItem[filters.sortIndex[index]]
-          ? 1
-          : firstItem[filters.sortIndex[index]] <
-            secondItem[filters.sortIndex[index]]
-          ? -1
-          : 0
-      )
       .map((value, key) => [
         {
           isOpen: false,
@@ -172,8 +170,23 @@ const RecsListTable = () => {
       ]);
   };
 
-  const buildDisplayedRows = (rows) => {
+  const buildDisplayedRows = (rows, index, direction) => {
+    const sortedRecommendations = [
+      'description',
+      'publish_date',
+      'total_risk',
+      'impacted_clusters_count',
+    ];
     return rows
+      .sort((firstItem, secondItem) =>
+        firstItem[sortedRecommendations[index]] >
+        secondItem[sortedRecommendations[index]]
+          ? 1
+          : secondItem[sortedRecommendations[index]] >
+            firstItem[sortedRecommendations[index]]
+          ? -1
+          : 0
+      )
       .slice(
         filters.limit * (page - 1),
         filters.limit * (page - 1) + filters.limit
@@ -181,6 +194,7 @@ const RecsListTable = () => {
       .flatMap((row, index) => {
         const updatedRow = [...row];
         row[1].parent = index * 2;
+        direction === SortByDirection.asc ? updatedRow : updatedRow.reverse();
         return updatedRow;
       });
   };
@@ -304,13 +318,8 @@ const RecsListTable = () => {
   ];
 
   const onSort = (_e, index, direction) => {
-    setRecListState({ ...filters, sortIndex: index, sortDirection: direction });
-    /* const sortRecsDirection =
-      filters.sortDirection === SortByDirection.asc
-        ? buildFilteredRows(recs, filters, index)
-        : buildFilteredRows(recs, filters, index).reverse();
-     setDisplayedRows(buildDisplayedRows(sortRecsDirection));
-    setFilteredRows(sortRecsDirection); */
+    setRecListSortIndex({ sortIndex: index });
+    setRecListTableDirection({ sortDirection: direction });
   };
 
   const capitalize = (string) => string[0].toUpperCase() + string.substring(1);

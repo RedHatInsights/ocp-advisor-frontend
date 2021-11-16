@@ -12,16 +12,8 @@ export const RECS_LIST_INITIAL_STATE = {
   limit: 20,
   offset: 0,
   impacting: ['true'],
-  sortIndex: [
-    'description',
-
-    'publish_date',
-
-    'total_risk',
-
-    'impacted_clusters_count',
-  ],
-  sortDirection: null,
+  sortIndex: 0,
+  sortDirection: 'desc',
 };
 
 const filtersInitialState = {
@@ -39,10 +31,20 @@ const filters = createSlice({
     updateRecsListFilters(state, action) {
       state.recsListState = action.payload;
     },
+    sortTableIndex(state, action) {
+      state.recsListState.sortIndex = action.payload;
+    },
+    sortTableDirection(state, action) {
+      state.recsListState.sortDirection = action.payload;
+    },
   },
 });
 
-export const { updateAffectedClustersFilters, updateRecsListFilters } =
-  filters.actions;
+export const {
+  updateAffectedClustersFilters,
+  updateRecsListFilters,
+  sortTableIndex,
+  sortTableDirection,
+} = filters.actions;
 
 export default filters.reducer;
