@@ -25,19 +25,19 @@ export const ClusterHeader = ({ clusterId, lastSeen, displayName }) => {
           {isUninitialized || isLoading || isFetching ? (
             <Skeleton size="sm" />
           ) : (
-            <Title size="2xl" headingLevel="h1">
+            <Title size="2xl" headingLevel="h1" id="cluster-header-title">
               {clusterName || clusterId}
             </Title>
           )}
         </GridItem>
         <GridItem>
           <Stack>
-            <StackItem>
+            <StackItem id="cluster-header-uuid">
               <span>UUID: </span>
               <span>{clusterId || intl.formatMessage(messages.unknown)}</span>
             </StackItem>
             {lastSeen && (
-              <StackItem>
+              <StackItem id="cluster-header-last-seen">
                 <span>{intl.formatMessage(messages.lastSeen)}: </span>
                 <span>{lastSeen || intl.formatMessage(messages.unknown)}</span>
               </StackItem>
