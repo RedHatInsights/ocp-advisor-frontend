@@ -113,4 +113,113 @@ describe('recommendations list table', () => {
       3
     );
   });
+
+  it('Recommendation table sort the data by Name first sort', () => {
+    cy.get(RECS_LIST_TABLE)
+      .get('span[class=pf-c-table__sort-indicator]')
+      .first()
+      .click({ force: true });
+    cy.get('td[data-label=Name]')
+      .find('a')
+      .should(($a) => {
+        expect($a[0]).to.have.text(
+          ' Additional risks would occur possibly when having the masters defined as machinesets '
+        );
+      });
+  });
+
+  it('Recommendation table sort the data by Name second sort', () => {
+    cy.get(RECS_LIST_TABLE)
+      .get('span[class=pf-c-table__sort-indicator]')
+      .first()
+      .click({ force: true })
+      .click({ force: true });
+    cy.get('td[data-label=Name]')
+      .find('a')
+      .should(($a) => {
+        expect($a[0]).to.have.text(
+          ' Super atomic nuclear cluster on the brink of the world destruction '
+        );
+      });
+  });
+
+  it('Recommendation table sort the data by Added first sort', () => {
+    cy.get(RECS_LIST_TABLE)
+      .get('span[class=pf-c-table__sort-indicator]')
+      .eq(1)
+      .click({ force: true });
+    cy.get('td[data-label=Name]')
+      .find('a')
+      .should(($a) => {
+        expect($a[0]).to.have.text(
+          ' Additional risks would occur possibly when having the masters defined as machinesets '
+        );
+      });
+  });
+
+  it('Recommendation table sort the data by Added second sort', () => {
+    cy.get(RECS_LIST_TABLE)
+      .get('span[class=pf-c-table__sort-indicator]')
+      .eq(1)
+      .click({ force: true })
+      .click({ force: true });
+    cy.get('td[data-label=Name]')
+      .find('a')
+      .should(($a) => {
+        expect($a[0]).to.have.text(
+          ' Super atomic nuclear cluster on the brink of the world destruction '
+        );
+      });
+  });
+
+  //had to add \\ \\ to the Total risk, otherwise jQuery engine would throw an error
+  it('Recommendation table sort the data by Total Risk first sort', () => {
+    cy.get(RECS_LIST_TABLE)
+      .get('span[class=pf-c-table__sort-indicator]')
+      .eq(2)
+      .click({ force: true });
+    cy.get('td[data-label=Total\\ \\risk]')
+      .find('span[class=pf-c-label__content]')
+      .should(($span) => {
+        expect($span[0]).to.have.text('Moderate');
+      });
+  });
+
+  it('Recommendation table sort the data by Total Risk second sort', () => {
+    cy.get(RECS_LIST_TABLE)
+      .get('span[class=pf-c-table__sort-indicator]')
+      .eq(2)
+      .click({ force: true })
+      .click({ force: true });
+    cy.get('td[data-label=Total\\ \\risk]')
+      .find('span[class=pf-c-label__content]')
+      .should(($span) => {
+        expect($span[0]).to.have.text('Critical');
+      });
+  });
+
+  it('Recommendation table sort the data by Clusters first sort', () => {
+    cy.get(RECS_LIST_TABLE)
+      .get('span[class=pf-c-table__sort-indicator]')
+      .eq(3)
+      .click({ force: true });
+    cy.get('td[data-label=Clusters]')
+      .find('div')
+      .should(($div) => {
+        expect($div[0]).to.have.text('1');
+      });
+  });
+
+  it('Recommendation table sort the data by Clusters second sort', () => {
+    cy.get(RECS_LIST_TABLE)
+      .get('span[class=pf-c-table__sort-indicator]')
+      .eq(3)
+      .click({ force: true })
+      .click({ force: true });
+    cy.get('td[data-label=Clusters]')
+      .find('div')
+      .should(($div) => {
+        expect($div[0]).to.have.text('2,003');
+      });
+  });
 });
