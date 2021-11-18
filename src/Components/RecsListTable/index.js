@@ -64,7 +64,13 @@ const RecsListTable = () => {
     setDisplayedRows(
       buildDisplayedRows(filteredRows, filters.sortIndex, filters.sortDirection)
     );
-  }, [filteredRows, filters.limit, filters.offset]);
+  }, [
+    filteredRows,
+    filters.limit,
+    filters.offset,
+    filters.sortIndex,
+    filters.sortDirection,
+  ]);
 
   useEffect(() => {
     setFilteredRows(buildFilteredRows(recs, filters));
@@ -177,26 +183,48 @@ const RecsListTable = () => {
       'total_risk',
       'impacted_clusters_count',
     ];
-    return rows
-      .sort((firstItem, secondItem) =>
-        firstItem[sortedRecommendations[index]] >
-        secondItem[sortedRecommendations[index]]
-          ? 1
-          : secondItem[sortedRecommendations[index]] >
-            firstItem[sortedRecommendations[index]]
-          ? -1
-          : 0
-      )
-      .slice(
-        filters.limit * (page - 1),
-        filters.limit * (page - 1) + filters.limit
-      )
-      .flatMap((row, index) => {
-        const updatedRow = [...row];
-        row[1].parent = index * 2;
-        direction === SortByDirection.asc ? updatedRow : updatedRow.reverse();
-        return updatedRow;
-      });
+    if (direction === SortByDirection.asc) {
+      return rows
+        .sort((firstItem, secondItem) =>
+          firstItem[sortedRecommendations[index]] >
+          secondItem[sortedRecommendations[index]]
+            ? 1
+            : secondItem[sortedRecommendations[index]] >
+              firstItem[sortedRecommendations[index]]
+            ? -1
+            : 0
+        )
+        .slice(
+          filters.limit * (page - 1),
+          filters.limit * (page - 1) + filters.limit
+        )
+        .flatMap((row, index) => {
+          const updatedRow = [...row];
+          row[1].parent = index * 2;
+          return updatedRow;
+        });
+    } else {
+      return rows
+        .sort((firstItem, secondItem) =>
+          firstItem[sortedRecommendations[index]] >
+          secondItem[sortedRecommendations[index]]
+            ? 1
+            : secondItem[sortedRecommendations[index]] >
+              firstItem[sortedRecommendations[index]]
+            ? -1
+            : 0
+        )
+        .slice(
+          filters.limit * (page - 1),
+          filters.limit * (page - 1) + filters.limit
+        )
+        .flatMap((row, index) => {
+          const updatedRow = [...row];
+          row[1].parent = index * 2;
+          return updatedRow;
+        })
+        .reverse();
+    }
   };
 
   const removeFilterParam = (param) => {
