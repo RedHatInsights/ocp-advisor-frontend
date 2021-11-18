@@ -12,7 +12,7 @@ export const RECS_LIST_INITIAL_STATE = {
   limit: 20,
   offset: 0,
   impacting: ['true'],
-  sortIndex: 0,
+  sortIndex: -1,
   sortDirection: 'desc',
 };
 
@@ -31,10 +31,10 @@ const filters = createSlice({
     updateRecsListFilters(state, action) {
       state.recsListState = action.payload;
     },
-    sortTableIndex(state, action) {
+    updateRecsListSortIndex(state, action) {
       state.recsListState.sortIndex = action.payload;
     },
-    sortTableDirection(state, action) {
+    updateRecListSortDirection(state, action) {
       state.recsListState.sortDirection = action.payload;
     },
   },
@@ -43,8 +43,8 @@ const filters = createSlice({
 export const {
   updateAffectedClustersFilters,
   updateRecsListFilters,
-  sortTableIndex,
-  sortTableDirection,
+  updateRecsListSortIndex,
+  updateRecListSortDirection,
 } = filters.actions;
 
 export default filters.reducer;

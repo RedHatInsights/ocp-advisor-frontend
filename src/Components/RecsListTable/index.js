@@ -35,8 +35,8 @@ import messages from '../../Messages';
 import {
   RECS_LIST_INITIAL_STATE,
   updateRecsListFilters as updateFilters,
-  sortTableIndex as SortRecsTableIndex,
-  sortTableDirection as SortRecsTableDirection,
+  updateRecsListSortIndex as SortRecsTableIndex,
+  updateRecListSortDirection as SortRecsTableDirection,
 } from '../../Services/Filters';
 import RuleLabels from '../RuleLabels/RuleLabels';
 import { strong } from '../../Utilities/intlHelper';
@@ -55,10 +55,6 @@ const RecsListTable = () => {
   const page = filters.offset / filters.limit + 1;
   const [filteredRows, setFilteredRows] = useState([]);
   const [displayedRows, setDisplayedRows] = useState([]);
-  const setRecListSortIndex = (filters) =>
-    dispatch(SortRecsTableIndex(filters.sortIndex));
-  const setRecListTableDirection = (filters) =>
-    dispatch(SortRecsTableDirection(filters.sortDirection));
 
   useEffect(() => {
     setDisplayedRows(
@@ -177,6 +173,7 @@ const RecsListTable = () => {
   };
 
   const buildDisplayedRows = (rows, index, direction) => {
+    const sortingRows = [...rows];
     const sortedRecommendations = [
       'description',
       'publish_date',
@@ -184,47 +181,38 @@ const RecsListTable = () => {
       'impacted_clusters_count',
     ];
     if (direction === SortByDirection.asc) {
-      return rows
-        .sort((firstItem, secondItem) =>
-          firstItem[sortedRecommendations[index]] >
-          secondItem[sortedRecommendations[index]]
-            ? 1
-            : secondItem[sortedRecommendations[index]] >
-              firstItem[sortedRecommendations[index]]
-            ? -1
-            : 0
-        )
-        .slice(
-          filters.limit * (page - 1),
-          filters.limit * (page - 1) + filters.limit
-        )
-        .flatMap((row, index) => {
-          const updatedRow = [...row];
-          row[1].parent = index * 2;
-          return updatedRow;
-        });
+      sortingRows.sort((firstItem, secondItem) => {
+        return firstItem[0].rule[sortedRecommendations[index - 1]] >
+          secondItem[0].rule[sortedRecommendations[index - 1]]
+          ? 1
+          : secondItem[0].rule[sortedRecommendations[index - 1]] >
+            firstItem[0].rule[sortedRecommendations[index - 1]]
+          ? -1
+          : 0;
+      });
     } else {
-      return rows
+      sortingRows
         .sort((firstItem, secondItem) =>
-          firstItem[sortedRecommendations[index]] >
-          secondItem[sortedRecommendations[index]]
+          firstItem[0].rule[sortedRecommendations[index - 1]] >
+          secondItem[0].rule[sortedRecommendations[index - 1]]
             ? 1
-            : secondItem[sortedRecommendations[index]] >
-              firstItem[sortedRecommendations[index]]
+            : secondItem[0].rule[sortedRecommendations[index - 1]] >
+              firstItem[0].rule[sortedRecommendations[index - 1]]
             ? -1
             : 0
         )
-        .slice(
-          filters.limit * (page - 1),
-          filters.limit * (page - 1) + filters.limit
-        )
-        .flatMap((row, index) => {
-          const updatedRow = [...row];
-          row[1].parent = index * 2;
-          return updatedRow;
-        })
         .reverse();
     }
+    return sortingRows
+      .slice(
+        filters.limit * (page - 1),
+        filters.limit * (page - 1) + filters.limit
+      )
+      .flatMap((row, index) => {
+        const updatedRow = [...row];
+        row[1].parent = index * 2;
+        return updatedRow;
+      });
   };
 
   const removeFilterParam = (param) => {
@@ -346,8 +334,8 @@ const RecsListTable = () => {
   ];
 
   const onSort = (_e, index, direction) => {
-    setRecListSortIndex({ sortIndex: index });
-    setRecListTableDirection({ sortDirection: direction });
+    dispatch(SortRecsTableIndex(index));
+    dispatch(SortRecsTableDirection(direction));
   };
 
   const capitalize = (string) => string[0].toUpperCase() + string.substring(1);
