@@ -42,7 +42,7 @@ export const Cluster = ({ cluster, displayName, match }) => {
         <ClusterHeader />
       </PageHeader>
       {(isUninitialized || isLoading || isFetching) && (
-        <Main>
+        <Main id="loading-skeleton">
           <Loading />
         </Main>
       )}

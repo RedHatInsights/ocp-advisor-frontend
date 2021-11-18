@@ -1,11 +1,17 @@
-import { shallow } from 'enzyme';
 import React from 'react';
+import { mount } from '@cypress/react';
+import { MemoryRouter } from 'react-router';
 
+import { Intl } from '../../Utilities/intlHelper';
 import { Cluster } from './Cluster';
+import { Provider } from 'react-redux';
+import getStore from '../../Store';
 
-jest.mock('../ClusterHeader', () => jest.fn());
-
-describe('<Cluster /> test', () => {
+describe('cluster page', () => {
+  // selectors
+  const CLUSTER_HEADER = '#cluster-header';
+  const BREADCRUMBS = 'div[ouiaid=breadcrumbs]';
+  const RULES_TABLE = '#cluster-recs-list-table';
   let props;
 
   beforeEach(() => {
@@ -29,20 +35,78 @@ describe('<Cluster /> test', () => {
       },
     };
   });
-  test('renders correctly', () => {
-    const shallowed = shallow(<Cluster {...props} />);
-    expect(shallowed).toMatchSnapshot();
+  it('cluster page in the successful state', () => {
+    mount(
+      <MemoryRouter>
+        <Intl>
+          <Provider store={getStore()}>
+            <Cluster {...props} />
+          </Provider>
+        </Intl>
+      </MemoryRouter>
+    );
+    // renders breadcrumbs
+    cy.get(BREADCRUMBS)
+      .should('have.length', 1)
+      .get('.pf-c-breadcrumb__list > :nth-child(2)')
+      .should('have.text', 'display-name-123');
+    // renders cluster header
+    cy.get(CLUSTER_HEADER).should('have.length', 1);
+    // renders table component
+    cy.get(RULES_TABLE).should('have.length', 1);
   });
-  test('renders correctly when cluster loading', () => {
-    props.cluster.isFetching = true;
-    props.cluster.isSuccess = false;
-    const shallowed = shallow(<Cluster {...props} />);
-    expect(shallowed).toMatchSnapshot();
+  it('cluster page in the loading state', () => {
+    props = {
+      ...props,
+      cluster: {
+        ...props.cluster,
+        isLoading: true,
+        isSuccess: false,
+        data: undefined,
+      },
+    };
+    mount(
+      <MemoryRouter>
+        <Intl>
+          <Provider store={getStore()}>
+            <Cluster {...props} />
+          </Provider>
+        </Intl>
+      </MemoryRouter>
+    );
+    // renders breadcrumbs
+    cy.get(BREADCRUMBS).should('have.length', 1);
+    // renders cluster header
+    cy.get(CLUSTER_HEADER).should('have.length', 1);
+    // does not render table component
+    cy.get(RULES_TABLE).should('have.length', 0);
+    cy.get('#loading-skeleton').should('have.length', 1);
   });
-  test('renders correctly when cluster unavailable', () => {
-    props.cluster.isError = true;
-    props.cluster.isSuccess = false;
-    const shallowed = shallow(<Cluster {...props} />);
-    expect(shallowed).toMatchSnapshot();
+  it('cluster page in the error state', () => {
+    props = {
+      ...props,
+      cluster: {
+        ...props.cluster,
+        isError: true,
+        isSuccess: false,
+        data: undefined,
+      },
+    };
+    mount(
+      <MemoryRouter>
+        <Intl>
+          <Provider store={getStore()}>
+            <Cluster {...props} />
+          </Provider>
+        </Intl>
+      </MemoryRouter>
+    );
+    // renders breadcrumbs
+    cy.get(BREADCRUMBS).should('have.length', 1);
+    // renders cluster header
+    cy.get(CLUSTER_HEADER).should('have.length', 1);
+    // does not render table component
+    cy.get(RULES_TABLE).should('have.length', 0);
+    cy.get('.pf-c-empty-state').should('have.length', 1);
   });
 });
