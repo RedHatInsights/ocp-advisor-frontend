@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 
 import { AffectedClustersTable } from './AffectedClustersTable';
 import props from '../../../cypress/fixtures/AffectedClustersTable/data.json';
-import { Intl } from '../../AppEntry';
+import { Intl } from '../../Utilities/intlHelper';
 import getStore from '../../Store';
 
 describe('affected clusters table', () => {
