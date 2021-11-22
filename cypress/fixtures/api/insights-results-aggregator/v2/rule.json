@@ -2,16 +2,16 @@
   "recommendations": [
     {
       "rule_id": "external.rules.rule_n_one|ERROR_KEY_N1",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "description": "Additional risks would occur possibly when having the masters defined as machinesets",
       "generic": "Sed ut perspiciatis unde omnis iste natus error. \n",
-      "publish_date": "2021-01-22T12:00:00Z",
+      "publish_date": "2020-01-22T12:00:00Z",
       "total_risk": 2,
       "impact": 1,
       "likelihood": 4,
       "tags": ["openshift", "etcd", "performance"],
       "rule_status": "enabled",
       "risk_of_change": 0,
-      "impacted_clusters_count": 2
+      "impacted_clusters_count": 1
     },
     {
       "rule_id": "external.rules.rule_n_two|ERROR_KEY_N42",
@@ -80,9 +80,9 @@
     },
     {
       "rule_id": "external.rules.rule123_n_one|ERROR_44KEY_N1",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "description": "Super atomic nuclear cluster on the brink of the world destruction",
       "generic": "Sed ut perspiciatis unde omnis iste natus error. \n",
-      "publish_date": "2021-02-17T15:00:00Z",
+      "publish_date": "2021-10-17T15:00:00Z",
       "total_risk": 4,
       "impact": 1,
       "likelihood": 2,
@@ -102,7 +102,7 @@
       "tags": ["openshift", "service_availability"],
       "rule_status": "enabled",
       "risk_of_change": 0,
-      "impacted_clusters_count": 1
+      "impacted_clusters_count": 2
     },
     {
       "rule_id": "external.rules.rules.rule_n_eleventh|ERROR_KEY_11",

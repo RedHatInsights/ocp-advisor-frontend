@@ -98,4 +98,88 @@ describe('recommendations list table', () => {
       .find('tbody[role=rowgroup]')
       .should('have.length', 9);
   });
+
+  it('Recommendations table should have 4 sortable columns', () => {
+    cy.get('table[class="pf-c-table pf-m-grid-md pf-m-compact"]').should(
+      'have.length',
+      1
+    );
+    cy.get('th[class="pf-c-table__sort pf-m-width-70"]').should(
+      'have.length',
+      1
+    );
+    cy.get('th[class="pf-c-table__sort pf-m-width-10"]').should(
+      'have.length',
+      3
+    );
+  });
+
+  it('Recommendation table sort the data by Name', () => {
+    cy.get(RECS_LIST_TABLE)
+      .get('span[class=pf-c-table__sort-indicator]')
+      .first()
+      .click({ force: true });
+    cy.get('td[data-label=Name]> span > a:first').should(
+      'have.text',
+      ' Additional risks would occur possibly when having the masters defined as machinesets '
+    );
+    cy.get('span[class=pf-c-table__sort-indicator]')
+      .first()
+      .click({ force: true });
+    cy.get('td[data-label=Name] > span > a:first').should(
+      'have.text',
+      ' Super atomic nuclear cluster on the brink of the world destruction '
+    );
+  });
+
+  it('Recommendation table sort the data by Added', () => {
+    cy.get(RECS_LIST_TABLE)
+      .get('span[class=pf-c-table__sort-indicator]')
+      .eq(1)
+      .click({ force: true });
+    cy.get('td[data-label=Name] > span > a:first').should(
+      'have.text',
+      ' Additional risks would occur possibly when having the masters defined as machinesets '
+    );
+    cy.get('span[class=pf-c-table__sort-indicator]')
+      .eq(1)
+      .click({ force: true });
+    cy.get('td[data-label=Name] > span > a:first').should(
+      'have.text',
+      ' Super atomic nuclear cluster on the brink of the world destruction '
+    );
+  });
+
+  //had to add \\ \\ to the Total risk, otherwise jQuery engine would throw an error
+  it('Recommendation table sort the data by Total Risk', () => {
+    cy.get(RECS_LIST_TABLE)
+      .get('span[class=pf-c-table__sort-indicator]')
+      .eq(2)
+      .click({ force: true });
+    cy.get('td[data-label=Total\\ \\risk]')
+      .find('span[class=pf-c-label__content]')
+      .should(($span) => {
+        expect($span[0]).to.have.text('Moderate');
+      });
+    cy.get('span[class=pf-c-table__sort-indicator]')
+      .eq(2)
+      .click({ force: true });
+    cy.get('td[data-label=Total\\ \\risk]')
+      .find('span[class=pf-c-label__content]')
+      .should(($span) => {
+        expect($span[0]).to.have.text('Critical');
+      });
+  });
+
+  it('Recommendation table sort the data by Clusters', () => {
+    cy.get(RECS_LIST_TABLE)
+      .get('span[class=pf-c-table__sort-indicator]')
+      .eq(3)
+      .click({ force: true });
+    cy.get('td[data-label=Clusters] > div:first').should('have.text', '1');
+    cy.get('span[class=pf-c-table__sort-indicator]')
+      .eq(3)
+      .click({ force: true });
+    cy.get('td[data-label=Clusters] > div:first').should('have.text', '2,003');
+  });
 });
