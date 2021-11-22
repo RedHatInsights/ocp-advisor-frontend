@@ -31,12 +31,6 @@ const filters = createSlice({
     updateRecsListFilters(state, action) {
       state.recsListState = action.payload;
     },
-    updateRecsListSortIndex(state, action) {
-      state.recsListState.sortIndex = action.payload;
-    },
-    updateRecListSortDirection(state, action) {
-      state.recsListState.sortDirection = action.payload;
-    },
   },
 });
 

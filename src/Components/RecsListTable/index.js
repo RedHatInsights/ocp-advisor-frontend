@@ -35,8 +35,6 @@ import messages from '../../Messages';
 import {
   RECS_LIST_INITIAL_STATE,
   updateRecsListFilters as updateFilters,
-  updateRecsListSortIndex as SortRecsTableIndex,
-  updateRecListSortDirection as SortRecsTableDirection,
 } from '../../Services/Filters';
 import RuleLabels from '../RuleLabels/RuleLabels';
 import { strong } from '../../Utilities/intlHelper';
@@ -173,35 +171,19 @@ const RecsListTable = () => {
   };
 
   const buildDisplayedRows = (rows, index, direction) => {
-    const sortingRows = [...rows];
     const sortedRecommendations = [
       'description',
       'publish_date',
       'total_risk',
       'impacted_clusters_count',
     ];
-    if (direction === SortByDirection.asc) {
-      sortingRows.sort((firstItem, secondItem) => {
-        return firstItem[0].rule[sortedRecommendations[index - 1]] >
-          secondItem[0].rule[sortedRecommendations[index - 1]]
-          ? 1
-          : secondItem[0].rule[sortedRecommendations[index - 1]] >
-            firstItem[0].rule[sortedRecommendations[index - 1]]
-          ? -1
-          : 0;
-      });
-    } else {
-      sortingRows
-        .sort((firstItem, secondItem) =>
-          firstItem[0].rule[sortedRecommendations[index - 1]] >
-          secondItem[0].rule[sortedRecommendations[index - 1]]
-            ? 1
-            : secondItem[0].rule[sortedRecommendations[index - 1]] >
-              firstItem[0].rule[sortedRecommendations[index - 1]]
-            ? -1
-            : 0
-        )
-        .reverse();
+    const sortingRows = [...rows].sort((firstItem, secondItem) => {
+      const fst = firstItem[0].rule[sortedRecommendations[index - 1]];
+      const snd = secondItem[0].rule[sortedRecommendations[index - 1]];
+      return fst > snd ? 1 : snd > fst ? -1 : 0;
+    });
+    if (direction === SortByDirection.desc) {
+      sortingRows.reverse();
     }
     return sortingRows
       .slice(
@@ -334,8 +316,9 @@ const RecsListTable = () => {
   ];
 
   const onSort = (_e, index, direction) => {
-    dispatch(SortRecsTableIndex(index));
-    dispatch(SortRecsTableDirection(direction));
+    dispatch(
+      updateFilters({ ...filters, sortIndex: index, sortDirection: direction })
+    );
   };
 
   const capitalize = (string) => string[0].toUpperCase() + string.substring(1);
