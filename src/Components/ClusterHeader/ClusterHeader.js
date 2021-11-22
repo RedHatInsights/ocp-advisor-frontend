@@ -19,33 +19,31 @@ export const ClusterHeader = ({ clusterId, lastSeen, displayName }) => {
   } = displayName;
 
   return (
-    <React.Fragment>
-      <Grid md={12} hasGutter>
-        <GridItem>
-          {isUninitialized || isLoading || isFetching ? (
-            <Skeleton size="sm" />
-          ) : (
-            <Title size="2xl" headingLevel="h1">
-              {clusterName || clusterId}
-            </Title>
-          )}
-        </GridItem>
-        <GridItem>
-          <Stack>
-            <StackItem>
-              <span>UUID: </span>
-              <span>{clusterId || intl.formatMessage(messages.unknown)}</span>
+    <Grid id="cluster-header" md={12} hasGutter>
+      <GridItem>
+        {isUninitialized || isLoading || isFetching ? (
+          <Skeleton size="sm" />
+        ) : (
+          <Title size="2xl" headingLevel="h1" id="cluster-header-title">
+            {clusterName || clusterId}
+          </Title>
+        )}
+      </GridItem>
+      <GridItem>
+        <Stack>
+          <StackItem id="cluster-header-uuid">
+            <span>UUID: </span>
+            <span>{clusterId || intl.formatMessage(messages.unknown)}</span>
+          </StackItem>
+          {lastSeen && (
+            <StackItem id="cluster-header-last-seen">
+              <span>{intl.formatMessage(messages.lastSeen)}: </span>
+              <span>{lastSeen || intl.formatMessage(messages.unknown)}</span>
             </StackItem>
-            {lastSeen && (
-              <StackItem>
-                <span>{intl.formatMessage(messages.lastSeen)}: </span>
-                <span>{lastSeen || intl.formatMessage(messages.unknown)}</span>
-              </StackItem>
-            )}
-          </Stack>
-        </GridItem>
-      </Grid>
-    </React.Fragment>
+          )}
+        </Stack>
+      </GridItem>
+    </Grid>
   );
 };
 
