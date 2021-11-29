@@ -14,6 +14,7 @@ export const RECS_LIST_INITIAL_STATE = {
   impacting: ['true'],
   sortIndex: -1,
   sortDirection: 'desc',
+  rule_status: 'enabled',
 };
 
 const filtersInitialState = {

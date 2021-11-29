@@ -28,11 +28,12 @@ const passFilters = (rule, filters) =>
           : true;
       case FILTER_CATEGORIES.likelihood.urlParam:
         return filterValue.includes(String(rule.likelihood));
-      /* case FC.rule_status.urlParam:
+      case FILTER_CATEGORIES.rule_status.urlParam:
         return (
-          rule.rule_status === 'all' ||
-          String(rule.rule_status) === filterValue
-        ); */
+          filterValue === 'all' ||
+          (filterValue === 'disabled' && rule.disabled) ||
+          (filterValue === 'enabled' && !rule.disabled)
+        );
       default:
         return true;
     }
