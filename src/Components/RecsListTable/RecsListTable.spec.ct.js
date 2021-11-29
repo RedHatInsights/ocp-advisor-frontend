@@ -1,21 +1,21 @@
 import React from 'react';
 import { mount } from '@cypress/react';
-import { IntlProvider } from 'react-intl';
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 
-import RecsListTable from './';
+import { RecsListTable } from './RecsListTable';
 import getStore from '../../Store';
+import props from '../../../cypress/fixtures/RecsListTable/data.json';
+import { Intl } from '../../Utilities/intlHelper';
 
 describe('recommendations list table', () => {
+  // selectors
   const RECS_LIST_TABLE = 'div[id=recs-list-table]';
+  const CHIP = 'div[class=pf-c-chip]';
 
   beforeEach(() => {
     cy.intercept('*', (req) => {
       req.destroy();
-    });
-    cy.intercept('GET', 'api/insights-results-aggregator/v2/rule', {
-      fixture: 'api/insights-results-aggregator/v2/rule.json',
     });
     // tables utilizes federated module and throws error when RHEL Advisor manifestaion not found
     window['__scalprum__'] = {
@@ -30,13 +30,21 @@ describe('recommendations list table', () => {
       },
     };
     mount(
-      <IntlProvider locale="en">
-        <Provider store={getStore()}>
-          <MemoryRouter initialEntries={['/recommendations']} initialIndex={0}>
-            <RecsListTable />
-          </MemoryRouter>
-        </Provider>
-      </IntlProvider>
+      <MemoryRouter initialEntries={['/recommendations']} initialIndex={0}>
+        <Intl>
+          <Provider store={getStore()}>
+            <RecsListTable
+              query={{
+                isError: false,
+                isFetching: false,
+                isUninitialized: false,
+                isSuccess: true,
+                data: props,
+              }}
+            />
+          </Provider>
+        </Intl>
+      </MemoryRouter>
     );
   });
 
@@ -48,15 +56,25 @@ describe('recommendations list table', () => {
     cy.get(RECS_LIST_TABLE).should('have.length', 1);
     cy.get(RECS_LIST_TABLE)
       .find('span[class=pf-c-chip-group__label]')
-      .should('have.length', 1)
+      .should('have.length', 2)
+      .eq(0)
       .and('have.text', 'Clusters impacted');
     cy.get(RECS_LIST_TABLE)
+      .find('span[class=pf-c-chip-group__label]')
+      .eq(1)
+      .and('have.text', 'Status');
+    cy.get(RECS_LIST_TABLE)
       .find('li[class=pf-c-chip-group__list-item]')
-      .should('have.length', 1)
+      .should('have.length', 2)
+      .eq(0)
       .and('have.text', '1 or more');
+    cy.get(RECS_LIST_TABLE)
+      .find('li[class=pf-c-chip-group__list-item]')
+      .eq(1)
+      .and('have.text', 'Enabled');
   });
 
-  it('six filters available', () => {
+  it('7 filters available', () => {
     const FILTERS_DROPDOWN = 'ul[class=pf-c-dropdown__menu]';
     const FILTER_ITEM = 'button[class=pf-c-dropdown__menu-item]';
 
@@ -65,7 +83,7 @@ describe('recommendations list table', () => {
       .find('button[class=pf-c-dropdown__toggle]')
       .should('have.length', 1)
       .click();
-    cy.get(FILTERS_DROPDOWN).find(FILTER_ITEM).should('have.length', 6);
+    cy.get(FILTERS_DROPDOWN).find(FILTER_ITEM).should('have.length', 7);
     cy.get(FILTERS_DROPDOWN)
       .find(FILTER_ITEM)
       .each(($el) =>
@@ -76,19 +94,20 @@ describe('recommendations list table', () => {
           'Likelihood',
           'Category',
           'Clusters impacted',
+          'Status',
         ])
       );
   });
 
-  it('table has 5 recs', () => {
+  it('table has 4 recs', () => {
     cy.get(RECS_LIST_TABLE)
       .should('have.length', 1)
       .find('tbody[role=rowgroup]')
-      .should('have.length', 5);
+      .should('have.length', 4);
   });
 
-  it('table has 9 recs including non-impacting', () => {
-    cy.get('div[class=pf-c-chip]')
+  it('table has 7 recs including non-impacting', () => {
+    cy.get(CHIP)
       .contains('1 or more')
       .parent()
       .find('button[data-ouia-component-id=close]')
@@ -96,10 +115,10 @@ describe('recommendations list table', () => {
     cy.get(RECS_LIST_TABLE)
       .should('have.length', 1)
       .find('tbody[role=rowgroup]')
-      .should('have.length', 9);
+      .should('have.length', 7);
   });
 
-  it('Recommendations table should have 4 sortable columns', () => {
+  it('should have 4 sortable columns', () => {
     cy.get('table[class="pf-c-table pf-m-grid-md pf-m-compact"]').should(
       'have.length',
       1
@@ -114,7 +133,7 @@ describe('recommendations list table', () => {
     );
   });
 
-  it('Recommendation table sort the data by Name', () => {
+  it('sort the data by Name', () => {
     cy.get(RECS_LIST_TABLE)
       .get('span[class=pf-c-table__sort-indicator]')
       .first()
@@ -132,7 +151,7 @@ describe('recommendations list table', () => {
     );
   });
 
-  it('Recommendation table sort the data by Added', () => {
+  it('sort the data by Added', () => {
     cy.get(RECS_LIST_TABLE)
       .get('span[class=pf-c-table__sort-indicator]')
       .eq(1)
@@ -151,7 +170,7 @@ describe('recommendations list table', () => {
   });
 
   //had to add \\ \\ to the Total risk, otherwise jQuery engine would throw an error
-  it('Recommendation table sort the data by Total Risk', () => {
+  it('sort the data by Total Risk', () => {
     cy.get(RECS_LIST_TABLE)
       .get('span[class=pf-c-table__sort-indicator]')
       .eq(2)
@@ -171,7 +190,7 @@ describe('recommendations list table', () => {
       });
   });
 
-  it('Recommendation table sort the data by Clusters', () => {
+  it('sort the data by Clusters', () => {
     cy.get(RECS_LIST_TABLE)
       .get('span[class=pf-c-table__sort-indicator]')
       .eq(3)
@@ -181,5 +200,33 @@ describe('recommendations list table', () => {
       .eq(3)
       .click({ force: true });
     cy.get('td[data-label=Clusters] > div:first').should('have.text', '2,003');
+  });
+
+  it('include disabled rules', () => {
+    cy.get(CHIP)
+      .contains('Enabled')
+      .parent()
+      .find('button[data-ouia-component-id=close]')
+      .click();
+    cy.get(RECS_LIST_TABLE)
+      .find('tbody[role=rowgroup]')
+      .should('have.length', 5)
+      .find('td[data-label="Name"]')
+      .contains('disabled rule with 2 impacted')
+      .should('have.length', 1);
+  });
+
+  it('disabled rule has a label', () => {
+    cy.get(CHIP)
+      .contains('Enabled')
+      .parent()
+      .find('button[data-ouia-component-id=close]')
+      .click();
+    cy.get(RECS_LIST_TABLE)
+      .find('tbody[role=rowgroup]')
+      .should('have.length', 5)
+      .eq(0)
+      .find('span[class=pf-c-label]')
+      .should('have.text', 'Disabled');
   });
 });
