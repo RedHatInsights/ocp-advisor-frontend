@@ -13,6 +13,7 @@ const RuleDetails = ({
   resolutionRisk,
   riskOfChangeDesc,
   onFeedbackChanged,
+  children,
 }) => {
   const intl = useIntl();
 
@@ -31,7 +32,9 @@ const RuleDetails = ({
         isOpenShift
         riskOfChangeDesc={riskOfChangeDesc}
         onFeedbackChanged={onFeedbackChanged}
-      />
+      >
+        {children}
+      </AsyncComponent>
     </div>
   );
 };
@@ -43,6 +46,7 @@ RuleDetails.propTypes = {
   resolutionRisk: PropTypes.number,
   riskOfChangeDesc: PropTypes.string,
   onFeedbackChanged: PropTypes.func,
+  children: PropTypes.node,
 };
 
 export default RuleDetails;
