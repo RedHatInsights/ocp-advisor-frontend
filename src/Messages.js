@@ -442,4 +442,15 @@ export default defineMessages({
       'Recommendation table, hide reports action, error for disabling reporting on a recommendation',
     defaultMessage: 'Disabling recommendations failed',
   },
+  comingSoonTitle: {
+    id: 'comingSoonTitle',
+    description: 'Temporary Message Title',
+    defaultMessage: 'Coming soon',
+  },
+  comingSoonBody: {
+    id: 'comingSoonBody',
+    description: 'Temporary Message Body',
+    defaultMessage:
+      'We’re currently working on this page. In the meantime, you can visit the Insights Advisor recommendations page to view potential issues with your clusters.',
+  },
 });
