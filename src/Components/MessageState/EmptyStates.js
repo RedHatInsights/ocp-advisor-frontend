@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useIntl } from 'react-intl';
+import { Link } from 'react-router-dom';
 
 import { Stack, StackItem } from '@patternfly/react-core/dist/js/layouts/Stack';
 import { Title } from '@patternfly/react-core/dist/js/components/Title';
@@ -8,10 +9,12 @@ import {
   EmptyStateBody,
   EmptyStateIcon,
 } from '@patternfly/react-core/dist/js/components/EmptyState';
+import { Button } from '@patternfly/react-core/dist/js/components/Button';
 import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import CheckCircleIcon from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 import { global_success_color_100 as globalSuccessColor100 } from '@patternfly/react-tokens/dist/js/global_success_color_100';
 import { global_danger_color_100 as globalDangerColor100 } from '@patternfly/react-tokens/dist/js/global_danger_color_100';
+import { InProgressIcon } from '@patternfly/react-icons/dist/esm/icons/in-progress-icon';
 
 import DefaultErrorMessage from '@redhat-cloud-services/frontend-components/ErrorState/DefaultErrorMessage';
 
@@ -87,4 +90,44 @@ const NoMatchingRecs = () => {
   );
 };
 
-export { ErrorState, NoAffectedClusters, NoMatchingClusters, NoMatchingRecs };
+// used in Routes.js to create custom message instead of <InvalidObject>
+const CustomButton = () => {
+  return (
+    <Button
+      component="a"
+      target="_blank"
+      variant="primary"
+      href="https://console.redhat.com/beta/openshift/insights/advisor/recommendations"
+    >
+      Recommendations
+    </Button>
+  );
+};
+
+const RecsButton = React.forwardRef(() => {
+  return <CustomButton />;
+});
+
+const ComingSoon = () => {
+  const intl = useIntl();
+  return (
+    <EmptyState variant="small">
+      <EmptyStateIcon icon={InProgressIcon} />
+      <Title headingLevel="h2" size="2xl">
+        {intl.formatMessage(messages.comingSoonTitle)}
+      </Title>
+      <EmptyStateBody>
+        {intl.formatMessage(messages.comingSoonBody)}
+      </EmptyStateBody>
+      <Link to="/" component={RecsButton} />
+    </EmptyState>
+  );
+};
+
+export {
+  ErrorState,
+  NoAffectedClusters,
+  NoMatchingClusters,
+  NoMatchingRecs,
+  ComingSoon,
+};
