@@ -91,22 +91,6 @@ const NoMatchingRecs = () => {
 };
 
 // used in Routes.js to create custom message instead of <InvalidObject>
-const CustomButton = () => {
-  return (
-    <Button
-      component="a"
-      target="_blank"
-      variant="primary"
-      href="https://console.redhat.com/beta/openshift/insights/advisor/recommendations"
-    >
-      Recommendations
-    </Button>
-  );
-};
-
-const RecsButton = React.forwardRef(() => {
-  return <CustomButton />;
-});
 
 const ComingSoon = () => {
   const intl = useIntl();
@@ -119,7 +103,9 @@ const ComingSoon = () => {
       <EmptyStateBody>
         {intl.formatMessage(messages.comingSoonBody)}
       </EmptyStateBody>
-      <Link to="/" component={RecsButton} />
+      <Link to="/recommendations">
+        <Button variant="primary">Recommendations</Button>
+      </Link>
     </EmptyState>
   );
 };
