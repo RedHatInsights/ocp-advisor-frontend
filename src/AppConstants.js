@@ -2,7 +2,7 @@ import { createIntl, createIntlCache } from 'react-intl';
 import intlHelper from '@redhat-cloud-services/frontend-components-translations/intlHelper';
 
 import messages from './Messages';
-import { cellWidth } from '@patternfly/react-table';
+import { cellWidth, sortable } from '@patternfly/react-table';
 
 const cache = createIntlCache();
 const locale = navigator.language.slice(0, 2);
@@ -183,15 +183,15 @@ export const TOTAL_RISK_LABEL_LOWER = {
 export const RECS_LIST_COLUMNS = [
   {
     title: intl.formatMessage(messages.name),
-    transforms: [cellWidth(70)],
+    transforms: [sortable, cellWidth(70)],
   },
   {
     title: intl.formatMessage(messages.added),
-    transforms: [cellWidth(10)],
+    transforms: [sortable, cellWidth(10)],
   },
   {
     title: intl.formatMessage(messages.totalRisk),
-    transforms: [cellWidth(10)],
+    transforms: [sortable, cellWidth(10)],
   },
   /*{
     title: intl.formatMessage(messages.riskOfChange),
@@ -199,6 +199,6 @@ export const RECS_LIST_COLUMNS = [
   },*/
   {
     title: intl.formatMessage(messages.clusters),
-    transforms: [cellWidth(10)],
+    transforms: [sortable, cellWidth(10)],
   },
 ];

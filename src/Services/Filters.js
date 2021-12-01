@@ -12,6 +12,9 @@ export const RECS_LIST_INITIAL_STATE = {
   limit: 20,
   offset: 0,
   impacting: ['true'],
+  sortIndex: -1,
+  sortDirection: 'desc',
+  rule_status: 'enabled',
 };
 
 const filtersInitialState = {
@@ -32,7 +35,11 @@ const filters = createSlice({
   },
 });
 
-export const { updateAffectedClustersFilters, updateRecsListFilters } =
-  filters.actions;
+export const {
+  updateAffectedClustersFilters,
+  updateRecsListFilters,
+  updateRecsListSortIndex,
+  updateRecListSortDirection,
+} = filters.actions;
 
 export default filters.reducer;

@@ -377,4 +377,80 @@ export default defineMessages({
     defaultMessage:
       'To view the content of this page, you must be granted a minimum of Advisor permissions from your Organization Administrator.',
   },
+  disableRule: {
+    id: 'disableRule',
+    description:
+      'Recommendation table, action text for disabling reporting of a recommendation',
+    defaultMessage: 'Disable recommendation',
+  },
+  enableRule: {
+    id: 'enableRule',
+    description:
+      'Recommendation table, action text for enabling reporting of a recommendation',
+    defaultMessage: 'Enable recommendation',
+  },
+  save: {
+    id: 'save',
+    description: 'Save',
+    defaultMessage: `Save`,
+  },
+  cancel: {
+    id: 'cancel',
+    description: 'Cancel',
+    defaultMessage: `Cancel`,
+  },
+  recSuccessfullyDisabled: {
+    id: 'recSuccessfullyDisabled',
+    description: 'Explaining that the rec was disabled successfully',
+    defaultMessage: 'Recommendation successfully disabled',
+  },
+  recSuccessfullyEnabled: {
+    id: 'recSuccessfullyEnabled',
+    description: 'Explaining that the rule was enabled successfully',
+    defaultMessage: 'Recommendation successfully enabled',
+  },
+  error: {
+    id: 'error',
+    description: 'Error',
+    defaultMessage: 'Error',
+  },
+  disableRuleForSystems: {
+    id: 'disableRuleForSystems',
+    description:
+      'Recommendationdetail system table, action text for disabling reporting of a recommendationfor a system',
+    defaultMessage: 'Disable recommendation for selected systems',
+  },
+  disableRuleBody: {
+    id: 'disableRuleBody',
+    description: 'Explaining the action of disabling a recommendation',
+    defaultMessage: `This recommendation will not be shown in reports and dashboards.`,
+  },
+  justificationNote: {
+    id: 'justificationNote',
+    description: 'Justification note',
+    defaultMessage: 'Justification note',
+  },
+  rulesTableErrorEnabled: {
+    id: 'rulesTableErrorEnabled',
+    description:
+      'Recommendation table, hide reports action, error for enabling reporting on a recommendation',
+    defaultMessage: 'Enabling recommendations failed',
+  },
+  rulesTableErrorDisabled: {
+    id: 'rulesTableErrorDisabled',
+    description:
+      'Recommendation table, hide reports action, error for disabling reporting on a recommendation',
+    defaultMessage: 'Disabling recommendations failed',
+  },
+  comingSoonTitle: {
+    id: 'comingSoonTitle',
+    description: 'Temporary Message Title',
+    defaultMessage: 'Coming soon',
+  },
+  comingSoonBody: {
+    id: 'comingSoonBody',
+    description: 'Temporary Message Body',
+    defaultMessage:
+      'We’re currently working on this page. In the meantime, you can visit the Insights Advisor recommendations page to view potential issues with your clusters.',
+  },
 });

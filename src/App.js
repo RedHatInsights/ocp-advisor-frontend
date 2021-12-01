@@ -10,7 +10,7 @@ import NotificationsPortal from '@redhat-cloud-services/frontend-components-noti
 import { getRegistry } from '@redhat-cloud-services/frontend-components-utilities/Registry/Registry';
 import { notificationsReducer } from '@redhat-cloud-services/frontend-components-notifications/redux';
 import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye/Bullseye';
-import LockIcon from '@patternfly/react-icons/dist/esm/icons/lock-icon';
+import LockIcon from '@patternfly/react-icons/dist/js/icons/lock-icon';
 
 import { Routes } from './Routes';
 import ErrorBoundary from './Utilities/ErrorBoundary';

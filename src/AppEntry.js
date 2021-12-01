@@ -2,26 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { BrowserRouter as Router } from 'react-router-dom';
 
-import { IntlProvider } from '@redhat-cloud-services/frontend-components-translations/';
 import { getBaseName } from '@redhat-cloud-services/frontend-components-utilities/helpers/helpers';
 
 import App from './App';
-
-const translations = {
-  en: require('../compiled-lang/en.json'),
-};
+import { Intl } from './Utilities/intlHelper';
 
 const AppEntry = ({ useLogger }) => (
-  <IntlProvider
-    locale={navigator.language.slice(0, 2)}
-    defaultLocale="en"
-    messages={translations[navigator.language.slice(0, 2)]}
-    onError={console.error}
-  >
+  <Intl>
     <Router basename={getBaseName(window.location.pathname, 3)}>
       <App useLogger={useLogger} />
     </Router>
-  </IntlProvider>
+  </Intl>
 );
 
 AppEntry.propTypes = {
