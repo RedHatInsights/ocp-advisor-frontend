@@ -13,6 +13,30 @@ describe('recommendations list table', () => {
   const RECS_LIST_TABLE = 'div[id=recs-list-table]';
   const CHIP = 'div[class=pf-c-chip]';
 
+  Cypress.Commands.add('getAllRows', () =>
+    cy.get(RECS_LIST_TABLE).find('tbody[role=rowgroup]')
+  );
+  Cypress.Commands.add('removeStatusFilter', () => {
+    cy.get(CHIP)
+      .contains('Enabled')
+      .parent()
+      .find('button[data-ouia-component-id=close]')
+      .click();
+  });
+  Cypress.Commands.add('removeImpactingFilter', () => {
+    cy.get(CHIP)
+      .contains('1 or more')
+      .parent()
+      .find('button[data-ouia-component-id=close]')
+      .click();
+  });
+  Cypress.Commands.add('clickOnFirstRowKebab', () => {
+    cy.get(RECS_LIST_TABLE)
+      .find('tbody[role=rowgroup] .pf-c-dropdown__toggle')
+      .eq(0)
+      .click();
+  });
+
   beforeEach(() => {
     cy.intercept('*', (req) => {
       req.destroy();
@@ -100,22 +124,12 @@ describe('recommendations list table', () => {
   });
 
   it('table has 4 recs', () => {
-    cy.get(RECS_LIST_TABLE)
-      .should('have.length', 1)
-      .find('tbody[role=rowgroup]')
-      .should('have.length', 4);
+    cy.getAllRows().should('have.length', 4);
   });
 
   it('table has 7 recs including non-impacting', () => {
-    cy.get(CHIP)
-      .contains('1 or more')
-      .parent()
-      .find('button[data-ouia-component-id=close]')
-      .click();
-    cy.get(RECS_LIST_TABLE)
-      .should('have.length', 1)
-      .find('tbody[role=rowgroup]')
-      .should('have.length', 7);
+    cy.removeImpactingFilter();
+    cy.getAllRows().should('have.length', 7);
   });
 
   it('should have 4 sortable columns', () => {
@@ -203,13 +217,8 @@ describe('recommendations list table', () => {
   });
 
   it('include disabled rules', () => {
-    cy.get(CHIP)
-      .contains('Enabled')
-      .parent()
-      .find('button[data-ouia-component-id=close]')
-      .click();
-    cy.get(RECS_LIST_TABLE)
-      .find('tbody[role=rowgroup]')
+    cy.removeStatusFilter();
+    cy.getAllRows()
       .should('have.length', 5)
       .find('td[data-label="Name"]')
       .contains('disabled rule with 2 impacted')
@@ -217,16 +226,35 @@ describe('recommendations list table', () => {
   });
 
   it('disabled rule has a label', () => {
-    cy.get(CHIP)
-      .contains('Enabled')
-      .parent()
-      .find('button[data-ouia-component-id=close]')
-      .click();
-    cy.get(RECS_LIST_TABLE)
-      .find('tbody[role=rowgroup]')
+    cy.removeStatusFilter();
+    cy.getAllRows()
       .should('have.length', 5)
       .eq(0)
       .find('span[class=pf-c-label]')
       .should('have.text', 'Disabled');
+  });
+
+  it('each row has a kebab', () => {
+    cy.get(RECS_LIST_TABLE)
+      .find('tbody[role=rowgroup] .pf-c-dropdown__toggle')
+      .should('have.length', 4);
+  });
+
+  it('enabled rule has the disable action', () => {
+    cy.clickOnFirstRowKebab();
+    cy.getAllRows()
+      .eq(0)
+      .find('.pf-c-dropdown__menu button')
+      .should('have.text', 'Disable recommendation');
+  });
+
+  it('disabled rule has the enable action', () => {
+    cy.removeStatusFilter();
+    cy.removeImpactingFilter();
+    cy.clickOnFirstRowKebab();
+    cy.getAllRows()
+      .eq(0)
+      .find('.pf-c-dropdown__menu button')
+      .should('have.text', 'Enable recommendation');
   });
 });

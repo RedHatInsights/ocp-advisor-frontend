@@ -25,6 +25,7 @@ import {
 import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
 import { InsightsLabel } from '@redhat-cloud-services/frontend-components/InsightsLabel';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar/PrimaryToolbar';
+import { addNotification } from '@redhat-cloud-services/frontend-components-notifications/';
 
 import {
   FILTER_CATEGORIES,
@@ -42,16 +43,23 @@ import Loading from '../Loading/Loading';
 import { ErrorState, NoMatchingRecs } from '../MessageState/EmptyStates';
 import RuleDetails from '../Recommendation/RuleDetails';
 import { passFilters } from '../Common/Tables';
+import DisableRule from '../Modals/DisableRule';
+import { Delete } from '../../Utilities/Api';
+import { BASE_URL } from '../../Services/SmartProxy';
 
 const RecsListTable = ({ query }) => {
   const intl = useIntl();
   const dispatch = useDispatch();
   const filters = useSelector(({ filters }) => filters.recsListState);
-  const { isError, isUninitialized, isFetching, isSuccess, data } = query;
+  const { isError, isUninitialized, isFetching, isSuccess, data, refetch } =
+    query;
   const recs = data?.recommendations || [];
   const page = filters.offset / filters.limit + 1;
   const [filteredRows, setFilteredRows] = useState([]);
   const [displayedRows, setDisplayedRows] = useState([]);
+  const [disableRuleOpen, setDisableRuleOpen] = useState(false);
+  const [selectedRule, setSelectedRule] = useState({});
+  const notify = (data) => dispatch(addNotification(data));
 
   useEffect(() => {
     setDisplayedRows(
@@ -416,8 +424,78 @@ const RecsListTable = ({ query }) => {
     setDisplayedRows(collapseRows);
   };
 
+  const ackRule = async (rowId) => {
+    const rule = displayedRows[rowId].rule;
+
+    try {
+      if (!rule.disabled) {
+        // show disable rule modal
+        setSelectedRule(rule);
+        setDisableRuleOpen(true);
+      } else {
+        try {
+          await Delete(`${BASE_URL}/v2/ack/${rule.rule_id}/`);
+          notify({
+            variant: 'success',
+            timeout: true,
+            dismissable: true,
+            title: intl.formatMessage(messages.recSuccessfullyEnabled),
+          });
+          refetch();
+        } catch (error) {
+          notify({
+            variant: 'danger',
+            dismissable: true,
+            title: intl.formatMessage(messages.error),
+            description: `${error}`,
+          });
+        }
+      }
+    } catch (error) {
+      notify({
+        variant: 'danger',
+        dismissable: true,
+        title: rule.disabled
+          ? intl.formatMessage(messages.rulesTableErrorEnabled)
+          : intl.formatMessage(messages.rulesTableErrorDisabled),
+        description: `${error}`,
+      });
+    }
+  };
+
+  const actionResolver = (rowData, { rowIndex }) => {
+    const rule = displayedRows[rowIndex].rule
+      ? displayedRows[rowIndex].rule
+      : null;
+    if (rowIndex % 2 !== 0 || !rule) {
+      return null;
+    }
+
+    return rule && !rule.disabled
+      ? [
+          {
+            title: intl.formatMessage(messages.disableRule),
+            onClick: (_event, rowId) => ackRule(rowId),
+          },
+        ]
+      : [
+          {
+            title: intl.formatMessage(messages.enableRule),
+            onClick: (_event, rowId) => ackRule(rowId),
+          },
+        ];
+  };
+
   return (
     <div id="recs-list-table">
+      {disableRuleOpen && (
+        <DisableRule
+          handleModalToggle={setDisableRuleOpen}
+          isModalOpen={disableRuleOpen}
+          rule={selectedRule}
+          afterFn={refetch}
+        />
+      )}
       <PrimaryToolbar
         pagination={{
           itemCount: filteredRows.length,
@@ -447,7 +525,7 @@ const RecsListTable = ({ query }) => {
           </CardBody>
         </Card>
       )}
-      {isSuccess && recs.length > 0 && (
+      {!(isUninitialized || isFetching) && isSuccess && recs.length > 0 && (
         <React.Fragment>
           <Table
             aria-label="Table of recommendations"
@@ -461,6 +539,7 @@ const RecsListTable = ({ query }) => {
               direction: filters.sortDirection,
             }}
             onSort={onSort}
+            actionResolver={actionResolver}
           >
             <TableHeader />
             <TableBody />
@@ -504,6 +583,7 @@ RecsListTable.propTypes = {
     isFetching: PropTypes.bool.isRequired,
     isSuccess: PropTypes.bool.isRequired,
     data: PropTypes.array,
+    refetch: PropTypes.func,
   }),
 };
 
