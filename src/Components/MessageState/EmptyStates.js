@@ -95,8 +95,8 @@ const NoMatchingRecs = () => {
 const ComingSoon = () => {
   const intl = useIntl();
   return (
-    <EmptyState variant="small">
-      <EmptyStateIcon icon={InProgressIcon} />
+    <EmptyState variant="small" id="coming-soon-message">
+      <EmptyStateIcon icon={InProgressIcon} color="#151515" />
       <Title headingLevel="h2" size="2xl">
         {intl.formatMessage(messages.comingSoonTitle)}
       </Title>
