@@ -1,12 +1,10 @@
 import { Route, Switch, Redirect } from 'react-router-dom';
 import React, { Suspense, lazy } from 'react';
+import Main from '@redhat-cloud-services/frontend-components/Main';
 
 import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
-import { EmptyState } from '@patternfly/react-core/dist/js/components/EmptyState';
-import { EmptyStateBody } from '@patternfly/react-core/dist/js/components/EmptyState';
 import { Spinner } from '@patternfly/react-core/dist/js/components/Spinner';
-
-import InvalidObject from '@redhat-cloud-services/frontend-components/InvalidObject/InvalidObject';
+import { ComingSoon } from '../src/Components/MessageState/EmptyStates';
 
 const Cluster = lazy(() =>
   import(/* webpackChunkName: "ClusterDetails" */ './Components/Cluster')
@@ -63,11 +61,9 @@ export const Routes = () => (
       <Route
         path="*"
         component={() => (
-          <EmptyState>
-            <EmptyStateBody>
-              <InvalidObject />
-            </EmptyStateBody>
-          </EmptyState>
+          <Main>
+            <ComingSoon />
+          </Main>
         )}
       />
     </Switch>

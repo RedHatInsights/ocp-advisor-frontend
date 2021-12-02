@@ -477,4 +477,15 @@ export default defineMessages({
     defaultMessage:
       'Recommendation is disabled for {systems, plural, one {# system} other {# systems}}',
   },
+  comingSoonTitle: {
+    id: 'comingSoonTitle',
+    description: 'Temporary Message Title',
+    defaultMessage: 'Coming soon',
+  },
+  comingSoonBody: {
+    id: 'comingSoonBody',
+    description: 'Temporary Message Body',
+    defaultMessage:
+      'We’re currently working on this page. In the meantime, you can visit the Insights Advisor recommendations page to view potential issues with your clusters.',
+  },
 });

@@ -6,6 +6,8 @@
   "cancel": "Cancel",
   "category": "Category",
   "clusters": "Clusters",
+  "comingSoonBody": "We’re currently working on this page. In the meantime, you can visit the Insights Advisor recommendations page to view potential issues with your clusters.",
+  "comingSoonTitle": "Coming soon",
   "critical": "Critical",
   "description": "Description",
   "disableRule": "Disable recommendation",
