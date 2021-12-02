@@ -284,7 +284,7 @@ const Recommendation = ({ rule, ack, match }) => {
                   <Title className="titleOverride" headingLevel="h3" size="2xl">
                     {intl.formatMessage(messages.affectedClusters)}
                   </Title>
-                  <AffectedClustersTable query={clusters} />
+                  <AffectedClustersTable />
                 </React.Fragment>
               )}
               {content?.disabled && (
