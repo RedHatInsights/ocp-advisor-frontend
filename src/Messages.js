@@ -407,7 +407,7 @@ export default defineMessages({
   recSuccessfullyDisabled: {
     id: 'recSuccessfullyDisabled',
     description: 'Explaining that the rec was disabled successfully',
-    defaultMessage: 'Recommendation successfully disabled',
+    defaultMessage: 'Recommendation disabled',
   },
   recSuccessfullyEnabled: {
     id: 'recSuccessfullyEnabled',
@@ -528,8 +528,7 @@ export default defineMessages({
     id: 'recSuccessfullyDisabledForCluster',
     description:
       'Explaining that the rec was disabled successfully for clusters',
-    defaultMessage:
-      'Recommendation successfully disabled for selected cluster(s)',
+    defaultMessage: 'Recommendation disabled for selected cluster(s)',
   },
   recSuccessfullyEnabledForCluster: {
     id: 'recSuccessfullyEnabledForSystem',
