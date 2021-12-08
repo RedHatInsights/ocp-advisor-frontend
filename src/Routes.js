@@ -1,10 +1,11 @@
 import { Route, Switch, Redirect } from 'react-router-dom';
 import React, { Suspense, lazy } from 'react';
-import Main from '@redhat-cloud-services/frontend-components/Main';
 
 import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
 import { Spinner } from '@patternfly/react-core/dist/js/components/Spinner';
-import { ComingSoon } from '../src/Components/MessageState/EmptyStates';
+import { EmptyState } from '@patternfly/react-core/dist/js/components/EmptyState';
+import { EmptyStateBody } from '@patternfly/react-core/dist/js/components/EmptyState';
+import InvalidObject from '@redhat-cloud-services/frontend-components/InvalidObject/InvalidObject';
 
 const Cluster = lazy(() =>
   import(/* webpackChunkName: "ClusterDetails" */ './Components/Cluster')
@@ -18,12 +19,17 @@ const RecsList = lazy(() =>
   import(/* webpackChunkName: "RecsList" */ './Components/RecsList')
 );
 
+const ClustersList = lazy(() =>
+  import(/* webpackChunkName: "ClustersList" */ './Components/ClustersList')
+);
+
 const paths = [
   {
     title: 'Clusters',
     path: '/clusters/:clusterId',
     component: Cluster,
   },
+  { title: 'Clusters', path: '/clusters', component: ClustersList },
   {
     title: 'Recommendations',
     path: '/recommendations/:recommendationId',
@@ -61,9 +67,11 @@ export const Routes = () => (
       <Route
         path="*"
         component={() => (
-          <Main>
-            <ComingSoon />
-          </Main>
+          <EmptyState>
+            <EmptyStateBody>
+              <InvalidObject />
+            </EmptyStateBody>
+          </EmptyState>
         )}
       />
     </Switch>
