@@ -41,8 +41,7 @@ const ClustersListTable = ({ query }) => {
     dispatch(updateClustersListFilters(payload));
   const filters = useSelector(({ filters }) => filters.clustersListState);
 
-  const { isError, isUninitialized, isFetching, isSuccess, data, refetch } =
-    query;
+  const { isError, isUninitialized, isFetching, isSuccess, data } = query;
   const clusters = data?.data || [];
   const page = filters.offset / filters.limit + 1;
 
@@ -53,13 +52,7 @@ const ClustersListTable = ({ query }) => {
     setDisplayedRows(
       buildDisplayedRows(filteredRows, filters.sortIndex, filters.sortDirection)
     );
-  }, [
-    filteredRows,
-    filters.limit,
-    filters.offset,
-    filters.sortIndex,
-    filters.sortDirection,
-  ]);
+  }, [filteredRows]);
 
   useEffect(() => {
     setFilteredRows(buildFilteredRows(clusters, filters));
@@ -72,11 +65,25 @@ const ClustersListTable = ({ query }) => {
   };
 
   const buildDisplayedRows = (rows, index, direction) => {
-    const sorted = [...rows].sort((a, b) => {
-      const fst = a.cells[index],
-        snd = b.cells[index];
-      return fst > snd ? 1 : snd > fst ? -1 : 0;
-    });
+    const sorted = [...rows];
+    index !== -1 &&
+      sorted.sort((a, b) => {
+        let fst, snd;
+        switch (index) {
+          case 0:
+            fst = a.cluster.cluster_name || a.cluster.cluster_id;
+            snd = b.cluster.cluster_name || b.cluster.cluster_id;
+            return fst.localeCompare(snd);
+          case 6:
+            fst = new Date(a.cluster.last_checked_at);
+            snd = new Date(b.cluster.last_checked_at);
+            return fst > snd ? 1 : snd > fst ? -1 : 0;
+          default:
+            fst = a.cells[index];
+            snd = b.cells[index];
+            return fst > snd ? 1 : snd > fst ? -1 : 0;
+        }
+      });
     if (direction === SortByDirection.desc) {
       sorted.reverse();
     }

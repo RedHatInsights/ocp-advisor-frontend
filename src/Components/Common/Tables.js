@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+import { Tooltip } from '@patternfly/react-core/dist/js/components/Tooltip';
 import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
 
 import {
@@ -85,11 +86,27 @@ const mapClustersToRows = (clusters) =>
       c.hits_by_total_risk?.[2] || 0,
       c.hits_by_total_risk?.[1] || 0,
       c.hits_by_total_risk?.[0] || 0,
-      c.last_checked_at ? (
-        <DateFormat key={i} date={c.last_checked_at} variant="relative" />
-      ) : (
-        intl.formatMessage(messages.nA)
-      ),
+      <span key={i}>
+        {c.last_checked_at ? (
+          <DateFormat
+            extraTitle={`${intl.formatMessage(messages.lastSeen)}: `}
+            date={c.last_checked_at}
+            variant="relative"
+          />
+        ) : (
+          <Tooltip
+            key={i}
+            content={
+              <span>
+                {intl.formatMessage(messages.lastSeen) + ': '}
+                {intl.formatMessage(messages.nA)}
+              </span>
+            }
+          >
+            <span>{intl.formatMessage(messages.nA)}</span>
+          </Tooltip>
+        )}
+      </span>,
     ],
   }));
 
@@ -157,6 +174,9 @@ const buildFilterChips = (filters, categories) => {
   delete localFilters.sortDirection;
   delete localFilters.offset;
   delete localFilters.limit;
+  localFilters?.hits &&
+    localFilters.hits.length === 0 &&
+    delete localFilters.hits;
   return pruneFilters(localFilters, categories);
 };
 
