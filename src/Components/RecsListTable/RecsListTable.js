@@ -3,7 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-
+import { Button } from '@patternfly/react-core/dist/js/components/Button';
+import AngleRightIcon from '@patternfly/react-icons/dist/js/icons/angle-right-icon';
+import AngleDownIcon from '@patternfly/react-icons/dist/js/icons/angle-down-icon';
 import {
   SortByDirection,
   Table,
@@ -59,6 +61,7 @@ const RecsListTable = ({ query }) => {
   const [displayedRows, setDisplayedRows] = useState([]);
   const [disableRuleOpen, setDisableRuleOpen] = useState(false);
   const [selectedRule, setSelectedRule] = useState({});
+  const [expandedTable, setExpandedTable] = useState(true);
   const notify = (data) => dispatch(addNotification(data));
 
   useEffect(() => {
@@ -418,6 +421,21 @@ const RecsListTable = ({ query }) => {
     },
   };
 
+  //Responsible for the handling collapse for all the recommendations
+  //Used in the PrimaryToolbar
+  const collapseAll = (collapse) => {
+    setExpandedTable(!collapse);
+    setDisplayedRows(
+      displayedRows.map((row) => {
+        return {
+          ...row,
+          isOpen: collapse,
+        };
+      })
+    );
+  };
+
+  //Responsible for handling collapse for single recommendation
   const handleOnCollapse = (_e, rowId, isOpen) => {
     const collapseRows = [...displayedRows];
     collapseRows[rowId] = { ...collapseRows[rowId], isOpen };
@@ -497,6 +515,27 @@ const RecsListTable = ({ query }) => {
         />
       )}
       <PrimaryToolbar
+        actionsConfig={{
+          actions: [
+            expandedTable === true ? (
+              <Button
+                variant="plain"
+                key="first"
+                onClick={() => collapseAll(true)}
+              >
+                <AngleRightIcon />
+              </Button>
+            ) : (
+              <Button
+                variant="plain"
+                key="first"
+                onClick={() => collapseAll(false)}
+              >
+                <AngleDownIcon />
+              </Button>
+            ),
+          ],
+        }}
         pagination={{
           itemCount: filteredRows.length,
           page: filters.offset / filters.limit + 1,
@@ -516,6 +555,7 @@ const RecsListTable = ({ query }) => {
         }}
         filterConfig={{ items: filterConfigItems }}
         activeFiltersConfig={activeFiltersConfig}
+        isExpanded="false"
       />
       {(isUninitialized || isFetching) && <Loading />}
       {(isError || (isSuccess && recs.length === 0)) && (
