@@ -216,7 +216,7 @@ export const CLUSTER_FILTER_CATEGORIES = {
 export const CLUSTERS_LIST_COLUMNS = [
   {
     title: intl.formatMessage(messages.name),
-    transforms: [sortable, cellWidth(35)],
+    transforms: [sortable, cellWidth(30)],
   },
   {
     title: intl.formatMessage(messages.recommendations),
@@ -240,6 +240,8 @@ export const CLUSTERS_LIST_COLUMNS = [
   },
   {
     title: intl.formatMessage(messages.lastSeen),
-    transforms: [sortable, cellWidth(10)],
+    transforms: [sortable, cellWidth(15)],
   },
 ];
+export const CLUSTER_NAME_CELL = 0;
+export const CLUSTER_LAST_CHECKED_CELL = 6;

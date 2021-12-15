@@ -24,6 +24,8 @@ import {
 import {
   CLUSTERS_LIST_COLUMNS,
   CLUSTER_FILTER_CATEGORIES,
+  CLUSTER_LAST_CHECKED_CELL,
+  CLUSTER_NAME_CELL,
 } from '../../AppConstants';
 import {
   buildFilterChips,
@@ -34,14 +36,15 @@ import Loading from '../Loading/Loading';
 import messages from '../../Messages';
 import { ErrorState, NoMatchingClusters } from '../MessageState/EmptyStates';
 
-const ClustersListTable = ({ query }) => {
+const ClustersListTable = ({
+  query: { isError, isUninitialized, isFetching, isSuccess, data },
+}) => {
   const intl = useIntl();
   const dispatch = useDispatch();
   const updateFilters = (payload) =>
     dispatch(updateClustersListFilters(payload));
   const filters = useSelector(({ filters }) => filters.clustersListState);
 
-  const { isError, isUninitialized, isFetching, isSuccess, data } = query;
   const clusters = data?.data || [];
   const page = filters.offset / filters.limit + 1;
 
@@ -52,41 +55,44 @@ const ClustersListTable = ({ query }) => {
     setDisplayedRows(
       buildDisplayedRows(filteredRows, filters.sortIndex, filters.sortDirection)
     );
-  }, [filteredRows]);
+  }, [
+    filteredRows,
+    filters.sortIndex,
+    filters.sortDirection,
+    filters.limit,
+    filters.offset,
+  ]);
 
   useEffect(() => {
     setFilteredRows(buildFilteredRows(clusters, filters));
-  }, [data, filters]);
+  }, [data, filters.hits, filters.text]);
 
-  const buildFilteredRows = (allRows, filters) => {
-    return mapClustersToRows(
+  const buildFilteredRows = (allRows, filters) =>
+    mapClustersToRows(
       allRows.filter((cluster) => passFiltersCluster(cluster, filters))
     );
-  };
 
   const buildDisplayedRows = (rows, index, direction) => {
     const sorted = [...rows];
     index !== -1 &&
       sorted.sort((a, b) => {
         let fst, snd;
+        const d = direction === SortByDirection.asc ? 1 : -1;
         switch (index) {
-          case 0:
+          case CLUSTER_NAME_CELL:
             fst = a.cluster.cluster_name || a.cluster.cluster_id;
             snd = b.cluster.cluster_name || b.cluster.cluster_id;
-            return fst.localeCompare(snd);
-          case 6:
+            return fst.localeCompare(snd) ? fst.localeCompare(snd) * d : 0;
+          case CLUSTER_LAST_CHECKED_CELL:
             fst = new Date(a.cluster.last_checked_at);
             snd = new Date(b.cluster.last_checked_at);
-            return fst > snd ? 1 : snd > fst ? -1 : 0;
+            return fst > snd ? d : snd > fst ? -d : 0;
           default:
             fst = a.cells[index];
             snd = b.cells[index];
-            return fst > snd ? 1 : snd > fst ? -1 : 0;
+            return fst > snd ? d : snd > fst ? -d : 0;
         }
       });
-    if (direction === SortByDirection.desc) {
-      sorted.reverse();
-    }
     return sorted.slice(
       filters.limit * (page - 1),
       filters.limit * (page - 1) + filters.limit
@@ -94,10 +100,9 @@ const ClustersListTable = ({ query }) => {
   };
 
   const removeFilterParam = (param) => {
-    const filter = { ...filters, offset: 0 };
-    delete filter[param];
+    const { [param]: omitted, ...newFilters } = { ...filters, offset: 0 };
     updateFilters({
-      ...filter,
+      ...newFilters,
       ...(param === 'text'
         ? { text: '' }
         : param === 'hits'
@@ -140,11 +145,10 @@ const ClustersListTable = ({ query }) => {
 
   const activeFiltersConfig = {
     deleteTitle: intl.formatMessage(messages.resetFilters),
-    // TODO: utilize buildFilterChips in RecsListTable
     filters: buildFilterChips(filters, CLUSTER_FILTER_CATEGORIES),
     onDelete: (_event, itemsToRemove, isAll) => {
       if (isAll) {
-        dispatch(updateFilters(CLUSTERS_LIST_INITIAL_STATE));
+        updateFilters(CLUSTERS_LIST_INITIAL_STATE);
       } else {
         itemsToRemove.map((item) => {
           const newFilter = {
@@ -155,7 +159,7 @@ const ClustersListTable = ({ query }) => {
               : '',
           };
           newFilter[item.urlParam].length > 0
-            ? dispatch(updateFilters({ ...filters, ...newFilter }))
+            ? updateFilters({ ...filters, ...newFilter })
             : removeFilterParam(item.urlParam);
         });
       }
@@ -172,7 +176,7 @@ const ClustersListTable = ({ query }) => {
         pagination={{
           itemCount: filteredRows.length,
           page,
-          perPage: Number(filters.limit),
+          perPage: filters.limit,
           onSetPage: (_event, page) =>
             updateFilters({
               ...filters,

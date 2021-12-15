@@ -122,7 +122,7 @@ describe('clusters list table', () => {
     // check initial state
     cy.getFirstRow()
       .find('td[data-label=Name]')
-      .should('have.text', 'cc59cabb-cb40-4a7e-8665-feb822a210e3');
+      .should('have.text', 'gvgubed6h jzcmr99ojh');
     // click on the Name sorting button
     cy.get('.pf-c-table__sort').eq(0).click();
     cy.getFirstRow()
@@ -143,13 +143,13 @@ describe('clusters list table', () => {
       .children()
       .eq(4)
       .find('td[data-label=Name]')
-      .should('have.text', 'gsbq8pthf xah3olxhz');
+      .should('have.text', '5uq3oy111 ufq7fnxcd');
   });
 
   it('names of rows are links', () => {
     cy.getFirstRow()
       .find('td[data-label=Name]')
-      .find('a[href="/clusters/cc59cabb-cb40-4a7e-8665-feb822a210e3"]')
-      .should('have.text', 'cc59cabb-cb40-4a7e-8665-feb822a210e3');
+      .find('a[href="/clusters/e488c993-821c-4915-bd08-5a51ed7aa3a2"]')
+      .should('have.text', 'gvgubed6h jzcmr99ojh');
   });
 });

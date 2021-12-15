@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import _ from 'lodash';
 
 import { Tooltip } from '@patternfly/react-core/dist/js/components/Tooltip';
 import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
@@ -73,29 +74,29 @@ const passFiltersCluster = (cluster, filters) =>
   });
 
 const mapClustersToRows = (clusters) =>
-  clusters.map((c, i) => ({
-    cluster: c,
+  clusters.map((cluster, index) => ({
+    cluster,
     cells: [
-      <span key={i}>
-        <Link to={`clusters/${c.cluster_id}`}>
-          {c.cluster_name || c.cluster_id}
+      <span key={index}>
+        <Link to={`clusters/${cluster.cluster_id}`}>
+          {cluster.cluster_name || cluster.cluster_id}
         </Link>
       </span>,
-      c.total_hit_count,
-      c.hits_by_total_risk?.[3] || 0,
-      c.hits_by_total_risk?.[2] || 0,
-      c.hits_by_total_risk?.[1] || 0,
-      c.hits_by_total_risk?.[0] || 0,
-      <span key={i}>
-        {c.last_checked_at ? (
+      cluster.total_hit_count,
+      cluster.hits_by_total_risk?.[3] || 0,
+      cluster.hits_by_total_risk?.[2] || 0,
+      cluster.hits_by_total_risk?.[1] || 0,
+      cluster.hits_by_total_risk?.[0] || 0,
+      <span key={index}>
+        {cluster.last_checked_at ? (
           <DateFormat
             extraTitle={`${intl.formatMessage(messages.lastSeen)}: `}
-            date={c.last_checked_at}
+            date={cluster.last_checked_at}
             variant="relative"
           />
         ) : (
           <Tooltip
-            key={i}
+            key={index}
             content={
               <span>
                 {intl.formatMessage(messages.lastSeen) + ': '}
@@ -113,63 +114,59 @@ const mapClustersToRows = (clusters) =>
 const capitalize = (string) => string[0].toUpperCase() + string.substring(1);
 
 const pruneFilters = (localFilters, filterCategories) => {
-  const prunedFilters = Object.entries(localFilters);
-  return prunedFilters.length > 0
-    ? prunedFilters.reduce((arr, item) => {
-        if (filterCategories[item[0]]) {
-          const category = filterCategories[item[0]];
-          const chips = Array.isArray(item[1])
-            ? item[1].map((value) => {
-                const selectedCategoryValue = category.values.find(
-                  (values) => values.value === String(value)
-                );
-                return selectedCategoryValue
-                  ? {
-                      name:
-                        selectedCategoryValue.text ||
-                        selectedCategoryValue.label,
-                      value,
-                    }
-                  : { name: value, value };
-              })
-            : [
-                {
-                  name: category.values.find(
-                    (values) => values.value === String(item[1])
-                  ).label,
-                  value: item[1],
-                },
-              ];
-          return [
-            ...arr,
+  const prunedFilters = Object.entries(localFilters || {});
+  return prunedFilters.reduce((arr, it) => {
+    const [key, item] = it;
+    if (filterCategories[key]) {
+      const category = filterCategories[key];
+      const chips = Array.isArray(item)
+        ? item.map((value) => {
+            const selectedCategoryValue = category.values.find(
+              (values) => values.value === String(value)
+            );
+            return selectedCategoryValue
+              ? {
+                  name:
+                    selectedCategoryValue.text || selectedCategoryValue.label,
+                  value,
+                }
+              : { name: value, value };
+          })
+        : [
             {
-              category: capitalize(category.title),
-              chips,
-              urlParam: category.urlParam,
+              name: category.values.find(
+                (values) => values.value === String(item)
+              ).label,
+              value: item,
             },
           ];
-        } else if (item[0] === 'text') {
-          return [
-            ...arr,
-            ...(item[1].length > 0
-              ? [
-                  {
-                    category: 'Name',
-                    chips: [{ name: item[1], value: item[1] }],
-                    urlParam: item[0],
-                  },
-                ]
-              : []),
-          ];
-        } else {
-          return arr;
-        }
-      }, [])
-    : [];
+      return [
+        ...arr,
+        {
+          category: capitalize(category.title),
+          chips,
+          urlParam: category.urlParam,
+        },
+      ];
+    } else if (key === 'text') {
+      return [
+        ...arr,
+        ...(item.length > 0
+          ? [
+              {
+                category: 'Name',
+                chips: [{ name: item, value: item }],
+                urlParam: key,
+              },
+            ]
+          : []),
+      ];
+    }
+  }, []);
 };
 
 const buildFilterChips = (filters, categories) => {
-  const localFilters = { ...filters };
+  const localFilters = _.cloneDeep(filters);
   delete localFilters.sortIndex;
   delete localFilters.sortDirection;
   delete localFilters.offset;
@@ -180,4 +177,10 @@ const buildFilterChips = (filters, categories) => {
   return pruneFilters(localFilters, categories);
 };
 
-export { passFilters, passFiltersCluster, mapClustersToRows, buildFilterChips };
+export {
+  passFilters,
+  passFiltersCluster,
+  mapClustersToRows,
+  buildFilterChips,
+  capitalize,
+};
