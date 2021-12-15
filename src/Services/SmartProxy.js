@@ -23,6 +23,9 @@ export const SmartProxyApi = createApi({
     getRecs: builder.query({
       query: () => `v2/rule`,
     }),
+    getClusters: builder.query({
+      query: () => `v2/clusters`,
+    }),
   }),
 });
 
@@ -34,4 +37,5 @@ export const {
   useGetAffectedClustersQuery,
   useGetRecsQuery,
   useLazyGetRecsQuery,
+  useGetClustersQuery,
 } = SmartProxyApi;

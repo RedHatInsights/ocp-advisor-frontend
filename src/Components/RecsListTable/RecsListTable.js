@@ -42,7 +42,7 @@ import { strong } from '../../Utilities/intlHelper';
 import Loading from '../Loading/Loading';
 import { ErrorState, NoMatchingRecs } from '../MessageState/EmptyStates';
 import RuleDetails from '../Recommendation/RuleDetails';
-import { passFilters } from '../Common/Tables';
+import { passFilters, capitalize } from '../Common/Tables';
 import DisableRule from '../Modals/DisableRule';
 import { Delete } from '../../Utilities/Api';
 import { BASE_URL } from '../../Services/SmartProxy';
@@ -327,8 +327,6 @@ const RecsListTable = ({ query }) => {
       updateFilters({ ...filters, sortIndex: index, sortDirection: direction })
     );
   };
-
-  const capitalize = (string) => string[0].toUpperCase() + string.substring(1);
 
   const pruneFilters = (localFilters, filterCategories) => {
     const prunedFilters = Object.entries(localFilters);
