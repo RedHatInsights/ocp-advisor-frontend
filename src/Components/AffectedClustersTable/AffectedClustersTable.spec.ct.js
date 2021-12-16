@@ -8,10 +8,22 @@ import props from '../../../cypress/fixtures/AffectedClustersTable/data.json';
 import { Intl } from '../../Utilities/intlHelper';
 import getStore from '../../Store';
 
-describe('affected clusters table', () => {
-  const AFFECTED_LIST_TABLE = 'div[id=affected-list-table]';
-  const ROW = 'tbody[role=rowgroup]';
+// selectors
+const AFFECTED_LIST_TABLE = 'div[id=affected-list-table]';
+const ROW_GROUP = 'tbody[role=rowgroup]';
+const PAGINATION_MENU =
+  'div[data-ouia-component-type="PF4/PaginationOptionsMenu"]';
+const TOOLBAR_CONTENT = '.pf-c-toolbar__content';
 
+// actions
+Cypress.Commands.add('countRows', (count) => {
+  cy.get(AFFECTED_LIST_TABLE)
+    .find(ROW_GROUP)
+    .children()
+    .should('have.length', count);
+});
+
+describe('non-empty successful affected clusters table', () => {
   beforeEach(() => {
     mount(
       <MemoryRouter>
@@ -36,15 +48,13 @@ describe('affected clusters table', () => {
     cy.get(AFFECTED_LIST_TABLE).should('have.length', 1);
   });
 
-  it('shows first ten clusters', () => {
-    cy.get(AFFECTED_LIST_TABLE).find(ROW).children().should('have.length', 10);
+  it('shows first twenty clusters', () => {
+    cy.countRows(20);
   });
 
-  it('paginatation feature', () => {
-    const PAGINATION_MENU =
-      'div[data-ouia-component-type="PF4/PaginationOptionsMenu"]';
+  it('can change page limit', () => {
+    cy.countRows(20);
 
-    cy.get(AFFECTED_LIST_TABLE).find(ROW).children().should('have.length', 10);
     cy.get(PAGINATION_MENU)
       .first()
       .find('button[data-ouia-component-type="PF4/DropdownToggle"]')
@@ -53,9 +63,83 @@ describe('affected clusters table', () => {
       .first()
       .find('ul[class=pf-c-options-menu__menu]')
       .find('li')
-      .eq(1)
+      .eq(2)
       .find('button')
       .click({ force: true }); // caused by the css issue
-    cy.get(AFFECTED_LIST_TABLE).find(ROW).children().should('have.length', 12);
+    cy.countRows(23);
+  });
+
+  it('can add name filter', () => {
+    cy.get(AFFECTED_LIST_TABLE).find('#name-filter').type('ff');
+    // renders filter chips
+    cy.get(TOOLBAR_CONTENT).find('.ins-c-chip-filters');
+    // three matched clusters rendered
+    cy.countRows(3);
+  });
+});
+
+describe('empty successful affected clusters table', () => {
+  beforeEach(() => {
+    mount(
+      <MemoryRouter>
+        <Intl>
+          <Provider store={getStore()}>
+            <AffectedClustersTable
+              query={{
+                isError: false,
+                isFetching: false,
+                isUninitialized: false,
+                isSuccess: true,
+                data: [],
+              }}
+            />
+          </Provider>
+        </Intl>
+      </MemoryRouter>
+    );
+  });
+
+  it('cannot add filters to empty table', () => {
+    cy.get(AFFECTED_LIST_TABLE).find('#name-filter').type('foobar');
+    cy.get(TOOLBAR_CONTENT).find('.ins-c-chip-filters').should('not.exist');
+  });
+
+  it('renders no clusters message', () => {
+    cy.get('#empty-state-message')
+      .find('h4')
+      .should('have.text', 'No clusters');
+  });
+});
+
+describe('empty failed affected clusters table', () => {
+  beforeEach(() => {
+    mount(
+      <MemoryRouter>
+        <Intl>
+          <Provider store={getStore()}>
+            <AffectedClustersTable
+              query={{
+                isError: true,
+                isFetching: false,
+                isUninitialized: false,
+                isSuccess: false,
+                data: undefined,
+              }}
+            />
+          </Provider>
+        </Intl>
+      </MemoryRouter>
+    );
+  });
+
+  it('cannot add filters to empty table', () => {
+    cy.get(AFFECTED_LIST_TABLE).find('#name-filter').type('foobar');
+    cy.get(TOOLBAR_CONTENT).find('.ins-c-chip-filters').should('not.exist');
+  });
+
+  it('renders error message', () => {
+    cy.get('#error-state-message')
+      .find('h4')
+      .should('have.text', 'Something went wrong');
   });
 });
