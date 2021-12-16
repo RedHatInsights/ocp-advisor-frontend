@@ -81,6 +81,7 @@ const AffectedClustersTable = ({ query }) => {
     items: [
       {
         label: 'Name',
+        placeholder: 'Filter by name',
         type: conditionalFilterType.text,
         filterValues: {
           key: 'name-filter',
