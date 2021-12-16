@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-
 import {
   SortByDirection,
   Table,
@@ -59,6 +58,7 @@ const RecsListTable = ({ query }) => {
   const [displayedRows, setDisplayedRows] = useState([]);
   const [disableRuleOpen, setDisableRuleOpen] = useState(false);
   const [selectedRule, setSelectedRule] = useState({});
+  const [isAllExpanded, setIsAllExpanded] = useState(false);
   const notify = (data) => dispatch(addNotification(data));
 
   useEffect(() => {
@@ -83,7 +83,7 @@ const RecsListTable = ({ query }) => {
       .filter((rule) => passFilters(rule, filters))
       .map((value, key) => [
         {
-          isOpen: false,
+          isOpen: isAllExpanded,
           rule: value,
           cells: [
             {
@@ -416,6 +416,21 @@ const RecsListTable = ({ query }) => {
     },
   };
 
+  //Responsible for the handling collapse for all the recommendations
+  //Used in the PrimaryToolbar
+  const collapseAll = (_e, isOpen) => {
+    setIsAllExpanded(isOpen);
+    setDisplayedRows(
+      displayedRows.map((row) => {
+        return {
+          ...row,
+          isOpen: isOpen,
+        };
+      })
+    );
+  };
+
+  //Responsible for handling collapse for single recommendation
   const handleOnCollapse = (_e, rowId, isOpen) => {
     const collapseRows = [...displayedRows];
     collapseRows[rowId] = { ...collapseRows[rowId], isOpen };
@@ -495,6 +510,7 @@ const RecsListTable = ({ query }) => {
         />
       )}
       <PrimaryToolbar
+        expandAll={{ isAllExpanded, onClick: collapseAll }}
         pagination={{
           itemCount: filteredRows.length,
           page: filters.offset / filters.limit + 1,
