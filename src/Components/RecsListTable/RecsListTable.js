@@ -1,3 +1,5 @@
+import './RecsListTable.scss';
+
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useIntl } from 'react-intl';
@@ -533,7 +535,7 @@ const RecsListTable = ({ query }) => {
       />
       {(isUninitialized || isFetching) && <Loading />}
       {(isError || (isSuccess && recs.length === 0)) && (
-        <Card>
+        <Card id="error-state-message">
           <CardBody>
             <ErrorState />
           </CardBody>
