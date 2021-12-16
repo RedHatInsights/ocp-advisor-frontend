@@ -84,6 +84,7 @@ const AffectedClustersTable = ({ query }) => {
         placeholder: 'Filter by name',
         type: conditionalFilterType.text,
         filterValues: {
+          id: 'name-filter',
           key: 'name-filter',
           onChange: (_e, value) => onNameFilterChange(value),
           value: filters.text,
@@ -157,14 +158,14 @@ const AffectedClustersTable = ({ query }) => {
       />
       {(isUninitialized || isFetching) && <Loading />}
       {isError && (
-        <Card>
+        <Card id="error-state-message">
           <CardBody>
             <ErrorState />
           </CardBody>
         </Card>
       )}
       {isSuccess && rows.length === 0 && (
-        <Card>
+        <Card id="empty-state-message">
           <CardBody>
             <NoAffectedClusters />
           </CardBody>
