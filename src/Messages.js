@@ -442,6 +442,41 @@ export default defineMessages({
       'Recommendation table, hide reports action, error for disabling reporting on a recommendation',
     defaultMessage: 'Disabling recommendations failed',
   },
+  ruleIsDisabled: {
+    id: 'ruleIsDisabled',
+    description: 'Exclaiming that the recommendationis disabled',
+    defaultMessage: 'Recommendation is disabled',
+  },
+  ruleIsDisabledBody: {
+    id: 'ruleIsDisabledBody',
+    description: 'Explaining that the recommendationis disabled',
+    defaultMessage: 'This recommendation has been disabled and has no results.',
+  },
+  ruleIsDisabledJustification: {
+    id: 'ruleIsDisabledJustification',
+    description:
+      'Explaining that the recommendationis disabled with following justification',
+    defaultMessage:
+      'This recommendation has been disabled for all systems for the following reason: ',
+  },
+  ruleIsDisabledForSystems: {
+    id: 'ruleIsDisabledForSystems',
+    description: 'Exclaiming that the recommendationis disabled for systems',
+    defaultMessage: 'Recommendation is disabled for some systems',
+  },
+  ruleIsDisabledForAllSystems: {
+    id: 'ruleIsDisabledForAllSystems',
+    description:
+      'Exclaiming that the recommendationis disabled for all systems',
+    defaultMessage: 'Recommendation is disabled for all systems',
+  },
+  ruleIsDisabledForSystemsBody: {
+    id: 'ruleIsDisabledForSystemsBody',
+    description:
+      'Exclaiming that the recommendationis disabled for systems (system count)',
+    defaultMessage:
+      'Recommendation is disabled for {systems, plural, one {# system} other {# systems}}',
+  },
   comingSoonTitle: {
     id: 'comingSoonTitle',
     description: 'Temporary Message Title',

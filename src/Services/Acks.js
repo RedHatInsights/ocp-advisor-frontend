@@ -7,6 +7,9 @@ export const Acks = createApi({
     baseUrl: BASE_URL,
   }),
   endpoints: (build) => ({
+    getRecAcks: build.query({
+      query: (options) => ({ url: `/v2/ack/${options.ruleId}` }),
+    }),
     setAck: build.mutation({
       query: (options) => ({
         url: '/v2/ack',
@@ -17,4 +20,4 @@ export const Acks = createApi({
   }),
 });
 
-export const { useSetAckMutation } = Acks;
+export const { useGetRecAcksQuery, useSetAckMutation } = Acks;

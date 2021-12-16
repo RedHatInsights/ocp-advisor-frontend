@@ -6,7 +6,7 @@ import { cellWidth, sortable } from '@patternfly/react-table';
 
 const cache = createIntlCache();
 const locale = navigator.language.slice(0, 2);
-const intl = createIntl(
+export const intl = createIntl(
   {
     // eslint-disable-next-line no-console
     onError: console.error,
@@ -202,3 +202,46 @@ export const RECS_LIST_COLUMNS = [
     transforms: [sortable, cellWidth(10)],
   },
 ];
+export const CLUSTER_FILTER_CATEGORIES = {
+  hits: {
+    type: 'checkbox',
+    title: 'Total Risk',
+    urlParam: 'hits',
+    values: [
+      { label: 'All clusters', text: 'All clusters', value: 'all' },
+      ...FILTER_CATEGORIES.total_risk.values,
+    ],
+  },
+};
+export const CLUSTERS_LIST_COLUMNS = [
+  {
+    title: intl.formatMessage(messages.name),
+    transforms: [sortable, cellWidth(30)],
+  },
+  {
+    title: intl.formatMessage(messages.recommendations),
+    transforms: [sortable, cellWidth(15)],
+  },
+  {
+    title: intl.formatMessage(messages.critical),
+    transforms: [sortable, cellWidth(10)],
+  },
+  {
+    title: intl.formatMessage(messages.important),
+    transforms: [sortable, cellWidth(10)],
+  },
+  {
+    title: intl.formatMessage(messages.moderate),
+    transforms: [sortable, cellWidth(10)],
+  },
+  {
+    title: intl.formatMessage(messages.low),
+    transforms: [sortable, cellWidth(10)],
+  },
+  {
+    title: intl.formatMessage(messages.lastSeen),
+    transforms: [sortable, cellWidth(15)],
+  },
+];
+export const CLUSTER_NAME_CELL = 0;
+export const CLUSTER_LAST_CHECKED_CELL = 6;

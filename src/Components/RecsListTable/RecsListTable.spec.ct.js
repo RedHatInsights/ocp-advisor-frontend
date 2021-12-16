@@ -8,35 +8,35 @@ import getStore from '../../Store';
 import props from '../../../cypress/fixtures/RecsListTable/data.json';
 import { Intl } from '../../Utilities/intlHelper';
 
-describe('recommendations list table', () => {
-  // selectors
-  const RECS_LIST_TABLE = 'div[id=recs-list-table]';
-  const CHIP = 'div[class=pf-c-chip]';
+// selectors
+const RECS_LIST_TABLE = 'div[id=recs-list-table]';
+const CHIP = 'div[class=pf-c-chip]';
+const ROW = 'tbody[role=rowgroup]';
 
-  Cypress.Commands.add('getAllRows', () =>
-    cy.get(RECS_LIST_TABLE).find('tbody[role=rowgroup]')
-  );
-  Cypress.Commands.add('removeStatusFilter', () => {
-    cy.get(CHIP)
-      .contains('Enabled')
-      .parent()
-      .find('button[data-ouia-component-id=close]')
-      .click();
-  });
-  Cypress.Commands.add('removeImpactingFilter', () => {
-    cy.get(CHIP)
-      .contains('1 or more')
-      .parent()
-      .find('button[data-ouia-component-id=close]')
-      .click();
-  });
-  Cypress.Commands.add('clickOnFirstRowKebab', () => {
-    cy.get(RECS_LIST_TABLE)
-      .find('tbody[role=rowgroup] .pf-c-dropdown__toggle')
-      .eq(0)
-      .click();
-  });
+// actions
+Cypress.Commands.add('getAllRows', () => cy.get(RECS_LIST_TABLE).find(ROW));
+Cypress.Commands.add('removeStatusFilter', () => {
+  cy.get(CHIP)
+    .contains('Enabled')
+    .parent()
+    .find('button[data-ouia-component-id=close]')
+    .click();
+});
+Cypress.Commands.add('removeImpactingFilter', () => {
+  cy.get(CHIP)
+    .contains('1 or more')
+    .parent()
+    .find('button[data-ouia-component-id=close]')
+    .click();
+});
+Cypress.Commands.add('getRowByName', (name) => {
+  cy.contains(ROW, name);
+});
+Cypress.Commands.add('clickOnRowKebab', (name) => {
+  cy.contains(ROW, name).find('.pf-c-dropdown__toggle').click();
+});
 
+describe('successful non-empty recommendations list table', () => {
   beforeEach(() => {
     cy.intercept('*', (req) => {
       req.destroy();
@@ -143,7 +143,7 @@ describe('recommendations list table', () => {
     );
     cy.get('th[class="pf-c-table__sort pf-m-width-10"]').should(
       'have.length',
-      3
+      2
     );
   });
 
@@ -227,9 +227,8 @@ describe('recommendations list table', () => {
 
   it('disabled rule has a label', () => {
     cy.removeStatusFilter();
-    cy.getAllRows()
-      .should('have.length', 5)
-      .eq(0)
+    cy.getAllRows().should('have.length', 5);
+    cy.getRowByName('disabled rule with 2 impacted')
       .find('span[class=pf-c-label]')
       .should('have.text', 'Disabled');
   });
@@ -241,9 +240,12 @@ describe('recommendations list table', () => {
   });
 
   it('enabled rule has the disable action', () => {
-    cy.clickOnFirstRowKebab();
-    cy.getAllRows()
-      .eq(0)
+    cy.clickOnRowKebab(
+      'Super atomic nuclear cluster on the brink of the world destruction'
+    );
+    cy.getRowByName(
+      'Super atomic nuclear cluster on the brink of the world destruction'
+    )
       .find('.pf-c-dropdown__menu button')
       .should('have.text', 'Disable recommendation');
   });
@@ -251,10 +253,60 @@ describe('recommendations list table', () => {
   it('disabled rule has the enable action', () => {
     cy.removeStatusFilter();
     cy.removeImpactingFilter();
-    cy.clickOnFirstRowKebab();
-    cy.getAllRows()
-      .eq(0)
+    cy.clickOnRowKebab('disabled rule with 2 impacted');
+    cy.getRowByName('disabled rule with 2 impacted')
       .find('.pf-c-dropdown__menu button')
       .should('have.text', 'Enable recommendation');
+  });
+
+  it('default sort by total risk', () => {
+    cy.get(ROW)
+      .children()
+      .eq(0)
+      .find('td[data-label="Total risk"]')
+      .contains('Critical');
+  });
+});
+
+describe('empty recommendations list table', () => {
+  beforeEach(() => {
+    cy.intercept('*', (req) => {
+      req.destroy();
+    });
+    // tables utilizes federated module and throws error when RHEL Advisor manifestaion not found
+    window['__scalprum__'] = {
+      apps: {},
+      appsMetaData: {
+        advisor: {
+          manifestLocation:
+            'https://qa.console.redhat.com/beta/apps/advisor/fed-mods.json',
+          module: 'advisor#./RootApp',
+          name: 'advisor',
+        },
+      },
+    };
+    mount(
+      <MemoryRouter initialEntries={['/recommendations']} initialIndex={0}>
+        <Intl>
+          <Provider store={getStore()}>
+            <RecsListTable
+              query={{
+                isError: false,
+                isFetching: false,
+                isUninitialized: false,
+                isSuccess: true,
+                data: { recommendations: [], status: 'ok' },
+              }}
+            />
+          </Provider>
+        </Intl>
+      </MemoryRouter>
+    );
+  });
+
+  it('renders error message', () => {
+    cy.get('#error-state-message')
+      .find('h4')
+      .should('have.text', 'Something went wrong');
   });
 });

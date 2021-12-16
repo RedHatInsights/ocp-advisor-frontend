@@ -1,9 +1,10 @@
+import './RecsListTable.scss';
+
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-
 import {
   SortByDirection,
   Table,
@@ -42,7 +43,7 @@ import { strong } from '../../Utilities/intlHelper';
 import Loading from '../Loading/Loading';
 import { ErrorState, NoMatchingRecs } from '../MessageState/EmptyStates';
 import RuleDetails from '../Recommendation/RuleDetails';
-import { passFilters } from '../Common/Tables';
+import { passFilters, capitalize } from '../Common/Tables';
 import DisableRule from '../Modals/DisableRule';
 import { Delete } from '../../Utilities/Api';
 import { BASE_URL } from '../../Services/SmartProxy';
@@ -59,6 +60,7 @@ const RecsListTable = ({ query }) => {
   const [displayedRows, setDisplayedRows] = useState([]);
   const [disableRuleOpen, setDisableRuleOpen] = useState(false);
   const [selectedRule, setSelectedRule] = useState({});
+  const [isAllExpanded, setIsAllExpanded] = useState(false);
   const notify = (data) => dispatch(addNotification(data));
 
   useEffect(() => {
@@ -83,7 +85,7 @@ const RecsListTable = ({ query }) => {
       .filter((rule) => passFilters(rule, filters))
       .map((value, key) => [
         {
-          isOpen: false,
+          isOpen: isAllExpanded,
           rule: value,
           cells: [
             {
@@ -328,8 +330,6 @@ const RecsListTable = ({ query }) => {
     );
   };
 
-  const capitalize = (string) => string[0].toUpperCase() + string.substring(1);
-
   const pruneFilters = (localFilters, filterCategories) => {
     const prunedFilters = Object.entries(localFilters);
     return prunedFilters.length > 0
@@ -418,6 +418,21 @@ const RecsListTable = ({ query }) => {
     },
   };
 
+  //Responsible for the handling collapse for all the recommendations
+  //Used in the PrimaryToolbar
+  const collapseAll = (_e, isOpen) => {
+    setIsAllExpanded(isOpen);
+    setDisplayedRows(
+      displayedRows.map((row) => {
+        return {
+          ...row,
+          isOpen: isOpen,
+        };
+      })
+    );
+  };
+
+  //Responsible for handling collapse for single recommendation
   const handleOnCollapse = (_e, rowId, isOpen) => {
     const collapseRows = [...displayedRows];
     collapseRows[rowId] = { ...collapseRows[rowId], isOpen };
@@ -497,6 +512,7 @@ const RecsListTable = ({ query }) => {
         />
       )}
       <PrimaryToolbar
+        expandAll={{ isAllExpanded, onClick: collapseAll }}
         pagination={{
           itemCount: filteredRows.length,
           page: filters.offset / filters.limit + 1,
@@ -519,7 +535,7 @@ const RecsListTable = ({ query }) => {
       />
       {(isUninitialized || isFetching) && <Loading />}
       {(isError || (isSuccess && recs.length === 0)) && (
-        <Card>
+        <Card id="error-state-message">
           <CardBody>
             <ErrorState />
           </CardBody>

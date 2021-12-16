@@ -43,7 +43,7 @@ const AffectedClustersTable = ({ query }) => {
   const [filteredRows, setFilteredRows] = useState([]);
   const [displayedRows, setDisplayedRows] = useState([]);
   const [chips, setChips] = useState([]);
-  const perPage = Number(filters.limit);
+  const perPage = filters.limit;
   const page = filters.offset / filters.limit + 1;
 
   const updateNameChip = (chips, newValue) => {
@@ -81,8 +81,10 @@ const AffectedClustersTable = ({ query }) => {
     items: [
       {
         label: 'Name',
+        placeholder: 'Filter by name',
         type: conditionalFilterType.text,
         filterValues: {
+          id: 'name-filter',
           key: 'name-filter',
           onChange: (_e, value) => onNameFilterChange(value),
           value: filters.text,
@@ -145,21 +147,25 @@ const AffectedClustersTable = ({ query }) => {
           onSetPage: onSetPage,
           onPerPageSelect: onSetPerPage,
         }}
-        activeFiltersConfig={{
-          filters: chips,
-          onDelete: onChipDelete,
-        }}
+        activeFiltersConfig={
+          isError || (rows && rows.length === 0)
+            ? undefined
+            : {
+                filters: chips,
+                onDelete: onChipDelete,
+              }
+        }
       />
       {(isUninitialized || isFetching) && <Loading />}
       {isError && (
-        <Card>
+        <Card id="error-state-message">
           <CardBody>
             <ErrorState />
           </CardBody>
         </Card>
       )}
       {isSuccess && rows.length === 0 && (
-        <Card>
+        <Card id="empty-state-message">
           <CardBody>
             <NoAffectedClusters />
           </CardBody>
