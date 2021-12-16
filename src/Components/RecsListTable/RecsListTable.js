@@ -83,7 +83,7 @@ const RecsListTable = ({ query }) => {
       .filter((rule) => passFilters(rule, filters))
       .map((value, key) => [
         {
-          isOpen: isAllExpanded ? true : false,
+          isOpen: isAllExpanded,
           rule: value,
           cells: [
             {
