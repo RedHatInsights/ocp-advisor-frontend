@@ -517,7 +517,7 @@ const RecsListTable = ({ query }) => {
       />
       {(isUninitialized || isFetching) && <Loading />}
       {(isError || (isSuccess && recs.length === 0)) && (
-        <Card>
+        <Card id="error-state-message">
           <CardBody>
             <ErrorState />
           </CardBody>
