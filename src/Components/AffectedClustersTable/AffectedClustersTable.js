@@ -146,10 +146,14 @@ const AffectedClustersTable = ({ query }) => {
           onSetPage: onSetPage,
           onPerPageSelect: onSetPerPage,
         }}
-        activeFiltersConfig={{
-          filters: chips,
-          onDelete: onChipDelete,
-        }}
+        activeFiltersConfig={
+          isError || (rows && rows.length === 0)
+            ? undefined
+            : {
+                filters: chips,
+                onDelete: onChipDelete,
+              }
+        }
       />
       {(isUninitialized || isFetching) && <Loading />}
       {isError && (
