@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 export const AFFECTED_CLUSTERS_INITIAL_STATE = {
-  limit: 10,
+  limit: 20,
   offset: 0,
   text: '',
   sortIndex: -1,

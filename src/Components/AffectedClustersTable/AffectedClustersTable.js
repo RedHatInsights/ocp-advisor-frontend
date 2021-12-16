@@ -43,7 +43,7 @@ const AffectedClustersTable = ({ query }) => {
   const [filteredRows, setFilteredRows] = useState([]);
   const [displayedRows, setDisplayedRows] = useState([]);
   const [chips, setChips] = useState([]);
-  const perPage = Number(filters.limit);
+  const perPage = filters.limit;
   const page = filters.offset / filters.limit + 1;
 
   const updateNameChip = (chips, newValue) => {
