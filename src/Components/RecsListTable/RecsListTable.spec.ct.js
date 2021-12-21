@@ -35,6 +35,15 @@ Cypress.Commands.add('getRowByName', (name) => {
 Cypress.Commands.add('clickOnRowKebab', (name) => {
   cy.contains(ROW, name).find('.pf-c-dropdown__toggle').click();
 });
+Cypress.Commands.add('getColumns', () => {
+  cy.get(RECS_LIST_TABLE).find('table > thead > tr > th');
+});
+Cypress.Commands.add('sortByCol', (colIndex) => {
+  cy.getColumns()
+    .eq(colIndex)
+    .find('span[class=pf-c-table__sort-indicator]')
+    .click({ force: true });
+});
 
 describe('successful non-empty recommendations list table', () => {
   beforeEach(() => {
@@ -132,88 +141,75 @@ describe('successful non-empty recommendations list table', () => {
     cy.getAllRows().should('have.length', 7);
   });
 
-  it('should have 4 sortable columns', () => {
-    cy.get('table[class="pf-c-table pf-m-grid-md pf-m-compact"]').should(
-      'have.length',
-      1
-    );
-    cy.get('th[class="pf-c-table__sort pf-m-width-70"]').should(
-      'have.length',
-      1
-    );
-    cy.get('th[class="pf-c-table__sort pf-m-width-10"]').should(
-      'have.length',
-      2
-    );
+  it('should have 5 sortable columns', () => {
+    cy.getColumns()
+      .should('have.length', 5)
+      .should('have.class', 'pf-c-table__sort');
   });
 
   it('sort the data by Name', () => {
-    cy.get(RECS_LIST_TABLE)
-      .get('span[class=pf-c-table__sort-indicator]')
-      .first()
-      .click({ force: true });
-    cy.get('td[data-label=Name]> span > a:first').should(
-      'have.text',
-      ' Additional risks would occur possibly when having the masters defined as machinesets '
-    );
-    cy.get('span[class=pf-c-table__sort-indicator]')
-      .first()
-      .click({ force: true });
-    cy.get('td[data-label=Name] > span > a:first').should(
-      'have.text',
-      ' Super atomic nuclear cluster on the brink of the world destruction '
-    );
+    cy.sortByCol(0);
+    cy.getAllRows()
+      .eq(0)
+      .find('td[data-label=Name]')
+      .should(
+        'contain',
+        'Additional risks would occur possibly when having the masters defined as machinesets'
+      );
+    cy.sortByCol(0);
+    cy.getAllRows()
+      .eq(0)
+      .find('td[data-label=Name]')
+      .should(
+        'contain',
+        'Super atomic nuclear cluster on the brink of the world destruction'
+      );
   });
 
   it('sort the data by Added', () => {
-    cy.get(RECS_LIST_TABLE)
-      .get('span[class=pf-c-table__sort-indicator]')
-      .eq(1)
-      .click({ force: true });
-    cy.get('td[data-label=Name] > span > a:first').should(
-      'have.text',
-      ' Additional risks would occur possibly when having the masters defined as machinesets '
-    );
-    cy.get('span[class=pf-c-table__sort-indicator]')
-      .eq(1)
-      .click({ force: true });
-    cy.get('td[data-label=Name] > span > a:first').should(
-      'have.text',
-      ' Super atomic nuclear cluster on the brink of the world destruction '
-    );
+    cy.sortByCol(1);
+    cy.getAllRows()
+      .eq(0)
+      .find('td[data-label=Name]')
+      .should(
+        'contain',
+        'Additional risks would occur possibly when having the masters defined as machinesets'
+      );
+    cy.sortByCol(1);
+    cy.getAllRows()
+      .eq(0)
+      .find('td[data-label=Name]')
+      .should(
+        'contain',
+        'Super atomic nuclear cluster on the brink of the world destruction'
+      );
   });
 
   //had to add \\ \\ to the Total risk, otherwise jQuery engine would throw an error
   it('sort the data by Total Risk', () => {
-    cy.get(RECS_LIST_TABLE)
-      .get('span[class=pf-c-table__sort-indicator]')
-      .eq(2)
-      .click({ force: true });
-    cy.get('td[data-label=Total\\ \\risk]')
-      .find('span[class=pf-c-label__content]')
-      .should(($span) => {
-        expect($span[0]).to.have.text('Moderate');
-      });
-    cy.get('span[class=pf-c-table__sort-indicator]')
-      .eq(2)
-      .click({ force: true });
-    cy.get('td[data-label=Total\\ \\risk]')
-      .find('span[class=pf-c-label__content]')
-      .should(($span) => {
-        expect($span[0]).to.have.text('Critical');
-      });
+    cy.sortByCol(3);
+    cy.getAllRows()
+      .eq(0)
+      .find('td[data-label="Total risk"]')
+      .should('contain', 'Moderate');
+    cy.sortByCol(3);
+    cy.getAllRows()
+      .eq(0)
+      .find('td[data-label="Total risk"]')
+      .should('contain', 'Critical');
   });
 
   it('sort the data by Clusters', () => {
-    cy.get(RECS_LIST_TABLE)
-      .get('span[class=pf-c-table__sort-indicator]')
-      .eq(3)
-      .click({ force: true });
-    cy.get('td[data-label=Clusters] > div:first').should('have.text', '1');
-    cy.get('span[class=pf-c-table__sort-indicator]')
-      .eq(3)
-      .click({ force: true });
-    cy.get('td[data-label=Clusters] > div:first').should('have.text', '2,003');
+    cy.sortByCol(4);
+    cy.getAllRows()
+      .eq(0)
+      .find('td[data-label="Clusters"]')
+      .should('contain', '1');
+    cy.sortByCol(4);
+    cy.getAllRows()
+      .eq(0)
+      .find('td[data-label="Clusters"]')
+      .should('contain', '2,003');
   });
 
   it('include disabled rules', () => {
@@ -265,6 +261,26 @@ describe('successful non-empty recommendations list table', () => {
       .eq(0)
       .find('td[data-label="Total risk"]')
       .contains('Critical');
+  });
+
+  it('can sort by category', () => {
+    cy.sortByCol(2);
+    cy.getAllRows()
+      .eq(0)
+      .find('td[data-label=Name]')
+      .should(
+        'contain',
+        'Additional risks would occur possibly when having the masters defined as machinesets'
+      );
+    cy.getAllRows()
+      .eq(0)
+      .find('td[data-label=Category]')
+      .should('contain', 'Performance');
+    cy.sortByCol(2);
+    cy.getAllRows()
+      .eq(0)
+      .find('td[data-label=Category]')
+      .should('contain', 'Service Availability');
   });
 });
 

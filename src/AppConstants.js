@@ -183,15 +183,19 @@ export const TOTAL_RISK_LABEL_LOWER = {
 export const RECS_LIST_COLUMNS = [
   {
     title: intl.formatMessage(messages.name),
-    transforms: [sortable, cellWidth(70)],
+    transforms: [sortable, cellWidth(40)],
   },
   {
     title: intl.formatMessage(messages.added),
-    transforms: [sortable, cellWidth(10)],
+    transforms: [sortable, cellWidth(15)],
+  },
+  {
+    title: intl.formatMessage(messages.category),
+    transforms: [sortable, cellWidth(20)],
   },
   {
     title: intl.formatMessage(messages.totalRisk),
-    transforms: [sortable, cellWidth(10)],
+    transforms: [sortable, cellWidth(15)],
   },
   /*{
     title: intl.formatMessage(messages.riskOfChange),
