@@ -76,6 +76,10 @@ describe('non-empty successful affected clusters table', () => {
     // three matched clusters rendered
     cy.countRows(3);
   });
+
+  it('renders table header', () => {
+    cy.get(AFFECTED_LIST_TABLE).find('th').should('have.text', 'Name');
+  });
 });
 
 describe('empty successful affected clusters table', () => {
@@ -109,6 +113,10 @@ describe('empty successful affected clusters table', () => {
       .find('h4')
       .should('have.text', 'No clusters');
   });
+
+  it('renders table header', () => {
+    cy.get(AFFECTED_LIST_TABLE).find('th').should('have.text', 'Name');
+  });
 });
 
 describe('empty failed affected clusters table', () => {
@@ -141,5 +149,9 @@ describe('empty failed affected clusters table', () => {
     cy.get('#error-state-message')
       .find('h4')
       .should('have.text', 'Something went wrong');
+  });
+
+  it('renders table header', () => {
+    cy.get(AFFECTED_LIST_TABLE).find('th').should('have.text', 'Name');
   });
 });
