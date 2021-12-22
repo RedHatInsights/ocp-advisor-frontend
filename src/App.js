@@ -11,6 +11,7 @@ import { getRegistry } from '@redhat-cloud-services/frontend-components-utilitie
 import { notificationsReducer } from '@redhat-cloud-services/frontend-components-notifications/redux';
 import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye/Bullseye';
 import LockIcon from '@patternfly/react-icons/dist/js/icons/lock-icon';
+import { Spinner } from '@patternfly/react-core/dist/js/components/Spinner';
 
 import { Routes } from './Routes';
 import ErrorBoundary from './Utilities/ErrorBoundary';
@@ -21,13 +22,17 @@ import getStore from './Store';
 const App = ({ useLogger }) => {
   const intl = useIntl();
   const history = useHistory();
-  const [auth, setAuth] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const registry = getRegistry();
     registry.register({ notifications: notificationsReducer });
     insights.chrome.init();
-    insights.chrome.auth.getUser().then(() => setAuth(true));
+    insights.chrome.auth.getUser().then(() => {
+      setIsAuthenticated(true);
+      setIsLoading(false);
+    });
     insights.chrome.identifyApp('ocp-advisor');
     const unregister = insights.chrome.on('APP_NAVIGATION', (event) =>
       history.push(`/${event.navId}`)
@@ -37,7 +42,11 @@ const App = ({ useLogger }) => {
 
   return (
     <ErrorBoundary>
-      {auth ? (
+      {isLoading ? (
+        <Bullseye>
+          <Spinner />
+        </Bullseye>
+      ) : isAuthenticated ? (
         <Provider store={getStore(useLogger)}>
           <NotificationsPortal />
           <Routes />
