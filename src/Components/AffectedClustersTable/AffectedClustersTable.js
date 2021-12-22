@@ -169,7 +169,9 @@ const AffectedClustersTable = ({ query }) => {
         rows={displayedRows.map((c) => ({
           cells: [
             <span key={c?.cluter}>
-              <Link to={`/clusters/${c?.cluster}`}>{c?.cluster}</Link>
+              <Link to={`/clusters/${c?.cluster}`}>
+                {c?.cluster_name || c?.cluster}
+              </Link>
             </span>,
           ],
         }))}

@@ -77,6 +77,14 @@ describe('non-empty successful affected clusters table', () => {
     cy.countRows(3);
   });
 
+  it('display name is rendered instead of cluster uuid', () => {
+    cy.get(AFFECTED_LIST_TABLE)
+      .find(ROW_GROUP)
+      .contains('custom cluster name 2')
+      .should('have.attr', 'href')
+      .and('contain', '/clusters/f7331e9a-2f59-484d-af52-338d56165df5');
+  });
+
   it('renders table header', () => {
     cy.get(AFFECTED_LIST_TABLE).find('th').should('have.text', 'Name');
   });
