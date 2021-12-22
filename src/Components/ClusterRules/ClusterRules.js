@@ -34,7 +34,7 @@ import {
   DEFAULT_CLUSTER_RULES_FILTERS,
 } from '../../AppConstants';
 import ReportDetails from '../ReportDetails/ReportDetails';
-import RuleLabels from '../RuleLabels/RuleLabels';
+import RuleLabels from '../Labels/RuleLabels';
 import { NoMatchingRecs } from '../MessageState/EmptyStates';
 
 const ClusterRules = ({ reports }) => {

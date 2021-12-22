@@ -33,7 +33,7 @@ import { Flex } from '@patternfly/react-core/dist/js/layouts/Flex/Flex';
 import { FlexItem } from '@patternfly/react-core/dist/js/layouts/Flex/FlexItem';
 
 import Breadcrumbs from '../Breadcrumbs';
-import RuleLabels from '../RuleLabels/RuleLabels';
+import RuleLabels from '../Labels/RuleLabels';
 import { FILTER_CATEGORIES, RULE_CATEGORIES } from '../../AppConstants';
 import messages from '../../Messages';
 import RuleDetails from './RuleDetails';

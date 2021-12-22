@@ -38,7 +38,7 @@ import {
   RECS_LIST_INITIAL_STATE,
   updateRecsListFilters as updateFilters,
 } from '../../Services/Filters';
-import RuleLabels from '../RuleLabels/RuleLabels';
+import RuleLabels from '../Labels/RuleLabels';
 import { strong } from '../../Utilities/intlHelper';
 import Loading from '../Loading/Loading';
 import { ErrorState, NoMatchingRecs } from '../MessageState/EmptyStates';
@@ -47,6 +47,7 @@ import { passFilters, capitalize } from '../Common/Tables';
 import DisableRule from '../Modals/DisableRule';
 import { Delete } from '../../Utilities/Api';
 import { BASE_URL } from '../../Services/SmartProxy';
+import CategoryLabel, { extractCategories } from '../Labels/CategoryLabel';
 
 const RecsListTable = ({ query }) => {
   const intl = useIntl();
@@ -118,6 +119,7 @@ const RecsListTable = ({ query }) => {
                 intl.formatMessage(messages.nA)
               ),
             },
+            { title: <CategoryLabel key={key} tags={value.tags} /> },
             {
               title: (
                 <div key={key}>
@@ -183,12 +185,18 @@ const RecsListTable = ({ query }) => {
     const sortedRecommendations = [
       'description',
       'publish_date',
+      'tags',
       'total_risk',
       'impacted_clusters_count',
     ];
     const sortingRows = [...rows].sort((firstItem, secondItem) => {
       const fst = firstItem[0].rule[sortedRecommendations[index - 1]];
       const snd = secondItem[0].rule[sortedRecommendations[index - 1]];
+      if (index === 3) {
+        return extractCategories(fst)[0].localeCompare(
+          extractCategories(snd)[0]
+        );
+      }
       return fst > snd ? 1 : snd > fst ? -1 : 0;
     });
     if (direction === SortByDirection.desc) {
