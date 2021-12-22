@@ -15,6 +15,10 @@ const RecsListTable = lazy(() =>
 
 const RecsList = () => {
   const intl = useIntl();
+  document.title = intl.formatMessage(messages.documentTitle, {
+    subnav: 'Recommendations',
+  });
+
   return (
     <React.Fragment>
       <PageHeader className="ins-c-recommendations-header">
