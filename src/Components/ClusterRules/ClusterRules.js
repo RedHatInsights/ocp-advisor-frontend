@@ -185,7 +185,7 @@ const ClusterRules = ({ reports }) => {
               created_at: rule.created_at,
               total_risk: rule.total_risk,
               category: rule.tags,
-              rule_status: rule.disabled ? 'disabled' : 'enabled',
+              rule_status: 'enabled',
             };
             if (key === 'category') {
               // in that case, rowValue['category'] is an array of categories (or "tags" in the back-end implementation)
@@ -261,12 +261,6 @@ const ClusterRules = ({ reports }) => {
     setFilters(newFilters);
   };
 
-  const toggleRulesDisabled = (rule_status) => {
-    const newFilters = { ...filters, rule_status };
-    setRows(buildRows(activeReports, newFilters, rows, searchValue));
-    setFilters(newFilters);
-  };
-
   const filterConfigItems = [
     {
       label: 'description',
@@ -299,18 +293,6 @@ const ClusterRules = ({ reports }) => {
         onChange: (_e, values) => onFilterChange(FC.category.urlParam, values),
         value: filters.category,
         items: FC.category.values,
-      },
-    },
-    {
-      label: FC.rule_status.title,
-      type: FC.rule_status.type,
-      id: FC.rule_status.urlParam,
-      value: `radio-${FC.rule_status.urlParam}`,
-      filterValues: {
-        key: `${FC.rule_status.urlParam}-filter`,
-        onChange: (_e, value) => toggleRulesDisabled(value),
-        value: filters.rule_status,
-        items: FC.rule_status.values,
       },
     },
   ];
