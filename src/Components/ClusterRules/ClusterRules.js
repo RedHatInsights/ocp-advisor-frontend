@@ -31,7 +31,6 @@ import {
   LIKELIHOOD_LABEL,
   FILTER_CATEGORIES as FC,
   RULE_CATEGORIES,
-  DEFAULT_CLUSTER_RULES_FILTERS,
 } from '../../AppConstants';
 import ReportDetails from '../ReportDetails/ReportDetails';
 import RuleLabels from '../Labels/RuleLabels';
@@ -41,7 +40,7 @@ const ClusterRules = ({ reports }) => {
   const intl = useIntl();
   const [activeReports, setActiveReports] = useState([]);
   const [sortBy, setSortBy] = useState({});
-  const [filters, setFilters] = useState(DEFAULT_CLUSTER_RULES_FILTERS);
+  const [filters, setFilters] = useState({});
   const [searchValue, setSearchValue] = useState('');
   const [rows, setRows] = useState([]);
   const results = rows ? rows.length / 2 : 0;
@@ -185,7 +184,6 @@ const ClusterRules = ({ reports }) => {
               created_at: rule.created_at,
               total_risk: rule.total_risk,
               category: rule.tags,
-              rule_status: 'enabled',
             };
             if (key === 'category') {
               // in that case, rowValue['category'] is an array of categories (or "tags" in the back-end implementation)
@@ -193,9 +191,6 @@ const ClusterRules = ({ reports }) => {
               return rowValue[key].find((categoryName) =>
                 filterValues.includes(String(RULE_CATEGORIES[categoryName]))
               );
-            }
-            if (key === 'rule_status') {
-              return filterValues === 'all' || rowValue[key] === filterValues;
             }
             return filterValues.find(
               (value) => String(value) === String(rowValue[key])
@@ -335,10 +330,8 @@ const ClusterRules = ({ reports }) => {
 
   const onChipDelete = (_e, itemsToRemove, isAll) => {
     if (isAll) {
-      setRows(
-        buildRows(activeReports, DEFAULT_CLUSTER_RULES_FILTERS, rows, '')
-      );
-      setFilters(DEFAULT_CLUSTER_RULES_FILTERS);
+      setRows(buildRows(activeReports, {}, rows, ''));
+      setFilters({});
       setSearchValue('');
     } else {
       itemsToRemove.map((item) => {
@@ -346,9 +339,6 @@ const ClusterRules = ({ reports }) => {
           case 'Description':
             setRows(buildRows(activeReports, filters, rows, ''));
             setSearchValue('');
-            break;
-          case 'Status':
-            onFilterChange(item.urlParam, []);
             break;
           default:
             onFilterChange(
