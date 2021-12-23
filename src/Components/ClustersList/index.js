@@ -11,6 +11,9 @@ import ClustersListTable from '../ClustersListTable';
 
 const ClustersList = () => {
   const intl = useIntl();
+  document.title = intl.formatMessage(messages.documentTitle, {
+    subnav: 'Clusters',
+  });
 
   return (
     <React.Fragment>

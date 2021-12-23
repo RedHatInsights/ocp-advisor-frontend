@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { useIntl } from 'react-intl';
+import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { conditionalFilterType } from '@redhat-cloud-services/frontend-components/ConditionalFilter/conditionalFilterConstants';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
@@ -23,11 +26,11 @@ import {
   NoMatchingClusters,
 } from '../MessageState/EmptyStates';
 import Loading from '../Loading/Loading';
-import { Link } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
 import { updateAffectedClustersFilters } from '../../Services/Filters';
+import messages from '../../Messages';
 
 const AffectedClustersTable = ({ query }) => {
+  const intl = useIntl();
   const {
     isError,
     isUninitialized,
@@ -156,52 +159,56 @@ const AffectedClustersTable = ({ query }) => {
               }
         }
       />
-      {(isUninitialized || isFetching) && <Loading />}
-      {isError && (
-        <Card id="error-state-message">
-          <CardBody>
-            <ErrorState />
-          </CardBody>
-        </Card>
-      )}
-      {isSuccess && rows.length === 0 && (
-        <Card id="empty-state-message">
-          <CardBody>
-            <NoAffectedClusters />
-          </CardBody>
-        </Card>
-      )}
-      {isSuccess &&
-        rows.length > 0 &&
-        (filteredRows.length > 0 ? (
-          <Table
-            aria-label="Table of affected clusters"
-            ouiaId="affectedClustersTable"
-            variant="compact"
-            cells={[{ title: 'Name', transforms: [sortable] }]}
-            rows={displayedRows.map((c) => ({
-              cells: [
-                <span key={c?.cluter}>
-                  <Link to={`/clusters/${c?.cluster}`}>{c?.cluster}</Link>
-                </span>,
-              ],
-            }))}
-            sortBy={{
-              index: filters.sortIndex,
-              direction: filters.sortDirection,
-            }}
-            onSort={onSort}
-          >
-            <TableHeader />
+      <Table
+        aria-label="Table of affected clusters"
+        ouiaId="affectedClustersTable"
+        variant="compact"
+        cells={[
+          { title: intl.formatMessage(messages.name), transforms: [sortable] },
+        ]}
+        rows={displayedRows.map((c) => ({
+          cells: [
+            <span key={c?.cluter}>
+              <Link to={`/clusters/${c?.cluster}`}>
+                {c?.cluster_name || c?.cluster}
+              </Link>
+            </span>,
+          ],
+        }))}
+        sortBy={{
+          index: filters.sortIndex,
+          direction: filters.sortDirection,
+        }}
+        onSort={onSort}
+      >
+        <TableHeader />
+        {(isUninitialized || isFetching) && <Loading />}
+        {isError && (
+          <Card id="error-state-message">
+            <CardBody>
+              <ErrorState />
+            </CardBody>
+          </Card>
+        )}
+        {isSuccess && rows.length === 0 && (
+          <Card id="empty-state-message">
+            <CardBody>
+              <NoAffectedClusters />
+            </CardBody>
+          </Card>
+        )}
+        {isSuccess &&
+          rows.length > 0 &&
+          (filteredRows.length > 0 ? (
             <TableBody />
-          </Table>
-        ) : (
-          <EmptyTable>
-            <Bullseye>
-              <NoMatchingClusters />
-            </Bullseye>
-          </EmptyTable>
-        ))}
+          ) : (
+            <EmptyTable>
+              <Bullseye>
+                <NoMatchingClusters />
+              </Bullseye>
+            </EmptyTable>
+          ))}
+      </Table>
       <TableToolbar isFooter className="ins-c-inventory__table--toolbar">
         <Pagination
           variant={PaginationVariant.bottom}
