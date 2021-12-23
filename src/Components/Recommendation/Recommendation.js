@@ -20,8 +20,6 @@ import { DateFormat } from '@redhat-cloud-services/frontend-components/DateForma
 import { Label } from '@patternfly/react-core/dist/js/components/Label/Label';
 import { Title } from '@patternfly/react-core/dist/js/components/Title/Title';
 import { LabelGroup } from '@patternfly/react-core/dist/js/components/LabelGroup';
-import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
-import { global_danger_color_100 as globalDangerColor100 } from '@patternfly/react-tokens/dist/js/global_danger_color_100';
 import BellSlashIcon from '@patternfly/react-icons/dist/js/icons/bell-slash-icon';
 import CaretDownIcon from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
 import { addNotification } from '@redhat-cloud-services/frontend-components-notifications/';
@@ -31,6 +29,7 @@ import { DropdownItem } from '@patternfly/react-core/dist/js/components/Dropdown
 import { DropdownToggle } from '@patternfly/react-core/dist/js/components/Dropdown/DropdownToggle';
 import { Flex } from '@patternfly/react-core/dist/js/layouts/Flex/Flex';
 import { FlexItem } from '@patternfly/react-core/dist/js/layouts/Flex/FlexItem';
+import { ErrorState } from '@redhat-cloud-services/frontend-components/ErrorState';
 
 import Breadcrumbs from '../Breadcrumbs';
 import RuleLabels from '../Labels/RuleLabels';
@@ -40,19 +39,24 @@ import RuleDetails from './RuleDetails';
 import Loading from '../Loading/Loading';
 import { adjustOCPRule } from '../../Utilities/Rule';
 import MessageState from '../MessageState/MessageState';
-import AffectedClustersTable from '../AffectedClustersTable';
+import { AffectedClustersTable } from '../AffectedClustersTable/AffectedClustersTable';
 import { Delete, Post } from '../../Utilities/Api';
 import { BASE_URL } from '../../Services/SmartProxy';
 import DisableRule from '../Modals/DisableRule';
+import ViewHostAcks from '../Modals/ViewHostAcks';
+import { OneLineLoader } from '../../Utilities/Loaders';
+import { enableRuleForCluster } from '../../Services/Acks';
 
-const Recommendation = ({ rule, ack, match }) => {
+const Recommendation = ({ rule, ack, clusters, match }) => {
   const intl = useIntl();
   const dispatch = useDispatch();
   const notify = (data) => dispatch(addNotification(data));
   const recId = match.params.recommendationId;
   const [disableRuleModalOpen, setDisableRuleModalOpen] = useState(false);
   const [actionsDropdownOpen, setActionsDropdownOpen] = useState(false);
+  const [viewSystemsModalOpen, setViewSystemsModalOpen] = useState(false);
 
+  // rule's info
   const {
     isError,
     isUninitialized,
@@ -62,22 +66,53 @@ const Recommendation = ({ rule, ack, match }) => {
     data,
     refetch,
   } = rule;
-
+  // justification note, last time acknowledged, etc.
+  const { data: ackData, isFetching: ackIsFetching, refetch: refetchAck } = ack;
+  // affected and acked clusters lists
   const {
-    data: recAck = {},
-    isFetching: recAckIsFetching,
-    refetch: recAckRefetch,
-  } = ack;
+    data: clustersData,
+    isFetching: clustersIsFetching,
+    refetch: refetchClusters,
+  } = clusters;
 
-  const content = isSuccess ? adjustOCPRule(data.content, recId) : undefined;
+  const content =
+    isSuccess && data ? adjustOCPRule(data.content, recId) : undefined;
+  const ackedClusters =
+    !clustersIsFetching && clustersData ? clustersData.disabled : undefined;
 
   const afterDisableFn = async () => {
     refetch();
-    recAckRefetch();
+    refetchAck();
+    refetchClusters();
   };
 
   const handleModalToggle = (disableRuleModalOpen) => {
     setDisableRuleModalOpen(disableRuleModalOpen);
+  };
+
+  const enableRecForHosts = async ({ uuids }) => {
+    try {
+      const requests = uuids.map((uuid) =>
+        enableRuleForCluster({ uuid, recId })
+      );
+      await Promise.all(requests);
+      refetch();
+      refetchAck();
+      refetchClusters();
+      notify({
+        variant: 'success',
+        timeout: true,
+        dismissable: true,
+        title: intl.formatMessage(messages.recSuccessfullyEnabledForCluster),
+      });
+    } catch (error) {
+      notify({
+        variant: 'danger',
+        dismissable: true,
+        title: intl.formatMessage(messages.error),
+        description: `${error}`,
+      });
+    }
   };
 
   const enableRule = async (rule) => {
@@ -103,6 +138,17 @@ const Recommendation = ({ rule, ack, match }) => {
 
   return (
     <React.Fragment>
+      {viewSystemsModalOpen && (
+        <ViewHostAcks
+          handleModalToggle={(toggleModal) =>
+            setViewSystemsModalOpen(toggleModal)
+          }
+          isModalOpen={viewSystemsModalOpen}
+          clusters={clusters}
+          afterFn={() => refetchClusters()}
+          recId={recId}
+        />
+      )}
       {disableRuleModalOpen && (
         <DisableRule
           handleModalToggle={handleModalToggle}
@@ -121,12 +167,7 @@ const Recommendation = ({ rule, ack, match }) => {
       )}
       {isError && (
         <Main>
-          <MessageState
-            title={intl.formatMessage(messages.unableToConnect)}
-            text={intl.formatMessage(messages.unableToConnectDesc)}
-            icon={ExclamationCircleIcon}
-            iconStyle={{ color: globalDangerColor100.value }}
-          />
+          <ErrorState />
         </Main>
       )}
       {!(isUninitialized || isLoading || isFetching) && isSuccess && (
@@ -234,48 +275,108 @@ const Recommendation = ({ rule, ack, match }) => {
           </Main>
           <Main>
             <React.Fragment>
-              {content?.disabled && (
+              {(content?.hosts_acked_count ||
+                ackedClusters?.length > 0 ||
+                content?.disabled) && (
                 <Card className="cardOverride">
                   <CardHeader>
                     <Title headingLevel="h4" size="xl">
                       <BellSlashIcon size="sm" />
                       &nbsp;
-                      {intl.formatMessage(messages.ruleIsDisabled)}
+                      {intl.formatMessage(
+                        (content?.hosts_acked_count ||
+                          ackedClusters?.length > 0) &&
+                          !content?.disabled
+                          ? messages.ruleIsDisabledForClusters
+                          : messages.ruleIsDisabled
+                      )}
                     </Title>
                   </CardHeader>
                   <CardBody>
-                    {!recAckIsFetching && (
+                    {(content?.hosts_acked_count ||
+                      ackedClusters?.length > 0) &&
+                    !content?.disabled ? (
                       <React.Fragment>
                         {intl.formatMessage(
-                          messages.ruleIsDisabledJustification
+                          messages.ruleIsDisabledForClustersBody,
+                          {
+                            clusters: ackedClusters?.length,
+                          }
                         )}
-                        <i>
-                          {recAck.justification ||
-                            intl.formatMessage(messages.none)}
-                        </i>
-                        {(recAck.updated_at || recAck.created_at) && (
-                          <span>
+                        {!clustersIsFetching && ackedClusters?.length > 0 ? (
+                          <React.Fragment>
                             &nbsp;
-                            <DateFormat
-                              date={
-                                new Date(recAck.updated_at || recAck.created_at)
-                              }
-                              type="onlyDate"
-                            />
-                          </span>
+                            <Button
+                              isInline
+                              variant="link"
+                              onClick={() => setViewSystemsModalOpen(true)}
+                              ouiaId="viewSystems"
+                            >
+                              {intl.formatMessage(messages.viewClusters)}
+                            </Button>
+                          </React.Fragment>
+                        ) : (
+                          <OneLineLoader />
                         )}
                       </React.Fragment>
+                    ) : (
+                      !ackIsFetching &&
+                      ackData && (
+                        <React.Fragment>
+                          {intl.formatMessage(
+                            messages.ruleIsDisabledJustification
+                          )}
+                          <i>
+                            {ackData?.justification ||
+                              intl.formatMessage(messages.none)}
+                          </i>
+                          {(ackData?.updated_at || ackData?.created_at) && (
+                            <span>
+                              &nbsp;
+                              <DateFormat
+                                date={
+                                  new Date(
+                                    ackData?.updated_at || ackData?.created_at
+                                  )
+                                }
+                                type="onlyDate"
+                              />
+                            </span>
+                          )}
+                        </React.Fragment>
+                      )
                     )}
                   </CardBody>
                   <CardFooter>
-                    <Button
-                      isInline
-                      variant="link"
-                      onClick={() => enableRule(rule)}
-                      ouiaId="rule"
-                    >
-                      {intl.formatMessage(messages.enableRule)}
-                    </Button>
+                    {(content?.hosts_acked_count ||
+                      ackedClusters?.length > 0) &&
+                    !content?.disabled ? (
+                      !clustersIsFetching && ackedClusters ? (
+                        <Button
+                          isInline
+                          variant="link"
+                          onClick={() =>
+                            enableRecForHosts({
+                              uuids: ackedClusters.map((c) => c.cluster_id),
+                            })
+                          }
+                          ouiaId="bulkHost"
+                        >
+                          {intl.formatMessage(messages.enableRuleForClusters)}
+                        </Button>
+                      ) : (
+                        <OneLineLoader />
+                      )
+                    ) : (
+                      <Button
+                        isInline
+                        variant="link"
+                        onClick={() => enableRule(rule)}
+                        ouiaId="rule"
+                      >
+                        {intl.formatMessage(messages.enableRule)}
+                      </Button>
+                    )}
                   </CardFooter>
                 </Card>
               )}
@@ -284,7 +385,11 @@ const Recommendation = ({ rule, ack, match }) => {
                   <Title className="titleOverride" headingLevel="h3" size="2xl">
                     {intl.formatMessage(messages.affectedClusters)}
                   </Title>
-                  <AffectedClustersTable />
+                  <AffectedClustersTable
+                    query={clusters}
+                    rule={content}
+                    afterDisableFn={afterDisableFn}
+                  />
                 </React.Fragment>
               )}
               {content?.disabled && (
@@ -305,6 +410,7 @@ const Recommendation = ({ rule, ack, match }) => {
 Recommendation.propTypes = {
   rule: PropTypes.object.isRequired,
   ack: PropTypes.object.isRequired,
+  clusters: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
 };
 

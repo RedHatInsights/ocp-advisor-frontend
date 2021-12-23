@@ -389,6 +389,11 @@ export default defineMessages({
       'Recommendation table, action text for enabling reporting of a recommendation',
     defaultMessage: 'Enable recommendation',
   },
+  enableRuleForClusters: {
+    id: 'enableRuleForClusters',
+    description: 'Enable this recommendationfor all clusters',
+    defaultMessage: 'Enable this recommendation for all clusters',
+  },
   save: {
     id: 'save',
     description: 'Save',
@@ -402,7 +407,7 @@ export default defineMessages({
   recSuccessfullyDisabled: {
     id: 'recSuccessfullyDisabled',
     description: 'Explaining that the rec was disabled successfully',
-    defaultMessage: 'Recommendation successfully disabled',
+    defaultMessage: 'Recommendation disabled',
   },
   recSuccessfullyEnabled: {
     id: 'recSuccessfullyEnabled',
@@ -414,11 +419,17 @@ export default defineMessages({
     description: 'Error',
     defaultMessage: 'Error',
   },
-  disableRuleForSystems: {
-    id: 'disableRuleForSystems',
+  disableRuleForClusters: {
+    id: 'disableRuleForClusters',
     description:
-      'Recommendationdetail system table, action text for disabling reporting of a recommendationfor a system',
-    defaultMessage: 'Disable recommendation for selected systems',
+      'Affected clusters table, action text for disabling of a recommendation for a cluster',
+    defaultMessage: 'Disable recommendation for selected clusters',
+  },
+  disableRuleSingleCluster: {
+    id: 'disableRuleSingleCluster',
+    description:
+      'Explaining the action of disabling a recommendation for a single cluster',
+    defaultMessage: 'Disable only for this cluster',
   },
   disableRuleBody: {
     id: 'disableRuleBody',
@@ -487,5 +498,53 @@ export default defineMessages({
     description: 'Temporary Message Body',
     defaultMessage:
       'We’re currently working on this page. In the meantime, you can visit the Insights Advisor recommendations page to view potential issues with your clusters.',
+  },
+  viewClusters: {
+    id: 'viewClusters',
+    description: 'View clusters',
+    defaultMessage: 'View clusters',
+  },
+  clusterName: {
+    id: 'clusterName',
+    description: 'Cluster name',
+    defaultMessage: 'Cluster name',
+  },
+  dateDisabled: {
+    id: 'dateDisabled',
+    description: 'Date disabled',
+    defaultMessage: 'Date disabled',
+  },
+  hostAckModalTitle: {
+    id: 'hostAckModalTitle',
+    description: 'Title for host ack table modal',
+    defaultMessage: 'Recommendation has been disabled for:',
+  },
+  enable: {
+    id: 'enable',
+    description: 'Enable',
+    defaultMessage: 'Enable',
+  },
+  recSuccessfullyDisabledForCluster: {
+    id: 'recSuccessfullyDisabledForCluster',
+    description:
+      'Explaining that the rec was disabled successfully for clusters',
+    defaultMessage: 'Recommendation disabled for selected cluster(s)',
+  },
+  recSuccessfullyEnabledForCluster: {
+    id: 'recSuccessfullyEnabledForSystem',
+    description:
+      'Explaining that the rec was enabled successfully for clusters',
+    defaultMessage:
+      'Recommendation successfully enabled for selected cluster(s)',
+  },
+  selectNone: {
+    id: 'selectNone',
+    description: 'Action, Bulk deselect all',
+    defaultMessage: 'Select none (0 items)',
+  },
+  selectAll: {
+    id: 'selectAll',
+    description: 'Action, Bulk select all items in a table with number',
+    defaultMessage: 'Select all ({items} items)',
   },
 });
