@@ -9,7 +9,10 @@ import { useGetClusterDisplayNameByIdQuery } from '../../Services/AccountManagem
 
 export default routerParams(({ match }) => {
   const intl = useIntl();
-  const cluster = useGetClusterByIdQuery(match.params.clusterId);
+  const cluster = useGetClusterByIdQuery({
+    id: match.params.clusterId,
+    includeDisabled: false,
+  });
   const displayName = useGetClusterDisplayNameByIdQuery(match.params.clusterId);
 
   useEffect(() => {

@@ -9,7 +9,7 @@ export const SmartProxyApi = createApi({
   }),
   endpoints: (builder) => ({
     getClusterById: builder.query({
-      query: (id, includeDisabled = true) =>
+      query: ({ id, includeDisabled }) =>
         `v2/cluster/${id}/reports?get_disabled=${includeDisabled}`,
     }),
     // Get rule's content using id (recId = recommendation id) in the rule_plugin_name|error_key format
