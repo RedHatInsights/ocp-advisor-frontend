@@ -31,17 +31,16 @@ import {
   LIKELIHOOD_LABEL,
   FILTER_CATEGORIES as FC,
   RULE_CATEGORIES,
-  DEFAULT_CLUSTER_RULES_FILTERS,
 } from '../../AppConstants';
 import ReportDetails from '../ReportDetails/ReportDetails';
-import RuleLabels from '../RuleLabels/RuleLabels';
+import RuleLabels from '../Labels/RuleLabels';
 import { NoMatchingRecs } from '../MessageState/EmptyStates';
 
 const ClusterRules = ({ reports }) => {
   const intl = useIntl();
   const [activeReports, setActiveReports] = useState([]);
   const [sortBy, setSortBy] = useState({});
-  const [filters, setFilters] = useState(DEFAULT_CLUSTER_RULES_FILTERS);
+  const [filters, setFilters] = useState({});
   const [searchValue, setSearchValue] = useState('');
   const [rows, setRows] = useState([]);
   const results = rows ? rows.length / 2 : 0;
@@ -185,7 +184,6 @@ const ClusterRules = ({ reports }) => {
               created_at: rule.created_at,
               total_risk: rule.total_risk,
               category: rule.tags,
-              rule_status: rule.disabled ? 'disabled' : 'enabled',
             };
             if (key === 'category') {
               // in that case, rowValue['category'] is an array of categories (or "tags" in the back-end implementation)
@@ -193,9 +191,6 @@ const ClusterRules = ({ reports }) => {
               return rowValue[key].find((categoryName) =>
                 filterValues.includes(String(RULE_CATEGORIES[categoryName]))
               );
-            }
-            if (key === 'rule_status') {
-              return filterValues === 'all' || rowValue[key] === filterValues;
             }
             return filterValues.find(
               (value) => String(value) === String(rowValue[key])
@@ -261,12 +256,6 @@ const ClusterRules = ({ reports }) => {
     setFilters(newFilters);
   };
 
-  const toggleRulesDisabled = (rule_status) => {
-    const newFilters = { ...filters, rule_status };
-    setRows(buildRows(activeReports, newFilters, rows, searchValue));
-    setFilters(newFilters);
-  };
-
   const filterConfigItems = [
     {
       label: 'description',
@@ -299,18 +288,6 @@ const ClusterRules = ({ reports }) => {
         onChange: (_e, values) => onFilterChange(FC.category.urlParam, values),
         value: filters.category,
         items: FC.category.values,
-      },
-    },
-    {
-      label: FC.rule_status.title,
-      type: FC.rule_status.type,
-      id: FC.rule_status.urlParam,
-      value: `radio-${FC.rule_status.urlParam}`,
-      filterValues: {
-        key: `${FC.rule_status.urlParam}-filter`,
-        onChange: (_e, value) => toggleRulesDisabled(value),
-        value: filters.rule_status,
-        items: FC.rule_status.values,
       },
     },
   ];
@@ -353,10 +330,8 @@ const ClusterRules = ({ reports }) => {
 
   const onChipDelete = (_e, itemsToRemove, isAll) => {
     if (isAll) {
-      setRows(
-        buildRows(activeReports, DEFAULT_CLUSTER_RULES_FILTERS, rows, '')
-      );
-      setFilters(DEFAULT_CLUSTER_RULES_FILTERS);
+      setRows(buildRows(activeReports, {}, rows, ''));
+      setFilters({});
       setSearchValue('');
     } else {
       itemsToRemove.map((item) => {
@@ -364,9 +339,6 @@ const ClusterRules = ({ reports }) => {
           case 'Description':
             setRows(buildRows(activeReports, filters, rows, ''));
             setSearchValue('');
-            break;
-          case 'Status':
-            onFilterChange(item.urlParam, []);
             break;
           default:
             onFilterChange(

@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { useIntl } from 'react-intl';
+import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { conditionalFilterType } from '@redhat-cloud-services/frontend-components/ConditionalFilter/conditionalFilterConstants';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
@@ -16,6 +19,7 @@ import {
   Pagination,
   PaginationVariant,
 } from '@patternfly/react-core/dist/js/components/Pagination/Pagination';
+import { cellWidth } from '@patternfly/react-table';
 
 import {
   ErrorState,
@@ -23,28 +27,39 @@ import {
   NoMatchingClusters,
 } from '../MessageState/EmptyStates';
 import Loading from '../Loading/Loading';
-import { Link } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
 import { updateAffectedClustersFilters } from '../../Services/Filters';
+import messages from '../../Messages';
+import DisableRule from '../Modals/DisableRule';
 
-const AffectedClustersTable = ({ query }) => {
+const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
+  const intl = useIntl();
+  const dispatch = useDispatch();
+
+  const [filteredRows, setFilteredRows] = useState([]);
+  const [displayedRows, setDisplayedRows] = useState([]);
+  const [disableRuleModalOpen, setDisableRuleModalOpen] = useState(false);
+  const [chips, setChips] = useState([]);
+  const [selected, setSelected] = useState([]);
+  const [host, setHost] = useState(undefined);
+
   const {
     isError,
     isUninitialized,
     isFetching,
     isSuccess,
-    data: rows = [],
+    /* the response contains two lists: `disabled` has clusters 
+       for which the rec is disabled (acked), and `enable` contains
+       clusters that are affected by the rec */
+    data = { disabled: [], enabled: [] },
   } = query;
-  const dispatch = useDispatch();
+  const rows = data.enabled;
   const filters = useSelector(({ filters }) => filters.affectedClustersState);
-  const updateFilters = (filters) =>
-    dispatch(updateAffectedClustersFilters(filters));
-
-  const [filteredRows, setFilteredRows] = useState([]);
-  const [displayedRows, setDisplayedRows] = useState([]);
-  const [chips, setChips] = useState([]);
   const perPage = filters.limit;
   const page = filters.offset / filters.limit + 1;
+  const allSelected = selected.length === filteredRows.length;
+
+  const updateFilters = (filters) =>
+    dispatch(updateAffectedClustersFilters(filters));
 
   const updateNameChip = (chips, newValue) => {
     const newChips = chips;
@@ -109,22 +124,48 @@ const AffectedClustersTable = ({ query }) => {
 
   // constructs array of rows (from the initial data) checking currently applied filters
   const buildFilteredRows = (allRows, filters) => {
-    const rows = allRows;
+    const rows = allRows.map((r) => ({
+      id: r.cluster,
+      cells: [r?.cluster_name || r.cluster],
+    }));
     return rows
       .filter((row) => {
         // further filters conditions will be added soon
-        return row?.cluster.includes(filters.text);
+        return row?.cells[0].includes(filters.text);
       })
       .sort((a, b) => {
         if (filters.sortDirection === 'asc') {
-          return a?.cluster.localeCompare(b?.cluster);
+          return a?.cells[0].localeCompare(b?.cells[0]);
         }
-        return b?.cluster.localeCompare(a?.cluster);
+        return b?.cells[0].localeCompare(a?.cells[0]);
       });
   };
 
   const buildDisplayedRows = (rows) => {
-    return rows.slice(perPage * (page - 1), perPage * (page - 1) + perPage);
+    return rows
+      .slice(perPage * (page - 1), perPage * (page - 1) + perPage)
+      .map((r) => ({
+        ...r,
+        cells: [
+          <span key={r.id}>
+            <Link to={`/clusters/${r.id}`}>{r.cells[0]}</Link>
+          </span>,
+        ],
+      }));
+  };
+
+  // if rowId === -1, then select all rows
+  const onSelect = (event, isSelected, rowId) => {
+    let rows;
+    rowId === -1
+      ? (rows = filteredRows.map((r) => ({ ...r, selected: isSelected })))
+      : (rows = filteredRows.map((r, i) => ({
+          ...r,
+          selected: i === rowId ? isSelected : r.selected,
+        })));
+    setSelected(rows.filter((r) => r.selected));
+    setFilteredRows(rows);
+    setDisplayedRows(buildDisplayedRows(rows));
   };
 
   useEffect(() => {
@@ -136,8 +177,23 @@ const AffectedClustersTable = ({ query }) => {
     setChips(newChips);
   }, [query, filters]);
 
+  const handleModalToggle = (disableRuleModalOpen, host = undefined) => {
+    setDisableRuleModalOpen(disableRuleModalOpen);
+    setHost(host);
+  };
+
   return (
     <div id="affected-list-table">
+      {disableRuleModalOpen && (
+        <DisableRule
+          handleModalToggle={handleModalToggle}
+          isModalOpen={disableRuleModalOpen}
+          rule={rule}
+          afterFn={afterDisableFn}
+          hosts={selected}
+          host={host}
+        />
+      )}
       <PrimaryToolbar
         filterConfig={filterConfig}
         pagination={{
@@ -155,53 +211,93 @@ const AffectedClustersTable = ({ query }) => {
                 onDelete: onChipDelete,
               }
         }
+        bulkSelect={{
+          count: selected.length,
+          items: [
+            {
+              title: intl.formatMessage(messages.selectNone),
+              onClick: (event) => onSelect(event, false, -1),
+            },
+            {
+              title: intl.formatMessage(messages.selectAll, {
+                items: filteredRows?.length || 0,
+              }),
+              onClick: (event) => onSelect(event, true, -1),
+            },
+          ],
+          checked: allSelected,
+          onSelect: (event) =>
+            allSelected
+              ? onSelect(event, false, -1)
+              : onSelect(event, true, -1),
+        }}
+        actionsConfig={{
+          actions: [
+            '',
+            {
+              label: intl.formatMessage(messages.disableRuleForClusters),
+              props: { isDisabled: selected.length === 0 },
+              onClick: () => handleModalToggle(true),
+            },
+          ],
+        }}
       />
-      {(isUninitialized || isFetching) && <Loading />}
-      {isError && (
-        <Card id="error-state-message">
-          <CardBody>
-            <ErrorState />
-          </CardBody>
-        </Card>
-      )}
-      {isSuccess && rows.length === 0 && (
-        <Card id="empty-state-message">
-          <CardBody>
-            <NoAffectedClusters />
-          </CardBody>
-        </Card>
-      )}
-      {isSuccess &&
-        rows.length > 0 &&
-        (filteredRows.length > 0 ? (
-          <Table
-            aria-label="Table of affected clusters"
-            ouiaId="affectedClustersTable"
-            variant="compact"
-            cells={[{ title: 'Name', transforms: [sortable] }]}
-            rows={displayedRows.map((c) => ({
-              cells: [
-                <span key={c?.cluter}>
-                  <Link to={`/clusters/${c?.cluster}`}>{c?.cluster}</Link>
-                </span>,
-              ],
-            }))}
-            sortBy={{
-              index: filters.sortIndex,
-              direction: filters.sortDirection,
-            }}
-            onSort={onSort}
-          >
-            <TableHeader />
+      <Table
+        aria-label="Table of affected clusters"
+        ouiaId="affectedClustersTable"
+        variant="compact"
+        cells={[
+          {
+            title: intl.formatMessage(messages.name),
+            transforms: [sortable, cellWidth(100)],
+          },
+        ]}
+        rows={displayedRows}
+        sortBy={{
+          index: filters.sortIndex,
+          direction: filters.sortDirection,
+        }}
+        onSort={onSort}
+        canSelectAll={false}
+        onSelect={displayedRows?.length > 0 ? onSelect : undefined}
+        actions={[
+          {
+            title: 'Disable recommendation for cluster',
+            onClick: (event, rowIndex) => {
+              console.log(filteredRows[rowIndex]);
+              return handleModalToggle(true, filteredRows[rowIndex].id);
+            },
+          },
+        ]}
+      >
+        <TableHeader />
+        {(isUninitialized || isFetching) && <Loading />}
+        {isError && (
+          <Card id="error-state-message">
+            <CardBody>
+              <ErrorState />
+            </CardBody>
+          </Card>
+        )}
+        {isSuccess && rows.length === 0 && (
+          <Card id="empty-state-message">
+            <CardBody>
+              <NoAffectedClusters />
+            </CardBody>
+          </Card>
+        )}
+        {isSuccess &&
+          rows.length > 0 &&
+          (filteredRows.length > 0 ? (
             <TableBody />
-          </Table>
-        ) : (
-          <EmptyTable>
-            <Bullseye>
-              <NoMatchingClusters />
-            </Bullseye>
-          </EmptyTable>
-        ))}
+          ) : (
+            <EmptyTable>
+              <Bullseye>
+                <NoMatchingClusters />
+              </Bullseye>
+            </EmptyTable>
+          ))}
+      </Table>
       <TableToolbar isFooter className="ins-c-inventory__table--toolbar">
         <Pagination
           variant={PaginationVariant.bottom}
@@ -225,6 +321,8 @@ AffectedClustersTable.propTypes = {
     isSuccess: PropTypes.bool.isRequired,
     data: PropTypes.array,
   }),
+  rule: PropTypes.object,
+  afterDisableFn: PropTypes.func,
 };
 
 export { AffectedClustersTable };

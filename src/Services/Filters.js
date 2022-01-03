@@ -13,7 +13,7 @@ export const RECS_LIST_INITIAL_STATE = {
   offset: 0,
   impacting: ['true'],
   // default sorting by total risk
-  sortIndex: 3,
+  sortIndex: 4,
   sortDirection: 'desc',
   rule_status: 'enabled',
 };

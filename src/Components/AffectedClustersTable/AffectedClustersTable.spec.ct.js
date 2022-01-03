@@ -14,6 +14,7 @@ const ROW_GROUP = 'tbody[role=rowgroup]';
 const PAGINATION_MENU =
   'div[data-ouia-component-type="PF4/PaginationOptionsMenu"]';
 const TOOLBAR_CONTENT = '.pf-c-toolbar__content';
+const TOOLBAR = '.pf-c-toolbar';
 
 // actions
 Cypress.Commands.add('countRows', (count) => {
@@ -22,6 +23,9 @@ Cypress.Commands.add('countRows', (count) => {
     .children()
     .should('have.length', count);
 });
+Cypress.Commands.add('getToggleCheckboxText', () =>
+  cy.get(AFFECTED_LIST_TABLE).find(TOOLBAR).find('#toggle-checkbox-text')
+);
 
 describe('non-empty successful affected clusters table', () => {
   beforeEach(() => {
@@ -37,6 +41,8 @@ describe('non-empty successful affected clusters table', () => {
                 isSuccess: true,
                 data: props,
               }}
+              rule={{}}
+              afterDisableFn={() => undefined}
             />
           </Provider>
         </Intl>
@@ -74,7 +80,69 @@ describe('non-empty successful affected clusters table', () => {
     // renders filter chips
     cy.get(TOOLBAR_CONTENT).find('.ins-c-chip-filters');
     // three matched clusters rendered
-    cy.countRows(3);
+    cy.countRows(2);
+  });
+
+  it('display name is rendered instead of cluster uuid', () => {
+    cy.get(AFFECTED_LIST_TABLE)
+      .find(ROW_GROUP)
+      .contains('custom cluster name 2')
+      .should('have.attr', 'href')
+      .and('contain', '/clusters/f7331e9a-2f59-484d-af52-338d56165df5');
+  });
+
+  it('renders table header', () => {
+    cy.get(AFFECTED_LIST_TABLE).find('th').should('have.text', 'Name');
+  });
+
+  it('can select/deselect all', () => {
+    cy.get(AFFECTED_LIST_TABLE).find(TOOLBAR).find('#toggle-checkbox').click();
+    cy.getToggleCheckboxText().should('have.text', '23 selected');
+    cy.get(AFFECTED_LIST_TABLE)
+      .find(TOOLBAR)
+      .find('.pf-c-dropdown__toggle')
+      .find('button')
+      .click();
+    cy.get(AFFECTED_LIST_TABLE)
+      .find(TOOLBAR)
+      .find('ul[class=pf-c-dropdown__menu]')
+      .find('li')
+      .eq(1)
+      .click({ force: true });
+    cy.getToggleCheckboxText().should('not.exist');
+  });
+
+  it('can disable selected clusters', () => {
+    cy.get(AFFECTED_LIST_TABLE).find(TOOLBAR).find('#toggle-checkbox').click();
+    cy.get(AFFECTED_LIST_TABLE)
+      .find(TOOLBAR)
+      .find('button[aria-label=Actions]')
+      .click();
+    cy.get('.pf-c-dropdown__menu')
+      .find('li')
+      .find('button')
+      .click({ force: true });
+    cy.get('.pf-c-modal-box')
+      .find('.pf-c-check label')
+      .should('have.text', 'Disable recommendation for selected clusters');
+  });
+
+  it('can disable one cluster', () => {
+    cy.get(AFFECTED_LIST_TABLE)
+      .find(ROW_GROUP)
+      .children()
+      .eq(0)
+      .find('.pf-c-table__action button')
+      .click({ force: true });
+    cy.get(AFFECTED_LIST_TABLE)
+      .find(ROW_GROUP)
+      .children()
+      .eq(0)
+      .find('.pf-c-dropdown__menu button')
+      .click({ force: true });
+    cy.get('.pf-c-modal-box')
+      .find('.pf-c-check label')
+      .should('have.text', 'Disable only for this cluster');
   });
 });
 
@@ -90,7 +158,7 @@ describe('empty successful affected clusters table', () => {
                 isFetching: false,
                 isUninitialized: false,
                 isSuccess: true,
-                data: [],
+                data: { disabled: [], enabled: [] },
               }}
             />
           </Provider>
@@ -108,6 +176,10 @@ describe('empty successful affected clusters table', () => {
     cy.get('#empty-state-message')
       .find('h4')
       .should('have.text', 'No clusters');
+  });
+
+  it('renders table header', () => {
+    cy.get(AFFECTED_LIST_TABLE).find('th').should('have.text', 'Name');
   });
 });
 
@@ -141,5 +213,9 @@ describe('empty failed affected clusters table', () => {
     cy.get('#error-state-message')
       .find('h4')
       .should('have.text', 'Something went wrong');
+  });
+
+  it('renders table header', () => {
+    cy.get(AFFECTED_LIST_TABLE).find('th').should('have.text', 'Name');
   });
 });
