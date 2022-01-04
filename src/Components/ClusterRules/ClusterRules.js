@@ -43,6 +43,7 @@ const ClusterRules = ({ reports }) => {
   const [filters, setFilters] = useState({});
   const [searchValue, setSearchValue] = useState('');
   const [rows, setRows] = useState([]);
+  const [isAllExpanded, setIsAllExpanded] = useState(false);
   const results = rows ? rows.length / 2 : 0;
 
   const cols = [
@@ -65,31 +66,6 @@ const ClusterRules = ({ reports }) => {
     collapseRows[rowId] = { ...collapseRows[rowId], isOpen };
     setRows(collapseRows);
   };
-
-  const onKebabClick = (action) => {
-    const isOpen = action === 'insights-expand-all';
-    const allRows = [...rows];
-
-    allRows.map((row, key) => {
-      if (Object.prototype.hasOwnProperty.call(row, 'isOpen')) {
-        row.isOpen = isOpen;
-        isOpen && handleOnCollapse(null, key, isOpen);
-      }
-    });
-
-    setRows(allRows);
-  };
-
-  const actions = [
-    {
-      label: 'Collapse all',
-      onClick: () => onKebabClick('insights-collapse-all'),
-    },
-    {
-      label: 'Expand all',
-      onClick: () => onKebabClick('insights-expand-all'),
-    },
-  ];
 
   const buildRows = (activeReports, filters, rows, searchValue = '') => {
     const builtRows = activeReports.flatMap((value, key) => {
@@ -358,6 +334,19 @@ const ClusterRules = ({ reports }) => {
     onDelete: onChipDelete,
   };
 
+  const onExpandAllClick = (_e, isOpen) => {
+    setIsAllExpanded(isOpen);
+    const allRows = [...rows];
+
+    allRows.map((row) => {
+      if (Object.prototype.hasOwnProperty.call(row, 'isOpen')) {
+        row.isOpen = isOpen;
+      }
+    });
+
+    setRows(allRows);
+  };
+
   useEffect(() => {
     const activeReportsData = reports;
     setActiveReports(activeReportsData);
@@ -367,7 +356,7 @@ const ClusterRules = ({ reports }) => {
   return (
     <div id="cluster-recs-list-table">
       <PrimaryToolbar
-        actionsConfig={{ actions }}
+        expandAll={{ isAllExpanded, onClick: onExpandAllClick }}
         filterConfig={{
           items: filterConfigItems,
           isDisabled: activeReports.length === 0,
