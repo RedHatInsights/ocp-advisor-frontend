@@ -310,7 +310,7 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
                               isInline
                               variant="link"
                               onClick={() => setViewSystemsModalOpen(true)}
-                              ouiaId="viewSystems"
+                              ouiaId="view-clusters"
                             >
                               {intl.formatMessage(messages.viewClusters)}
                             </Button>
@@ -360,7 +360,7 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
                               uuids: ackedClusters.map((c) => c.cluster_id),
                             })
                           }
-                          ouiaId="bulkHost"
+                          ouiaId="enable-all"
                         >
                           {intl.formatMessage(messages.enableRuleForClusters)}
                         </Button>

@@ -32,7 +32,12 @@ export const ClusterHeader = ({ clusterId, clusterData, displayName }) => {
         {isUninitializedDisplayName || isFetchingDisplayName ? (
           <Skeleton size="sm" />
         ) : (
-          <Title size="2xl" headingLevel="h1" id="cluster-header-title">
+          <Title
+            size="2xl"
+            headingLevel="h1"
+            id="cluster-header-title"
+            ouiaId="cluster-name"
+          >
             {clusterName || clusterId}
           </Title>
         )}

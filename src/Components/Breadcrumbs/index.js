@@ -14,7 +14,7 @@ const Breadcrumbs = ({ current }) => {
   const splitUrl = location.pathname.split('/');
 
   return (
-    <div ouiaId="breadcrumbs">
+    <div>
       <Breadcrumb ouiaId="detail">
         <BreadcrumbItem className="breadcrumb-item">
           <Link to={`/${splitUrl[1]}`}>
