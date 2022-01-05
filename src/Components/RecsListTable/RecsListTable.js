@@ -564,6 +564,7 @@ const RecsListTable = ({ query }) => {
             }}
             onSort={onSort}
             actionResolver={actionResolver}
+            isStickyHeader
           >
             <TableHeader />
             <TableBody />

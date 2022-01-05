@@ -210,6 +210,7 @@ const ClustersListTable = ({
               direction: filters.sortDirection,
             }}
             onSort={onSort}
+            isStickyHeader
           >
             <TableHeader />
             <TableBody />
