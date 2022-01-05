@@ -537,13 +537,14 @@ const RecsListTable = ({ query }) => {
             dispatch(updateFilters({ ...filters, limit: perPage, offset: 0 }));
           },
           isCompact: true,
+          ouiaId: 'pager',
         }}
         filterConfig={{ items: filterConfigItems }}
         activeFiltersConfig={activeFiltersConfig}
       />
       {(isUninitialized || isFetching) && <Loading />}
       {(isError || (isSuccess && recs.length === 0)) && (
-        <Card id="error-state-message">
+        <Card id="error-state-message" ouiaId="error-state">
           <CardBody>
             <ErrorState />
           </CardBody>
@@ -553,7 +554,7 @@ const RecsListTable = ({ query }) => {
         <React.Fragment>
           <Table
             aria-label="Table of recommendations"
-            ouiaId="recsListTable"
+            ouiaId="recommendations"
             variant={TableVariant.compact}
             cells={RECS_LIST_COLUMNS}
             rows={displayedRows}
@@ -570,7 +571,7 @@ const RecsListTable = ({ query }) => {
             <TableBody />
           </Table>
           {recs.length > 0 && filteredRows.length === 0 && (
-            <Card ouiaId={'empty-recommendations'}>
+            <Card ouiaId="empty-state">
               <CardBody>
                 <NoMatchingRecs />
               </CardBody>
@@ -579,7 +580,7 @@ const RecsListTable = ({ query }) => {
         </React.Fragment>
       )}
       <Pagination
-        ouiaId="recs-list-pagination-bottom"
+        ouiaId="pager"
         itemCount={filteredRows.length}
         page={filters.offset / filters.limit + 1}
         perPage={Number(filters.limit)}

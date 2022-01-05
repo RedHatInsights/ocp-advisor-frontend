@@ -376,7 +376,7 @@ const ClusterRules = ({ reports }) => {
         <React.Fragment>
           <Table
             aria-label={'Cluster recommendations table'}
-            ouiaId={'cluster-recommendations'}
+            ouiaId="recommendations"
             onCollapse={handleOnCollapse}
             rows={rows}
             cells={cols}
@@ -389,7 +389,7 @@ const ClusterRules = ({ reports }) => {
             <TableBody />
           </Table>
           {results === 0 && (
-            <Card ouiaId={'empty-recommendations'}>
+            <Card ouiaId="empty-state">
               <CardBody>
                 <NoMatchingRecs />
               </CardBody>
@@ -398,7 +398,7 @@ const ClusterRules = ({ reports }) => {
         </React.Fragment>
       ) : (
         // ? Welcome to Insights feature for novice clusters with disabled Insights?
-        <Card>
+        <Card ouiaId="no-recommendations">
           <CardBody>
             <MessageState
               icon={CheckIcon}

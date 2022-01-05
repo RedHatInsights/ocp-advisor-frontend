@@ -185,13 +185,14 @@ const ClustersListTable = ({
           onPerPageSelect: (_event, perPage) =>
             updateFilters({ ...filters, limit: perPage, offset: 0 }),
           isCompact: true,
+          ouiaId: 'pager',
         }}
         filterConfig={{ items: filterConfigItems }}
         activeFiltersConfig={activeFiltersConfig}
       />
       {(isUninitialized || isFetching) && <Loading />}
       {isError && (
-        <Card>
+        <Card ouiaId="error-state">
           <CardBody>
             <ErrorState />
           </CardBody>
@@ -201,7 +202,7 @@ const ClustersListTable = ({
         <React.Fragment>
           <Table
             aria-label="Table of clusters"
-            ouiaId="clustersListTable"
+            ouiaId="clusters"
             variant={TableVariant.compact}
             cells={CLUSTERS_LIST_COLUMNS}
             rows={displayedRows}
@@ -216,7 +217,7 @@ const ClustersListTable = ({
             <TableBody />
           </Table>
           {clusters.length > 0 && filteredRows.length === 0 && (
-            <Card ouiaId={'empty-recommendations'}>
+            <Card ouiaId="empty-state">
               <CardBody>
                 <NoMatchingClusters />
               </CardBody>
@@ -225,7 +226,7 @@ const ClustersListTable = ({
         </React.Fragment>
       )}
       <Pagination
-        ouiaId="clusters-list-pagination-bottom"
+        ouiaId="pager"
         itemCount={filteredRows.length}
         page={filters.offset / filters.limit + 1}
         perPage={Number(filters.limit)}

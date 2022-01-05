@@ -10,7 +10,7 @@ import getStore from '../../Store';
 describe('cluster page', () => {
   // selectors
   const CLUSTER_HEADER = '#cluster-header';
-  const BREADCRUMBS = 'div[ouiaid=breadcrumbs]';
+  const BREADCRUMBS = 'nav[class=pf-c-breadcrumb]';
   const RULES_TABLE = '#cluster-recs-list-table';
   let props;
 
