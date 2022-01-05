@@ -167,8 +167,6 @@ const RecsListTable = ({ query }) => {
                       rule={{
                         ...value,
                         impact: { impact: value.impact },
-                        // TODO: fix <Router> issue in the async component and then remove the line below
-                        impacted_clusters_count: undefined,
                       }}
                       isDetailsPage={false}
                     />

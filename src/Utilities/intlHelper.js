@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { IntlProvider } from '@redhat-cloud-services/frontend-components-translations/';
 
-const translations = {
+export const translations = {
   en: require('../../compiled-lang/en.json'),
 };
 
