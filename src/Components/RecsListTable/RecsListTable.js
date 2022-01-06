@@ -237,7 +237,6 @@ const RecsListTable = ({ query }) => {
         ...filters,
         rule_status,
         offset: 0,
-        ...(rule_status !== 'enabled' && { impacting: ['false'] }),
       })
     );
   };
