@@ -286,36 +286,34 @@ describe('successful non-empty recommendations list table', () => {
   });
 
   it('the Impacted filters work correctly', () => {
-    cy.get(RECS_LIST_TABLE).find('button[class=pf-c-dropdown__toggle]').click();
+    const RECS_LIST_TABLE = 'div[id=recs-list-table]';
+    const FILTERS_DROPDOWN = 'ul[class=pf-c-dropdown__menu]';
+    const FILTER_TOGGLE = 'span[class=pf-c-select__toggle-arrow]';
+
+    cy.get(RECS_LIST_TABLE)
+      .find('button[class=pf-c-dropdown__toggle]')
+      .click({ force: true });
     cy.get(FILTERS_DROPDOWN)
       .contains('Clusters impacted')
-      .then((element) => {
-        cy.wrap(element);
-        element[0].click();
-      });
+      .click({ force: true });
     cy.get(FILTER_TOGGLE).then((element) => {
       cy.wrap(element);
-      element[0].click();
+      element[0].click({ force: true });
     });
-    cy.get('.pf-c-check__input').check({ force: true });
+    cy.get('.pf-c-select__menu')
+      .find('label > input')
+      .eq(1)
+      .check({ force: true });
+    cy.get('.pf-c-chip-group__list-item').contains('1 or more');
 
-    cy.get(RECS_LIST_TABLE).find('button[class=pf-c-dropdown__toggle]').click();
-    cy.get(FILTERS_DROPDOWN)
-      .contains('Status')
-      .then((element) => {
-        cy.wrap(element);
-        element[0].click();
-      });
-    cy.get(FILTER_TOGGLE).then((element) => {
-      cy.wrap(element);
-      element[0].click();
-    });
+    cy.get(RECS_LIST_TABLE)
+      .find('button[class=pf-c-dropdown__toggle]')
+      .click({ force: true });
+    cy.get(FILTERS_DROPDOWN).contains('Status').click({ force: true });
+    cy.get(FILTER_TOGGLE).click({ force: true });
     cy.get('button[class=pf-c-select__menu-item]')
       .contains('All')
-      .then((element) => {
-        cy.wrap(element);
-        element[0].click();
-      });
+      .click({ force: true });
     cy.get('.pf-c-chip-group__list-item').contains('1 or more');
   });
 });
