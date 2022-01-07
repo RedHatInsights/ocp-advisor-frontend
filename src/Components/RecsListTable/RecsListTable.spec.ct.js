@@ -14,7 +14,6 @@ const CHIP = 'div[class=pf-c-chip]';
 const ROW = 'tbody[role=rowgroup]';
 const FILTERS_DROPDOWN = 'ul[class=pf-c-dropdown__menu]';
 const FILTER_TOGGLE = 'span[class=pf-c-select__toggle-arrow]';
-
 // actions
 Cypress.Commands.add('getAllRows', () => cy.get(RECS_LIST_TABLE).find(ROW));
 Cypress.Commands.add('removeStatusFilter', () => {
@@ -286,10 +285,6 @@ describe('successful non-empty recommendations list table', () => {
   });
 
   it('the Impacted filters work correctly', () => {
-    const RECS_LIST_TABLE = 'div[id=recs-list-table]';
-    const FILTERS_DROPDOWN = 'ul[class=pf-c-dropdown__menu]';
-    const FILTER_TOGGLE = 'span[class=pf-c-select__toggle-arrow]';
-
     cy.get(RECS_LIST_TABLE)
       .find('button[class=pf-c-dropdown__toggle]')
       .click({ force: true });
