@@ -282,6 +282,26 @@ describe('successful non-empty recommendations list table', () => {
       .find('td[data-label=Category]')
       .should('contain', 'Service Availability');
   });
+
+  it('the filters work correctly', () => {
+    const RECS_LIST_TABLE = 'div[id=recs-list-table]';
+    const FILTERS_DROPDOWN = 'ul[class=pf-c-dropdown__menu]';
+    const FILTER_TOGGLE = 'span[class=pf-c-select__toggle-arrow]';
+
+    cy.get(RECS_LIST_TABLE).find('button[class=pf-c-dropdown__toggle]').click();
+    cy.get(FILTERS_DROPDOWN)
+      .contains('Clusters impacted')
+      .then((element) => {
+        cy.wrap(element);
+        element[0].click();
+      });
+    cy.get(FILTER_TOGGLE).then((element) => {
+      cy.wrap(element);
+      element[0].click();
+    });
+    cy.get('#pf-random-id-72-false').check({ force: true });
+    cy.get('.pf-c-chip-group__list-item').contains('1 or more');
+  });
 });
 
 describe('empty recommendations list table', () => {
