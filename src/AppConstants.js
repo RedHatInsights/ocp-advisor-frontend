@@ -246,3 +246,10 @@ export const CLUSTERS_LIST_COLUMNS = [
 ];
 export const CLUSTER_NAME_CELL = 0;
 export const CLUSTER_LAST_CHECKED_CELL = 6;
+export const RECS_LIST_COLUMNS_KEYS = [
+  'description',
+  'publish_date',
+  'tags',
+  'total_risk',
+  'impacted_clusters_count',
+];
