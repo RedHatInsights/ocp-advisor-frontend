@@ -12,7 +12,8 @@ import { Intl } from '../../Utilities/intlHelper';
 const RECS_LIST_TABLE = 'div[id=recs-list-table]';
 const CHIP = 'div[class=pf-c-chip]';
 const ROW = 'tbody[role=rowgroup]';
-
+const FILTERS_DROPDOWN = 'ul[class=pf-c-dropdown__menu]';
+const FILTER_TOGGLE = 'span[class=pf-c-select__toggle-arrow]';
 // actions
 Cypress.Commands.add('getAllRows', () => cy.get(RECS_LIST_TABLE).find(ROW));
 Cypress.Commands.add('removeStatusFilter', () => {
@@ -281,6 +282,34 @@ describe('successful non-empty recommendations list table', () => {
       .eq(0)
       .find('td[data-label=Category]')
       .should('contain', 'Service Availability');
+  });
+
+  it('the Impacted filters work correctly', () => {
+    cy.get(RECS_LIST_TABLE)
+      .find('button[class=pf-c-dropdown__toggle]')
+      .click({ force: true });
+    cy.get(FILTERS_DROPDOWN)
+      .contains('Clusters impacted')
+      .click({ force: true });
+    cy.get(FILTER_TOGGLE).then((element) => {
+      cy.wrap(element);
+      element[0].click({ force: true });
+    });
+    cy.get('.pf-c-select__menu')
+      .find('label > input')
+      .eq(1)
+      .check({ force: true });
+    cy.get('.pf-c-chip-group__list-item').contains('1 or more');
+
+    cy.get(RECS_LIST_TABLE)
+      .find('button[class=pf-c-dropdown__toggle]')
+      .click({ force: true });
+    cy.get(FILTERS_DROPDOWN).contains('Status').click({ force: true });
+    cy.get(FILTER_TOGGLE).click({ force: true });
+    cy.get('button[class=pf-c-select__menu-item]')
+      .contains('All')
+      .click({ force: true });
+    cy.get('.pf-c-chip-group__list-item').contains('1 or more');
   });
 });
 
