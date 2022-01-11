@@ -15,6 +15,9 @@ const PAGINATION_MENU =
   'div[data-ouia-component-type="PF4/PaginationOptionsMenu"]';
 const TOOLBAR_CONTENT = '.pf-c-toolbar__content';
 const TOOLBAR = '.pf-c-toolbar';
+const DEFAULT_ROW_COUNT = 20;
+// FIXME is this shared by all tables?
+const PAGINATION_VALUES = [10, 20, 50, 100]
 
 // actions
 Cypress.Commands.add('countRows', (count) => {
@@ -26,6 +29,26 @@ Cypress.Commands.add('countRows', (count) => {
 Cypress.Commands.add('getToggleCheckboxText', () =>
   cy.get(AFFECTED_LIST_TABLE).find(TOOLBAR).find('#toggle-checkbox-text')
 );
+
+function filterData(text = '') {
+  // FIXME: is this the right way to use loadash?
+  return Cypress._.filter(props['enabled'], (it) =>
+    (it?.cluster_name || it.cluster).toLowerCase().includes(text.toLowerCase())
+  );
+}
+
+describe('test data', () => {
+  it('has enabled clusters', () => {
+    cy.wrap(props['enabled']).its('length').should('be.gte', 1);
+  });
+  it('has more enabled clusters than default rows', () => {
+    cy.wrap(props['enabled']).its('length').should('be.gt', DEFAULT_ROW_COUNT);
+  });
+  it('has less data than 51', () => {
+    // 50 is the value [2] in pagination
+    cy.wrap(props['enabled']).its('length').should('be.lte', 50);
+  });
+});
 
 describe('non-empty successful affected clusters table', () => {
   beforeEach(() => {
@@ -55,12 +78,11 @@ describe('non-empty successful affected clusters table', () => {
   });
 
   it('shows first twenty clusters', () => {
-    cy.countRows(20);
+    cy.countRows(DEFAULT_ROW_COUNT);
   });
 
-  it('can change page limit', () => {
-    cy.countRows(20);
-
+  it('pagination defaults are expected ones', () => {
+    // FIXME: create a function to get the items in paginator?
     cy.get(PAGINATION_MENU)
       .first()
       .find('button[data-ouia-component-type="PF4/DropdownToggle"]')
@@ -69,10 +91,29 @@ describe('non-empty successful affected clusters table', () => {
       .first()
       .find('ul[class=pf-c-options-menu__menu]')
       .find('li')
-      .eq(2)
-      .find('button')
-      .click({ force: true }); // caused by the css issue
-    cy.countRows(23);
+      .each(($el, index) => {
+        cy.wrap($el).should(
+          'have.text',
+          `${PAGINATION_VALUES[index]} per page`
+        );
+      });
+  });
+
+  it('can change page limit', () => {
+    // FIXME: best way to make the loop
+    cy.wrap(PAGINATION_VALUES).each((el) => {
+      cy.get(PAGINATION_MENU)
+        .first()
+        .find('button[data-ouia-component-type="PF4/DropdownToggle"]')
+        .click();
+      cy.get(PAGINATION_MENU)
+        .first()
+        .find('ul[class=pf-c-options-menu__menu]')
+        .find('li')
+        .contains(`${el}`)
+        .click({ force: true }); // caused by the css issue
+      cy.countRows(Math.min(el, filterData().length));
+    });
   });
 
   it('can add name filter', () => {
