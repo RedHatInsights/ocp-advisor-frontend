@@ -84,8 +84,8 @@ const ClustersListTable = ({
             snd = b.cluster.cluster_name || b.cluster.cluster_id;
             return fst.localeCompare(snd) ? fst.localeCompare(snd) * d : 0;
           case CLUSTER_LAST_CHECKED_CELL:
-            fst = new Date(a.cluster.last_checked_at);
-            snd = new Date(b.cluster.last_checked_at);
+            fst = new Date(a.cluster.last_checked_at || 0);
+            snd = new Date(b.cluster.last_checked_at || 0);
             return fst > snd ? d : snd > fst ? -d : 0;
           default:
             fst = a.cells[index];

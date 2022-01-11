@@ -19,6 +19,7 @@ describe('clusters list table', () => {
     cy.get('.pf-c-options-menu__toggle-text').find('b').eq(1)
   );
   Cypress.Commands.add('getFirstRow', () => cy.get(TBODY).children().eq(0));
+  Cypress.Commands.add('getLastRow', () => cy.get(TBODY).children().eq(28));
 
   beforeEach(() => {
     mount(
@@ -44,8 +45,8 @@ describe('clusters list table', () => {
     cy.get(CLUSTERS_LIST_TABLE).should('have.length', 1);
   });
 
-  it('shows 28 clusters as a total number', () => {
-    cy.getTotalClusters().should('have.text', 28);
+  it('shows 29 clusters as a total number', () => {
+    cy.getTotalClusters().should('have.text', 29);
   });
 
   it('pagination default is set to 20', () => {
@@ -67,8 +68,8 @@ describe('clusters list table', () => {
   });
 
   it('can filter out only hitting clusters', () => {
-    // initially there are 28 clusters
-    cy.getTotalClusters().should('have.text', 28);
+    // initially there are 29 clusters
+    cy.getTotalClusters().should('have.text', 29);
     // open filter toolbar
     cy.get('.ins-c-primary-toolbar__filter button').click();
     //change the filter toolbar item
@@ -97,7 +98,7 @@ describe('clusters list table', () => {
       .eq(2)
       .find('button')
       .click({ force: true });
-    cy.getTotalClusters().should('have.text', 25);
+    cy.getTotalClusters().should('have.text', 26);
     // check all shown clusters have recommendations > 0
     cy.get('TBODY')
       .find('td[data-label=Recommendations]')
@@ -137,7 +138,7 @@ describe('clusters list table', () => {
   });
 
   it('some rows have cluster names instead uuids', () => {
-    /* the cluster with uuid "fc603601-0ff8-45e4-b0f3-c7f76d2ef36b" 
+    /* the cluster with uuid "fc603601-0ff8-45e4-b0f3-c7f76d2ef36b"
        has a display name "gsbq8pthf xah3olxhz" */
     cy.get(TBODY)
       .children()
@@ -151,5 +152,23 @@ describe('clusters list table', () => {
       .find('td[data-label=Name]')
       .find('a[href="/clusters/e488c993-821c-4915-bd08-5a51ed7aa3a2"]')
       .should('have.text', 'gvgubed6h jzcmr99ojh');
+  });
+
+  it('sorts N/A in last seen correctly', () => {
+    cy.get('.pf-c-table__sort').eq(6).click();
+    cy.getFirstRow().find('span').should('have.text', 'N/A');
+    cy.get('.pf-c-table__sort').eq(6).click();
+    cy.get(PAGINATION)
+      .eq(0)
+      .find('.pf-c-options-menu__toggle-button')
+      .click({ force: true });
+    cy.get(PAGINATION)
+      .eq(0)
+      .find('.pf-c-options-menu')
+      .find('li')
+      .eq(2)
+      .find('button')
+      .click({ force: true });
+    cy.getLastRow().find('span').should('have.text', 'N/A');
   });
 });

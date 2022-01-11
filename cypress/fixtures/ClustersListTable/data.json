@@ -195,6 +195,13 @@
       "last_checked_at": "2019-12-18T14:21:12.020Z",
       "total_hit_count": 19,
       "hits_by_total_risk": { "1": 11, "2": 8, "3": 0, "4": 0 }
+    },
+    {
+      "cluster_id": "0abb45ac-3ade-49c7-a7d4-ec2af0ee21db",
+      "cluster_name": "y7gz4faz1 k6rqb02yo",
+      "last_checked_at": "",
+      "total_hit_count": 13,
+      "hits_by_total_risk": { "1": 2, "2": 3, "3": 5, "4": 3 }
     }
   ],
   "meta": {
