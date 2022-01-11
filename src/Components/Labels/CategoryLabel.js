@@ -34,6 +34,7 @@ const CategoryLabel = ({ tags }) => {
           icon={CATEGORY_ICONS[tag]}
           variant="outline"
           color="blue"
+          isCompact="true"
         >
           {intl.formatMessage(messages[camelCase(tag)])}
         </Label>

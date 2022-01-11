@@ -104,7 +104,7 @@ const RecsListTable = ({ query }) => {
                     {' '}
                     {value?.description || value?.rule_id}{' '}
                   </Link>
-                  <RuleLabels rule={value} />
+                  <RuleLabels rule={value} isCompact="true" />
                 </span>
               ),
             },
@@ -119,7 +119,9 @@ const RecsListTable = ({ query }) => {
                 intl.formatMessage(messages.nA)
               ),
             },
-            { title: <CategoryLabel key={key} tags={value.tags} /> },
+            {
+              title: <CategoryLabel key={key} tags={value.tags} />,
+            },
             {
               title: (
                 <div key={key}>
@@ -137,7 +139,10 @@ const RecsListTable = ({ query }) => {
                     )}
                   >
                     {value?.total_risk ? (
-                      <InsightsLabel value={value.total_risk} />
+                      <InsightsLabel
+                        value={value.total_risk}
+                        rest={{ isCompact: true }}
+                      />
                     ) : (
                       intl.formatMessage(messages.nA)
                     )}
