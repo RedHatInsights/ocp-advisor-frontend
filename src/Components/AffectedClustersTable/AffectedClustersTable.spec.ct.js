@@ -17,7 +17,8 @@ const TOOLBAR_CONTENT = '.pf-c-toolbar__content';
 const TOOLBAR = '.pf-c-toolbar';
 const DEFAULT_ROW_COUNT = 20;
 // FIXME is this shared by all tables?
-const PAGINATION_VALUES = [10, 20, 50, 100]
+const PAGINATION_VALUES = [10, 20, 50, 100];
+const SEARCH_ITEMS = ['ff', 'CUSTOM', 'Foobar', 'Not existing cluster'];
 
 // actions
 Cypress.Commands.add('countRows', (count) => {
@@ -47,6 +48,17 @@ describe('test data', () => {
   it('has less data than 51', () => {
     // 50 is the value [2] in pagination
     cy.wrap(props['enabled']).its('length').should('be.lte', 50);
+  });
+  it('has more than one enabled clusters with "custom" in name', () => {
+    cy.wrap(filterData('custom')).its('length').should('be.gt', 1);
+  });
+  it('has one enabled clusters with "foobar" in name', () => {
+    cy.wrap(filterData('foobar')).its('length').should('be.eq', 1);
+  });
+  it('has none enabled clusters with "Not existing cluster" in name', () => {
+    cy.wrap(filterData('Not existing cluster'))
+      .its('length')
+      .should('be.eq', 0);
   });
 });
 
@@ -116,12 +128,30 @@ describe('non-empty successful affected clusters table', () => {
     });
   });
 
-  it('can add name filter', () => {
-    cy.get(AFFECTED_LIST_TABLE).find('#name-filter').type('ff');
-    // renders filter chips
-    cy.get(TOOLBAR_CONTENT).find('.ins-c-chip-filters');
-    // three matched clusters rendered
-    cy.countRows(2);
+  // outer loop required to clean up filter bar
+  SEARCH_ITEMS.forEach((el) => {
+    it(`can add name filter (${el})`, () => {
+      cy.get(AFFECTED_LIST_TABLE).find('#name-filter').type(el);
+      // renders filter chips
+      cy.get(TOOLBAR_CONTENT)
+        .find('.ins-c-chip-filters')
+        .should('contain', 'Name')
+        .and('contain', el);
+      // check matched clusters
+      cy.wrap(filterData(el)).then((data) => {
+        if (data.length === 0) {
+          cy.get(AFFECTED_LIST_TABLE)
+            .find('.pf-c-empty-state')
+            .should('contain', 'No matching clusters found')
+            .and(
+              'contain',
+              'To continue, edit your filter settings and search again.'
+            );
+        } else {
+          cy.countRows(Math.min(DEFAULT_ROW_COUNT, data.length));
+        }
+      });
+    });
   });
 
   it('display name is rendered instead of cluster uuid', () => {
@@ -138,7 +168,10 @@ describe('non-empty successful affected clusters table', () => {
 
   it('can select/deselect all', () => {
     cy.get(AFFECTED_LIST_TABLE).find(TOOLBAR).find('#toggle-checkbox').click();
-    cy.getToggleCheckboxText().should('have.text', '23 selected');
+    cy.getToggleCheckboxText().should(
+      'have.text',
+      `${filterData().length} selected`
+    );
     cy.get(AFFECTED_LIST_TABLE)
       .find(TOOLBAR)
       .find('.pf-c-dropdown__toggle')
