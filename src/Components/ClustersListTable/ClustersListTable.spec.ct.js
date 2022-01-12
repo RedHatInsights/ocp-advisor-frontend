@@ -172,3 +172,33 @@ describe('clusters list table', () => {
     cy.getLastRow().find('span').should('have.text', 'N/A');
   });
 });
+
+describe('cluster list Empty state rendering', () => {
+  beforeEach(() => {
+    mount(
+      <MemoryRouter initialEntries={['/clusters']} initialIndex={0}>
+        <Intl>
+          <Provider store={getStore()}>
+            <ClustersListTable
+              query={{
+                isError: false,
+                isFetching: false,
+                isUninitialized: false,
+                isSuccess: true,
+                data: [],
+              }}
+            />
+          </Provider>
+        </Intl>
+      </MemoryRouter>
+    );
+  });
+
+  it('renders table', () => {
+    cy.get('div[id=clusters-list-table]').should('have.length', 1);
+  });
+
+  it('renders the Empty State component', () => {
+    cy.get('div[class=pf-c-empty-state]').should('have.length', 1);
+  });
+});
