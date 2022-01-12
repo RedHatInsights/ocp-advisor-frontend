@@ -547,4 +547,14 @@ export default defineMessages({
     description: 'Action, Bulk select all items in a table with number',
     defaultMessage: 'Select all ({items} items)',
   },
+  noRecsForClusterListTitle: {
+    id: 'NoRecsForClusters',
+    description: 'Cluster List Page received 0 clusters',
+    defaultMessage: 'No recommendations',
+  },
+  noRecsForClusterListBody: {
+    id: 'NoRecsForClusters',
+    description: 'Cluster List Page received 0 clusters',
+    defaultMessage: 'No known recommendations affect this cluster',
+  },
 });

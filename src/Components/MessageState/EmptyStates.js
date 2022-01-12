@@ -12,6 +12,7 @@ import {
 import { Button } from '@patternfly/react-core/dist/js/components/Button';
 import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import CheckCircleIcon from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
+import CheckIcon from '@patternfly/react-icons/dist/js/icons/check-icon';
 import { global_success_color_100 as globalSuccessColor100 } from '@patternfly/react-tokens/dist/js/global_success_color_100';
 import { global_danger_color_100 as globalDangerColor100 } from '@patternfly/react-tokens/dist/js/global_danger_color_100';
 import { InProgressIcon } from '@patternfly/react-icons/dist/esm/icons/in-progress-icon';
@@ -110,10 +111,26 @@ const ComingSoon = () => {
   );
 };
 
+const NoRecsForClusters = () => {
+  const intl = useIntl();
+  return (
+    <EmptyState variant="small" id="coming-soon-message">
+      <EmptyStateIcon icon={CheckIcon} color="#1E4F18" />
+      <Title headingLevel="h2" size="2xl">
+        {intl.formatMessage(messages.noRecsForClusterListTitle)}
+      </Title>
+      <EmptyStateBody>
+        {intl.formatMessage(messages.noRecsForClusterListBody)}
+      </EmptyStateBody>
+    </EmptyState>
+  );
+};
+
 export {
   ErrorState,
   NoAffectedClusters,
   NoMatchingClusters,
   NoMatchingRecs,
   ComingSoon,
+  NoRecsForClusters,
 };

@@ -34,7 +34,11 @@ import {
 } from '../Common/Tables';
 import Loading from '../Loading/Loading';
 import messages from '../../Messages';
-import { ErrorState, NoMatchingClusters } from '../MessageState/EmptyStates';
+import {
+  ErrorState,
+  NoMatchingClusters,
+  NoRecsForClusters,
+} from '../MessageState/EmptyStates';
 
 const ClustersListTable = ({
   query: { isError, isUninitialized, isFetching, isSuccess, data },
@@ -216,12 +220,21 @@ const ClustersListTable = ({
             <TableHeader />
             <TableBody />
           </Table>
-          {clusters.length >= 0 && filteredRows.length === 0 && (
+          {clusters.length === 0 ? (
             <Card ouiaId="empty-state">
               <CardBody>
-                <NoMatchingClusters />
+                <NoRecsForClusters />
               </CardBody>
             </Card>
+          ) : (
+            clusters.length > 0 &&
+            filteredRows.length === 0 && (
+              <Card ouiaId="empty-state">
+                <CardBody>
+                  <NoMatchingClusters />
+                </CardBody>
+              </Card>
+            )
           )}
         </React.Fragment>
       )}
