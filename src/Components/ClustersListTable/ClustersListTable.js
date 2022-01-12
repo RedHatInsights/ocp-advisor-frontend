@@ -216,7 +216,7 @@ const ClustersListTable = ({
             <TableHeader />
             <TableBody />
           </Table>
-          {clusters.length > 0 && filteredRows.length === 0 && (
+          {clusters.length >= 0 && filteredRows.length === 0 && (
             <Card ouiaId="empty-state">
               <CardBody>
                 <NoMatchingClusters />
