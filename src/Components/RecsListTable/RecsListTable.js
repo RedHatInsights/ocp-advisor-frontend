@@ -104,7 +104,7 @@ const RecsListTable = ({ query }) => {
                     {' '}
                     {value?.description || value?.rule_id}{' '}
                   </Link>
-                  <RuleLabels rule={value} isCompact="true" />
+                  <RuleLabels rule={value} />
                 </span>
               ),
             },

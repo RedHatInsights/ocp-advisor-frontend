@@ -27,14 +27,14 @@ const CategoryLabel = ({ tags }) => {
   const intl = useIntl();
 
   return (
-    <LabelGroup numLabels={4}>
+    <LabelGroup numLabels={1} isCompact>
       {extractCategories(tags).map((tag, key) => (
         <Label
           key={key}
           icon={CATEGORY_ICONS[tag]}
           variant="outline"
           color="blue"
-          isCompact="true"
+          isCompact
         >
           {intl.formatMessage(messages[camelCase(tag)])}
         </Label>
