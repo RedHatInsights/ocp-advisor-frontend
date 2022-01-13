@@ -7,6 +7,7 @@ import { AffectedClustersTable } from './AffectedClustersTable';
 import props from '../../../cypress/fixtures/AffectedClustersTable/data.json';
 import { Intl } from '../../Utilities/intlHelper';
 import getStore from '../../Store';
+import { array } from 'prop-types';
 
 // selectors
 const AFFECTED_LIST_TABLE = 'div[id=affected-list-table]';
@@ -36,6 +37,20 @@ function filterData(text = '') {
   return Cypress._.filter(props['enabled'], (it) =>
     (it?.cluster_name || it.cluster).toLowerCase().includes(text.toLowerCase())
   );
+}
+
+// FIXME improve syntax
+// FIXME move to utils module
+function itemsPerPage() {
+  let items = filterData().length;
+  const array = new Array();
+  while (items > 0) {
+    const remain = items - DEFAULT_ROW_COUNT;
+    let v = remain > 0 ? DEFAULT_ROW_COUNT : items;
+    array.push(v);
+    items = remain;
+  }
+  return array;
 }
 
 describe('test data', () => {
@@ -154,6 +169,13 @@ describe('non-empty successful affected clusters table', () => {
     });
   });
 
+  it('can clear filters', () => {
+    cy.get(AFFECTED_LIST_TABLE).find('#name-filter').type('custom');
+    cy.get(TOOLBAR).find('button').contains('Clear filters').click();
+    cy.get(TOOLBAR_CONTENT).find('.ins-c-chip-filters').should('not.exist');
+    cy.countRows(Math.min(DEFAULT_ROW_COUNT, filterData().length));
+  });
+
   it('display name is rendered instead of cluster uuid', () => {
     cy.get(AFFECTED_LIST_TABLE)
       .find(ROW_GROUP)
@@ -217,6 +239,22 @@ describe('non-empty successful affected clusters table', () => {
     cy.get('.pf-c-modal-box')
       .find('.pf-c-check label')
       .should('have.text', 'Disable only for this cluster');
+  });
+
+  it('can iterate over pages', () => {
+    cy.wrap(itemsPerPage()).each((el, index, list) => {
+      cy.countRows(el);
+      cy.get('.ins-c-primary-toolbar__pagination')
+        .find('div[data-ouia-component-type="PF4/Pagination"]')
+        .find('button[data-action="next"]')
+        .then(($button) => {
+          if (index === list.length - 1) {
+            cy.wrap($button).should('be.disabled');
+          } else {
+            cy.wrap($button).click();
+          }
+        });
+    });
   });
 });
 
