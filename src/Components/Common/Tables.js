@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import cloneDeep from 'lodash/cloneDeep';
 
@@ -202,3 +202,17 @@ export const translateSortParams = (value) => ({
   sortValue: value.substring(value.startsWith('-') ? 1 : 0),
   sortDirection: value.startsWith('-') ? 'desc' : 'asc',
 });
+
+export const debounce = (value, delay) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [delay, value]);
+
+  return debouncedValue;
+};

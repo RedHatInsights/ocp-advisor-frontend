@@ -253,3 +253,4 @@ export const RECS_LIST_COLUMNS_KEYS = [
   'total_risk',
   'impacted_clusters_count',
 ];
+export const DEBOUNCE_DELAY = 600;
