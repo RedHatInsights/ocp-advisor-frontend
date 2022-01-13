@@ -45,24 +45,85 @@ Cypress.Commands.add('sortByCol', (colIndex) => {
     .find('span[class=pf-c-table__sort-indicator]')
     .click({ force: true });
 });
+const getChipGroup = (label) =>
+  cy.contains('.pf-c-chip-group__label', label).parent();
+
+before(() => {
+  cy.intercept('*', (req) => {
+    req.destroy();
+  });
+  // tables utilizes federated module and throws error when RHEL Advisor manifestaion not found
+  window['__scalprum__'] = {
+    apps: {},
+    appsMetaData: {
+      advisor: {
+        manifestLocation:
+          'https://qa.console.redhat.com/beta/apps/advisor/fed-mods.json',
+        module: 'advisor#./RootApp',
+        name: 'advisor',
+      },
+    },
+  };
+});
+
+describe('pre-filled url search parameters', () => {
+  beforeEach(() => {
+    mount(
+      <MemoryRouter
+        initialEntries={[
+          '/recommendations?text=123|FOO_BAR&total_risk=4,3&impact=1,2&likelihood=1&category=1,2&rule_status=disabled&impacting=false',
+        ]}
+        initialIndex={0}
+      >
+        <Intl>
+          <Provider store={getStore()}>
+            <RecsListTable
+              query={{
+                isError: false,
+                isFetching: false,
+                isUninitialized: false,
+                isSuccess: true,
+                data: props,
+              }}
+            />
+          </Provider>
+        </Intl>
+      </MemoryRouter>
+    );
+  });
+
+  // TODO: use Messages.js to match labels and names
+  it('recognizes text parameter', () => {
+    // text input contains the value
+    getChipGroup('Name').contains('.pf-c-chip', '123|FOO_BAR');
+    // text filter chip is present
+    cy.get('.pf-m-fill > .pf-c-form-control').should(
+      'have.value',
+      '123|FOO_BAR'
+    );
+  });
+
+  it('recognizes multiselect parameters', () => {
+    getChipGroup('Total risk').contains('.pf-c-chip', 'Critical');
+    getChipGroup('Impact').contains('.pf-c-chip', 'Low');
+    getChipGroup('Total risk').contains('.pf-c-chip', 'Important');
+    getChipGroup('Impact').contains('.pf-c-chip', 'Medium');
+    getChipGroup('Likelihood').contains('.pf-c-chip', 'Low');
+    getChipGroup('Category').contains('.pf-c-chip', 'Service Availability');
+    getChipGroup('Category').contains('.pf-c-chip', 'Performance');
+  });
+
+  it('recognizes rule status parameter', () => {
+    getChipGroup('Status').contains('.pf-c-chip', 'Disabled');
+  });
+
+  it('recognizes impacting parameter ', () => {
+    getChipGroup('Clusters impacted').contains('.pf-c-chip', 'None');
+  });
+});
 
 describe('successful non-empty recommendations list table', () => {
   beforeEach(() => {
-    cy.intercept('*', (req) => {
-      req.destroy();
-    });
-    // tables utilizes federated module and throws error when RHEL Advisor manifestaion not found
-    window['__scalprum__'] = {
-      apps: {},
-      appsMetaData: {
-        advisor: {
-          manifestLocation:
-            'https://qa.console.redhat.com/beta/apps/advisor/fed-mods.json',
-          module: 'advisor#./RootApp',
-          name: 'advisor',
-        },
-      },
-    };
     mount(
       <MemoryRouter initialEntries={['/recommendations']} initialIndex={0}>
         <Intl>
@@ -315,21 +376,6 @@ describe('successful non-empty recommendations list table', () => {
 
 describe('empty recommendations list table', () => {
   beforeEach(() => {
-    cy.intercept('*', (req) => {
-      req.destroy();
-    });
-    // tables utilizes federated module and throws error when RHEL Advisor manifestaion not found
-    window['__scalprum__'] = {
-      apps: {},
-      appsMetaData: {
-        advisor: {
-          manifestLocation:
-            'https://qa.console.redhat.com/beta/apps/advisor/fed-mods.json',
-          module: 'advisor#./RootApp',
-          name: 'advisor',
-        },
-      },
-    };
     mount(
       <MemoryRouter initialEntries={['/recommendations']} initialIndex={0}>
         <Intl>
