@@ -130,8 +130,7 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
     }));
     return rows
       .filter((row) => {
-        // further filters conditions will be added soon
-        return row?.cells[0].includes(filters.text);
+        return row?.cells[0].toLowerCase().includes(filters.text.toLowerCase());
       })
       .sort((a, b) => {
         if (filters.sortDirection === 'asc') {
