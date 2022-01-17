@@ -7,7 +7,6 @@ import { AffectedClustersTable } from './AffectedClustersTable';
 import props from '../../../cypress/fixtures/AffectedClustersTable/data.json';
 import { Intl } from '../../Utilities/intlHelper';
 import getStore from '../../Store';
-import { array } from 'prop-types';
 
 // selectors
 const AFFECTED_LIST_TABLE = 'div[id=affected-list-table]';
