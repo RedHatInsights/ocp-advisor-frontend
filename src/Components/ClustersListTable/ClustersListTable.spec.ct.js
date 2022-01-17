@@ -194,11 +194,22 @@ describe('cluster list Empty state rendering', () => {
     );
   });
 
-  it('renders table', () => {
-    cy.get('div[id=clusters-list-table]').should('have.length', 1);
-  });
-
   it('renders the Empty State component', () => {
-    cy.get('div[class=pf-c-empty-state]').should('have.length', 1);
+    cy.get('div[class=pf-c-empty-state__content]')
+      .should('have.length', 1)
+      .find('h2')
+      .should('have.text', 'No clusters yet');
+    cy.get('div[class=pf-c-empty-state__body]').should(
+      'have.text',
+      'To get started, create or register your cluster to get recommendations from Insights Advisor.'
+    );
+    cy.get('div[class=pf-c-empty-state__content]')
+      .children()
+      .eq(3)
+      .should('have.text', 'Create cluster');
+    cy.get('div[class=pf-c-empty-state__content]')
+      .children()
+      .eq(4)
+      .should('have.text', 'Register clusterAssisted Installer clusters');
   });
 });

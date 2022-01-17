@@ -175,87 +175,88 @@ const ClustersListTable = ({
   };
 
   return (
-    <div id="clusters-list-table">
-      <PrimaryToolbar
-        pagination={{
-          itemCount: filteredRows.length,
-          page,
-          perPage: filters.limit,
-          onSetPage: (_event, page) =>
-            updateFilters({
-              ...filters,
-              offset: filters.limit * (page - 1),
-            }),
-          onPerPageSelect: (_event, perPage) =>
-            updateFilters({ ...filters, limit: perPage, offset: 0 }),
-          isCompact: true,
-          ouiaId: 'pager',
-        }}
-        filterConfig={{ items: filterConfigItems }}
-        activeFiltersConfig={activeFiltersConfig}
-      />
-      {(isUninitialized || isFetching) && <Loading />}
-      {isError && (
-        <Card ouiaId="error-state">
+    <>
+      {clusters.length === 0 ? (
+        <Card ouiaId="empty-state">
           <CardBody>
-            <ErrorState />
+            <NoRecsForClusters />
           </CardBody>
         </Card>
-      )}
-      {!(isUninitialized || isFetching) && isSuccess && (
-        <React.Fragment>
-          <Table
-            aria-label="Table of clusters"
-            ouiaId="clusters"
-            variant={TableVariant.compact}
-            cells={CLUSTERS_LIST_COLUMNS}
-            rows={displayedRows}
-            sortBy={{
-              index: filters.sortIndex,
-              direction: filters.sortDirection,
+      ) : (
+        <div id="clusters-list-table">
+          <PrimaryToolbar
+            pagination={{
+              itemCount: filteredRows.length,
+              page,
+              perPage: filters.limit,
+              onSetPage: (_event, page) =>
+                updateFilters({
+                  ...filters,
+                  offset: filters.limit * (page - 1),
+                }),
+              onPerPageSelect: (_event, perPage) =>
+                updateFilters({ ...filters, limit: perPage, offset: 0 }),
+              isCompact: true,
+              ouiaId: 'pager',
             }}
-            onSort={onSort}
-            isStickyHeader
-          >
-            <TableHeader />
-            <TableBody />
-          </Table>
-          {clusters.length === 0 ? (
-            <Card ouiaId="empty-state">
+            filterConfig={{ items: filterConfigItems }}
+            activeFiltersConfig={activeFiltersConfig}
+          />
+          {(isUninitialized || isFetching) && <Loading />}
+          {isError && (
+            <Card ouiaId="error-state">
               <CardBody>
-                <NoRecsForClusters />
+                <ErrorState />
               </CardBody>
             </Card>
-          ) : (
-            clusters.length > 0 &&
-            filteredRows.length === 0 && (
-              <Card ouiaId="empty-state">
-                <CardBody>
-                  <NoMatchingClusters />
-                </CardBody>
-              </Card>
-            )
           )}
-        </React.Fragment>
+          {!(isUninitialized || isFetching) && isSuccess && (
+            <React.Fragment>
+              <Table
+                aria-label="Table of clusters"
+                ouiaId="clusters"
+                variant={TableVariant.compact}
+                cells={CLUSTERS_LIST_COLUMNS}
+                rows={displayedRows}
+                sortBy={{
+                  index: filters.sortIndex,
+                  direction: filters.sortDirection,
+                }}
+                onSort={onSort}
+                isStickyHeader
+              >
+                <TableHeader />
+                <TableBody />
+              </Table>
+              {clusters.length > 0 && filteredRows.length === 0 && (
+                <Card ouiaId="empty-state">
+                  <CardBody>
+                    <NoMatchingClusters />
+                  </CardBody>
+                </Card>
+              )}
+            </React.Fragment>
+          )}
+          <Pagination
+            ouiaId="pager"
+            itemCount={filteredRows.length}
+            page={filters.offset / filters.limit + 1}
+            perPage={Number(filters.limit)}
+            onSetPage={(_e, page) =>
+              updateFilters({
+                ...filters,
+                offset: filters.limit * (page - 1),
+              })
+            }
+            onPerPageSelect={(_e, perPage) =>
+              updateFilters({ ...filters, limit: perPage, offset: 0 })
+            }
+            widgetId={`pagination-options-menu-bottom`}
+            variant={PaginationVariant.bottom}
+          />
+        </div>
       )}
-      <Pagination
-        ouiaId="pager"
-        itemCount={filteredRows.length}
-        page={filters.offset / filters.limit + 1}
-        perPage={Number(filters.limit)}
-        onSetPage={(_e, page) =>
-          updateFilters({
-            ...filters,
-            offset: filters.limit * (page - 1),
-          })
-        }
-        onPerPageSelect={(_e, perPage) =>
-          updateFilters({ ...filters, limit: perPage, offset: 0 })
-        }
-        widgetId={`pagination-options-menu-bottom`}
-        variant={PaginationVariant.bottom}
-      />
-    </div>
+    </>
   );
 };
 

@@ -548,13 +548,14 @@ export default defineMessages({
     defaultMessage: 'Select all ({items} items)',
   },
   noRecsForClusterListTitle: {
-    id: 'NoRecsForClusters',
+    id: 'noRecsForClusterListTitle',
     description: 'Cluster List Page received 0 clusters',
-    defaultMessage: 'No recommendations',
+    defaultMessage: 'No clusters yet',
   },
   noRecsForClusterListBody: {
-    id: 'NoRecsForClusters',
+    id: 'noRecsForClusterListBody',
     description: 'Cluster List Page received 0 clusters',
-    defaultMessage: 'No known recommendations affect this cluster',
+    defaultMessage:
+      'To get started, create or register your cluster to get recommendations from Insights Advisor.',
   },
 });
