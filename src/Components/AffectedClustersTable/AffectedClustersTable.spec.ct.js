@@ -42,7 +42,7 @@ function filterData(text = '') {
 // FIXME move to utils module
 function itemsPerPage() {
   let items = filterData().length;
-  const array = new Array();
+  const array = [];
   while (items > 0) {
     const remain = items - DEFAULT_ROW_COUNT;
     let v = remain > 0 ? DEFAULT_ROW_COUNT : items;
