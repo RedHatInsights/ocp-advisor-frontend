@@ -11,6 +11,8 @@ import {
   TableVariant,
 } from '@patternfly/react-table';
 import { Card, CardBody } from '@patternfly/react-core/dist/js/components/Card';
+import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
+import { Spinner } from '@patternfly/react-core/dist/js/components/Spinner';
 import {
   Pagination,
   PaginationVariant,
@@ -176,7 +178,11 @@ const ClustersListTable = ({
 
   return (
     <>
-      {clusters.length === 0 ? (
+      {isUninitialized || isFetching ? (
+        <Bullseye>
+          <Spinner />
+        </Bullseye>
+      ) : clusters.length === 0 ? (
         <NoRecsForClusters />
       ) : (
         <div id="clusters-list-table">
