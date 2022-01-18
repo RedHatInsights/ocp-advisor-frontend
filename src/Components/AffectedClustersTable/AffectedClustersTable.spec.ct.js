@@ -2,7 +2,7 @@ import React from 'react';
 import { mount } from '@cypress/react';
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { filter } from 'lodash';
+import filter from 'lodash/filter';
 
 import { AffectedClustersTable } from './AffectedClustersTable';
 import data from '../../../cypress/fixtures/AffectedClustersTable/data.json';
