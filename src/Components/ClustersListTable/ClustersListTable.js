@@ -177,11 +177,7 @@ const ClustersListTable = ({
   return (
     <>
       {clusters.length === 0 ? (
-        <Card ouiaId="empty-state">
-          <CardBody>
-            <NoRecsForClusters />
-          </CardBody>
-        </Card>
+        <NoRecsForClusters />
       ) : (
         <div id="clusters-list-table">
           <PrimaryToolbar
@@ -228,7 +224,7 @@ const ClustersListTable = ({
                 <TableHeader />
                 <TableBody />
               </Table>
-              {clusters.length > 0 && filteredRows.length === 0 && (
+              {filteredRows.length === 0 && (
                 <Card ouiaId="empty-state">
                   <CardBody>
                     <NoMatchingClusters />

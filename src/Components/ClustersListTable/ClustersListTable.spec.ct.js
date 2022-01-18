@@ -207,9 +207,13 @@ describe('cluster list Empty state rendering', () => {
       .children()
       .eq(3)
       .should('have.text', 'Create cluster');
-    cy.get('div[class=pf-c-empty-state__content]')
+    cy.get('div[class=pf-c-empty-state__secondary]')
       .children()
-      .eq(4)
-      .should('have.text', 'Register clusterAssisted Installer clusters');
+      .eq(0)
+      .should('have.text', 'Register cluster');
+    cy.get('div[class=pf-c-empty-state__secondary]')
+      .children()
+      .eq(1)
+      .should('have.text', 'Assisted Installer clusters');
   });
 });
