@@ -2,14 +2,15 @@ import React from 'react';
 import { mount } from '@cypress/react';
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
+import { filter } from 'lodash';
 
 import { AffectedClustersTable } from './AffectedClustersTable';
-import props from '../../../cypress/fixtures/AffectedClustersTable/data.json';
+import data from '../../../cypress/fixtures/AffectedClustersTable/data.json';
 import { Intl } from '../../Utilities/intlHelper';
 import getStore from '../../Store';
 
 // selectors
-const AFFECTED_LIST_TABLE = 'div[id=affected-list-table]';
+const TABLE = 'div[id=affected-list-table]';
 const ROW_GROUP = 'tbody[role=rowgroup]';
 const PAGINATION_MENU =
   'div[data-ouia-component-type="PF4/PaginationOptionsMenu"]';
@@ -22,18 +23,15 @@ const SEARCH_ITEMS = ['ff', 'CUSTOM', 'Foobar', 'Not existing cluster'];
 
 // actions
 Cypress.Commands.add('countRows', (count) => {
-  cy.get(AFFECTED_LIST_TABLE)
-    .find(ROW_GROUP)
-    .children()
-    .should('have.length', count);
+  cy.get(TABLE).find(ROW_GROUP).children().should('have.length', count);
 });
 Cypress.Commands.add('getToggleCheckboxText', () =>
-  cy.get(AFFECTED_LIST_TABLE).find(TOOLBAR).find('#toggle-checkbox-text')
+  cy.get(TABLE).find(TOOLBAR).find('#toggle-checkbox-text')
 );
 
 function filterData(text = '') {
   // FIXME: is this the right way to use loadash?
-  return Cypress._.filter(props['enabled'], (it) =>
+  return filter(data['enabled'], (it) =>
     (it?.cluster_name || it.cluster).toLowerCase().includes(text.toLowerCase())
   );
 }
@@ -54,14 +52,14 @@ function itemsPerPage() {
 
 describe('test data', () => {
   it('has enabled clusters', () => {
-    cy.wrap(props['enabled']).its('length').should('be.gte', 1);
+    cy.wrap(data['enabled']).its('length').should('be.gte', 1);
   });
   it('has more enabled clusters than default rows', () => {
-    cy.wrap(props['enabled']).its('length').should('be.gt', DEFAULT_ROW_COUNT);
+    cy.wrap(data['enabled']).its('length').should('be.gt', DEFAULT_ROW_COUNT);
   });
   it('has less data than 51', () => {
     // 50 is the value [2] in pagination
-    cy.wrap(props['enabled']).its('length').should('be.lte', 50);
+    cy.wrap(data['enabled']).its('length').should('be.lte', 50);
   });
   it('has more than one enabled clusters with "custom" in name', () => {
     cy.wrap(filterData('custom')).its('length').should('be.gt', 1);
@@ -88,7 +86,7 @@ describe('non-empty successful affected clusters table', () => {
                 isFetching: false,
                 isUninitialized: false,
                 isSuccess: true,
-                data: props,
+                data: data,
               }}
               rule={{}}
               afterDisableFn={() => undefined}
@@ -100,7 +98,7 @@ describe('non-empty successful affected clusters table', () => {
   });
 
   it('renders table', () => {
-    cy.get(AFFECTED_LIST_TABLE).should('have.length', 1);
+    cy.get(TABLE).should('have.length', 1);
   });
 
   it('shows first twenty clusters', () => {
@@ -145,7 +143,7 @@ describe('non-empty successful affected clusters table', () => {
   // outer loop required to clean up filter bar
   SEARCH_ITEMS.forEach((el) => {
     it(`can add name filter (${el})`, () => {
-      cy.get(AFFECTED_LIST_TABLE).find('#name-filter').type(el);
+      cy.get(TABLE).find('#name-filter').type(el);
       // renders filter chips
       cy.get(TOOLBAR_CONTENT)
         .find('.ins-c-chip-filters')
@@ -154,7 +152,7 @@ describe('non-empty successful affected clusters table', () => {
       // check matched clusters
       cy.wrap(filterData(el)).then((data) => {
         if (data.length === 0) {
-          cy.get(AFFECTED_LIST_TABLE)
+          cy.get(TABLE)
             .find('.pf-c-empty-state')
             .should('contain', 'No matching clusters found')
             .and(
@@ -169,14 +167,14 @@ describe('non-empty successful affected clusters table', () => {
   });
 
   it('can clear filters', () => {
-    cy.get(AFFECTED_LIST_TABLE).find('#name-filter').type('custom');
+    cy.get(TABLE).find('#name-filter').type('custom');
     cy.get(TOOLBAR).find('button').contains('Clear filters').click();
     cy.get(TOOLBAR_CONTENT).find('.ins-c-chip-filters').should('not.exist');
     cy.countRows(Math.min(DEFAULT_ROW_COUNT, filterData().length));
   });
 
   it('display name is rendered instead of cluster uuid', () => {
-    cy.get(AFFECTED_LIST_TABLE)
+    cy.get(TABLE)
       .find(ROW_GROUP)
       .contains('custom cluster name 2')
       .should('have.attr', 'href')
@@ -184,21 +182,21 @@ describe('non-empty successful affected clusters table', () => {
   });
 
   it('renders table header', () => {
-    cy.get(AFFECTED_LIST_TABLE).find('th').should('have.text', 'Name');
+    cy.get(TABLE).find('th').should('have.text', 'Name');
   });
 
   it('can select/deselect all', () => {
-    cy.get(AFFECTED_LIST_TABLE).find(TOOLBAR).find('#toggle-checkbox').click();
+    cy.get(TABLE).find(TOOLBAR).find('#toggle-checkbox').click();
     cy.getToggleCheckboxText().should(
       'have.text',
       `${filterData().length} selected`
     );
-    cy.get(AFFECTED_LIST_TABLE)
+    cy.get(TABLE)
       .find(TOOLBAR)
       .find('.pf-c-dropdown__toggle')
       .find('button')
       .click();
-    cy.get(AFFECTED_LIST_TABLE)
+    cy.get(TABLE)
       .find(TOOLBAR)
       .find('ul[class=pf-c-dropdown__menu]')
       .find('li')
@@ -208,11 +206,8 @@ describe('non-empty successful affected clusters table', () => {
   });
 
   it('can disable selected clusters', () => {
-    cy.get(AFFECTED_LIST_TABLE).find(TOOLBAR).find('#toggle-checkbox').click();
-    cy.get(AFFECTED_LIST_TABLE)
-      .find(TOOLBAR)
-      .find('button[aria-label=Actions]')
-      .click();
+    cy.get(TABLE).find(TOOLBAR).find('#toggle-checkbox').click();
+    cy.get(TABLE).find(TOOLBAR).find('button[aria-label=Actions]').click();
     cy.get('.pf-c-dropdown__menu')
       .find('li')
       .find('button')
@@ -223,13 +218,13 @@ describe('non-empty successful affected clusters table', () => {
   });
 
   it('can disable one cluster', () => {
-    cy.get(AFFECTED_LIST_TABLE)
+    cy.get(TABLE)
       .find(ROW_GROUP)
       .children()
       .eq(0)
       .find('.pf-c-table__action button')
       .click({ force: true });
-    cy.get(AFFECTED_LIST_TABLE)
+    cy.get(TABLE)
       .find(ROW_GROUP)
       .children()
       .eq(0)
@@ -279,7 +274,7 @@ describe('empty successful affected clusters table', () => {
   });
 
   it('cannot add filters to empty table', () => {
-    cy.get(AFFECTED_LIST_TABLE).find('#name-filter').type('foobar');
+    cy.get(TABLE).find('#name-filter').type('foobar');
     cy.get(TOOLBAR_CONTENT).find('.ins-c-chip-filters').should('not.exist');
   });
 
@@ -290,7 +285,7 @@ describe('empty successful affected clusters table', () => {
   });
 
   it('renders table header', () => {
-    cy.get(AFFECTED_LIST_TABLE).find('th').should('have.text', 'Name');
+    cy.get(TABLE).find('th').should('have.text', 'Name');
   });
 });
 
@@ -316,7 +311,7 @@ describe('empty failed affected clusters table', () => {
   });
 
   it('cannot add filters to empty table', () => {
-    cy.get(AFFECTED_LIST_TABLE).find('#name-filter').type('foobar');
+    cy.get(TABLE).find('#name-filter').type('foobar');
     cy.get(TOOLBAR_CONTENT).find('.ins-c-chip-filters').should('not.exist');
   });
 
@@ -327,6 +322,6 @@ describe('empty failed affected clusters table', () => {
   });
 
   it('renders table header', () => {
-    cy.get(AFFECTED_LIST_TABLE).find('th').should('have.text', 'Name');
+    cy.get(TABLE).find('th').should('have.text', 'Name');
   });
 });
