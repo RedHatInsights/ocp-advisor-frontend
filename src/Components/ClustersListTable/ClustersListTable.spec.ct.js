@@ -172,3 +172,48 @@ describe('clusters list table', () => {
     cy.getLastRow().find('span').should('have.text', 'N/A');
   });
 });
+
+describe('cluster list Empty state rendering', () => {
+  beforeEach(() => {
+    mount(
+      <MemoryRouter initialEntries={['/clusters']} initialIndex={0}>
+        <Intl>
+          <Provider store={getStore()}>
+            <ClustersListTable
+              query={{
+                isError: false,
+                isFetching: false,
+                isUninitialized: false,
+                isSuccess: true,
+                data: [],
+              }}
+            />
+          </Provider>
+        </Intl>
+      </MemoryRouter>
+    );
+  });
+
+  it('renders the Empty State component', () => {
+    cy.get('div[class=pf-c-empty-state__content]')
+      .should('have.length', 1)
+      .find('h2')
+      .should('have.text', 'No clusters yet');
+    cy.get('div[class=pf-c-empty-state__body]').should(
+      'have.text',
+      'To get started, create or register your cluster to get recommendations from Insights Advisor.'
+    );
+    cy.get('div[class=pf-c-empty-state__content]')
+      .children()
+      .eq(3)
+      .should('have.text', 'Create cluster');
+    cy.get('div[class=pf-c-empty-state__secondary]')
+      .children()
+      .eq(0)
+      .should('have.text', 'Register cluster');
+    cy.get('div[class=pf-c-empty-state__secondary]')
+      .children()
+      .eq(1)
+      .should('have.text', 'Assisted Installer clusters');
+  });
+});

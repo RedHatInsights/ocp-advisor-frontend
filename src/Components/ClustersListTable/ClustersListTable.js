@@ -11,6 +11,8 @@ import {
   TableVariant,
 } from '@patternfly/react-table';
 import { Card, CardBody } from '@patternfly/react-core/dist/js/components/Card';
+import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
+import { Spinner } from '@patternfly/react-core/dist/js/components/Spinner';
 import {
   Pagination,
   PaginationVariant,
@@ -34,7 +36,11 @@ import {
 } from '../Common/Tables';
 import Loading from '../Loading/Loading';
 import messages from '../../Messages';
-import { ErrorState, NoMatchingClusters } from '../MessageState/EmptyStates';
+import {
+  ErrorState,
+  NoMatchingClusters,
+  NoRecsForClusters,
+} from '../MessageState/EmptyStates';
 
 const ClustersListTable = ({
   query: { isError, isUninitialized, isFetching, isSuccess, data },
@@ -171,78 +177,88 @@ const ClustersListTable = ({
   };
 
   return (
-    <div id="clusters-list-table">
-      <PrimaryToolbar
-        pagination={{
-          itemCount: filteredRows.length,
-          page,
-          perPage: filters.limit,
-          onSetPage: (_event, page) =>
-            updateFilters({
-              ...filters,
-              offset: filters.limit * (page - 1),
-            }),
-          onPerPageSelect: (_event, perPage) =>
-            updateFilters({ ...filters, limit: perPage, offset: 0 }),
-          isCompact: true,
-          ouiaId: 'pager',
-        }}
-        filterConfig={{ items: filterConfigItems }}
-        activeFiltersConfig={activeFiltersConfig}
-      />
-      {(isUninitialized || isFetching) && <Loading />}
-      {isError && (
-        <Card ouiaId="error-state">
-          <CardBody>
-            <ErrorState />
-          </CardBody>
-        </Card>
-      )}
-      {!(isUninitialized || isFetching) && isSuccess && (
-        <React.Fragment>
-          <Table
-            aria-label="Table of clusters"
-            ouiaId="clusters"
-            variant={TableVariant.compact}
-            cells={CLUSTERS_LIST_COLUMNS}
-            rows={displayedRows}
-            sortBy={{
-              index: filters.sortIndex,
-              direction: filters.sortDirection,
+    <>
+      {isUninitialized || isFetching ? (
+        <Bullseye>
+          <Spinner />
+        </Bullseye>
+      ) : clusters.length === 0 ? (
+        <NoRecsForClusters />
+      ) : (
+        <div id="clusters-list-table">
+          <PrimaryToolbar
+            pagination={{
+              itemCount: filteredRows.length,
+              page,
+              perPage: filters.limit,
+              onSetPage: (_event, page) =>
+                updateFilters({
+                  ...filters,
+                  offset: filters.limit * (page - 1),
+                }),
+              onPerPageSelect: (_event, perPage) =>
+                updateFilters({ ...filters, limit: perPage, offset: 0 }),
+              isCompact: true,
+              ouiaId: 'pager',
             }}
-            onSort={onSort}
-            isStickyHeader
-          >
-            <TableHeader />
-            <TableBody />
-          </Table>
-          {clusters.length > 0 && filteredRows.length === 0 && (
-            <Card ouiaId="empty-state">
+            filterConfig={{ items: filterConfigItems }}
+            activeFiltersConfig={activeFiltersConfig}
+          />
+          {(isUninitialized || isFetching) && <Loading />}
+          {isError && (
+            <Card ouiaId="error-state">
               <CardBody>
-                <NoMatchingClusters />
+                <ErrorState />
               </CardBody>
             </Card>
           )}
-        </React.Fragment>
+          {!(isUninitialized || isFetching) && isSuccess && (
+            <React.Fragment>
+              <Table
+                aria-label="Table of clusters"
+                ouiaId="clusters"
+                variant={TableVariant.compact}
+                cells={CLUSTERS_LIST_COLUMNS}
+                rows={displayedRows}
+                sortBy={{
+                  index: filters.sortIndex,
+                  direction: filters.sortDirection,
+                }}
+                onSort={onSort}
+                isStickyHeader
+              >
+                <TableHeader />
+                <TableBody />
+              </Table>
+              {filteredRows.length === 0 && (
+                <Card ouiaId="empty-state">
+                  <CardBody>
+                    <NoMatchingClusters />
+                  </CardBody>
+                </Card>
+              )}
+            </React.Fragment>
+          )}
+          <Pagination
+            ouiaId="pager"
+            itemCount={filteredRows.length}
+            page={filters.offset / filters.limit + 1}
+            perPage={Number(filters.limit)}
+            onSetPage={(_e, page) =>
+              updateFilters({
+                ...filters,
+                offset: filters.limit * (page - 1),
+              })
+            }
+            onPerPageSelect={(_e, perPage) =>
+              updateFilters({ ...filters, limit: perPage, offset: 0 })
+            }
+            widgetId={`pagination-options-menu-bottom`}
+            variant={PaginationVariant.bottom}
+          />
+        </div>
       )}
-      <Pagination
-        ouiaId="pager"
-        itemCount={filteredRows.length}
-        page={filters.offset / filters.limit + 1}
-        perPage={Number(filters.limit)}
-        onSetPage={(_e, page) =>
-          updateFilters({
-            ...filters,
-            offset: filters.limit * (page - 1),
-          })
-        }
-        onPerPageSelect={(_e, perPage) =>
-          updateFilters({ ...filters, limit: perPage, offset: 0 })
-        }
-        widgetId={`pagination-options-menu-bottom`}
-        variant={PaginationVariant.bottom}
-      />
-    </div>
+    </>
   );
 };
 
