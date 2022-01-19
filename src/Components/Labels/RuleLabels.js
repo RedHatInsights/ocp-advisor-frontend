@@ -18,7 +18,9 @@ const RuleLabels = ({ rule }) => {
           content={intl.formatMessage(messages.ruleIsDisabledTooltip)}
           position={TooltipPosition.right}
         >
-          <Label color="gray">{intl.formatMessage(messages.disabled)}</Label>
+          <Label color="gray" isCompact>
+            {intl.formatMessage(messages.disabled)}
+          </Label>
         </Tooltip>
       )}
     </React.Fragment>
