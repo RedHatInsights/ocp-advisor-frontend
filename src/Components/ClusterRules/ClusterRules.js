@@ -3,6 +3,7 @@ import './_ClusterRules.scss';
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
+import capitalize from 'lodash/capitalize';
 
 import CheckIcon from '@patternfly/react-icons/dist/js/icons/check-icon';
 import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat/DateFormat';
@@ -16,7 +17,6 @@ import {
   cellWidth,
   sortable,
 } from '@patternfly/react-table';
-import { capitalize } from '@patternfly/react-core/dist/js/helpers/util';
 import { Card, CardBody } from '@patternfly/react-core/dist/js/components/Card';
 import {
   Tooltip,

@@ -6,6 +6,7 @@ import { useIntl } from 'react-intl';
 import { Link, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import cloneDeep from 'lodash/cloneDeep';
+import capitalize from 'lodash/capitalize';
 import {
   SortByDirection,
   Table,
@@ -48,7 +49,6 @@ import { ErrorState, NoMatchingRecs } from '../MessageState/EmptyStates';
 import RuleDetails from '../Recommendation/RuleDetails';
 import {
   passFilters,
-  capitalize,
   paramParser,
   translateSortParams,
   debounce,

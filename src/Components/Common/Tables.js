@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import capitalize from 'lodash/capitalize';
 import cloneDeep from 'lodash/cloneDeep';
 
 import { Tooltip } from '@patternfly/react-core/dist/js/components/Tooltip';
@@ -111,10 +112,7 @@ export const mapClustersToRows = (clusters) =>
     ],
   }));
 
-export const capitalize = (string) =>
-  string[0].toUpperCase() + string.substring(1);
-
-export const pruneFilters = (localFilters, filterCategories) => {
+const pruneFilters = (localFilters, filterCategories) => {
   const prunedFilters = Object.entries(localFilters || {});
   return prunedFilters.reduce((arr, it) => {
     const [key, item] = it;
