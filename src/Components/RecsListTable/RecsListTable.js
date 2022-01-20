@@ -101,23 +101,16 @@ const RecsListTable = ({ query }) => {
       paramsObject.text === undefined
         ? setSearchText('')
         : setSearchText(paramsObject.text);
-      if (paramsObject.sort === undefined) {
-        paramsObject.sortIndex = RECS_LIST_INITIAL_STATE.sortIndex;
-        paramsObject.sortDirection = RECS_LIST_INITIAL_STATE.sortDirection;
-      } else {
+      if (paramsObject.sort) {
         const sortObj = translateSortParams(paramsObject.sort[0]);
-        paramsObject.sortIndex = RECS_LIST_COLUMNS_KEYS.indexOf(
-          sortObj.sortValue
-        );
-        paramsObject.sortDirection = sortObj.sortDirection;
+        paramsObject.sortIndex = RECS_LIST_COLUMNS_KEYS.indexOf(sortObj.name);
+        paramsObject.sortDirection = sortObj.direction;
       }
-      paramsObject.offset === undefined
-        ? (paramsObject.offset = RECS_LIST_INITIAL_STATE.offset)
-        : (paramsObject.offset = Number(paramsObject.offset[0]));
-      paramsObject.limit === undefined
-        ? (paramsObject.limit = RECS_LIST_INITIAL_STATE.limit)
-        : (paramsObject.limit = Number(paramsObject.limit[0]));
-      paramsObject.impacting !== undefined &&
+      paramsObject.offset &&
+        (paramsObject.offset = Number(paramsObject.offset[0]));
+      paramsObject.limit &&
+        (paramsObject.limit = Number(paramsObject.limit[0]));
+      paramsObject.impacting &&
         !Array.isArray(paramsObject.impacting) &&
         (paramsObject.impacting = [`${paramsObject.impacting}`]);
       updateFilters({ ...filters, ...paramsObject });

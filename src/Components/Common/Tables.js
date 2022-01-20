@@ -197,8 +197,8 @@ export const paramParser = (search) => {
 };
 
 export const translateSortParams = (value) => ({
-  sortValue: value.substring(value.startsWith('-') ? 1 : 0),
-  sortDirection: value.startsWith('-') ? 'desc' : 'asc',
+  name: value.substring(value.startsWith('-') ? 1 : 0),
+  direction: value.startsWith('-') ? 'desc' : 'asc',
 });
 
 export const debounce = (value, delay) => {
