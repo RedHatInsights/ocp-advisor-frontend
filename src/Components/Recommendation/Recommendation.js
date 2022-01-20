@@ -117,7 +117,7 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
 
   const enableRule = async (rule) => {
     try {
-      await Delete(`${BASE_URL}/ack/${rule.rule_id}/`);
+      await Delete(`${BASE_URL}/v2/ack/${rule.data.content.rule_id}/`);
       notify({
         variant: 'success',
         timeout: true,
