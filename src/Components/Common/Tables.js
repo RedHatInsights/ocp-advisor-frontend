@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import _ from 'lodash';
+import capitalize from 'lodash/capitalize';
+import cloneDeep from 'lodash/cloneDeep';
 
 import { Tooltip } from '@patternfly/react-core/dist/js/components/Tooltip';
 import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
@@ -13,7 +14,7 @@ import {
 } from '../../AppConstants';
 import messages from '../../Messages';
 
-const passFilters = (rule, filters) =>
+export const passFilters = (rule, filters) =>
   Object.entries(filters).every(([filterKey, filterValue]) => {
     switch (filterKey) {
       case 'text':
@@ -52,7 +53,7 @@ const passFilters = (rule, filters) =>
     }
   });
 
-const passFiltersCluster = (cluster, filters) =>
+export const passFiltersCluster = (cluster, filters) =>
   Object.entries(filters).every(([filterKey, filterValue]) => {
     switch (filterKey) {
       case 'text':
@@ -73,7 +74,7 @@ const passFiltersCluster = (cluster, filters) =>
     }
   });
 
-const mapClustersToRows = (clusters) =>
+export const mapClustersToRows = (clusters) =>
   clusters.map((cluster, index) => ({
     cluster,
     cells: [
@@ -110,8 +111,6 @@ const mapClustersToRows = (clusters) =>
       </span>,
     ],
   }));
-
-const capitalize = (string) => string[0].toUpperCase() + string.substring(1);
 
 const pruneFilters = (localFilters, filterCategories) => {
   const prunedFilters = Object.entries(localFilters || {});
@@ -165,8 +164,8 @@ const pruneFilters = (localFilters, filterCategories) => {
   }, []);
 };
 
-const buildFilterChips = (filters, categories) => {
-  const localFilters = _.cloneDeep(filters);
+export const buildFilterChips = (filters, categories) => {
+  const localFilters = cloneDeep(filters);
   delete localFilters.sortIndex;
   delete localFilters.sortDirection;
   delete localFilters.offset;
@@ -177,10 +176,41 @@ const buildFilterChips = (filters, categories) => {
   return pruneFilters(localFilters, categories);
 };
 
-export {
-  passFilters,
-  passFiltersCluster,
-  mapClustersToRows,
-  buildFilterChips,
-  capitalize,
+// parses url params for use in table/filter chips
+export const paramParser = (search) => {
+  const searchParams = new URLSearchParams(search);
+  return Array.from(searchParams).reduce(
+    (acc, [key, value]) => ({
+      ...acc,
+      [key]:
+        key === 'text'
+          ? // just copy the full value
+            value
+          : value === 'true' || value === 'false'
+          ? // parse boolean
+            JSON.parse(value)
+          : // parse array of values
+            value.split(','),
+    }),
+    {}
+  );
+};
+
+export const translateSortParams = (value) => ({
+  name: value.substring(value.startsWith('-') ? 1 : 0),
+  direction: value.startsWith('-') ? 'desc' : 'asc',
+});
+
+export const debounce = (value, delay) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [delay, value]);
+
+  return debouncedValue;
 };

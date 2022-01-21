@@ -60,7 +60,7 @@ describe('clusters list table', () => {
   it('applies one total risk filter as a default', () => {
     cy.get(CHIP_GROUP)
       .find('.pf-c-chip-group__label')
-      .should('have.text', 'Total Risk');
+      .should('have.text', 'Total risk');
     cy.get(CHIP_GROUP)
       .find('.pf-c-chip__text')
       .should('have.length', 1)

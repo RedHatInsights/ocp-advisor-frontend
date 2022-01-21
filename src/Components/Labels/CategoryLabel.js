@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
-import { camelCase } from 'lodash';
+import camelCase from 'lodash/camelCase';
 
 import { Label } from '@patternfly/react-core/dist/js/components/Label/index';
 import { LabelGroup } from '@patternfly/react-core/dist/js/components/LabelGroup/LabelGroup';
