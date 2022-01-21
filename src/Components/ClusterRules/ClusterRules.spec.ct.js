@@ -17,23 +17,17 @@ import ClusterRules from './ClusterRules';
 import '@patternfly/patternfly/patternfly.scss';
 import data from '../../../cypress/fixtures/ClusterRules/data.json';
 import { LowBattery } from '@redhat-cloud-services/frontend-components/Battery';
+import { TOTAL_RISK, CATEGORIES } from '../../../cypress/utils/globals';
+import { combineFields, slideHalf } from '../../../cypress/utils/combine';
+import { applyFilters } from '../../../cypress/utils/ui';
 
 const EXPANDABLES = '[class="pf-c-table__expandable-row pf-m-expanded"]';
 const CHIP = 'div[class=pf-c-chip]';
 const ROW = 'tbody[role=rowgroup]';
-const FILTERS_DROPDOWN = 'ul[class=pf-c-dropdown__menu]';
-const FILTER_TOGGLE = 'span[class=pf-c-select__toggle-arrow]';
 
 const RULES_ENABLED = filter(data, (it) => !it.disabled).length;
-// FIXME should we use a map here?
-const TOTAL_RISK = { Low: 1, Moderate: 2, Important: 3, Critical: 4 };
+
 const TOTAL_RISK_VALUES = Object.keys(TOTAL_RISK);
-const CATEGORIES = {
-  'Service Availability': ['service_availability'],
-  Security: ['security'],
-  'Fault Tolerance': ['fault_tolerance'],
-  Performance: ['performance'],
-};
 const CATEGORY_TAGS = flatten(Object.values(CATEGORIES));
 
 describe('test data', () => {
@@ -163,6 +157,14 @@ describe('cluster rules table', () => {
 
 // TODO test for no chips displayed
 
+// add a uniq prefix to each row description to make them distinguishable
+const dataDistinguishable = map(data, (it) => {
+  it.description = `${Math.random().toString(36).substring(2, 15)} ${
+    it.description
+  }`;
+  return it;
+});
+
 const filtersConf = {
   description: {
     selectorText: 'Description',
@@ -180,81 +182,6 @@ const filtersConf = {
     type: 'checkbox',
   },
 };
-
-function applyFilters(filters) {
-  for (const [key, value] of Object.entries(filters)) {
-    cy.get('div.ins-c-primary-toolbar__filter')
-      .find('button[class=pf-c-dropdown__toggle]')
-      .click({ force: true });
-
-    if (key === 'description') {
-      cy.get(FILTERS_DROPDOWN).contains('Description').click({ force: true });
-      cy.get('input.ins-c-conditional-filter').type(value);
-    } else if (key === 'risk') {
-      cy.get(FILTERS_DROPDOWN).contains('Total risk').click({ force: true });
-      cy.get(FILTER_TOGGLE).click({ force: true });
-      value.forEach((it) => {
-        cy.get('ul[class=pf-c-select__menu]')
-          .find('label')
-          .contains(it)
-          .parent()
-          .find('input[type=checkbox]')
-          .check({ force: true });
-      });
-    } else if (key === 'category') {
-      cy.get(FILTERS_DROPDOWN).contains('Category').click({ force: true });
-      cy.get(FILTER_TOGGLE).click({ force: true });
-      value.forEach((it) => {
-        cy.get('ul[class=pf-c-select__menu]')
-          .find('label')
-          .contains(it)
-          .parent()
-          .find('input[type=checkbox]')
-          .check({ force: true });
-      });
-    }
-  }
-}
-
-function* combinations(arr, current = []) {
-  //return [{ description: 'Lorem' }, { risk: ['Low', 'Critical'], category: Object.keys(CATEGORIES) }];
-  let i = 0;
-  while (i < arr.length) {
-    let next = current.concat(arr[i]);
-    yield next;
-    i++;
-    if (next.length <= arr.length) {
-      yield* combinations(arr.slice(i), next);
-    }
-  }
-}
-
-function* combineFields(data, fields = null) {
-  if (fields == null) {
-    fields = Object.keys(data);
-  }
-  if (fields.length > 0) {
-    const field = fields.pop();
-    for (let x of combineFields(data, fields)) {
-      yield x;
-      for (let y of data[field]) {
-        const obj = { ...x };
-        obj[field] = y;
-        yield obj;
-      }
-    }
-  } else {
-    yield {};
-  }
-}
-
-// add a uniq prefix to each row description to make them distinguishable
-const dataDistinguishable = map(data, (it) => {
-  it.description = `${Math.random().toString(36).substring(2, 15)} ${
-    it.description
-  }`;
-  return it;
-});
 
 function filterData(data, filters) {
   let filteredData = data;
@@ -283,11 +210,11 @@ function filterData(data, filters) {
   return filteredData;
 }
 
-function sortCombinations() {
+function buildFiltersCombinations() {
   const data = {};
   for (const [key, value] of Object.entries(filtersConf)) {
     if (value.type === 'checkbox') {
-      data[key] = Array.from(combinations(value.values));
+      data[key] = Array.from(slideHalf(value.values));
     } else {
       data[key] = value.values;
     }
@@ -350,13 +277,14 @@ describe('cluster rules table filtering', () => {
     ).should('have.length', 0);
   });
 
-  sortCombinations().forEach((filters) => {
-    it('test sorting', () => {
+  buildFiltersCombinations().forEach((filters) => {
+    it(`test sorting ${Object.keys(filters)}`, () => {
       const sortedDescriptions = map(
         filterData(dataDistinguishable, filters),
         'description'
       ).sort();
-      applyFilters(filters);
+      // debugger;
+      applyFilters(filters, filtersConf);
       if (sortedDescriptions.length === 0) {
         // TODO check empty table view
       } else {
