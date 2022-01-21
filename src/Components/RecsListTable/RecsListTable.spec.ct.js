@@ -226,7 +226,11 @@ describe('successful non-empty recommendations list table', () => {
     cy.removeStatusFilter();
     cy.getAllRows().should('have.length', 5);
     cy.getRowByName('disabled rule with 2 impacted')
-      .find('span[class=pf-c-label]')
+      .children()
+      .eq(0)
+      .children()
+      .eq(1)
+      .find('span[class=pf-c-label__content]')
       .should('have.text', 'Disabled');
   });
 

@@ -197,11 +197,19 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
                     })}
                     {content.tags &&
                       (Array.isArray(content.tags) ? (
-                        <LabelGroup className="categoryLabels" numLabels={1}>
+                        <LabelGroup
+                          className="categoryLabels"
+                          numLabels={1}
+                          isCompact
+                        >
                           {content.tags.reduce((labels, tag) => {
                             if (RULE_CATEGORIES[tag]) {
                               labels.push(
-                                <Label key={`label-${tag}`} color="blue">
+                                <Label
+                                  key={`label-${tag}`}
+                                  color="blue"
+                                  isCompact
+                                >
                                   {
                                     FILTER_CATEGORIES.category.values[
                                       RULE_CATEGORIES[tag] - 1
@@ -214,7 +222,7 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
                           }, [])}
                         </LabelGroup>
                       ) : (
-                        <Label>{content.tags}</Label>
+                        <Label isCompact>{content.tags}</Label>
                       ))}
                   </p>
                 </React.Fragment>
