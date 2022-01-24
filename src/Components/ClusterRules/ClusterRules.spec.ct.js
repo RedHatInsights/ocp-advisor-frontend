@@ -24,6 +24,7 @@ import { applyFilters } from '../../../cypress/utils/ui';
 const EXPANDABLES = '[class="pf-c-table__expandable-row pf-m-expanded"]';
 const CHIP = 'div[class=pf-c-chip]';
 const ROW = 'tbody[role=rowgroup]';
+const CHIP_GROUP = '.pf-c-chip-group__main';
 
 const RULES_ENABLED = filter(data, (it) => !it.disabled).length;
 
@@ -117,6 +118,15 @@ describe('cluster rules table', () => {
     });
   });
 
+  it('no chips are displayed', () => {
+    cy.get(CHIP_GROUP).should('not.exist');
+    cy.get('button').contains('Reset filters').should('not.exist');
+  });
+
+  it('clear filters work', () => {
+// TODO implement test
+  });
+
   Object.entries({
     description: 'Description',
     created_at: 'Added',
@@ -154,5 +164,3 @@ describe('cluster rules table', () => {
     });
   });
 });
-
-// TODO test for no chips displayed

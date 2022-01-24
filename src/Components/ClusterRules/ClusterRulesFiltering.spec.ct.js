@@ -179,6 +179,7 @@ describe('cluster rules table filtering', () => {
           })
           .should('deep.equal', sortedDescriptions);
       }
+      // TODO check chips
     });
   });
 });
