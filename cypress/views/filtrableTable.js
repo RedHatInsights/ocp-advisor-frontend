@@ -6,8 +6,10 @@ const CHIPS = `${TOOLBAR} div[data-ouia-component-type="PF4/ChipGroup"]`;
 const EMPTY_STATE = 'table .pf-c-empty-state';
 
 const filtrableTable = {
-  isDisplayed: (id) => {
-    cy.get(`div[id=${id}]`)
+  id: null, // to be filled by build method
+  isDisplayed: function () {
+    // FIXME makes sense to wrap all calls within a get(`div[id=${this.id}]`)?
+    cy.get(`div[id=${this.id}]`)
       .within(($div) => {
         cy.get(TOOLBAR).should('have.length', 1);
         cy.get('table').should('have.length', 1);
@@ -68,4 +70,10 @@ const filtrableTable = {
   },
 };
 
-export { filtrableTable };
+function build(id) {
+  const data = filtrableTable;
+  data.id = id;
+  return data;
+}
+
+export { build };

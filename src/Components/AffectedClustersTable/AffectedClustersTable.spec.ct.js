@@ -8,9 +8,9 @@ import { AffectedClustersTable } from './AffectedClustersTable';
 import data from '../../../cypress/fixtures/AffectedClustersTable/data.json';
 import { Intl } from '../../Utilities/intlHelper';
 import getStore from '../../Store';
-import { filtrableTable } from '../../../cypress/views/filtrableTable';
+import { build as buildFiltrableTable } from '../../../cypress/views/filtrableTable';
 
-const view = filtrableTable;
+const view = buildFiltrableTable(`affected-list-table`);
 
 // selectors
 const TABLE = 'div[id=affected-list-table]';
@@ -92,7 +92,7 @@ describe('non-empty successful affected clusters table', () => {
   });
 
   it('renders table', () => {
-    view.isDisplayed('affected-list-table');
+    view.isDisplayed();
   });
 
   it('shows first twenty clusters', () => {
