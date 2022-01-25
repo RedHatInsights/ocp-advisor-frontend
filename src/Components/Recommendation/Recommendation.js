@@ -117,7 +117,7 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
 
   const enableRule = async (rule) => {
     try {
-      await Delete(`${BASE_URL}/ack/${rule.rule_id}/`);
+      await Delete(`${BASE_URL}/v2/ack/${rule.data.content.rule_id}/`);
       notify({
         variant: 'success',
         timeout: true,
@@ -197,11 +197,19 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
                     })}
                     {content.tags &&
                       (Array.isArray(content.tags) ? (
-                        <LabelGroup className="categoryLabels" numLabels={1}>
+                        <LabelGroup
+                          className="categoryLabels"
+                          numLabels={1}
+                          isCompact
+                        >
                           {content.tags.reduce((labels, tag) => {
                             if (RULE_CATEGORIES[tag]) {
                               labels.push(
-                                <Label key={`label-${tag}`} color="blue">
+                                <Label
+                                  key={`label-${tag}`}
+                                  color="blue"
+                                  isCompact
+                                >
                                   {
                                     FILTER_CATEGORIES.category.values[
                                       RULE_CATEGORIES[tag] - 1
@@ -214,7 +222,7 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
                           }, [])}
                         </LabelGroup>
                       ) : (
-                        <Label>{content.tags}</Label>
+                        <Label isCompact>{content.tags}</Label>
                       ))}
                   </p>
                 </React.Fragment>
@@ -310,7 +318,7 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
                               isInline
                               variant="link"
                               onClick={() => setViewSystemsModalOpen(true)}
-                              ouiaId="viewSystems"
+                              ouiaId="view-clusters"
                             >
                               {intl.formatMessage(messages.viewClusters)}
                             </Button>
@@ -360,7 +368,7 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
                               uuids: ackedClusters.map((c) => c.cluster_id),
                             })
                           }
-                          ouiaId="bulkHost"
+                          ouiaId="enable-all"
                         >
                           {intl.formatMessage(messages.enableRuleForClusters)}
                         </Button>

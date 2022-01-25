@@ -136,6 +136,7 @@ const DisableRule = ({
           {intl.formatMessage(messages.cancel)}
         </Button>,
       ]}
+      ouiaId="recommendation-disable"
     >
       {intl.formatMessage(messages.disableRuleBody)}
       <Form>
@@ -154,6 +155,7 @@ const DisableRule = ({
               }
               id="disable-rule-one-system"
               name="disable-rule-one-system"
+              ouiaId="disable-recommendation-one-cluster"
             />
           </FormGroup>
         )}

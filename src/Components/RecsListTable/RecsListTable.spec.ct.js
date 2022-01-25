@@ -12,7 +12,8 @@ import { Intl } from '../../Utilities/intlHelper';
 const RECS_LIST_TABLE = 'div[id=recs-list-table]';
 const CHIP = 'div[class=pf-c-chip]';
 const ROW = 'tbody[role=rowgroup]';
-
+const FILTERS_DROPDOWN = 'ul[class=pf-c-dropdown__menu]';
+const FILTER_TOGGLE = 'span[class=pf-c-select__toggle-arrow]';
 // actions
 Cypress.Commands.add('getAllRows', () => cy.get(RECS_LIST_TABLE).find(ROW));
 Cypress.Commands.add('removeStatusFilter', () => {
@@ -44,24 +45,85 @@ Cypress.Commands.add('sortByCol', (colIndex) => {
     .find('span[class=pf-c-table__sort-indicator]')
     .click({ force: true });
 });
+const getChipGroup = (label) =>
+  cy.contains('.pf-c-chip-group__label', label).parent();
+
+before(() => {
+  cy.intercept('*', (req) => {
+    req.destroy();
+  });
+  // tables utilizes federated module and throws error when RHEL Advisor manifestaion not found
+  window['__scalprum__'] = {
+    apps: {},
+    appsMetaData: {
+      advisor: {
+        manifestLocation:
+          'https://qa.console.redhat.com/beta/apps/advisor/fed-mods.json',
+        module: 'advisor#./RootApp',
+        name: 'advisor',
+      },
+    },
+  };
+});
+
+describe('pre-filled url search parameters', () => {
+  beforeEach(() => {
+    mount(
+      <MemoryRouter
+        initialEntries={[
+          '/recommendations?text=123|FOO_BAR&total_risk=4,3&impact=1,2&likelihood=1&category=1,2&rule_status=disabled&impacting=false',
+        ]}
+        initialIndex={0}
+      >
+        <Intl>
+          <Provider store={getStore()}>
+            <RecsListTable
+              query={{
+                isError: false,
+                isFetching: false,
+                isUninitialized: false,
+                isSuccess: true,
+                data: props,
+              }}
+            />
+          </Provider>
+        </Intl>
+      </MemoryRouter>
+    );
+  });
+
+  // TODO: use Messages.js to match labels and names
+  it('recognizes text parameter', () => {
+    // text input contains the value
+    getChipGroup('Name').contains('.pf-c-chip', '123|FOO_BAR');
+    // text filter chip is present
+    cy.get('.pf-m-fill > .pf-c-form-control').should(
+      'have.value',
+      '123|FOO_BAR'
+    );
+  });
+
+  it('recognizes multiselect parameters', () => {
+    getChipGroup('Total risk').contains('.pf-c-chip', 'Critical');
+    getChipGroup('Impact').contains('.pf-c-chip', 'Low');
+    getChipGroup('Total risk').contains('.pf-c-chip', 'Important');
+    getChipGroup('Impact').contains('.pf-c-chip', 'Medium');
+    getChipGroup('Likelihood').contains('.pf-c-chip', 'Low');
+    getChipGroup('Category').contains('.pf-c-chip', 'Service Availability');
+    getChipGroup('Category').contains('.pf-c-chip', 'Performance');
+  });
+
+  it('recognizes rule status parameter', () => {
+    getChipGroup('Status').contains('.pf-c-chip', 'Disabled');
+  });
+
+  it('recognizes impacting parameter ', () => {
+    getChipGroup('Clusters impacted').contains('.pf-c-chip', 'None');
+  });
+});
 
 describe('successful non-empty recommendations list table', () => {
   beforeEach(() => {
-    cy.intercept('*', (req) => {
-      req.destroy();
-    });
-    // tables utilizes federated module and throws error when RHEL Advisor manifestaion not found
-    window['__scalprum__'] = {
-      apps: {},
-      appsMetaData: {
-        advisor: {
-          manifestLocation:
-            'https://qa.console.redhat.com/beta/apps/advisor/fed-mods.json',
-          module: 'advisor#./RootApp',
-          name: 'advisor',
-        },
-      },
-    };
     mount(
       <MemoryRouter initialEntries={['/recommendations']} initialIndex={0}>
         <Intl>
@@ -225,7 +287,11 @@ describe('successful non-empty recommendations list table', () => {
     cy.removeStatusFilter();
     cy.getAllRows().should('have.length', 5);
     cy.getRowByName('disabled rule with 2 impacted')
-      .find('span[class=pf-c-label]')
+      .children()
+      .eq(0)
+      .children()
+      .eq(1)
+      .find('span[class=pf-c-label__content]')
       .should('have.text', 'Disabled');
   });
 
@@ -282,25 +348,38 @@ describe('successful non-empty recommendations list table', () => {
       .find('td[data-label=Category]')
       .should('contain', 'Service Availability');
   });
+
+  it('the Impacted filters work correctly', () => {
+    cy.get(RECS_LIST_TABLE)
+      .find('button[class=pf-c-dropdown__toggle]')
+      .click({ force: true });
+    cy.get(FILTERS_DROPDOWN)
+      .contains('Clusters impacted')
+      .click({ force: true });
+    cy.get(FILTER_TOGGLE).then((element) => {
+      cy.wrap(element);
+      element[0].click({ force: true });
+    });
+    cy.get('.pf-c-select__menu')
+      .find('label > input')
+      .eq(1)
+      .check({ force: true });
+    cy.get('.pf-c-chip-group__list-item').contains('1 or more');
+
+    cy.get(RECS_LIST_TABLE)
+      .find('button[class=pf-c-dropdown__toggle]')
+      .click({ force: true });
+    cy.get(FILTERS_DROPDOWN).contains('Status').click({ force: true });
+    cy.get(FILTER_TOGGLE).click({ force: true });
+    cy.get('button[class=pf-c-select__menu-item]')
+      .contains('All')
+      .click({ force: true });
+    cy.get('.pf-c-chip-group__list-item').contains('1 or more');
+  });
 });
 
 describe('empty recommendations list table', () => {
   beforeEach(() => {
-    cy.intercept('*', (req) => {
-      req.destroy();
-    });
-    // tables utilizes federated module and throws error when RHEL Advisor manifestaion not found
-    window['__scalprum__'] = {
-      apps: {},
-      appsMetaData: {
-        advisor: {
-          manifestLocation:
-            'https://qa.console.redhat.com/beta/apps/advisor/fed-mods.json',
-          module: 'advisor#./RootApp',
-          name: 'advisor',
-        },
-      },
-    };
     mount(
       <MemoryRouter initialEntries={['/recommendations']} initialIndex={0}>
         <Intl>

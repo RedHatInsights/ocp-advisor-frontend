@@ -547,4 +547,15 @@ export default defineMessages({
     description: 'Action, Bulk select all items in a table with number',
     defaultMessage: 'Select all ({items} items)',
   },
+  noRecsForClusterListTitle: {
+    id: 'noRecsForClusterListTitle',
+    description: 'Cluster List Page received 0 clusters',
+    defaultMessage: 'No clusters yet',
+  },
+  noRecsForClusterListBody: {
+    id: 'noRecsForClusterListBody',
+    description: 'Cluster List Page received 0 clusters',
+    defaultMessage:
+      'To get started, create or register your cluster to get recommendations from Insights Advisor.',
+  },
 });

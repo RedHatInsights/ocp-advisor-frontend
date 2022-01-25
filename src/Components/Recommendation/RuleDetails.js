@@ -1,21 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useIntl } from 'react-intl';
+import { useHistory } from 'react-router-dom';
 
 import AsyncComponent from '@redhat-cloud-services/frontend-components/AsyncComponent';
 
 import Loading from '../Loading/Loading';
+import messages from '../../Messages';
+import { translations } from '../../Utilities/intlHelper';
 
-const RuleDetails = ({
-  rule,
-  header,
-  isDetailsPage,
-  resolutionRisk,
-  riskOfChangeDesc,
-  onFeedbackChanged,
-  children,
-}) => {
-  const intl = useIntl();
+const RuleDetails = ({ children, ...props }) => {
+  // make sure history@4.x.x is used as a react-router-dom dependency
+  const history = useHistory();
 
   return (
     <div className="advisor">
@@ -23,16 +18,11 @@ const RuleDetails = ({
         appName="advisor"
         module="./AdvisorRecommendationDetails"
         fallback={<Loading />}
-        rule={rule}
-        customItnl
-        // ! TODO better to compile messages locally and send to async component instead of sharing intl?
-        intlProps={intl}
-        isDetailsPage={isDetailsPage}
-        header={header}
-        resolutionRisk={resolutionRisk}
         isOpenShift
-        riskOfChangeDesc={riskOfChangeDesc}
-        onFeedbackChanged={onFeedbackChanged}
+        intlProps={{ messages: translations[navigator.language.slice(0, 2)] }}
+        history={history}
+        messageDescriptors={messages}
+        {...props}
       >
         {children}
       </AsyncComponent>

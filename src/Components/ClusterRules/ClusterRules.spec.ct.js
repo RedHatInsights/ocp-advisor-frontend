@@ -54,21 +54,13 @@ describe('cluster rules table', () => {
   it('first item expanded', () => {
     cy.get('#expanded-content1').should('have.length', 1);
   });
-
   it('expand all, collapse all', () => {
-    const TOOLBAR =
-      '[class="pf-c-toolbar__item  ins-c-primary-toolbar__actions pf-m-spacer-sm"]';
+    const TOOLBAR = '[class="pf-c-toolbar__item"]';
     const EXPANDABLES = '[class="pf-c-table__expandable-row pf-m-expanded"]';
 
     cy.get(TOOLBAR).find('button').click();
-    cy.get('.pf-c-dropdown__menu-item')
-      .contains('Expand all')
-      .click({ force: true });
     cy.get(EXPANDABLES).should('have.length', 6);
     cy.get(TOOLBAR).find('button').click();
-    cy.get('.ins-c-primary-toolbar__first-action')
-      .find('button')
-      .click({ force: true });
     cy.get(EXPANDABLES).should('have.length', 0);
   });
 

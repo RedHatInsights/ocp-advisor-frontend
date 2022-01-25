@@ -3,6 +3,9 @@ import './_ClusterRules.scss';
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
+import { useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import capitalize from 'lodash/capitalize';
 
 import CheckIcon from '@patternfly/react-icons/dist/js/icons/check-icon';
 import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat/DateFormat';
@@ -13,10 +16,7 @@ import {
   TableBody,
   TableHeader,
   TableVariant,
-  cellWidth,
-  sortable,
 } from '@patternfly/react-table';
-import { capitalize } from '@patternfly/react-core/dist/js/helpers/util';
 import { Card, CardBody } from '@patternfly/react-core/dist/js/components/Card';
 import {
   Tooltip,
@@ -30,93 +30,85 @@ import {
   IMPACT_LABEL,
   LIKELIHOOD_LABEL,
   FILTER_CATEGORIES as FC,
-  RULE_CATEGORIES,
+  CLUSTER_RULES_COLUMNS_KEYS,
+  FILTER_CATEGORIES,
+  CLUSTER_RULES_COLUMNS,
 } from '../../AppConstants';
 import ReportDetails from '../ReportDetails/ReportDetails';
 import RuleLabels from '../Labels/RuleLabels';
 import { NoMatchingRecs } from '../MessageState/EmptyStates';
+import {
+  paramParser,
+  passFilters,
+  translateSortParams,
+} from '../Common/Tables';
+import {
+  CLUSTER_RULES_INITIAL_STATE,
+  updateClusterRulesFilters,
+} from '../../Services/Filters';
 
 const ClusterRules = ({ reports }) => {
   const intl = useIntl();
-  const [activeReports, setActiveReports] = useState([]);
-  const [sortBy, setSortBy] = useState({});
-  const [filters, setFilters] = useState({});
-  const [searchValue, setSearchValue] = useState('');
-  const [rows, setRows] = useState([]);
-  const results = rows ? rows.length / 2 : 0;
+  const dispatch = useDispatch();
+  const updateFilters = (filters) =>
+    dispatch(updateClusterRulesFilters(filters));
+  const filters = useSelector(({ filters }) => filters.clusterRulesState);
 
-  const cols = [
-    {
-      title: intl.formatMessage(messages.description),
-      transforms: [sortable],
-    },
-    {
-      title: intl.formatMessage(messages.added),
-      transforms: [sortable, cellWidth(15)],
-    },
-    {
-      title: intl.formatMessage(messages.totalRisk),
-      transforms: [sortable, cellWidth(15)],
-    },
-  ];
+  const [filteredRows, setFilteredRows] = useState([]);
+  const [displayedRows, setDisplayedRows] = useState([]);
+  const [isAllExpanded, setIsAllExpanded] = useState(false);
+  const results = filteredRows.length;
+  const { search } = useLocation();
+
+  useEffect(() => {
+    setDisplayedRows(
+      buildDisplayedRows(filteredRows, filters.sortIndex, filters.sortDirection)
+    );
+  }, [
+    filteredRows,
+    filters.limit,
+    filters.offset,
+    filters.sortIndex,
+    filters.sortDirection,
+  ]);
+
+  useEffect(() => {
+    setFilteredRows(buildFilteredRows(reports, filters));
+  }, [reports, filters]);
+
+  useEffect(() => {
+    if (search) {
+      const paramsObject = paramParser(search);
+      if (paramsObject.sort) {
+        const sortObj = translateSortParams(paramsObject.sort[0]);
+        paramsObject.sortIndex = CLUSTER_RULES_COLUMNS_KEYS.indexOf(
+          sortObj.name
+        );
+        paramsObject.sortDirection = sortObj.direction;
+      }
+      updateFilters({ ...filters, ...paramsObject });
+    }
+  }, []);
 
   const handleOnCollapse = (_e, rowId, isOpen) => {
-    const collapseRows = [...rows];
+    const collapseRows = [...displayedRows];
     collapseRows[rowId] = { ...collapseRows[rowId], isOpen };
-    setRows(collapseRows);
+    setDisplayedRows(collapseRows);
   };
 
-  const onKebabClick = (action) => {
-    const isOpen = action === 'insights-expand-all';
-    const allRows = [...rows];
-
-    allRows.map((row, key) => {
-      if (Object.prototype.hasOwnProperty.call(row, 'isOpen')) {
-        row.isOpen = isOpen;
-        isOpen && handleOnCollapse(null, key, isOpen);
-      }
-    });
-
-    setRows(allRows);
-  };
-
-  const actions = [
-    {
-      label: 'Collapse all',
-      onClick: () => onKebabClick('insights-collapse-all'),
-    },
-    {
-      label: 'Expand all',
-      onClick: () => onKebabClick('insights-expand-all'),
-    },
-  ];
-
-  const buildRows = (activeReports, filters, rows, searchValue = '') => {
-    const builtRows = activeReports.flatMap((value, key) => {
-      const rule = value;
-      const resolution = value.resolution;
-      const entity = rows.filter(
-        (rowVal, rowKey) =>
-          rowKey % 2 === 0 && rowVal.rule.rule_id === rule.rule_id && rowVal
-      );
-      const isOpen = rows.length
-        ? entity.length
-          ? entity[0].isOpen
-          : false
-        : key === 0
-        ? true
-        : false;
-
-      const reportRow = [
+  const buildFilteredRows = (allRows, filters) =>
+    allRows
+      .filter((rule) => passFilters(rule, filters))
+      .map((value, key) => [
         {
-          rule,
-          resolution,
-          isOpen,
+          rule: value,
+          isOpen: isAllExpanded,
           cells: [
             {
               title: (
                 <div>
-                  {rule.description} <RuleLabels rule={value} />
+                  {value?.description || value?.rule_id}{' '}
+                  <RuleLabels rule={value} />
                 </div>
               ),
             },
@@ -124,7 +116,7 @@ const ClusterRules = ({ reports }) => {
               title: (
                 <div key={key}>
                   <DateFormat
-                    date={rule.created_at}
+                    date={value.created_at}
                     type="relative"
                     tooltipProps={{ position: TooltipPosition.bottom }}
                   />
@@ -134,7 +126,7 @@ const ClusterRules = ({ reports }) => {
             {
               title: (
                 <div key={key} style={{ verticalAlign: 'top' }}>
-                  {rule?.likelihood && rule?.impact ? (
+                  {value?.likelihood && value?.impact ? (
                     <Tooltip
                       key={key}
                       position={TooltipPosition.bottom}
@@ -143,19 +135,21 @@ const ClusterRules = ({ reports }) => {
                         <span>
                           The <strong>likelihood</strong> that this will be a
                           problem is{' '}
-                          {rule.likelihood
-                            ? LIKELIHOOD_LABEL[rule.likelihood]
+                          {value.likelihood
+                            ? LIKELIHOOD_LABEL[value.likelihood]
                             : 'unknown'}
-                          . The <strong>impact</strong> of the problem would be{' '}
-                          {rule.impact ? IMPACT_LABEL[rule.impact] : 'unknown'}{' '}
+                          .The <strong>impact</strong> of the problem would be{' '}
+                          {value.impact
+                            ? IMPACT_LABEL[value.impact]
+                            : 'unknown'}{' '}
                           if it occurred.
                         </span>
                       }
                     >
-                      <InsightsLabel value={rule.total_risk} />
+                      <InsightsLabel value={value.total_risk} />
                     </Tooltip>
                   ) : (
-                    <InsightsLabel value={rule.total_risk} />
+                    <InsightsLabel value={value.total_risk} />
                   )}
                 </div>
               ),
@@ -163,7 +157,6 @@ const ClusterRules = ({ reports }) => {
           ],
         },
         {
-          parent: key,
           fullWidth: true,
           cells: [
             {
@@ -171,98 +164,46 @@ const ClusterRules = ({ reports }) => {
             },
           ],
         },
-      ];
-      const isValidSearchValue =
-        searchValue.length === 0 ||
-        rule.description.toLowerCase().includes(searchValue.toLowerCase());
-      const isValidFilterValue =
-        Object.keys(filters).length === 0 ||
-        Object.keys(filters)
-          .map((key) => {
-            const filterValues = filters[key];
-            const rowValue = {
-              created_at: rule.created_at,
-              total_risk: rule.total_risk,
-              category: rule.tags,
-            };
-            if (key === 'category') {
-              // in that case, rowValue['category'] is an array of categories (or "tags" in the back-end implementation)
-              // e.g. ['security', 'fault_tolerance']
-              return rowValue[key].find((categoryName) =>
-                filterValues.includes(String(RULE_CATEGORIES[categoryName]))
-              );
-            }
-            return filterValues.find(
-              (value) => String(value) === String(rowValue[key])
-            );
-          })
-          .every((x) => x);
+      ]);
 
-      return isValidSearchValue && isValidFilterValue ? reportRow : [];
+  const buildDisplayedRows = (rows, index, direction) => {
+    const sortingRows = [...rows].sort((firstItem, secondItem) => {
+      const fst = firstItem[0].rule[CLUSTER_RULES_COLUMNS_KEYS[index - 1]];
+      const snd = secondItem[0].rule[CLUSTER_RULES_COLUMNS_KEYS[index - 1]];
+      return fst > snd ? 1 : snd > fst ? -1 : 0;
     });
-    // must recalculate parent for expandable table content whenever the array size changes
-    builtRows.forEach((row, index) =>
-      row.parent ? (row.parent = index - 1) : null
-    );
-
-    return builtRows;
-  };
-
-  const onSort = (_e, index, direction) => {
-    const sortedReports = {
-      1: 'description',
-      2: 'created_at',
-      3: 'total_risk',
-    };
-    const sort = () =>
-      activeReports
-        .concat()
-        .sort((firstItem, secondItem) =>
-          firstItem[sortedReports[index]] > secondItem[sortedReports[index]]
-            ? 1
-            : secondItem[sortedReports[index]] > firstItem[sortedReports[index]]
-            ? -1
-            : 0
-        );
-    const sortedReportsDirectional =
-      direction === SortByDirection.asc ? sort() : sort().reverse();
-
-    setActiveReports(sortedReportsDirectional);
-    setSortBy({
-      index,
-      direction,
+    if (direction === SortByDirection.desc) {
+      sortingRows.reverse();
+    }
+    return sortingRows.flatMap((row, index) => {
+      const updatedRow = [...row];
+      row[1].parent = index * 2;
+      return updatedRow;
     });
-    setRows(buildRows(sortedReportsDirectional, filters, rows, searchValue));
   };
 
-  const onInputChange = (value) => {
-    const builtRows = buildRows(activeReports, filters, rows, value);
-    setSearchValue(value);
-    setRows(builtRows);
+  const onSort = (_e, index, direction) =>
+    updateFilters({ ...filters, sortIndex: index, sortDirection: direction });
+
+  const removeFilterParam = (param) => {
+    const filter = { ...filters, offset: 0 };
+    delete filter[param];
+    updateFilters({ ...filter, ...(param === 'text' ? { text: '' } : {}) });
   };
 
-  const onFilterChange = (param, values) => {
-    const removeFilterParam = (param) => {
-      const filter = { ...filters };
-      delete filter[param];
-      return filter;
-    };
-
-    const newFilters =
-      values.length > 0
-        ? { ...filters, ...{ [param]: values } }
-        : removeFilterParam(param);
-    setRows(buildRows(activeReports, newFilters, rows, searchValue));
-    setFilters(newFilters);
-  };
+  // TODO: update URL when filters changed
+  const addFilterParam = (param, values) =>
+    values.length > 0
+      ? updateFilters({ ...filters, offset: 0, ...{ [param]: values } })
+      : removeFilterParam(param);
 
   const filterConfigItems = [
     {
       label: 'description',
       filterValues: {
         key: 'text-filter',
-        onChange: (_e, value) => onInputChange(value),
-        value: searchValue,
+        onChange: (_e, value) => addFilterParam('text', value),
+        value: filters.text,
       },
     },
     {
@@ -273,7 +214,7 @@ const ClusterRules = ({ reports }) => {
       filterValues: {
         key: `${FC.total_risk.urlParam}-filter`,
         onChange: (_e, values) =>
-          onFilterChange(FC.total_risk.urlParam, values),
+          addFilterParam(FILTER_CATEGORIES.total_risk.urlParam, values),
         value: filters.total_risk,
         items: FC.total_risk.values,
       },
@@ -285,26 +226,34 @@ const ClusterRules = ({ reports }) => {
       value: `checkbox-${FC.category.urlParam}`,
       filterValues: {
         key: `${FC.category.urlParam}-filter`,
-        onChange: (_e, values) => onFilterChange(FC.category.urlParam, values),
+        onChange: (_e, values) =>
+          addFilterParam(FILTER_CATEGORIES.category.urlParam, values),
         value: filters.category,
         items: FC.category.values,
       },
     },
   ];
 
-  const buildFilterChips = () => {
-    const prunedFilters = Object.entries(filters);
-    let chips =
-      filters && prunedFilters.length > 0
-        ? prunedFilters.map((item) => {
-            const category = FC[item[0]];
+  const pruneFilters = (localFilters, filterCategories) => {
+    const prunedFilters = Object.entries(localFilters);
+    return prunedFilters.length > 0
+      ? prunedFilters.reduce((arr, item) => {
+          if (filterCategories[item[0]]) {
+            const category = filterCategories[item[0]];
             const chips = Array.isArray(item[1])
-              ? item[1].map((value) => ({
-                  name: category.values.find(
+              ? item[1].map((value) => {
+                  const selectedCategoryValue = category.values.find(
                     (values) => values.value === String(value)
-                  ).label,
-                  value,
-                }))
+                  );
+                  return selectedCategoryValue
+                    ? {
+                        name:
+                          selectedCategoryValue.text ||
+                          selectedCategoryValue.label,
+                        value,
+                      }
+                    : { name: value, value };
+                })
               : [
                   {
                     name: category.values.find(
@@ -313,64 +262,87 @@ const ClusterRules = ({ reports }) => {
                     value: item[1],
                   },
                 ];
-            return {
-              category: capitalize(category.title),
-              chips,
-              urlParam: category.urlParam,
-            };
-          })
-        : [];
-    searchValue.length > 0 &&
-      chips.push({
-        category: 'Description',
-        chips: [{ name: searchValue, value: searchValue }],
-      });
-    return chips;
+            return [
+              ...arr,
+              {
+                category: capitalize(category.title),
+                chips,
+                urlParam: category.urlParam,
+              },
+            ];
+          } else if (item[0] === 'text') {
+            return [
+              ...arr,
+              ...(item[1].length > 0
+                ? [
+                    {
+                      category: 'Name',
+                      chips: [{ name: item[1], value: item[1] }],
+                      urlParam: item[0],
+                    },
+                  ]
+                : []),
+            ];
+          } else {
+            return arr;
+          }
+        }, [])
+      : [];
   };
 
-  const onChipDelete = (_e, itemsToRemove, isAll) => {
-    if (isAll) {
-      setRows(buildRows(activeReports, {}, rows, ''));
-      setFilters({});
-      setSearchValue('');
-    } else {
-      itemsToRemove.map((item) => {
-        switch (item.category) {
-          case 'Description':
-            setRows(buildRows(activeReports, filters, rows, ''));
-            setSearchValue('');
-            break;
-          default:
-            onFilterChange(
-              item.urlParam,
-              filters[item.urlParam].filter(
-                (value) => String(value) !== String(item.chips[0].value)
-              )
-            );
-        }
-      });
-    }
+  const buildFilterChips = () => {
+    const localFilters = { ...filters };
+    delete localFilters.sortIndex;
+    delete localFilters.sortDirection;
+    delete localFilters.offset;
+    delete localFilters.limit;
+    return pruneFilters(localFilters, FILTER_CATEGORIES);
   };
 
   const activeFiltersConfig = {
     deleteTitle: intl.formatMessage(messages.resetFilters),
     filters: buildFilterChips(),
-    onDelete: onChipDelete,
+    onDelete: (_event, itemsToRemove, isAll) => {
+      if (isAll) {
+        updateFilters(CLUSTER_RULES_INITIAL_STATE);
+      } else {
+        itemsToRemove.map((item) => {
+          const newFilter = {
+            [item.urlParam]: Array.isArray(filters[item.urlParam])
+              ? filters[item.urlParam].filter(
+                  (value) => String(value) !== String(item.chips[0].value)
+                )
+              : '',
+          };
+          newFilter[item.urlParam].length > 0
+            ? updateFilters({ ...filters, ...newFilter })
+            : removeFilterParam(item.urlParam);
+        });
+      }
+    },
   };
 
-  useEffect(() => {
-    const activeReportsData = reports;
-    setActiveReports(activeReportsData);
-    setRows(buildRows(activeReportsData, filters, rows, searchValue));
-  }, []);
+  //Responsible for the handling collapse for all the recommendations
+  //Used in the PrimaryToolbar
+  const collapseAll = (_e, isOpen) => {
+    setIsAllExpanded(isOpen);
+    setDisplayedRows(
+      displayedRows.map((row) => {
+        return {
+          ...row,
+          isOpen: isOpen,
+        };
+      })
+    );
+  };
 
   return (
     <div id="cluster-recs-list-table">
       <PrimaryToolbar
-        actionsConfig={{ actions }}
+        expandAll={{ isAllExpanded, onClick: collapseAll }}
         filterConfig={{
           items: filterConfigItems,
-          isDisabled: activeReports.length === 0,
+          isDisabled: filteredRows.length === 0,
         }}
         pagination={
           <React.Fragment>
@@ -380,18 +352,21 @@ const ClusterRules = ({ reports }) => {
           </React.Fragment>
         }
         activeFiltersConfig={
-          activeReports.length === 0 ? undefined : activeFiltersConfig
+          filteredRows.length === 0 ? undefined : activeFiltersConfig
         }
       />
-      {activeReports.length > 0 ? (
+      {filteredRows.length > 0 ? (
         <React.Fragment>
           <Table
             aria-label={'Cluster recommendations table'}
-            ouiaId={'cluster-recommendations'}
+            ouiaId="recommendations"
             onCollapse={handleOnCollapse}
-            rows={rows}
-            cells={cols}
-            sortBy={sortBy}
+            rows={displayedRows}
+            cells={CLUSTER_RULES_COLUMNS}
+            sortBy={{
+              index: filters.sortIndex,
+              direction: filters.sortDirection,
+            }}
             onSort={onSort}
             variant={TableVariant.compact}
             isStickyHeader
@@ -400,7 +375,7 @@ const ClusterRules = ({ reports }) => {
             <TableBody />
           </Table>
           {results === 0 && (
-            <Card ouiaId={'empty-recommendations'}>
+            <Card ouiaId="empty-state">
               <CardBody>
                 <NoMatchingRecs />
               </CardBody>
@@ -409,7 +384,7 @@ const ClusterRules = ({ reports }) => {
         </React.Fragment>
       ) : (
         // ? Welcome to Insights feature for novice clusters with disabled Insights?
-        <Card>
+        <Card ouiaId="no-recommendations">
           <CardBody>
             <MessageState
               icon={CheckIcon}

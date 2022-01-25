@@ -130,8 +130,7 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
     }));
     return rows
       .filter((row) => {
-        // further filters conditions will be added soon
-        return row?.cells[0].includes(filters.text);
+        return row?.cells[0].toLowerCase().includes(filters.text.toLowerCase());
       })
       .sort((a, b) => {
         if (filters.sortDirection === 'asc') {
@@ -202,6 +201,7 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
           perPage,
           onSetPage: onSetPage,
           onPerPageSelect: onSetPerPage,
+          ouiaId: 'pager',
         }}
         activeFiltersConfig={
           isError || (rows && rows.length === 0)
@@ -230,6 +230,7 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
             allSelected
               ? onSelect(event, false, -1)
               : onSelect(event, true, -1),
+          ouiaId: 'clusters-selector',
         }}
         actionsConfig={{
           actions: [
@@ -244,7 +245,7 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
       />
       <Table
         aria-label="Table of affected clusters"
-        ouiaId="affectedClustersTable"
+        ouiaId="clusters"
         variant="compact"
         cells={[
           {
@@ -273,14 +274,14 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
         <TableHeader />
         {(isUninitialized || isFetching) && <Loading />}
         {isError && (
-          <Card id="error-state-message">
+          <Card id="error-state-message" ouiaId="error-state">
             <CardBody>
               <ErrorState />
             </CardBody>
           </Card>
         )}
         {isSuccess && rows.length === 0 && (
-          <Card id="empty-state-message">
+          <Card id="empty-state-message" ouiaId="empty-state">
             <CardBody>
               <NoAffectedClusters />
             </CardBody>
@@ -307,6 +308,7 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
           onSetPage={onSetPage}
           onPerPageSelect={onSetPerPage}
           onPageInput={onSetPage}
+          ouiaId="pager"
         />
       </TableToolbar>
     </div>

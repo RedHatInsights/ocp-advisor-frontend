@@ -3,8 +3,10 @@ import './RecsListTable.scss';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useIntl } from 'react-intl';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import cloneDeep from 'lodash/cloneDeep';
+import capitalize from 'lodash/capitalize';
 import {
   SortByDirection,
   Table,
@@ -29,21 +31,28 @@ import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryTo
 import { addNotification } from '@redhat-cloud-services/frontend-components-notifications/';
 
 import {
+  DEBOUNCE_DELAY,
   FILTER_CATEGORIES,
   RECS_LIST_COLUMNS,
+  RECS_LIST_COLUMNS_KEYS,
   TOTAL_RISK_LABEL_LOWER,
 } from '../../AppConstants';
 import messages from '../../Messages';
 import {
   RECS_LIST_INITIAL_STATE,
-  updateRecsListFilters as updateFilters,
+  updateRecsListFilters,
 } from '../../Services/Filters';
 import RuleLabels from '../Labels/RuleLabels';
 import { strong } from '../../Utilities/intlHelper';
 import Loading from '../Loading/Loading';
 import { ErrorState, NoMatchingRecs } from '../MessageState/EmptyStates';
 import RuleDetails from '../Recommendation/RuleDetails';
-import { passFilters, capitalize } from '../Common/Tables';
+import {
+  passFilters,
+  paramParser,
+  translateSortParams,
+  debounce,
+} from '../Common/Tables';
 import DisableRule from '../Modals/DisableRule';
 import { Delete } from '../../Utilities/Api';
 import { BASE_URL } from '../../Services/SmartProxy';
@@ -63,6 +72,11 @@ const RecsListTable = ({ query }) => {
   const [selectedRule, setSelectedRule] = useState({});
   const [isAllExpanded, setIsAllExpanded] = useState(false);
   const notify = (data) => dispatch(addNotification(data));
+  const { search } = useLocation();
+  const [filterBuilding, setFilterBuilding] = useState(true);
+  const updateFilters = (filters) => dispatch(updateRecsListFilters(filters));
+  const [searchText, setSearchText] = useState(filters?.text || '');
+  const debouncedSearchText = debounce(searchText, DEBOUNCE_DELAY);
 
   useEffect(() => {
     setDisplayedRows(
@@ -79,6 +93,39 @@ const RecsListTable = ({ query }) => {
   useEffect(() => {
     setFilteredRows(buildFilteredRows(recs, filters));
   }, [data, filters]);
+
+  useEffect(() => {
+    if (search && filterBuilding) {
+      const paramsObject = paramParser(search);
+
+      paramsObject.text === undefined
+        ? setSearchText('')
+        : setSearchText(paramsObject.text);
+      if (paramsObject.sort) {
+        const sortObj = translateSortParams(paramsObject.sort[0]);
+        paramsObject.sortIndex = RECS_LIST_COLUMNS_KEYS.indexOf(sortObj.name);
+        paramsObject.sortDirection = sortObj.direction;
+      }
+      paramsObject.offset &&
+        (paramsObject.offset = Number(paramsObject.offset[0]));
+      paramsObject.limit &&
+        (paramsObject.limit = Number(paramsObject.limit[0]));
+      paramsObject.impacting &&
+        !Array.isArray(paramsObject.impacting) &&
+        (paramsObject.impacting = [`${paramsObject.impacting}`]);
+      updateFilters({ ...filters, ...paramsObject });
+    }
+    setFilterBuilding(false);
+  }, []);
+
+  useEffect(() => {
+    if (!filterBuilding && !isFetching && !isUninitialized) {
+      const updatedFilters = cloneDeep(filters);
+      const text = searchText.length ? { text: searchText } : {};
+      delete updatedFilters.text;
+      updateFilters({ ...updatedFilters, ...text, offset: 0 });
+    }
+  }, [debouncedSearchText]);
 
   // constructs array of rows (from the initial data) checking currently applied filters
   const buildFilteredRows = (allRows, filters) => {
@@ -119,7 +166,9 @@ const RecsListTable = ({ query }) => {
                 intl.formatMessage(messages.nA)
               ),
             },
-            { title: <CategoryLabel key={key} tags={value.tags} /> },
+            {
+              title: <CategoryLabel key={key} tags={value.tags} />,
+            },
             {
               title: (
                 <div key={key}>
@@ -137,7 +186,10 @@ const RecsListTable = ({ query }) => {
                     )}
                   >
                     {value?.total_risk ? (
-                      <InsightsLabel value={value.total_risk} />
+                      <InsightsLabel
+                        value={value.total_risk}
+                        rest={{ isCompact: true }}
+                      />
                     ) : (
                       intl.formatMessage(messages.nA)
                     )}
@@ -167,8 +219,6 @@ const RecsListTable = ({ query }) => {
                       rule={{
                         ...value,
                         impact: { impact: value.impact },
-                        // TODO: fix <Router> issue in the async component and then remove the line below
-                        impacted_clusters_count: undefined,
                       }}
                       isDetailsPage={false}
                     />
@@ -182,16 +232,9 @@ const RecsListTable = ({ query }) => {
   };
 
   const buildDisplayedRows = (rows, index, direction) => {
-    const sortedRecommendations = [
-      'description',
-      'publish_date',
-      'tags',
-      'total_risk',
-      'impacted_clusters_count',
-    ];
     const sortingRows = [...rows].sort((firstItem, secondItem) => {
-      const fst = firstItem[0].rule[sortedRecommendations[index - 1]];
-      const snd = secondItem[0].rule[sortedRecommendations[index - 1]];
+      const fst = firstItem[0].rule[RECS_LIST_COLUMNS_KEYS[index - 1]];
+      const snd = secondItem[0].rule[RECS_LIST_COLUMNS_KEYS[index - 1]];
       if (index === 3) {
         return extractCategories(fst)[0].localeCompare(
           extractCategories(snd)[0]
@@ -217,39 +260,29 @@ const RecsListTable = ({ query }) => {
   const removeFilterParam = (param) => {
     const filter = { ...filters, offset: 0 };
     delete filter[param];
-    dispatch(
-      updateFilters({ ...filter, ...(param === 'text' ? { text: '' } : {}) })
-    );
+    updateFilters({ ...filter, ...(param === 'text' ? { text: '' } : {}) });
   };
 
   // TODO: update URL when filters changed
-  const addFilterParam = (param, values) => {
+  const addFilterParam = (param, values) =>
     values.length > 0
-      ? dispatch(
-          updateFilters({ ...filters, offset: 0, ...{ [param]: values } })
-        )
+      ? updateFilters({ ...filters, offset: 0, ...{ [param]: values } })
       : removeFilterParam(param);
-  };
 
-  const toggleRulesDisabled = (rule_status) => {
-    dispatch(
-      updateFilters({
-        ...filters,
-        rule_status,
-        offset: 0,
-        ...(rule_status !== 'enabled' && { impacting: ['false'] }),
-      })
-    );
-  };
+  const toggleRulesDisabled = (rule_status) =>
+    updateFilters({
+      ...filters,
+      rule_status,
+      offset: 0,
+    });
 
   const filterConfigItems = [
     {
       label: intl.formatMessage(messages.name).toLowerCase(),
       filterValues: {
         key: 'text-filter',
-        onChange: (_event, value) =>
-          dispatch(updateFilters({ ...filters, text: value })),
-        value: filters.text,
+        onChange: (_event, value) => setSearchText(value),
+        value: searchText,
         placeholder: intl.formatMessage(messages.filterBy),
       },
     },
@@ -332,11 +365,8 @@ const RecsListTable = ({ query }) => {
     },
   ];
 
-  const onSort = (_e, index, direction) => {
-    dispatch(
-      updateFilters({ ...filters, sortIndex: index, sortDirection: direction })
-    );
-  };
+  const onSort = (_e, index, direction) =>
+    updateFilters({ ...filters, sortIndex: index, sortDirection: direction });
 
   const pruneFilters = (localFilters, filterCategories) => {
     const prunedFilters = Object.entries(localFilters);
@@ -408,7 +438,7 @@ const RecsListTable = ({ query }) => {
     filters: buildFilterChips(),
     onDelete: (_event, itemsToRemove, isAll) => {
       if (isAll) {
-        dispatch(updateFilters(RECS_LIST_INITIAL_STATE));
+        updateFilters(RECS_LIST_INITIAL_STATE);
       } else {
         itemsToRemove.map((item) => {
           const newFilter = {
@@ -419,7 +449,7 @@ const RecsListTable = ({ query }) => {
               : '',
           };
           newFilter[item.urlParam].length > 0
-            ? dispatch(updateFilters({ ...filters, ...newFilter }))
+            ? updateFilters({ ...filters, ...newFilter })
             : removeFilterParam(item.urlParam);
         });
       }
@@ -526,24 +556,23 @@ const RecsListTable = ({ query }) => {
           page: filters.offset / filters.limit + 1,
           perPage: Number(filters.limit),
           onSetPage(_event, page) {
-            dispatch(
-              updateFilters({
-                ...filters,
-                offset: filters.limit * (page - 1),
-              })
-            );
+            updateFilters({
+              ...filters,
+              offset: filters.limit * (page - 1),
+            });
           },
           onPerPageSelect(_event, perPage) {
-            dispatch(updateFilters({ ...filters, limit: perPage, offset: 0 }));
+            updateFilters({ ...filters, limit: perPage, offset: 0 });
           },
           isCompact: true,
+          ouiaId: 'pager',
         }}
         filterConfig={{ items: filterConfigItems }}
         activeFiltersConfig={activeFiltersConfig}
       />
       {(isUninitialized || isFetching) && <Loading />}
       {(isError || (isSuccess && recs.length === 0)) && (
-        <Card id="error-state-message">
+        <Card id="error-state-message" ouiaId="error-state">
           <CardBody>
             <ErrorState />
           </CardBody>
@@ -553,7 +582,7 @@ const RecsListTable = ({ query }) => {
         <React.Fragment>
           <Table
             aria-label="Table of recommendations"
-            ouiaId="recsListTable"
+            ouiaId="recommendations"
             variant={TableVariant.compact}
             cells={RECS_LIST_COLUMNS}
             rows={displayedRows}
@@ -564,12 +593,13 @@ const RecsListTable = ({ query }) => {
             }}
             onSort={onSort}
             actionResolver={actionResolver}
+            isStickyHeader
           >
             <TableHeader />
             <TableBody />
           </Table>
           {recs.length > 0 && filteredRows.length === 0 && (
-            <Card ouiaId={'empty-recommendations'}>
+            <Card ouiaId="empty-state">
               <CardBody>
                 <NoMatchingRecs />
               </CardBody>
@@ -578,21 +608,19 @@ const RecsListTable = ({ query }) => {
         </React.Fragment>
       )}
       <Pagination
-        ouiaId="recs-list-pagination-bottom"
+        ouiaId="pager"
         itemCount={filteredRows.length}
         page={filters.offset / filters.limit + 1}
         perPage={Number(filters.limit)}
-        onSetPage={(_e, page) => {
-          dispatch(
-            updateFilters({
-              ...filters,
-              offset: filters.limit * (page - 1),
-            })
-          );
-        }}
-        onPerPageSelect={(_e, perPage) => {
-          dispatch(updateFilters({ ...filters, limit: perPage, offset: 0 }));
-        }}
+        onSetPage={(_e, page) =>
+          updateFilters({
+            ...filters,
+            offset: filters.limit * (page - 1),
+          })
+        }
+        onPerPageSelect={(_e, perPage) =>
+          updateFilters({ ...filters, limit: perPage, offset: 0 })
+        }
         widgetId={`pagination-options-menu-bottom`}
         variant={PaginationVariant.bottom}
       />

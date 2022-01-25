@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
-import { camelCase } from 'lodash';
+import camelCase from 'lodash/camelCase';
 
 import { Label } from '@patternfly/react-core/dist/js/components/Label/index';
 import { LabelGroup } from '@patternfly/react-core/dist/js/components/LabelGroup/LabelGroup';
@@ -27,13 +27,14 @@ const CategoryLabel = ({ tags }) => {
   const intl = useIntl();
 
   return (
-    <LabelGroup numLabels={4}>
+    <LabelGroup numLabels={1} isCompact>
       {extractCategories(tags).map((tag, key) => (
         <Label
           key={key}
           icon={CATEGORY_ICONS[tag]}
           variant="outline"
           color="blue"
+          isCompact
         >
           {intl.formatMessage(messages[camelCase(tag)])}
         </Label>

@@ -14,7 +14,7 @@
     "start": "webpack serve --config config/dev.webpack.config.js",
     "start:beta": "BETA=true npm start",
     "start:beta:mock": "BETA=true MOCK=true npm start",
-    "test:ct": "cypress run-ct --record false",
+    "test:ct": "cypress run-ct",
     "test:jest": "jest --verbose --passWithNoTests",
     "test": "npm run test:ct && npm run test:jest",
     "translations": "npm-run-all translations:*",
@@ -23,8 +23,8 @@
     "verify": "npm-run-all build lint test"
   },
   "dependencies": {
-    "@patternfly/react-core": "4.135.0",
-    "@patternfly/react-table": "4.29.0",
+    "@patternfly/react-core": "^4.182.0",
+    "@patternfly/react-table": "^4.51.0",
     "@redhat-cloud-services/frontend-components": "3.3.13",
     "@redhat-cloud-services/frontend-components-notifications": "3.2.4",
     "@redhat-cloud-services/frontend-components-translations": "3.2.2",
