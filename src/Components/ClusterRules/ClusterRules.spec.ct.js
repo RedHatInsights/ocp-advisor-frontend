@@ -25,6 +25,7 @@ const EXPANDABLES = '[class="pf-c-table__expandable-row pf-m-expanded"]';
 const CHIP = 'div[class=pf-c-chip]';
 const ROW = 'tbody[role=rowgroup]';
 const CHIP_GROUP = '.pf-c-chip-group__main';
+const TABLE_HEADERS = ['Description', 'Added', 'Total risk'];
 
 const RULES_ENABLED = filter(data, (it) => !it.disabled).length;
 
@@ -94,6 +95,11 @@ describe('cluster rules table', () => {
 
   it('renders ClusterRules', () => {
     cy.get('div[id=cluster-recs-list-table]').should('have.length', 1);
+    cy.get('table th')
+      .then(($els) => {
+        return map(Cypress.$.makeArray($els), 'innerText');
+      })
+      .should('deep.equal', TABLE_HEADERS);
   });
 
   it('only first item expanded', () => {
@@ -124,7 +130,11 @@ describe('cluster rules table', () => {
   });
 
   it('clear filters work', () => {
-// TODO implement test
+    // TODO implement test
+  });
+
+  it('chips can be cleared', () => {
+    // TODO implement test
   });
 
   Object.entries({
@@ -164,3 +174,59 @@ describe('cluster rules table', () => {
     });
   });
 });
+
+describe('empty cluster rules table', () => {
+  beforeEach(() => {
+    // tables utilizes federated module and throws error when RHEL Advisor manifestaion not found
+    window['__scalprum__'] = {
+      apps: {},
+      appsMetaData: {
+        advisor: {
+          manifestLocation:
+            'https://qa.console.redhat.com/beta/apps/advisor/fed-mods.json',
+          module: 'advisor#./RootApp',
+          name: 'advisor',
+        },
+      },
+    };
+    cy.intercept('*', (req) => {
+      req.destroy();
+    });
+
+    mount(
+      <IntlProvider locale="en">
+        <Provider store={getStore()}>
+          <MemoryRouter
+            initialEntries={['/clusters/41c30565-b4c9-49f2-a4ce-3277ad22b258']}
+            initialIndex={0}
+          >
+            <Route path="/clusters/:clusterId">
+              <ClusterRules reports={[]} />
+            </Route>
+          </MemoryRouter>
+        </Provider>
+      </IntlProvider>
+    );
+  });
+
+  it('cannot add filters', () => {
+    cy.get('input[data-ouia-component-type="PF4/TextInput"]').type('some text');
+    cy.get(CHIP_GROUP).should('not.exist');
+    cy.get('div.ins-c-conditional-filter')
+      .find('button[data-ouia-component-type="PF4/DropdownToggle"]')
+      .should('be.disabled');
+  });
+
+  it('renders no recommendation message', () => {
+    // FIXME makes sense to text for both strings in the card or as both are bundled together with one is enough?
+    cy.get('[data-ouia-component-id="no-recommendations"]')
+      .contains('The cluster is not affected by any known recommendations')
+      .should('exist');
+  });
+
+  it('does not render table', () => {
+    cy.get('table').should('not.exist');
+  });
+});
+
+// TODO what will happen if server fails to respond?
