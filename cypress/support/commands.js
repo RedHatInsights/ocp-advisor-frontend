@@ -29,12 +29,6 @@ Cypress.Commands.add(
   { prevSubject: 'optional' },
   (subject, item) => {
     const attr = `[data-ouia-component-id="${item}"]`;
-    let result;
-    if (subject) {
-      result = cy.wrap(subject).find(attr);
-    } else {
-      result = cy.get(attr);
-    }
-    return result;
+    return subject ? cy.wrap(subject).find(attr) : cy.get(attr);
   }
 );
