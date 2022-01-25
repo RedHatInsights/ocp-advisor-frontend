@@ -4,6 +4,8 @@ const PAGINATION_MENU = `${TOOLBAR} ${PAGINATION} div[data-ouia-component-type="
 const PAGINATION_NEXT = `${TOOLBAR} ${PAGINATION} button[data-action="next"]`;
 const CHIPS = `${TOOLBAR} div[data-ouia-component-type="PF4/ChipGroup"]`;
 const EMPTY_STATE = 'table .pf-c-empty-state';
+const TOGGLE_CHECKBOX = `${TOOLBAR} [data-ouia-component-id="clusters-selector-toggle-checkbox"]`;
+const TOGGLE_CHECKBOX_TEXT = `${TOOLBAR} #toggle-checkbox-text`;
 
 const filtrableTable = {
   isDisplayed: (id) => {
@@ -65,6 +67,12 @@ const filtrableTable = {
     nextButton: () => {
       return cy.get(PAGINATION_NEXT);
     },
+  },
+  toggleCheckbox: () => {
+    return cy.get(TOGGLE_CHECKBOX);
+  },
+  toggleCheckboxText: () => {
+    return cy.get(TOGGLE_CHECKBOX_TEXT);
   },
 };
 

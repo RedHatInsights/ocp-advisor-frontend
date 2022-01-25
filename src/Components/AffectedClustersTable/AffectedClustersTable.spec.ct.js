@@ -19,10 +19,6 @@ const DEFAULT_ROW_COUNT = 20;
 const PAGINATION_VALUES = [10, 20, 50, 100];
 const SEARCH_ITEMS = ['ff', 'CUSTOM', 'Foobar', 'Not existing cluster'];
 
-view.getToggleCheckboxText = () => {
-  return view.toolbar().find('#toggle-checkbox-text');
-};
-
 function filterData(text = '') {
   // FIXME: is this the right way to use loadash?
   return filter(data['enabled'], (it) =>
@@ -154,9 +150,9 @@ describe('non-empty successful affected clusters table', () => {
   });
 
   it('can select/deselect all', () => {
-    view.toolbar().find('#toggle-checkbox').click();
+    view.toggleCheckbox().click();
     view
-      .getToggleCheckboxText()
+      .toggleCheckboxText()
       .should('have.text', `${filterData().length} selected`);
     view.toolbar().find('.pf-c-dropdown__toggle').find('button').click();
     view
@@ -165,11 +161,11 @@ describe('non-empty successful affected clusters table', () => {
       .find('li')
       .eq(1)
       .click({ force: true });
-    view.getToggleCheckboxText().should('not.exist');
+    view.toggleCheckboxText().should('not.exist');
   });
 
   it('can disable selected clusters', () => {
-    view.toolbar().find('#toggle-checkbox').click();
+    view.toggleCheckbox().click();
     view.toolbar().find('button[aria-label=Actions]').click();
     cy.get('.pf-c-dropdown__menu')
       .find('li')
