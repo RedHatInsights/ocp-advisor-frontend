@@ -3,6 +3,7 @@ import { mount } from '@cypress/react';
 
 import { Intl } from '../../Utilities/intlHelper';
 import { ClusterHeader } from './ClusterHeader';
+import '@patternfly/patternfly/patternfly.scss';
 
 // selectors
 const HEADER_TITLE = '#cluster-header-title';

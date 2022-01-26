@@ -6,6 +6,7 @@ import { Provider } from 'react-redux';
 
 import getStore from '../../Store';
 import ClusterRules from './ClusterRules';
+import '@patternfly/patternfly/patternfly.scss';
 
 describe('cluster rules table', () => {
   beforeEach(() => {

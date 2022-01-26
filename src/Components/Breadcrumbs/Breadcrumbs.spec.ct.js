@@ -2,6 +2,7 @@ import React from 'react';
 import { mount } from '@cypress/react';
 import { IntlProvider } from 'react-intl';
 import { MemoryRouter } from 'react-router-dom';
+import '@patternfly/patternfly/patternfly.scss';
 
 import Breadcrumbs from './';
 

@@ -7,6 +7,7 @@ import { Intl } from '../../Utilities/intlHelper';
 import getStore from '../../Store';
 import { ClustersListTable } from './ClustersListTable';
 import props from '../../../cypress/fixtures/ClustersListTable/data.json';
+import '@patternfly/patternfly/patternfly.scss';
 
 describe('clusters list table', () => {
   const CLUSTERS_LIST_TABLE = 'div[id=clusters-list-table]';

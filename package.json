@@ -53,6 +53,7 @@
     "@cypress/react": "^5.10.0",
     "@cypress/webpack-dev-server": "^1.6.0",
     "@formatjs/cli": "4.2.27",
+    "@patternfly/patternfly": "^4.164.2",
     "@redhat-cloud-services/eslint-config-redhat-cloud-services": "1.2.1",
     "@redhat-cloud-services/frontend-components-config": "^4.2.7",
     "babel-core": "7.0.0-bridge.0",
