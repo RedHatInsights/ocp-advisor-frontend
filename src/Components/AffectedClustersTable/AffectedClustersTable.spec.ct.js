@@ -29,6 +29,7 @@ Cypress.Commands.add('countRows', (count) => {
 Cypress.Commands.add('getToggleCheckboxText', () =>
   cy.get(TABLE).find(TOOLBAR).find('#toggle-checkbox-text')
 );
+Cypress.Commands.add('getFirstRow', () => cy.get(ROW_GROUP).children().eq(0));
 
 function filterData(text = '') {
   // FIXME: is this the right way to use loadash?
@@ -183,7 +184,8 @@ describe('non-empty successful affected clusters table', () => {
   });
 
   it('renders table header', () => {
-    cy.get(TABLE).find('th').should('have.text', 'Name');
+    cy.get(TABLE).find('th').children().eq(0).should('have.text', 'Name');
+    cy.get(TABLE).find('th').children().eq(1).should('have.text', 'Last seen');
   });
 
   it('can select/deselect all', () => {
@@ -251,6 +253,12 @@ describe('non-empty successful affected clusters table', () => {
         });
     });
   });
+
+  it('sorts N/A in last seen correctly', () => {
+    cy.get('.pf-c-table__sort').eq(1);
+    cy.getFirstRow().find('span').should('have.text', 'N/A');
+    cy.get('.pf-c-table__sort').eq(1).click();
+  });
 });
 
 describe('empty successful affected clusters table', () => {
@@ -286,7 +294,8 @@ describe('empty successful affected clusters table', () => {
   });
 
   it('renders table header', () => {
-    cy.get(TABLE).find('th').should('have.text', 'Name');
+    cy.get(TABLE).find('th').children().eq(0).should('have.text', 'Name');
+    cy.get(TABLE).find('th').children().eq(1).should('have.text', 'Last seen');
   });
 });
 
@@ -323,6 +332,7 @@ describe('empty failed affected clusters table', () => {
   });
 
   it('renders table header', () => {
-    cy.get(TABLE).find('th').should('have.text', 'Name');
+    cy.get(TABLE).find('th').children().eq(0).should('have.text', 'Name');
+    cy.get(TABLE).find('th').children().eq(1).should('have.text', 'Last seen');
   });
 });
