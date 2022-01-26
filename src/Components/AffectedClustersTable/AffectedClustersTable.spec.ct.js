@@ -8,6 +8,7 @@ import { AffectedClustersTable } from './AffectedClustersTable';
 import data from '../../../cypress/fixtures/AffectedClustersTable/data.json';
 import { Intl } from '../../Utilities/intlHelper';
 import getStore from '../../Store';
+import '@patternfly/patternfly/patternfly.scss';
 
 // selectors
 const TABLE = 'div[id=affected-list-table]';
