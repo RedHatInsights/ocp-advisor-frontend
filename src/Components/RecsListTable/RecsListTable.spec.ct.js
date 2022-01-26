@@ -7,6 +7,7 @@ import { RecsListTable } from './RecsListTable';
 import getStore from '../../Store';
 import props from '../../../cypress/fixtures/RecsListTable/data.json';
 import { Intl } from '../../Utilities/intlHelper';
+import '@patternfly/patternfly/patternfly.scss';
 
 // selectors
 const RECS_LIST_TABLE = 'div[id=recs-list-table]';

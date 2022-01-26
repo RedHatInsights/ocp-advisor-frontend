@@ -6,6 +6,7 @@ import { Intl } from '../../Utilities/intlHelper';
 import { Cluster } from './Cluster';
 import { Provider } from 'react-redux';
 import getStore from '../../Store';
+import '@patternfly/patternfly/patternfly.scss';
 
 describe('cluster page', () => {
   // selectors
