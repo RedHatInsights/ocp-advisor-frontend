@@ -147,7 +147,8 @@ describe('non-empty successful affected clusters table', () => {
   });
 
   it('renders table header', () => {
-    view.headers().should('have.text', 'Name');
+    cy.get(TABLE).find('th').children().eq(0).should('have.text', 'Name');
+    cy.get(TABLE).find('th').children().eq(1).should('have.text', 'Last seen');
   });
 
   it('can select/deselect all', () => {
@@ -201,6 +202,15 @@ describe('non-empty successful affected clusters table', () => {
       });
     });
   });
+
+  it('sorts N/A in last seen correctly', () => {
+    cy.get(TABLE)
+      .find('td[data-key=2]')
+      .children()
+      .eq(0)
+      .should('have.text', 'N/A');
+    cy.get('.pf-c-table__sort').eq(1).click();
+  });
 });
 
 describe('empty successful affected clusters table', () => {
@@ -236,7 +246,8 @@ describe('empty successful affected clusters table', () => {
   });
 
   it('renders table header', () => {
-    view.headers().should('have.text', 'Name');
+    cy.get(TABLE).find('th').children().eq(0).should('have.text', 'Name');
+    cy.get(TABLE).find('th').children().eq(1).should('have.text', 'Last seen');
   });
 });
 
@@ -273,6 +284,7 @@ describe('empty failed affected clusters table', () => {
   });
 
   it('renders table header', () => {
-    view.headers().should('have.text', 'Name');
+    cy.get(TABLE).find('th').children().eq(0).should('have.text', 'Name');
+    cy.get(TABLE).find('th').children().eq(1).should('have.text', 'Last seen');
   });
 });
