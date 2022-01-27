@@ -147,7 +147,9 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
         ...r,
         cells: [
           <span key={r.id}>
-            <Link to={`/clusters/${r.id}`}>{r.cells[0]}</Link>
+            <Link to={`/clusters/${r.id}?first=${rule.rule_id}`}>
+              {r.cells[0]}
+            </Link>
           </span>,
         ],
       }));
