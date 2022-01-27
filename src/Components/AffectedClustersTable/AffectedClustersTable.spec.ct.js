@@ -9,9 +9,9 @@ import data from '../../../cypress/fixtures/AffectedClustersTable/data.json';
 import { Intl } from '../../Utilities/intlHelper';
 import getStore from '../../Store';
 import '@patternfly/patternfly/patternfly.scss';
-import { filtrableTable } from '../../../cypress/views/filtrableTable';
+import { filterableTable } from '../../../cypress/views/filterableTable';
 
-const view = filtrableTable;
+const view = filterableTable;
 
 // selectors
 const TABLE = 'div[id=affected-list-table]';
