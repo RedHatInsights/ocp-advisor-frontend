@@ -253,14 +253,14 @@ export const RECS_LIST_COLUMNS_KEYS = [
   'total_risk',
   'impacted_clusters_count',
 ];
-export const AFFECTED_CLUSTERS_COLUMNS_KEYS = [
+export const AFFECTED_CLUSTERS_COLUMNS = [
   {
     title: intl.formatMessage(messages.name),
-    transforms: [sortable, cellWidth(100)],
+    transforms: [sortable, cellWidth(80)],
   },
   {
     title: intl.formatMessage(messages.lastSeen),
-    transforms: [sortable, cellWidth(15)],
+    transforms: [sortable, cellWidth(20)],
   },
 ];
 export const DEBOUNCE_DELAY = 600;

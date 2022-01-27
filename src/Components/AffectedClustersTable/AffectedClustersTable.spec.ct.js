@@ -255,7 +255,6 @@ describe('non-empty successful affected clusters table', () => {
   });
 
   it('sorts N/A in last seen correctly', () => {
-    cy.get('.pf-c-table__sort').eq(1);
     cy.getFirstRow().find('span').should('have.text', 'N/A');
     cy.get('.pf-c-table__sort').eq(1).click();
   });

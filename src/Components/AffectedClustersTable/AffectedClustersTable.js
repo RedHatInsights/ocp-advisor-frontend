@@ -25,7 +25,7 @@ import {
   NoAffectedClusters,
   NoMatchingClusters,
 } from '../MessageState/EmptyStates';
-import { AFFECTED_CLUSTERS_COLUMNS_KEYS } from '../../AppConstants';
+import { AFFECTED_CLUSTERS_COLUMNS } from '../../AppConstants';
 import Loading from '../Loading/Loading';
 import { updateAffectedClustersFilters } from '../../Services/Filters';
 import messages from '../../Messages';
@@ -203,7 +203,6 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
     setHost(host);
   };
 
-  console.log(query);
   return (
     <div id="affected-list-table">
       {disableRuleModalOpen && (
@@ -270,7 +269,7 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
         aria-label="Table of affected clusters"
         ouiaId="clusters"
         variant="compact"
-        cells={AFFECTED_CLUSTERS_COLUMNS_KEYS}
+        cells={AFFECTED_CLUSTERS_COLUMNS}
         rows={displayedRows}
         sortBy={{
           index: filters.sortIndex,
