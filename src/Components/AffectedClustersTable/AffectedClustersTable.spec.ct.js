@@ -204,7 +204,11 @@ describe('non-empty successful affected clusters table', () => {
   });
 
   it('sorts N/A in last seen correctly', () => {
-    cy.getFirstRow().find('span').should('have.text', 'N/A');
+    cy.get(TABLE)
+      .find('td[data-key=2]')
+      .children()
+      .eq(0)
+      .should('have.text', 'N/A');
     cy.get('.pf-c-table__sort').eq(1).click();
   });
 });

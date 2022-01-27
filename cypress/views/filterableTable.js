@@ -61,4 +61,4 @@ const filterableTable = {
   toggleCheckboxText: () => cy.get(TOGGLE_CHECKBOX_TEXT),
 };
 
-export default filterableTable;
+export { filterableTable };
