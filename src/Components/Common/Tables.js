@@ -182,15 +182,12 @@ export const paramParser = (search) => {
   return Array.from(searchParams).reduce(
     (acc, [key, value]) => ({
       ...acc,
-      [key]:
-        key === 'text'
-          ? // just copy the full value
-            value
-          : value === 'true' || value === 'false'
-          ? // parse boolean
-            JSON.parse(value)
-          : // parse array of values
-            value.split(','),
+      [key]: ['text', 'first'].includes(key)
+        ? value // just copy the full value
+        : value === 'true' || value === 'false'
+        ? JSON.parse(value) // parse boolean
+        : // parse array of values
+          value.split(','),
     }),
     {}
   );
