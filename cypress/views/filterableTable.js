@@ -8,8 +8,9 @@ const TOGGLE_CHECKBOX = `${TOOLBAR} [data-ouia-component-id="clusters-selector-t
 const TOGGLE_CHECKBOX_TEXT = `${TOOLBAR} #toggle-checkbox-text`;
 
 const filterableTable = {
-  isDisplayed: (id) => {
-    cy.get(`div[id=${id}]`)
+  isDisplayed: (id) =>
+    cy
+      .get(`div[id=${id}]`)
       .within(($div) => {
         cy.get(TOOLBAR).should('have.length', 1);
         cy.get('table').should('have.length', 1);
@@ -18,17 +19,16 @@ const filterableTable = {
           1
         );
       })
-      .should('have.length', 1);
-  },
+      .should('have.length', 1),
   rows: () =>
     cy
       .get('table tbody[role=rowgroup]')
       .find('[data-ouia-component-type="PF4/TableRow"]'),
-  checkRowCounts: (n) => {
-    cy.get('table tbody[role=rowgroup]')
+  checkRowCounts: (n) =>
+    cy
+      .get('table tbody[role=rowgroup]')
       .find('[data-ouia-component-type="PF4/TableRow"]')
-      .should('have.length', n);
-  },
+      .should('have.length', n),
   headers: () => cy.get('table').find('th'),
   chips: () => cy.get(CHIPS),
   toolbar: () => cy.get(TOOLBAR),
