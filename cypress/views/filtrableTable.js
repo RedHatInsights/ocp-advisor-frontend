@@ -20,28 +20,19 @@ const filterableTable = {
       })
       .should('have.length', 1);
   },
-  rows: () => {
-    return cy
+  rows: () =>
+    cy
       .get('table tbody[role=rowgroup]')
-      .find('[data-ouia-component-type="PF4/TableRow"]');
-  },
+      .find('[data-ouia-component-type="PF4/TableRow"]'),
   checkRowCounts: (n) => {
     cy.get('table tbody[role=rowgroup]')
       .find('[data-ouia-component-type="PF4/TableRow"]')
       .should('have.length', n);
   },
-  headers: () => {
-    return cy.get('table').find('th');
-  },
-  chips: () => {
-    return cy.get(CHIPS);
-  },
-  toolbar: () => {
-    return cy.get(TOOLBAR);
-  },
-  emptyState: () => {
-    return cy.get(`${EMPTY_STATE}`);
-  },
+  headers: () => cy.get('table').find('th'),
+  chips: () => cy.get(CHIPS),
+  toolbar: () => cy.get(TOOLBAR),
+  emptyState: () => cy.get(`${EMPTY_STATE}`),
   pagination: {
     checkValues: (expected) => {
       cy.get(PAGINATION_MENU)
@@ -64,16 +55,10 @@ const filterableTable = {
         .contains(`${value}`)
         .click({ force: true }); // caused by the css issue
     },
-    nextButton: () => {
-      return cy.get(PAGINATION_NEXT);
-    },
+    nextButton: () => cy.get(PAGINATION_NEXT),
   },
-  toggleCheckbox: () => {
-    return cy.get(TOGGLE_CHECKBOX);
-  },
-  toggleCheckboxText: () => {
-    return cy.get(TOGGLE_CHECKBOX_TEXT);
-  },
+  toggleCheckbox: () => cy.get(TOGGLE_CHECKBOX),
+  toggleCheckboxText: () => cy.get(TOGGLE_CHECKBOX_TEXT),
 };
 
 export { filterableTable };
