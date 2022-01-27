@@ -7,7 +7,7 @@ const EMPTY_STATE = 'table .pf-c-empty-state';
 const TOGGLE_CHECKBOX = `${TOOLBAR} [data-ouia-component-id="clusters-selector-toggle-checkbox"]`;
 const TOGGLE_CHECKBOX_TEXT = `${TOOLBAR} #toggle-checkbox-text`;
 
-const filtrableTable = {
+const filterableTable = {
   isDisplayed: (id) => {
     cy.get(`div[id=${id}]`)
       .within(($div) => {
@@ -76,4 +76,4 @@ const filtrableTable = {
   },
 };
 
-export { filtrableTable };
+export { filterableTable };
