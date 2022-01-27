@@ -46,6 +46,7 @@ import {
   CLUSTER_RULES_INITIAL_STATE,
   updateClusterRulesFilters,
 } from '../../Services/Filters';
+import { getErrorKey, getPluginName } from '../../Utilities/Rule';
 
 const ClusterRules = ({ reports }) => {
   const intl = useIntl();
@@ -57,6 +58,8 @@ const ClusterRules = ({ reports }) => {
   const [filteredRows, setFilteredRows] = useState([]);
   const [displayedRows, setDisplayedRows] = useState([]);
   const [isAllExpanded, setIsAllExpanded] = useState(false);
+  const [expandFirst, setExpandFirst] = useState(true);
+  const [firstRule, setFirstRule] = useState(''); // show a particular rule first
   const results = filteredRows.length;
   const { search } = useLocation();
 
@@ -85,6 +88,10 @@ const ClusterRules = ({ reports }) => {
           sortObj.name
         );
         paramsObject.sortDirection = sortObj.direction;
+      }
+      if (paramsObject.first) {
+        setFirstRule(paramsObject.first);
+        delete paramsObject.first;
       }
       updateFilters({ ...filters, ...paramsObject });
     }
@@ -167,16 +174,33 @@ const ClusterRules = ({ reports }) => {
       ]);
 
   const buildDisplayedRows = (rows, index, direction) => {
-    const sortingRows = [...rows].sort((firstItem, secondItem) => {
-      const fst = firstItem[0].rule[CLUSTER_RULES_COLUMNS_KEYS[index - 1]];
-      const snd = secondItem[0].rule[CLUSTER_RULES_COLUMNS_KEYS[index - 1]];
-      return fst > snd ? 1 : snd > fst ? -1 : 0;
-    });
-    if (direction === SortByDirection.desc) {
-      sortingRows.reverse();
+    let sortingRows = [...rows];
+    if (index >= 0) {
+      sortingRows = [...rows].sort((firstItem, secondItem) => {
+        const fst = firstItem[0].rule[CLUSTER_RULES_COLUMNS_KEYS[index - 1]];
+        const snd = secondItem[0].rule[CLUSTER_RULES_COLUMNS_KEYS[index - 1]];
+        return fst > snd ? 1 : snd > fst ? -1 : 0;
+      });
+      if (direction === SortByDirection.desc) {
+        sortingRows.reverse();
+      }
+    } else if (firstRule) {
+      const i = rows.findIndex((row) => {
+        const rule = row[0].rule;
+        /* rule_id is given with the plugin name only, 
+           thus we need to look at extra_data for the error key */
+        return (
+          rule.rule_id.split('.report')[0] === getPluginName(firstRule) &&
+          rule.extra_data.error_key === getErrorKey(firstRule)
+        );
+      });
+      i !== -1 && sortingRows.unshift(sortingRows.splice(i, 1)[0]);
     }
     return sortingRows.flatMap((row, index) => {
       const updatedRow = [...row];
+      if (expandFirst && index === 0) {
+        row[0].isOpen = true;
+      }
       row[1].parent = index * 2;
       return updatedRow;
     });
@@ -192,10 +216,13 @@ const ClusterRules = ({ reports }) => {
   };
 
   // TODO: update URL when filters changed
-  const addFilterParam = (param, values) =>
-    values.length > 0
+  const addFilterParam = (param, values) => {
+    setExpandFirst(false);
+    setFirstRule('');
+    return values.length > 0
       ? updateFilters({ ...filters, offset: 0, ...{ [param]: values } })
       : removeFilterParam(param);
+  };
 
   const filterConfigItems = [
     {
@@ -352,10 +379,10 @@ const ClusterRules = ({ reports }) => {
           </React.Fragment>
         }
         activeFiltersConfig={
-          filteredRows.length === 0 ? undefined : activeFiltersConfig
+          reports.length === 0 ? undefined : activeFiltersConfig
         }
       />
-      {filteredRows.length > 0 ? (
+      {reports.length > 0 ? (
         <React.Fragment>
           <Table
             aria-label={'Cluster recommendations table'}
