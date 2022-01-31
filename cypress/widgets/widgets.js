@@ -10,7 +10,6 @@ class Widget {
     }
   }
   locate() {
-    console.log('>>>', this.locator, this.parent);
     if (this.parent && this.parent.locator) {
       // first locate references View, second cypress
       return this.parent.locate().locate(this.locator);
