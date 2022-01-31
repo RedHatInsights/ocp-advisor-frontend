@@ -2,12 +2,6 @@ import { Widget } from '../widgets/widgets';
 
 const TOOLBAR = 'div[id="ins-primary-data-toolbar"]';
 const PAGINATION = 'div[data-ouia-component-type="PF4/Pagination"]';
-const PAGINATION_MENU = `${TOOLBAR} ${PAGINATION} div[data-ouia-component-type="PF4/PaginationOptionsMenu"]`;
-const PAGINATION_NEXT = `${TOOLBAR} ${PAGINATION} button[data-action="next"]`;
-const CHIPS = `${TOOLBAR} div[data-ouia-component-type="PF4/ChipGroup"]`;
-const EMPTY_STATE = 'table .pf-c-empty-state';
-const TOGGLE_CHECKBOX = `${TOOLBAR} [data-ouia-component-id="clusters-selector-toggle-checkbox"]`;
-const TOGGLE_CHECKBOX_TEXT = `${TOOLBAR} #toggle-checkbox-text`;
 
 class Rows extends Widget {
   locator = 'tbody[role=rowgroup] [data-ouia-component-type="PF4/TableRow"]';

@@ -9,16 +9,13 @@ import data from '../../../cypress/fixtures/AffectedClustersTable/data.json';
 import { Intl } from '../../Utilities/intlHelper';
 import getStore from '../../Store';
 import '@patternfly/patternfly/patternfly.scss';
-import {
-  FilterableTable,
-  filterableTable,
-} from '../../../cypress/views/filterableTable';
+import { FilterableTable } from '../../../cypress/views/filterableTable';
 
 class View extends FilterableTable {
   isDisplayed = function () {
     return cy
       .get(`div[id=affected-list-table]`)
-      .within(($div) => {
+      .within(() => {
         this.toolbar.locate().should('have.length', 1);
         this.table.locate().should('have.length', 1);
         cy.get('div[data-ouia-component-type="RHI/TableToolbar"]').should(
@@ -131,7 +128,9 @@ describe('non-empty successful affected clusters table', () => {
     it(`can add name filter (${el})`, () => {
       cy.get(TABLE).find('#name-filter').type(el);
       // renders filter chips
-      cy.locate(view.toolbar.chips).should('contain', 'Name').and('contain', el);
+      cy.locate(view.toolbar.chips)
+        .should('contain', 'Name')
+        .and('contain', el);
       // check matched clusters
       cy.wrap(filterData(el)).then((data) => {
         if (data.length === 0) {
@@ -174,15 +173,20 @@ describe('non-empty successful affected clusters table', () => {
 
   it('can select/deselect all', () => {
     cy.locate(view.toolbar.toggleCheckbox).click();
-    cy.locate(view.toolbar.toggleCheckboxText)
-      .should('have.text', `${filterData().length} selected`);
-      cy.locate(view.toolbar).find('.pf-c-dropdown__toggle').find('button').click();
-      cy.locate(view.toolbar)
+    cy.locate(view.toolbar.toggleCheckboxText).should(
+      'have.text',
+      `${filterData().length} selected`
+    );
+    cy.locate(view.toolbar)
+      .find('.pf-c-dropdown__toggle')
+      .find('button')
+      .click();
+    cy.locate(view.toolbar)
       .find('ul[class=pf-c-dropdown__menu]')
       .find('li')
       .eq(1)
       .click({ force: true });
-      cy.locate(view.toolbar.toggleCheckboxText).should('not.exist');
+    cy.locate(view.toolbar.toggleCheckboxText).should('not.exist');
   });
 
   it('can disable selected clusters', () => {
@@ -202,7 +206,7 @@ describe('non-empty successful affected clusters table', () => {
       .eq(0)
       .find('.pf-c-table__action button')
       .click({ force: true });
-      cy.locate(view.table.rows)
+    cy.locate(view.table.rows)
       .eq(0)
       .find('.pf-c-dropdown__menu button')
       .click({ force: true });
