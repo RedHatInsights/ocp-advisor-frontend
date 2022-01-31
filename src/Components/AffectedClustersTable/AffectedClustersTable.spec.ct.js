@@ -208,6 +208,16 @@ describe('non-empty successful affected clusters table', () => {
       .find('td[data-key=2]')
       .children()
       .eq(0)
+      .should('have.text', '2 years ago');
+    cy.get('.pf-c-table__sort').eq(1).click();
+  });
+  it('sorting the last seen column', () => {
+    cy.get(TABLE);
+    cy.get('.pf-c-table__sort').eq(1).click();
+    cy.get(TABLE)
+      .find('td[data-key=2]')
+      .children()
+      .eq(0)
       .should('have.text', 'N/A');
     cy.get('.pf-c-table__sort').eq(1).click();
   });

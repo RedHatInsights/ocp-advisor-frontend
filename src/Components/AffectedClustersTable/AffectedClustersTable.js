@@ -133,35 +133,25 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
       cells: [r?.cluster_name || r.cluster],
       last_checked_at: r?.last_checked_at,
     }));
-    if (filters.sortIndex !== -1) {
-      return rows
-        .filter((row) => {
-          return row?.cells[0]
-            .toLowerCase()
-            .includes(filters.text.toLowerCase());
-        })
-        .sort((a, b) => {
-          let fst, snd;
-          const d = filters.sortDirection === 'asc' ? 1 : -1;
-          switch (filters.sortIndex) {
-            case AFFECTED_CLUSTERS_NAME_CELL:
-              if (filters.sortDirection === 'asc') {
-                return a?.cells[0].localeCompare(b?.cells[0]);
-              }
-              return b?.cells[0].localeCompare(a?.cells[0]);
-            case AFFECTED_CLUSTERS_LAST_SEEN:
-              if (a.last_checked_at === '' || undefined) {
-                fst = new Date(a.last_checked_at || 0);
-                snd = new Date(b.last_checked_at || 0);
-                return fst > snd ? d : snd > fst ? -d : 0;
-              }
-          }
-        });
-    } else
-      return rows.slice(
-        filters.limit * (page - 1),
-        filters.limit * (page - 1) + filters.limit
-      );
+    return rows
+      .filter((row) => {
+        return row?.cells[0].toLowerCase().includes(filters.text.toLowerCase());
+      })
+      .sort((a, b) => {
+        let fst, snd;
+        const d = filters.sortDirection === 'asc' ? 1 : -1;
+        switch (filters.sortIndex) {
+          case AFFECTED_CLUSTERS_NAME_CELL:
+            if (filters.sortDirection === 'asc') {
+              return a?.cells[0].localeCompare(b?.cells[0]);
+            }
+            return b?.cells[0].localeCompare(a?.cells[0]);
+          case AFFECTED_CLUSTERS_LAST_SEEN:
+            fst = new Date(a.last_checked_at || 0);
+            snd = new Date(b.last_checked_at || 0);
+            return fst > snd ? d : snd > fst ? -d : 0;
+        }
+      });
   };
 
   const buildDisplayedRows = (rows) => {
