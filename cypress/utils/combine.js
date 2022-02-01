@@ -45,32 +45,4 @@ function* combineFields(data, fields = null) {
   }
 }
 
-/**
- * Iterate over an array using a sliding window that
- * shortens it at each iteration
- * @param {*} arr
- * [1,2,3] -> [1,2,3], [2,3], [3]
- */
-function* slide(arr) {
-  let i = 0;
-  while (i < arr.length) {
-    yield arr.slice(i++);
-  }
-}
-
-/**
- * Iterate over an array using a sliding window that
- * shortens it by half at each iteration
- * @param {*} arr
- * [1,2,3] -> [1,2,3], [3]
- */
-function* slideHalf(arr) {
-  yield arr;
-  const size = arr.length;
-  if (size > 1) {
-    const splitPoint = Math.ceil(size / 2);
-    yield* slideHalf(arr.slice(splitPoint));
-  }
-}
-
 export { cumulativeCombinations, combineFields, slide, slideHalf };

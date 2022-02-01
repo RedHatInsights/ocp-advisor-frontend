@@ -18,8 +18,8 @@ import ClusterRules from './ClusterRules';
 import '@patternfly/patternfly/patternfly.scss';
 import data from '../../../cypress/fixtures/ClusterRules/data.json';
 import { TOTAL_RISK, CATEGORIES } from '../../../cypress/utils/globals';
-import { combineFields, slideHalf } from '../../../cypress/utils/combine';
 import { applyFilters } from '../../../cypress/utils/ui';
+import { cumulativeCombinations } from '../../../cypress/utils/combine';
 
 const EXPANDABLES = '[class="pf-c-table__expandable-row pf-m-expanded"]';
 const CHIP_GROUP = '.pf-c-chip-group__main';
@@ -246,12 +246,12 @@ const filtersConf = {
   },
   risk: {
     selectorText: 'Total risk',
-    values: TOTAL_RISK_VALUES,
+    values: Array.from(cumulativeCombinations(TOTAL_RISK_VALUES)),
     type: 'checkbox',
   },
   category: {
     selectorText: 'Category',
-    values: Object.keys(CATEGORIES),
+    values: Array.from(cumulativeCombinations(Object.keys(CATEGORIES))),
     type: 'checkbox',
   },
 };
@@ -283,17 +283,10 @@ function filterData(data, filters) {
   return filteredData;
 }
 
-function buildFiltersCombinations() {
-  const data = {};
-  for (const [key, value] of Object.entries(filtersConf)) {
-    if (value.type === 'checkbox') {
-      data[key] = Array.from(slideHalf(value.values));
-    } else {
-      data[key] = value.values;
-    }
-  }
-  return Array.from(combineFields(data));
-}
+// TODO add more combinations of filters for testing
+const filterCombos = [
+  { risk: ['Critical', 'Moderate'], category: ['Service Availability'] },
+];
 
 describe('test data', () => {
   it('has more than 1 enabled rule', () => {
@@ -356,7 +349,31 @@ describe('cluster rules table filtering', () => {
     );
   });
 
-  buildFiltersCombinations().forEach((filters) => {
+  Object.entries(filtersConf).forEach(([k, v]) => {
+    v.values.forEach((filterValues) => {
+      it(`test filtering ${k} ${filterValues}`, () => {
+        const filters = {};
+        filters[k] = filterValues;
+        const sortedDescriptions = map(
+          filterData(dataDistinguishable, filters),
+          'description'
+        ).sort();
+        applyFilters(filters, filtersConf);
+        if (sortedDescriptions.length === 0) {
+          // TODO check empty table view
+        } else {
+          cy.get(`td[data-label="Description"]`)
+            .then(($els) => {
+              return map(Cypress.$.makeArray($els), 'innerText').sort();
+            })
+            .should('deep.equal', sortedDescriptions);
+        }
+        // TODO check chips
+      });
+    });
+  });
+
+  filterCombos.forEach((filters) => {
     it(`test sorting ${Object.keys(filters)}`, () => {
       const sortedDescriptions = map(
         filterData(dataDistinguishable, filters),
