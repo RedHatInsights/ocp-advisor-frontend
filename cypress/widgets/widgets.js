@@ -17,15 +17,15 @@ class Widget {
       return cy.locate(this.locator);
     }
   }
-  static nested(parent, it, ...args) {
+  nested(it, ...args) {
     if (it instanceof Widget) {
       // already instanciated object
-      it.parent = parent;
+      it.parent = this;
       return it;
     } else {
       // instanciate it
       const inst = new it(...args);
-      inst.parent = parent;
+      inst.parent = this;
       return inst;
     }
   }

@@ -12,9 +12,9 @@ class Rows extends Widget {
 
 class Table extends Widget {
   locator = 'table';
-  headers = Widget.nested(this, new Widget('th'));
-  emptyState = Widget.nested(this, new Widget('.pf-c-empty-state'));
-  rows = Widget.nested(this, Rows);
+  headers = this.nested(new Widget('th'));
+  emptyState = this.nested(new Widget('.pf-c-empty-state'));
+  rows = this.nested(Rows);
 }
 
 class Pagination extends Widget {
@@ -44,19 +44,17 @@ class Pagination extends Widget {
       .contains(`${value}`)
       .click({ force: true }); // caused by the css issue
   };
-  nextButton = Widget.nested(this, new Widget('button[data-action="next"]'));
+  nextButton = this.nested(new Widget('button[data-action="next"]'));
 }
 
 class Toolbar extends Widget {
   locator = TOOLBAR;
-  pagination = Widget.nested(this, Pagination);
-  toggleCheckbox = Widget.nested(
-    this,
+  pagination = this.nested(Pagination);
+  toggleCheckbox = this.nested(
     new Widget('[data-ouia-component-id="clusters-selector-toggle-checkbox"]')
   );
-  toggleCheckboxText = Widget.nested(this, new Widget('#toggle-checkbox-text'));
-  chips = Widget.nested(
-    this,
+  toggleCheckboxText = this.nested(new Widget('#toggle-checkbox-text'));
+  chips = this.nested(
     new Widget('div[data-ouia-component-type="PF4/ChipGroup"]')
   );
 }
@@ -65,8 +63,8 @@ class FilterableTable extends Widget {
   // we do not provide any locator because
   // it is an overkill for component testing
 
-  table = Widget.nested(this, Table);
-  toolbar = Widget.nested(this, Toolbar);
+  table = this.nested(Table);
+  toolbar = this.nested(Toolbar);
 }
 
 export { FilterableTable };
