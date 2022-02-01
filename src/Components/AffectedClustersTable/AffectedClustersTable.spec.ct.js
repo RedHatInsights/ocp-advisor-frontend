@@ -205,22 +205,26 @@ describe('non-empty successful affected clusters table', () => {
 
   it('sorting the last seen column', () => {
     cy.get(TABLE)
-      .find('td[data-key=2]')
+      .find('td[data-key=1]')
       .children()
       .eq(0)
-      .should('have.text', '2 years ago');
-    cy.get('.pf-c-table__sort').eq(1).click();
+      .should('have.text', '694d3942-9cb7-42b8-aad2-1f28cc7f0a3b');
   });
 
   it('sorts N/A in last seen correctly', () => {
     cy.get(TABLE);
     cy.get('.pf-c-table__sort').eq(1).click();
     cy.get(TABLE)
-      .find('td[data-key=2]')
+      .find('td[data-key=1]')
       .children()
       .eq(0)
-      .should('have.text', 'N/A');
+      .should('have.text', 'foobar cluster');
     cy.get('.pf-c-table__sort').eq(1).click();
+    cy.get(TABLE)
+      .find('td[data-key=1]')
+      .children()
+      .eq(0)
+      .should('have.text', 'dd2ef343-9131-46f5-8962-290fdfdf2199');
   });
 });
 
