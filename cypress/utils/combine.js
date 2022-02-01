@@ -45,4 +45,4 @@ function* combineFields(data, fields = null) {
   }
 }
 
-export { cumulativeCombinations, combineFields, slide, slideHalf };
+export { cumulativeCombinations, combineFields };
