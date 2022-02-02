@@ -10,7 +10,7 @@ import ClusterRules from './ClusterRules';
 import '@patternfly/patternfly/patternfly.scss';
 import data from '../../../cypress/fixtures/ClusterRules/data.json';
 import { TOTAL_RISK, CATEGORIES } from '../../../cypress/utils/globals';
-import { applyFilters } from '../../../cypress/utils/ui';
+import { applyFilters } from '../../../cypress/utils/filters';
 import { cumulativeCombinations } from '../../../cypress/utils/combine';
 import { CHIP_GROUP, CHIP, ROWS } from '../../../cypress/views/filterableTable';
 
