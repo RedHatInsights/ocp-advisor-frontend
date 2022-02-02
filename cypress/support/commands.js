@@ -24,11 +24,21 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
+import { Widget } from '../widgets/widgets';
+
+Cypress.Commands.add('locate', { prevSubject: 'optional' }, (subject, item) => {
+  return item instanceof Widget
+    ? item.locate()
+    : subject
+    ? subject.find(item)
+    : cy.get(item);
+});
+
 Cypress.Commands.add(
   'byOuiaId',
   { prevSubject: 'optional' },
   (subject, item) => {
     const attr = `[data-ouia-component-id="${item}"]`;
-    return subject ? cy.wrap(subject).find(attr) : cy.get(attr);
+    return subject ? subject.find(attr) : cy.get(attr);
   }
 );
