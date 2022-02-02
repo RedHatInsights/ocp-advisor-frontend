@@ -20,9 +20,9 @@ import data from '../../../cypress/fixtures/ClusterRules/data.json';
 import { TOTAL_RISK, CATEGORIES } from '../../../cypress/utils/globals';
 import { applyFilters } from '../../../cypress/utils/ui';
 import { cumulativeCombinations } from '../../../cypress/utils/combine';
+import { CHIP_GROUP, CHIP, ROWS } from '../../../cypress/views/filterableTable';
 
 const EXPANDABLES = '[class="pf-c-table__expandable-row pf-m-expanded"]';
-const CHIP_GROUP = '.pf-c-chip-group__main';
 const TABLE_HEADERS = ['Description', 'Added', 'Total risk'];
 
 const RULES_ENABLED = filter(data, (it) => !it.disabled).length;
@@ -122,17 +122,9 @@ describe('cluster rules table', () => {
     });
   });
 
-  it('no chips are displayed', () => {
+  it('no chips are displayed by default', () => {
     cy.get(CHIP_GROUP).should('not.exist');
     cy.get('button').contains('Reset filters').should('not.exist');
-  });
-
-  it('clear filters work', () => {
-    // TODO implement test
-  });
-
-  it('chips can be cleared', () => {
-    // TODO implement test
   });
 
   Object.entries({
@@ -313,6 +305,13 @@ describe('test data', () => {
       })
     ).should('have.length', 0);
   });
+
+  it('the first combo filter has less rules hitting that the default at least one', () => {
+    cy.wrap(filterData(dataDistinguishable, filterCombos[0]))
+      .its('length')
+      .should('be.gte', 1)
+      .and('be.lt', RULES_ENABLED);
+  });
 });
 
 describe('cluster rules table filtering', () => {
@@ -349,6 +348,28 @@ describe('cluster rules table filtering', () => {
     );
   });
 
+  it('clear filters work', () => {
+    // apply some filters
+    applyFilters(filterCombos[0], filtersConf);
+    cy.get(CHIP_GROUP).should('exist');
+    // clear filters
+    cy.get('button').contains('Reset filters').click();
+    cy.get(CHIP_GROUP).should('not.exist');
+    cy.get('button').contains('Reset filters').should('not.exist');
+    // expandable rows are duplicated, so we get one label
+    cy.get('table')
+      .find(ROWS)
+      .find(`td[data-label="Description"]`)
+      .should('have.length', RULES_ENABLED);
+  });
+
+  it('chips can be cleared', () => {
+    applyFilters(filterCombos[0], filtersConf);
+    cy.get(CHIP_GROUP).should('exist');
+    cy.get('button').contains('Reset filters').click();
+    cy.get(CHIP_GROUP).should('not.exist');
+  });
+
   Object.entries(filtersConf).forEach(([k, v]) => {
     v.values.forEach((filterValues) => {
       it(`test filtering ${k} ${filterValues}`, () => {
@@ -368,7 +389,26 @@ describe('cluster rules table filtering', () => {
             })
             .should('deep.equal', sortedDescriptions);
         }
-        // TODO check chips
+        // validate chips
+        cy.get(CHIP_GROUP).should('have.length', Object.keys(filters).length);
+        // check chips
+        for (const [k, v] of Object.entries(filters)) {
+          let groupName = filtersConf[k].selectorText;
+          // TODO remove this change CCXDEV-7192
+          groupName = groupName == 'Description' ? 'Name' : groupName;
+          const nExpectedItems =
+            filtersConf[k].type === 'checkbox' ? v.length : 1;
+          cy.get(CHIP_GROUP)
+            .contains(groupName)
+            .parents(CHIP_GROUP)
+            .then((chipGroup) => {
+              cy.wrap(chipGroup)
+                .find(CHIP)
+                .its('length')
+                .should('be.eq', Math.min(3, nExpectedItems)); // limited to show 3
+            });
+        }
+        cy.get('button').contains('Reset filters').should('exist');
       });
     });
   });
@@ -390,7 +430,26 @@ describe('cluster rules table filtering', () => {
           })
           .should('deep.equal', sortedDescriptions);
       }
-      // TODO check chips
+      // validate chips
+      cy.get(CHIP_GROUP).should('have.length', Object.keys(filters).length);
+      // check chips
+      for (const [k, v] of Object.entries(filters)) {
+        let groupName = filtersConf[k].selectorText;
+        // TODO remove this change CCXDEV-7192
+        groupName = groupName == 'Description' ? 'Name' : groupName;
+        const nExpectedItems =
+          filtersConf[k].type === 'checkbox' ? v.length : 1;
+        cy.get(CHIP_GROUP)
+          .contains(groupName)
+          .parents(CHIP_GROUP)
+          .then((chipGroup) => {
+            cy.wrap(chipGroup)
+              .find(CHIP)
+              .its('length')
+              .should('be.eq', Math.min(3, nExpectedItems)); // limited to show 3
+          });
+      }
+      cy.get('button').contains('Reset filters').should('exist');
     });
   });
 });
