@@ -3,15 +3,7 @@ import { mount } from '@cypress/react';
 import { IntlProvider } from 'react-intl';
 import { MemoryRouter, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import filter from 'lodash/filter';
-import map from 'lodash/map';
-import uniq from 'lodash/uniq';
-import sortBy from 'lodash/sortBy';
-import reverse from 'lodash/reverse';
-import flatMap from 'lodash/flatMap';
-import flatten from 'lodash/flatten';
-import intersection from 'lodash/intersection';
-import cloneDeep from 'lodash/cloneDeep';
+import _ from 'lodash';
 
 import getStore from '../../Store';
 import ClusterRules from './ClusterRules';
@@ -25,10 +17,10 @@ import { CHIP_GROUP, CHIP, ROWS } from '../../../cypress/views/filterableTable';
 const EXPANDABLES = '[class="pf-c-table__expandable-row pf-m-expanded"]';
 const TABLE_HEADERS = ['Description', 'Added', 'Total risk'];
 
-const RULES_ENABLED = filter(data, (it) => !it.disabled).length;
+const RULES_ENABLED = _.filter(data, (it) => !it.disabled).length;
 
 const TOTAL_RISK_VALUES = Object.keys(TOTAL_RISK);
-const CATEGORY_TAGS = flatten(Object.values(CATEGORIES));
+const CATEGORY_TAGS = _.flatten(Object.values(CATEGORIES));
 
 describe('test data', () => {
   it('has rules', () => {
@@ -38,20 +30,20 @@ describe('test data', () => {
     cy.wrap(RULES_ENABLED).should('be.gt', 1);
   });
   it('has 0 disabled rules', () => {
-    cy.wrap(filter(data, (it) => it.disabled).length).should('be.eq', 0);
+    cy.wrap(_.filter(data, (it) => it.disabled).length).should('be.eq', 0);
   });
   it('all total risk values are present', () => {
-    cy.wrap(uniq(map(data, 'total_risk')))
+    cy.wrap(_.uniq(_.map(data, 'total_risk')))
       .its('length')
       .should('be.eq', TOTAL_RISK_VALUES.length);
   });
   it('all categories are present', () => {
-    cy.wrap(uniq(flatMap(data, 'tags')))
+    cy.wrap(_.uniq(_.flatMap(data, 'tags')))
       .its('length')
       .should('be.eq', CATEGORY_TAGS.length);
   });
   it('at least 2 descriptions are different', () => {
-    cy.wrap(uniq(map(data, 'description')))
+    cy.wrap(_.uniq(_.map(data, 'description')))
       .its('length')
       .should('be.gte', 2);
   });
@@ -95,7 +87,7 @@ describe('cluster rules table', () => {
     cy.get('div[id=cluster-recs-list-table]').should('have.length', 1);
     cy.get('table th')
       .then(($els) => {
-        return map(Cypress.$.makeArray($els), 'innerText');
+        return _.map(Cypress.$.makeArray($els), 'innerText');
       })
       .should('deep.equal', TABLE_HEADERS);
   });
@@ -147,17 +139,17 @@ describe('cluster rules table', () => {
           // click a second time to reverse sorting
           cy.get(header).find('button').click();
         }
-        let sortedDescriptions = map(
-          sortBy(data, [category, 'description']),
+        let sortedDescriptions = _.map(
+          _.sortBy(data, [category, 'description']),
           'description'
         );
         if (order === 'descending') {
           // reverse order
-          sortedDescriptions = reverse(sortedDescriptions);
+          sortedDescriptions = _.reverse(sortedDescriptions);
         }
         cy.get(`td[data-label="Description"]`)
           .then(($els) => {
-            return map(Cypress.$.makeArray($els), 'innerText');
+            return _.map(Cypress.$.makeArray($els), 'innerText');
           })
           .should('deep.equal', sortedDescriptions);
       });
@@ -223,7 +215,7 @@ describe('empty cluster rules table', () => {
 
 // TODO validate that modifying data here will not affect other tests
 // add a uniq prefix to each row description to make them distinguishable
-const dataDistinguishable = map(cloneDeep(data), (it) => {
+const dataDistinguishable = _.map(_.cloneDeep(data), (it) => {
   it.description = `${Math.random().toString(36).substring(2, 15)} ${
     it.description
   }`;
@@ -252,19 +244,19 @@ function filterData(data, filters) {
   let filteredData = data;
   for (const [key, value] of Object.entries(filters)) {
     if (key === 'description') {
-      filteredData = filter(filteredData, (it) =>
+      filteredData = _.filter(filteredData, (it) =>
         it.description.toLowerCase().includes(value.toLowerCase())
       );
     } else if (key === 'risk') {
-      const riskNumbers = map(value, (it) => TOTAL_RISK[it]);
-      filteredData = filter(filteredData, (it) =>
+      const riskNumbers = _.map(value, (it) => TOTAL_RISK[it]);
+      filteredData = _.filter(filteredData, (it) =>
         riskNumbers.includes(it.total_risk)
       );
     } else if (key === 'category') {
-      const tags = flatMap(value, (it) => CATEGORIES[it]);
-      filteredData = filter(
+      const tags = _.flatMap(value, (it) => CATEGORIES[it]);
+      filteredData = _.filter(
         filteredData,
-        (it) => intersection(tags, it.tags).length > 0
+        (it) => _.intersection(tags, it.tags).length > 0
       );
     }
     // if length is already 0, exit
@@ -375,7 +367,7 @@ describe('cluster rules table filtering', () => {
       it(`test filtering ${k} ${filterValues}`, () => {
         const filters = {};
         filters[k] = filterValues;
-        const sortedDescriptions = map(
+        const sortedDescriptions = _.map(
           filterData(dataDistinguishable, filters),
           'description'
         ).sort();
@@ -385,7 +377,7 @@ describe('cluster rules table filtering', () => {
         } else {
           cy.get(`td[data-label="Description"]`)
             .then(($els) => {
-              return map(Cypress.$.makeArray($els), 'innerText').sort();
+              return _.map(Cypress.$.makeArray($els), 'innerText').sort();
             })
             .should('deep.equal', sortedDescriptions);
         }
@@ -415,7 +407,7 @@ describe('cluster rules table filtering', () => {
 
   filterCombos.forEach((filters) => {
     it(`test sorting ${Object.keys(filters)}`, () => {
-      const sortedDescriptions = map(
+      const sortedDescriptions = _.map(
         filterData(dataDistinguishable, filters),
         'description'
       ).sort();
@@ -426,7 +418,7 @@ describe('cluster rules table filtering', () => {
       } else {
         cy.get(`td[data-label="Description"]`)
           .then(($els) => {
-            return map(Cypress.$.makeArray($els), 'innerText').sort();
+            return _.map(Cypress.$.makeArray($els), 'innerText').sort();
           })
           .should('deep.equal', sortedDescriptions);
       }
