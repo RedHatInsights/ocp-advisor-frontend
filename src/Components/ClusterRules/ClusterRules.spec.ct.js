@@ -362,6 +362,17 @@ describe('cluster rules table filtering', () => {
     cy.get(CHIP_GROUP).should('not.exist');
   });
 
+  it('empty state is displayed when filters do not match any rule', () => {
+    applyFilters(
+      {
+        description: 'Not existing recommendation',
+      },
+      filtersConf
+    );
+    // TODO check empty table view
+    // TODO headers are displayed
+  });
+
   Object.entries(filtersConf).forEach(([k, v]) => {
     v.values.forEach((filterValues) => {
       it(`test filtering ${k} ${filterValues}`, () => {
@@ -374,6 +385,7 @@ describe('cluster rules table filtering', () => {
         applyFilters(filters, filtersConf);
         if (sortedDescriptions.length === 0) {
           // TODO check empty table view
+          // TODO headers are displayed
         } else {
           cy.get(`td[data-label="Description"]`)
             .then(($els) => {

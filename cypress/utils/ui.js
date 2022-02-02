@@ -3,16 +3,6 @@ const FILTER_TOGGLE = 'span[class=pf-c-select__toggle-arrow]';
 
 /**
  *
- * @param {*} filters array with objects as:
- *  {
- *      selectorText: string
- *      type: input | checkbox | radio
- *      value: string (for input/radio) | array (for checkbox)
- *  }
- */
-
-/**
- *
  * @param {*} filters value to set on the filters
  * {key: string (for input/radio) | array (for checkbox)}
  * @param {*} filtersConf global configuration of the filter settings
