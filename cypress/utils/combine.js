@@ -12,8 +12,9 @@ function* cumulativeCombinations(arr, current = []) {
     let next = current.concat(arr[i]);
     yield next;
     i++;
-    if (next.length <= arr.length) {
-      yield* cumulativeCombinations(arr.slice(i), next);
+    const remaining = arr.slice(i);
+    if (remaining.length) {
+      yield* cumulativeCombinations(remaining, next);
     }
   }
 }
