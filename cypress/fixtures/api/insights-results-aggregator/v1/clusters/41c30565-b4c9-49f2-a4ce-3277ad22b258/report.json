@@ -51,7 +51,7 @@
   {
     "rule_id": "external.rules.rule_n_one|ERROR_KEY_N2",
     "created_at": "2020-01-03T08:25:00Z",
-    "description": "Testing the First query parameter",
+    "description": "Testing_the_First_query_parameter",
     "details": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.\n\n[Foo Bar](https://foo.bar.com:1337/solutions/123)\n",
     "reason": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.\n",
     "resolution": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.\n * [Foo Bar `FooBarError`](https://foo.bar.com:1337/solutions/123)\n",

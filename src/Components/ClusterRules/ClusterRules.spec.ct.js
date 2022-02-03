@@ -1,7 +1,7 @@
 import React from 'react';
 import { mount } from '@cypress/react';
 import { IntlProvider } from 'react-intl';
-import { MemoryRouter, Route } from 'react-router-dom';
+import { MemoryRouter, Route, useLocation } from 'react-router-dom';
 import { Provider } from 'react-redux';
 
 import getStore from '../../Store';
@@ -104,7 +104,7 @@ describe('cluster rules table testing the first query parameter', () => {
           <Provider store={getStore()}>
             <MemoryRouter
               initialEntries={[
-                '/clusters/41c30565-b4c9-49f2-a4ce-3277ad22b258?first=external.rules.rule_n_one|ERROR_KEY_N2',
+                '/clusters/41c30565-b4c9-49f2-a4ce-3277ad22b258',
               ]}
               initialIndex={0}
             >
@@ -119,8 +119,11 @@ describe('cluster rules table testing the first query parameter', () => {
   });
 
   it('renders ClusterRules', () => {
-    cy.get(ClusterRules).invoke('setFirstRule', {
-      name: 'external.rules.rule_n_one|ERROR_KEY_N2',
+    cy.window().then((win) => {
+      win.location.replace(
+        'https://qa.console.redhat.com/beta/apps/advisor/clusters/41c30565-b4c9-49f2-a4ce-3277ad22b258?first=external.rules.rule_n_one|ERROR_KEY_N2'
+      );
     });
+    cy.get('div[id=cluster-recs-list-table]').should('have.length', 1);
   });
 });
