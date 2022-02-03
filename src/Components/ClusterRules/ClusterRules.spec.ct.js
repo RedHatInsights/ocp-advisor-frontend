@@ -77,3 +77,50 @@ describe('cluster rules table', () => {
     cy.get(TOTAL_RISK_COL).last().should('have.text', 'Critical');
   });
 });
+
+describe('cluster rules table testing the first query parameter', () => {
+  beforeEach(() => {
+    // tables utilizes federated module and throws error when RHEL Advisor manifestaion not found
+    window['__scalprum__'] = {
+      apps: {},
+      appsMetaData: {
+        advisor: {
+          manifestLocation:
+            'https://qa.console.redhat.com/beta/apps/advisor/fed-mods.json',
+          module: 'advisor#./RootApp',
+          name: 'advisor',
+        },
+      },
+    };
+    cy.intercept('*', (req) => {
+      req.destroy();
+    });
+
+    cy.fixture(
+      'api/insights-results-aggregator/v1/clusters/41c30565-b4c9-49f2-a4ce-3277ad22b258/report.json'
+    ).then((reports) => {
+      mount(
+        <IntlProvider locale="en">
+          <Provider store={getStore()}>
+            <MemoryRouter
+              initialEntries={[
+                '/clusters/41c30565-b4c9-49f2-a4ce-3277ad22b258?first=external.rules.rule_n_one|ERROR_KEY_N2',
+              ]}
+              initialIndex={0}
+            >
+              <Route path="/clusters/:clusterId">
+                <ClusterRules reports={reports} />
+              </Route>
+            </MemoryRouter>
+          </Provider>
+        </IntlProvider>
+      );
+    });
+  });
+
+  it('renders ClusterRules', () => {
+    cy.get(ClusterRules).invoke('setFirstRule', {
+      name: 'external.rules.rule_n_one|ERROR_KEY_N2',
+    });
+  });
+});
