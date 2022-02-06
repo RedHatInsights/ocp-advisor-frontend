@@ -406,3 +406,37 @@ describe('empty recommendations list table', () => {
       .should('have.text', 'Something went wrong');
   });
 });
+
+describe('Recs list is requested with additional parameters', () => {
+  beforeEach(() => {
+    mount(
+      <MemoryRouter
+        initialEntries={['/recommendations?total_risk=1']}
+        initialIndex={0}
+      >
+        <Intl>
+          <Provider store={getStore()}>
+            <RecsListTable
+              query={{
+                isError: false,
+                isFetching: false,
+                isUninitialized: false,
+                isSuccess: true,
+                data: props,
+              }}
+            />
+          </Provider>
+        </Intl>
+      </MemoryRouter>
+    );
+  });
+
+  it('Adds Low total risk filter to the table', () => {
+    cy.get(RECS_LIST_TABLE)
+      .find('span[class=pf-c-chip-group__label]')
+      .should('have.length', 3)
+      .eq(2)
+      .and('have.text', 'Total risk');
+    getChipGroup('Total risk').contains('.pf-c-chip', 'Low');
+  });
+});
