@@ -408,12 +408,10 @@ describe('empty recommendations list table', () => {
 });
 
 describe('Recs list is requested with additional parameters', () => {
+  const X = ['/recommendations?total_risk=1'];
   beforeEach(() => {
     mount(
-      <MemoryRouter
-        initialEntries={['/recommendations?total_risk=1']}
-        initialIndex={0}
-      >
+      <MemoryRouter initialEntries={X} initialIndex={0}>
         <Intl>
           <Provider store={getStore()}>
             <RecsListTable
