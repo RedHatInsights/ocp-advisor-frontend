@@ -9,7 +9,7 @@ const { config: webpackConfig, plugins } = config({
   appUrl: process.env.BETA
     ? ['/beta/openshift/insights/advisor']
     : ['/openshift/insights/advisor'],
-  env: process.env.BETA ? 'qa-beta' : 'qa-stable', // pick chrome env ['ci-beta', 'ci-stable', 'qa-beta', 'qa-stable', 'prod-beta', 'prod-stable']
+  env: process.env.BETA ? 'stage-beta' : 'stage-stable', // pick chrome env ['ci-beta', 'ci-stable', 'qa-beta', 'qa-stable', 'prod-beta', 'prod-stable']
   sassPrefix: '.ocp-advisor, .ocpAdvisor',
   ...(process.env.MOCK
     ? {
