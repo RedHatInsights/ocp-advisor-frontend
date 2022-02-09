@@ -2,10 +2,12 @@ import React, { useEffect } from 'react';
 import routerParams from '@redhat-cloud-services/frontend-components-utilities/RouterParams';
 import { useIntl } from 'react-intl';
 
-import { useGetClusterByIdQuery } from '../../Services/SmartProxy';
+import {
+  useGetClusterByIdQuery,
+  useGetDisplayNameQuery,
+} from '../../Services/SmartProxy';
 import messages from '../../Messages';
 import { Cluster } from './Cluster';
-import { useGetClusterDisplayNameByIdQuery } from '../../Services/AccountManagementService';
 
 export default routerParams(({ match }) => {
   const intl = useIntl();
@@ -13,8 +15,11 @@ export default routerParams(({ match }) => {
     id: match.params.clusterId,
     includeDisabled: false,
   });
-  const displayName = useGetClusterDisplayNameByIdQuery(match.params.clusterId);
-
+  const displayName = useGetDisplayNameQuery({
+    id: match.params.clusterId,
+    includeDisabled: false,
+  });
+  console.log(displayName);
   useEffect(() => {
     cluster.refetch();
   }, [match.params.clusterId]);
