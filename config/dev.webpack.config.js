@@ -9,8 +9,7 @@ const { config: webpackConfig, plugins } = config({
   appUrl: process.env.BETA
     ? ['/beta/openshift/insights/advisor']
     : ['/openshift/insights/advisor'],
-  env:
-    process.env.ENVIRONMENT || 'stage' - process.env.BETA ? 'beta' : 'stable',
+  env: process.env.BETA ? 'stage-beta' : 'qa-stable',
   sassPrefix: '.ocp-advisor, .ocpAdvisor',
   ...(process.env.MOCK
     ? {

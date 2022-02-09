@@ -297,7 +297,6 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
           {
             title: 'Disable recommendation for cluster',
             onClick: (event, rowIndex) => {
-              console.log(filteredRows[rowIndex]);
               return handleModalToggle(true, filteredRows[rowIndex].id);
             },
           },
