@@ -25,7 +25,12 @@ describe('cluster page header', () => {
         isUninitialized: false,
         isFetching: false,
         data: {
-          report: { meta: { last_checked_at: '2021-07-24T14:22:36.109Z' } },
+          report: {
+            meta: {
+              last_checked_at: '2021-07-24T14:22:36.109Z',
+              cluster_name: 'Cluster with issues',
+            },
+          },
         },
       },
     };

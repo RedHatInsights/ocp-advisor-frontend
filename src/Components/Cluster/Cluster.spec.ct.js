@@ -9,17 +9,16 @@ import getStore from '../../Store';
 import '@patternfly/patternfly/patternfly.scss';
 import singleClusterPageReport from '../../../cypress/fixtures/Cluster/report.json';
 
+// selectors
+const CLUSTER_HEADER = '#cluster-header';
+const BREADCRUMBS = 'nav[class=pf-c-breadcrumb]';
+const RULES_TABLE = '#cluster-recs-list-table';
+const FILTER_CHIPS = 'li[class=pf-c-chip-group__list-item]';
+const ROW = 'tbody[role=rowgroup]';
+Cypress.Commands.add('getAllRows', () => cy.get(RULES_TABLE).find(ROW));
+let props;
+
 describe('cluster page', () => {
-  // selectors
-  const CLUSTER_HEADER = '#cluster-header';
-  const BREADCRUMBS = 'nav[class=pf-c-breadcrumb]';
-  const RULES_TABLE = '#cluster-recs-list-table';
-  const FILTER_CHIPS = 'li[class=pf-c-chip-group__list-item]';
-  const ROW = 'tbody[role=rowgroup]';
-  Cypress.Commands.add('getAllRows', () => cy.get(RULES_TABLE).find(ROW));
-
-  let props;
-
   beforeEach(() => {
     cy.intercept('*', (req) => {
       req.destroy();
@@ -47,7 +46,7 @@ describe('cluster page', () => {
         data: singleClusterPageReport,
       },
       displayName: {
-        data: 'display-name-123',
+        data: singleClusterPageReport.report.meta.cluster_name,
       },
       match: {
         params: {
@@ -72,7 +71,7 @@ describe('cluster page', () => {
     cy.get(BREADCRUMBS)
       .should('have.length', 1)
       .get('.pf-c-breadcrumb__list > :nth-child(2)')
-      .should('have.text', 'display-name-123');
+      .should('have.text', 'Cluster With Issues');
     // renders cluster header
     cy.get(CLUSTER_HEADER).should('have.length', 1);
     // renders table component
@@ -180,5 +179,96 @@ describe('cluster page', () => {
       ])
     );
     cy.getAllRows().should('have.length', 1);
+  });
+});
+
+describe('Cluster page display name test', () => {
+  before(() => {
+    cy.intercept(
+      'http://localhost:8002/api/insights-results-aggregator/v2/cluster/undefined/reports?get_disabled=false',
+      singleClusterPageReport
+    );
+    props = {
+      cluster: {
+        isError: false,
+        isUninitialized: false,
+        isLoading: false,
+        isFetching: false,
+        isSuccess: true,
+        data: singleClusterPageReport,
+      },
+      displayName: {
+        data: singleClusterPageReport.report.meta.cluster_name,
+      },
+      match: {
+        params: {
+          clusterId: 'foobar',
+        },
+        url: 'foobar',
+      },
+    };
+  });
+  it('Cluster breadcrumbs name and Cluster Header name should be Cluster With Issues', () => {
+    mount(
+      <MemoryRouter>
+        <Intl>
+          <Provider store={getStore()}>
+            <Cluster {...props} />
+          </Provider>
+        </Intl>
+      </MemoryRouter>
+    );
+    cy.get(BREADCRUMBS)
+      .should('have.length', 1)
+      .get('.pf-c-breadcrumb__list > :nth-child(2)')
+      .should('have.text', 'Cluster With Issues');
+    cy.get(CLUSTER_HEADER)
+      .children()
+      .eq(0)
+      .should('have.text', 'Cluster With Issues');
+  });
+});
+
+describe('Display name test', () => {
+  before(() => {
+    cy.intercept(
+      'http://localhost:8002/api/insights-results-aggregator/v2/cluster/undefined/reports?get_disabled=false'
+    );
+    props = {
+      cluster: {
+        isError: false,
+        isUninitialized: false,
+        isLoading: false,
+        isFetching: false,
+        isSuccess: true,
+        data: singleClusterPageReport,
+      },
+      displayName: {
+        data: '',
+      },
+      match: {
+        params: {
+          clusterId: 'foobar',
+        },
+        url: 'foobar',
+      },
+    };
+  });
+
+  it('Cluster breadcrumbs name should be = foobar because we didnt passed displayName', () => {
+    mount(
+      <MemoryRouter>
+        <Intl>
+          <Provider store={getStore()}>
+            <Cluster {...props} />
+          </Provider>
+        </Intl>
+      </MemoryRouter>
+    );
+    cy.get(BREADCRUMBS)
+      .should('have.length', 1)
+      .get('.pf-c-breadcrumb__list > :nth-child(2)')
+      .should('have.text', 'foobar');
+    cy.get(CLUSTER_HEADER);
   });
 });
