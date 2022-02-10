@@ -27,7 +27,7 @@ const enableRuleForCluster = async ({ uuid, recId }) => {
   await Put(
     `${BASE_URL}/v1/clusters/${uuid}/rules/${getPluginName(
       recId
-    )}/error_key/${getErrorKey(recId)}/enable`
+    )}.report/error_key/${getErrorKey(recId)}/enable`
   );
 };
 
@@ -35,12 +35,12 @@ const disableRuleForCluster = async ({ uuid, recId, justification = '' }) => {
   await Put(
     `${BASE_URL}/v1/clusters/${uuid}/rules/${getPluginName(
       recId
-    )}/error_key/${getErrorKey(recId)}/disable`
+    )}.report/error_key/${getErrorKey(recId)}/disable`
   );
   await Post(
     `${BASE_URL}/v1/clusters/${uuid}/rules/${getPluginName(
       recId
-    )}/error_key/${getErrorKey(recId)}/disable_feedback`,
+    )}.report/error_key/${getErrorKey(recId)}/disable_feedback`,
     {},
     { message: justification }
   );
