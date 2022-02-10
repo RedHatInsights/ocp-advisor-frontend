@@ -14,9 +14,10 @@ export default routerParams(({ match }) => {
     includeDisabled: false,
   });
   const displayName = useGetDisplayNameQuery({
-    id: match.params.clusterId,
+    id: clusterId,
     includeDisabled: false,
   });
+
   return (
     <ClusterHeader
       clusterId={clusterId}

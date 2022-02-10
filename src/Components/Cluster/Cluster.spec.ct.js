@@ -182,12 +182,8 @@ describe('cluster page', () => {
   });
 });
 
-describe('Cluster page display name test', () => {
+describe('Cluster page display name test №1', () => {
   before(() => {
-    cy.intercept(
-      'http://localhost:8002/api/insights-results-aggregator/v2/cluster/undefined/reports?get_disabled=false',
-      singleClusterPageReport
-    );
     props = {
       cluster: {
         isError: false,
@@ -198,17 +194,18 @@ describe('Cluster page display name test', () => {
         data: singleClusterPageReport,
       },
       displayName: {
-        data: singleClusterPageReport.report.meta.cluster_name,
+        data: 'Cluster With Issues',
       },
       match: {
         params: {
-          clusterId: 'foobar',
+          clusterId: 'Cluster Id',
         },
         url: 'foobar',
       },
     };
   });
-  it('Cluster breadcrumbs name and Cluster Header name should be Cluster With Issues', () => {
+
+  it('Cluster breadcrumbs name should be Cluster With Issues', () => {
     mount(
       <MemoryRouter>
         <Intl>
@@ -222,45 +219,18 @@ describe('Cluster page display name test', () => {
       .should('have.length', 1)
       .get('.pf-c-breadcrumb__list > :nth-child(2)')
       .should('have.text', 'Cluster With Issues');
-    cy.get(CLUSTER_HEADER)
-      .children()
-      .eq(0)
-      .should('have.text', 'Cluster With Issues');
-  });
-});
-
-describe('Display name test', () => {
-  before(() => {
-    cy.intercept(
-      'http://localhost:8002/api/insights-results-aggregator/v2/cluster/undefined/reports?get_disabled=false'
-    );
-    props = {
-      cluster: {
-        isError: false,
-        isUninitialized: false,
-        isLoading: false,
-        isFetching: false,
-        isSuccess: true,
-        data: singleClusterPageReport,
-      },
-      displayName: {
-        data: '',
-      },
-      match: {
-        params: {
-          clusterId: 'foobar',
-        },
-        url: 'foobar',
-      },
-    };
   });
 
-  it('Cluster breadcrumbs name should be = foobar because we didnt passed displayName', () => {
+  it('Cluster breadcrumbs name should be = Cluster Id because we didnt passed displayName', () => {
     mount(
       <MemoryRouter>
         <Intl>
           <Provider store={getStore()}>
-            <Cluster {...props} />
+            <Cluster
+              cluster={props.cluster}
+              displayName="foobar"
+              match={props.match}
+            />
           </Provider>
         </Intl>
       </MemoryRouter>
@@ -268,7 +238,6 @@ describe('Display name test', () => {
     cy.get(BREADCRUMBS)
       .should('have.length', 1)
       .get('.pf-c-breadcrumb__list > :nth-child(2)')
-      .should('have.text', 'foobar');
-    cy.get(CLUSTER_HEADER);
+      .should('have.text', 'Cluster Id');
   });
 });

@@ -19,7 +19,6 @@ export default routerParams(({ match }) => {
     id: match.params.clusterId,
     includeDisabled: false,
   });
-  console.log(displayName);
   useEffect(() => {
     cluster.refetch();
   }, [match.params.clusterId]);
@@ -32,6 +31,5 @@ export default routerParams(({ match }) => {
       document.title = intl.formatMessage(messages.documentTitle, { subnav });
     }
   }, [match.params.clusterId]);
-
   return <Cluster cluster={cluster} displayName={displayName} match={match} />;
 });

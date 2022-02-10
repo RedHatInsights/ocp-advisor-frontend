@@ -18,7 +18,6 @@ export const ClusterHeader = ({ clusterId, clusterData, displayName }) => {
     isFetching: isFetchingDisplayName,
     data: clusterName,
   } = displayName;
-
   // subscribe to the cluster data query
   const {
     isUninitialized: isUninitializedCluster,

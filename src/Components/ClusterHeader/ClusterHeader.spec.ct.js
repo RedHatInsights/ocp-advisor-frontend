@@ -70,6 +70,7 @@ describe('cluster page header', () => {
     // check uuid text
     cy.get(LAST_SEEN_FIELD).should('have.text', '24 Jul 2021 14:22 UTC');
   });
+
   it('show UUID when display name is unavailable', () => {
     props.displayName.data = undefined;
     mount(
