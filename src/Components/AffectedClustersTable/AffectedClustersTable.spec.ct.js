@@ -15,10 +15,12 @@ import {
   PAGINATION,
   PAGINATION_MENU,
   CHIP_GROUP,
+  DROPDOWN,
 } from '../../../cypress/utils/components';
 
 // selectors
 const TABLE = 'div[id=affected-list-table]';
+const BULK_SELECT = '[data-ouia-component-id="clusters-selector"]';
 const DEFAULT_ROW_COUNT = 20;
 // FIXME is this shared by all tables?
 const PAGINATION_VALUES = [10, 20, 50, 100];
@@ -112,6 +114,171 @@ describe('non-empty successful affected clusters table', () => {
 
   it('shows first twenty clusters', () => {
     checkRowCounts(DEFAULT_ROW_COUNT);
+  });
+
+  it('bulk disabling is disabled by default', () => {
+    cy.get(TOOLBAR)
+      .find('.pf-m-spacer-sm')
+      .find(DROPDOWN)
+      .within((el) => {
+        cy.wrap(el).click();
+        cy.get('button')
+          .contains('Disable recommendation for selected clusters')
+          .should('be.disabled'); // FIXME not working
+      });
+    cy.get(BULK_SELECT).find('input').should('not.be.checked');
+  });
+
+  it('bulk selector checkbox can be clicked', () => {
+    cy.get(BULK_SELECT).find('input').click().should('be.checked');
+    // contains right text
+    cy.get(BULK_SELECT)
+      .find('label.pf-c-dropdown__toggle-check')
+      .contains(`${data['enabled'].length} selected`);
+    // checks all rows
+    cy.get(TABLE)
+      .find('tbody[role=rowgroup]')
+      .find(ROW)
+      .each((row) => {
+        cy.wrap(row).find('td').first().find('input').should('be.checked');
+      });
+    // bulk disabling button is enabled
+    cy.get(TOOLBAR)
+      .find('.pf-m-spacer-sm')
+      .find(DROPDOWN)
+      .within((el) => {
+        cy.wrap(el).click();
+        cy.get('button')
+          .contains('Disable recommendation for selected clusters')
+          .should('be.enabled');
+      });
+  });
+
+  it('bulk selector checkbox is unselected when a row is unselected', () => {
+    cy.get(BULK_SELECT).find('input').click().should('be.checked');
+    // removing one row unselects it
+    cy.get(TABLE)
+      .find('tbody[role=rowgroup]')
+      .find(ROW)
+      .first()
+      .find('td')
+      .first()
+      .find('input')
+      .click();
+    cy.get(BULK_SELECT).find('input').should('not.be.checked');
+    cy.get(BULK_SELECT)
+      .find('label.pf-c-dropdown__toggle-check')
+      .contains(`${data['enabled'].length - 1} selected`);
+    // bulk disabling button is still enabled
+    cy.get(TOOLBAR)
+      .find('.pf-m-spacer-sm')
+      .find(DROPDOWN)
+      .within((el) => {
+        cy.wrap(el).click();
+        cy.get('button')
+          .contains('Disable recommendation for selected clusters')
+          .should('be.enabled');
+      });
+  });
+
+  it('bulk selector checkbox unchecking removes all checks from rows', () => {
+    cy.get(BULK_SELECT).find('input').click().should('be.checked');
+
+    cy.get(BULK_SELECT).find('input').click();
+    cy.get(BULK_SELECT)
+      .find('label.pf-c-dropdown__toggle-check')
+      .contains('selected')
+      .should('not.exist');
+    cy.get(TABLE)
+      .find('tbody[role=rowgroup]')
+      .find(ROW)
+      .each((row) => {
+        cy.wrap(row).find('td').first().find('input').should('not.be.checked');
+      });
+  });
+
+  it('bulk selector is updated when checking one row', () => {
+    cy.get(BULK_SELECT).find('input').should('not.be.checked');
+
+    // selecting from rows display the correct text
+    cy.get(TABLE)
+      .find('tbody[role=rowgroup]')
+      .find(ROW)
+      .first()
+      .find('td')
+      .first()
+      .find('input')
+      .click();
+
+    cy.get(BULK_SELECT).find('input').should('not.be.checked');
+
+    cy.get(BULK_SELECT)
+      .find('label.pf-c-dropdown__toggle-check')
+      .contains(`1 selected`);
+  });
+
+  it('bulk selector has buttons to select none or all', () => {
+    cy.get(BULK_SELECT).find('button').click();
+    cy.get(BULK_SELECT)
+      .find('ul li')
+      .should(($lis) => {
+        expect($lis).to.have.length(2);
+        expect($lis.eq(0)).to.contain('0');
+        expect($lis.eq(1)).to.contain(`${data['enabled'].length}`);
+      });
+  });
+
+  it('bulk selector button can select all', () => {
+    cy.get(BULK_SELECT).find('button').click();
+    cy.get(BULK_SELECT).find('ul li').contains('all').click();
+
+    cy.get(BULK_SELECT).find('input').should('be.checked');
+    // contains right text
+    cy.get(BULK_SELECT)
+      .find('label.pf-c-dropdown__toggle-check')
+      .contains(`${data['enabled'].length} selected`);
+    // checks all rows
+    cy.get(TABLE)
+      .find('tbody[role=rowgroup]')
+      .find(ROW)
+      .each((row) => {
+        cy.wrap(row).find('td').first().find('input').should('be.checked');
+      });
+    // bulk disabling button is enabled
+    cy.get(TOOLBAR)
+      .find('.pf-m-spacer-sm')
+      .find(DROPDOWN)
+      .within((el) => {
+        cy.wrap(el).click();
+        cy.get('button')
+          .contains('Disable recommendation for selected clusters')
+          .should('be.enabled');
+      });
+  });
+
+  it('bulk selector button can select none', () => {
+    cy.get(BULK_SELECT).find('input').click();
+    cy.get(BULK_SELECT).find('button').click();
+    cy.get(BULK_SELECT).find('ul li').contains('none').click();
+
+    cy.get(BULK_SELECT).find('input').should('not.be.checked');
+    // checks all rows
+    cy.get(TABLE)
+      .find('tbody[role=rowgroup]')
+      .find(ROW)
+      .each((row) => {
+        cy.wrap(row).find('td').first().find('input').should('not.be.checked');
+      });
+    // bulk disabling button is enabled
+    cy.get(TOOLBAR)
+      .find('.pf-m-spacer-sm')
+      .find(DROPDOWN)
+      .within((el) => {
+        cy.wrap(el).click();
+        cy.get('button')
+          .contains('Disable recommendation for selected clusters')
+          .should('not.be.enabled'); // FIXME button is not enabled but test fails
+      });
   });
 
   it('pagination defaults are expected ones', () => {
