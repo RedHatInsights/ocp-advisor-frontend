@@ -15,10 +15,14 @@ import {
   PAGINATION,
   PAGINATION_MENU,
   CHIP_GROUP,
+  DROPDOWN,
+  MODAL,
+  CHECKBOX,
 } from '../../../cypress/utils/components';
 
 // selectors
 const TABLE = 'div[id=affected-list-table]';
+const BULK_SELECT = '[data-ouia-component-id="clusters-selector"]';
 const DEFAULT_ROW_COUNT = 20;
 // FIXME is this shared by all tables?
 const PAGINATION_VALUES = [10, 20, 50, 100];
@@ -279,6 +283,64 @@ describe('non-empty successful affected clusters table', () => {
       .children()
       .eq(0)
       .should('have.text', 'dd2ef343-9131-46f5-8962-290fdfdf2199');
+  });
+
+  it('modal for bulk disabling', () => {
+    cy.get(BULK_SELECT).find('input').click().should('be.checked');
+
+    cy.get(TOOLBAR)
+      .find('.pf-m-spacer-sm')
+      .find(DROPDOWN)
+      .within((el) => {
+        cy.wrap(el).click();
+        cy.get('button')
+          .contains('Disable recommendation for selected clusters')
+          .click();
+      });
+
+    cy.get(MODAL).find(CHECKBOX).should('be.checked');
+
+    // TODO check that request is send with the expect amount of clusters
+
+    // TODO check page is reloaded afterwards
+  });
+
+  it('modal cancel does not trigger anything', () => {
+    cy.get(BULK_SELECT).find('input').click().should('be.checked');
+
+    cy.get(TOOLBAR)
+      .find('.pf-m-spacer-sm')
+      .find(DROPDOWN)
+      .within((el) => {
+        cy.wrap(el).click();
+        cy.get('button')
+          .contains('Disable recommendation for selected clusters')
+          .click();
+      });
+
+    cy.get(MODAL).find('button').contains('Cancel').click();
+
+    // TODO check that request is send with the expect amount of clusters
+
+    // TODO check page is reloaded afterwards
+  });
+
+  it('modal for cluster disabling', () => {
+    cy.get(TABLE)
+      .find('tbody[role=rowgroup]')
+      .find(ROW)
+      .first()
+      .find('td')
+      .eq(3)
+      .click()
+      .contains('Disable')
+      .click();
+
+    cy.get(MODAL).find(CHECKBOX).should('be.checked');
+
+    // TODO check that request includes one cluster
+
+    // TODO check page is reloaded afterwards
   });
 });
 

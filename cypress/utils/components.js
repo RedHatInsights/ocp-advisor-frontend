@@ -5,5 +5,23 @@ const ROW = '[data-ouia-component-type="PF4/TableRow"]';
 const PAGINATION = 'div[data-ouia-component-type="PF4/Pagination"]';
 const PAGINATION_MENU =
   'div[data-ouia-component-type="PF4/PaginationOptionsMenu"]';
+const DROPDOWN = '[data-ouia-component-type="PF4/Dropdown"]';
+const MODAL = '[data-ouia-component-type="PF4/ModalContent"]';
+const CHECKBOX = '[data-ouia-component-type="PF4/Checkbox"]';
+const TEXT_INPUT = '[data-ouia-component-type="PF4/TextInput"]';
 
-export { TOOLBAR, CHIP_GROUP, CHIP, ROW, PAGINATION, PAGINATION_MENU };
+const ouiaId = (id) => `[data-ouia-component-id="${id}"]`;
+
+export {
+  ouiaId,
+  TOOLBAR,
+  CHIP_GROUP,
+  CHIP,
+  ROW,
+  PAGINATION,
+  PAGINATION_MENU,
+  DROPDOWN,
+  MODAL,
+  CHECKBOX,
+  TEXT_INPUT,
+};
