@@ -1,10 +1,7 @@
 import React from 'react';
 import { routerParams } from '@redhat-cloud-services/frontend-components-utilities/RouterParams/RouterParams';
 
-import {
-  useGetClusterByIdQuery,
-  useGetDisplayNameQuery,
-} from '../../Services/SmartProxy';
+import { useGetClusterByIdQuery } from '../../Services/SmartProxy';
 import { ClusterHeader } from './ClusterHeader';
 
 export default routerParams(({ match }) => {
@@ -13,16 +10,6 @@ export default routerParams(({ match }) => {
     id: clusterId,
     includeDisabled: false,
   });
-  const displayName = useGetDisplayNameQuery({
-    id: clusterId,
-    includeDisabled: false,
-  });
 
-  return (
-    <ClusterHeader
-      clusterId={clusterId}
-      displayName={displayName}
-      clusterData={clusterData}
-    />
-  );
+  return <ClusterHeader clusterId={clusterId} clusterData={clusterData} />;
 });

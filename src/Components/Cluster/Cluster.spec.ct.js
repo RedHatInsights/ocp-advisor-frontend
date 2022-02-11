@@ -193,9 +193,6 @@ describe('Cluster page display name test №1', () => {
         isSuccess: true,
         data: singleClusterPageReport,
       },
-      displayName: {
-        data: 'Cluster With Issues',
-      },
       match: {
         params: {
           clusterId: 'Cluster Id',
@@ -221,16 +218,12 @@ describe('Cluster page display name test №1', () => {
       .should('have.text', 'Cluster With Issues');
   });
 
-  it('Cluster breadcrumbs name should be = Cluster Id because we didnt passed displayName', () => {
+  it('Cluster breadcrumbs name should be = Cluster Id', () => {
     mount(
       <MemoryRouter>
         <Intl>
           <Provider store={getStore()}>
-            <Cluster
-              cluster={props.cluster}
-              displayName="foobar"
-              match={props.match}
-            />
+            <Cluster cluster="" match={props.match} />
           </Provider>
         </Intl>
       </MemoryRouter>

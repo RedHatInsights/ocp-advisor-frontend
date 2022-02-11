@@ -2,10 +2,7 @@ import React, { useEffect } from 'react';
 import routerParams from '@redhat-cloud-services/frontend-components-utilities/RouterParams';
 import { useIntl } from 'react-intl';
 
-import {
-  useGetClusterByIdQuery,
-  useGetDisplayNameQuery,
-} from '../../Services/SmartProxy';
+import { useGetClusterByIdQuery } from '../../Services/SmartProxy';
 import messages from '../../Messages';
 import { Cluster } from './Cluster';
 
@@ -15,10 +12,7 @@ export default routerParams(({ match }) => {
     id: match.params.clusterId,
     includeDisabled: false,
   });
-  const displayName = useGetDisplayNameQuery({
-    id: match.params.clusterId,
-    includeDisabled: false,
-  });
+
   useEffect(() => {
     cluster.refetch();
   }, [match.params.clusterId]);
@@ -31,5 +25,5 @@ export default routerParams(({ match }) => {
       document.title = intl.formatMessage(messages.documentTitle, { subnav });
     }
   }, [match.params.clusterId]);
-  return <Cluster cluster={cluster} displayName={displayName} match={match} />;
+  return <Cluster cluster={cluster} match={match} />;
 });
