@@ -391,7 +391,6 @@ describe('empty cluster rules table', () => {
   });
 
   it('renders no recommendation message', () => {
-    // FIXME makes sense to text for both strings in the card or as both are bundled together with one is enough?
     cy.get('[data-ouia-component-id="no-recommendations"]')
       .contains('The cluster is not affected by any known recommendations')
       .should('exist');
