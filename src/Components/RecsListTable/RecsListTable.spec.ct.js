@@ -5,16 +5,23 @@ import { Provider } from 'react-redux';
 
 import { RecsListTable } from './RecsListTable';
 import getStore from '../../Store';
-import props from '../../../cypress/fixtures/RecsListTable/data.json';
+import data from '../../../cypress/fixtures/RecsListTable/data.json';
 import { Intl } from '../../Utilities/intlHelper';
 import '@patternfly/patternfly/patternfly.scss';
+import {
+  TOOLBAR,
+  ROW,
+  PAGINATION,
+  PAGINATION_MENU,
+  CHIP_GROUP,
+} from '../../../cypress/utils/components';
 
 // selectors
 const RECS_LIST_TABLE = 'div[id=recs-list-table]';
 const CHIP = 'div[class=pf-c-chip]';
-const ROW = 'tbody[role=rowgroup]';
 const FILTERS_DROPDOWN = 'ul[class=pf-c-dropdown__menu]';
 const FILTER_TOGGLE = 'span[class=pf-c-select__toggle-arrow]';
+
 // actions
 Cypress.Commands.add('getAllRows', () => cy.get(RECS_LIST_TABLE).find(ROW));
 Cypress.Commands.add('removeStatusFilter', () => {
@@ -84,7 +91,7 @@ describe('pre-filled url search parameters', () => {
                 isFetching: false,
                 isUninitialized: false,
                 isSuccess: true,
-                data: props,
+                data: data,
               }}
             />
           </Provider>
@@ -135,7 +142,7 @@ describe('successful non-empty recommendations list table', () => {
                 isFetching: false,
                 isUninitialized: false,
                 isSuccess: true,
-                data: props,
+                data: data,
               }}
             />
           </Provider>
@@ -424,7 +431,7 @@ describe('Recs list is requested with additional parameters №1', () => {
                 isFetching: false,
                 isUninitialized: false,
                 isSuccess: true,
-                data: props,
+                data: data,
               }}
             />
           </Provider>
@@ -462,7 +469,7 @@ describe('Recs list is requested with additional parameters №2', () => {
                 isFetching: false,
                 isUninitialized: false,
                 isSuccess: true,
-                data: props,
+                data: data,
               }}
             />
           </Provider>
@@ -482,3 +489,5 @@ describe('Recs list is requested with additional parameters №2', () => {
     getChipGroup('Clusters impacted').contains('.pf-c-chip', '1 or more');
   });
 });
+
+// TODO what will happen on request error?
