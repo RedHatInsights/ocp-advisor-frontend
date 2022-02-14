@@ -13,6 +13,7 @@ const LAST_SEEN_FIELD = '#cluster-header-last-seen > :nth-child(2)';
 describe('cluster page header', () => {
   let props;
 
+  //FIXME where is clusterId computed?
   beforeEach(() => {
     props = {
       clusterId: 'foobar',
@@ -43,6 +44,7 @@ describe('cluster page header', () => {
     // check last seen text
     cy.get(LAST_SEEN_FIELD).should('have.text', '24 Jul 2021 14:22 UTC');
   });
+  //FIXME spinner does not affect UUID/last seen?
   it('show spinner when in the loading state', () => {
     props = {
       ...props,
@@ -65,6 +67,7 @@ describe('cluster page header', () => {
     // check uuid text
     cy.get(LAST_SEEN_FIELD).should('have.text', '24 Jul 2021 14:22 UTC');
   });
+  // this test is not checking UUID but name
   it('show UUID when display name is unavailable', () => {
     props.displayName.data = undefined;
     mount(
