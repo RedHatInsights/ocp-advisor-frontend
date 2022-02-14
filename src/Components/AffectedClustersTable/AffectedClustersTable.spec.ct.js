@@ -2,7 +2,7 @@ import React from 'react';
 import { mount } from '@cypress/react';
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import filter from 'lodash/filter';
+import _ from 'lodash';
 
 import { AffectedClustersTable } from './AffectedClustersTable';
 import data from '../../../cypress/fixtures/AffectedClustersTable/data.json';
@@ -15,18 +15,22 @@ import {
   PAGINATION,
   PAGINATION_MENU,
   CHIP_GROUP,
+  DROPDOWN_TOGGLE,
+  DROPDOWN_ITEM
 } from '../../../cypress/utils/components';
+import {
+  DEFAULT_ROW_COUNT,
+  PAGINATION_VALUES,
+} from '../../../cypress/utils/defaults';
 
 // selectors
 const TABLE = 'div[id=affected-list-table]';
-const DEFAULT_ROW_COUNT = 20;
-// FIXME is this shared by all tables?
-const PAGINATION_VALUES = [10, 20, 50, 100];
 const SEARCH_ITEMS = ['ff', 'CUSTOM', 'Foobar', 'Not existing cluster'];
+const TABLE_HEADERS = ['Name', 'Last seen'];
 
 function filterData(text = '') {
   // FIXME: is this the right way to use loadash?
-  return filter(data['enabled'], (it) =>
+  return _.filter(data['enabled'], (it) =>
     (it?.cluster_name || it.cluster).toLowerCase().includes(text.toLowerCase())
   );
 }
@@ -68,11 +72,20 @@ describe('test data', () => {
   });
   it('has one enabled clusters with "foobar" in name', () => {
     cy.wrap(filterData('foobar')).its('length').should('be.eq', 1);
+    expect(_.map(SEARCH_ITEMS, (it) => it.toLowerCase())).to.include('foobar');
   });
   it('has none enabled clusters with "Not existing cluster" in name', () => {
     cy.wrap(filterData('Not existing cluster'))
       .its('length')
       .should('be.eq', 0);
+    expect(_.map(SEARCH_ITEMS, (it) => it.toLowerCase())).to.include(
+      'not existing cluster'
+    );
+  });
+  it('has at least one entry with N/A time', () => {
+    cy.wrap(_.filter(data['enabled'], (it) => it['last_checked_at'] === ''))
+      .its('length')
+      .should('be.gte', 1);
   });
 });
 
@@ -100,7 +113,7 @@ describe('non-empty successful affected clusters table', () => {
   });
 
   it('renders table', () => {
-    cy.get(`div[id=affected-list-table]`).within(() => {
+    cy.get(TABLE).within(() => {
       cy.get(TOOLBAR).should('have.length', 1);
       cy.get('table').should('have.length', 1);
       cy.get('div[data-ouia-component-type="RHI/TableToolbar"]').should(
@@ -114,10 +127,17 @@ describe('non-empty successful affected clusters table', () => {
     checkRowCounts(DEFAULT_ROW_COUNT);
   });
 
+  it(`pagination default is set to ${DEFAULT_ROW_COUNT}`, () => {
+    cy.get('.pf-c-options-menu__toggle-text')
+      .find('b')
+      .eq(0)
+      .should('have.text', '1 - 20');
+  });
+
   it('pagination defaults are expected ones', () => {
     cy.get(TOOLBAR)
       .find(PAGINATION_MENU)
-      .find('button[data-ouia-component-type="PF4/DropdownToggle"]')
+      .find(DROPDOWN_TOGGLE)
       .click();
     cy.get(TOOLBAR)
       .find(PAGINATION_MENU)
@@ -136,16 +156,21 @@ describe('non-empty successful affected clusters table', () => {
     cy.wrap(PAGINATION_VALUES).each((el) => {
       cy.get(TOOLBAR)
         .find(PAGINATION_MENU)
-        .find('button[data-ouia-component-type="PF4/DropdownToggle"]')
+        .find(DROPDOWN_TOGGLE)
         .click();
       cy.get(TOOLBAR)
         .find(PAGINATION_MENU)
         .find('ul[class=pf-c-options-menu__menu]')
-        .find('[data-ouia-component-type="PF4/DropdownItem"]')
+        .find(DROPDOWN_ITEM)
         .contains(`${el}`)
         .click({ force: true }); // caused by the css issue
       checkRowCounts(Math.min(el, filterData().length));
     });
+  });
+
+  it('no chips are displayed by default', () => {
+    cy.get(CHIP_GROUP).should('not.exist');
+    cy.get('button').contains('Clear filters').should('not.exist');
   });
 
   // outer loop required to clean up filter bar
@@ -157,6 +182,7 @@ describe('non-empty successful affected clusters table', () => {
         .find(CHIP_GROUP)
         .should('contain', 'Name')
         .and('contain', el);
+      cy.get('button').contains('Clear filters').should('exist');
       // check matched clusters
       cy.wrap(filterData(el)).then((data) => {
         if (data.length === 0) {
@@ -257,6 +283,7 @@ describe('non-empty successful affected clusters table', () => {
     });
   });
 
+  // TODO remove: the test is not stable for changes in data
   it('sorting the last seen column', () => {
     cy.get(TABLE)
       .find('td[data-key=1]')
@@ -265,6 +292,7 @@ describe('non-empty successful affected clusters table', () => {
       .should('have.text', '694d3942-9cb7-42b8-aad2-1f28cc7f0a3b');
   });
 
+  // TODO remove: the test is not stable for changes in data
   it('sorts N/A in last seen correctly', () => {
     cy.get(TABLE);
     cy.get('.pf-c-table__sort').eq(1).click();
@@ -279,6 +307,62 @@ describe('non-empty successful affected clusters table', () => {
       .children()
       .eq(0)
       .should('have.text', 'dd2ef343-9131-46f5-8962-290fdfdf2199');
+  });
+
+  // TODO fix test: double sorting? keep ordering in single sorting?
+  Object.entries({
+    name: 'Name',
+    last_checked_at: 'Last seen',
+  }).forEach(([category, label]) => {
+    ['ascending', 'descending'].forEach((order) => {
+      it(`sort ${order} by ${label}`, () => {
+        const col = `td[data-label="${label}"]`;
+        const header = `th[data-label="${label}"]`;
+
+        cy.get(col).should(
+          'have.length',
+          Math.min(DEFAULT_ROW_COUNT, data['enabled'].length)
+        );
+        if (category !== 'name') {
+          // sort first by name to ensure consistent ordering
+          cy.get(`th[data-label="Name"]`).find('button').click();
+        }
+        cy.get(header).find('button').click();
+        // FIXME right way to do the second click?
+        if (order === 'descending') {
+          // click a second time to reverse sorting
+          cy.get(header).find('button').click();
+        }
+
+        // add property name to clusters
+        let sortedClusters = _.cloneDeep(data['enabled']);
+        sortedClusters.forEach(
+          (it) =>
+            (it['name'] = it['cluster_name']
+              ? it['cluster_name']
+              : it['cluster'])
+        );
+        sortedClusters = _.map(
+          _.sortBy(sortedClusters, [category, 'name']),
+          'name'
+        );
+        if (order === 'descending') {
+          // reverse order
+          sortedClusters = _.reverse(sortedClusters);
+        }
+        cy.get(`td[data-label="Name"]`)
+          .then(($els) => {
+            return _.map(Cypress.$.makeArray($els), 'innerText');
+          })
+          .should(
+            'deep.equal',
+            sortedClusters.slice(
+              0,
+              Math.min(DEFAULT_ROW_COUNT, sortedClusters.length)
+            )
+          );
+      });
+    });
   });
 });
 
@@ -314,9 +398,12 @@ describe('empty successful affected clusters table', () => {
       .should('have.text', 'No clusters');
   });
 
-  it('renders table header', () => {
-    cy.get(TABLE).find('th').children().eq(0).should('have.text', 'Name');
-    cy.get(TABLE).find('th').children().eq(1).should('have.text', 'Last seen');
+  it('renders table headers', () => {
+    cy.get('table th')
+      .then(($els) => {
+        return _.map(Cypress.$.makeArray($els), 'innerText');
+      })
+      .should('deep.equal', TABLE_HEADERS);
   });
 });
 
