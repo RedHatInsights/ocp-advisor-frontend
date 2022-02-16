@@ -124,7 +124,7 @@ describe('non-empty successful affected clusters table', () => {
         cy.wrap(el).click();
         cy.get('button')
           .contains('Disable recommendation for selected clusters')
-          .should('be.disabled'); // FIXME not working
+          .should('have.class', 'pf-m-disabled');
       });
     cy.get(BULK_SELECT).find('input').should('not.be.checked');
   });
@@ -150,7 +150,7 @@ describe('non-empty successful affected clusters table', () => {
         cy.wrap(el).click();
         cy.get('button')
           .contains('Disable recommendation for selected clusters')
-          .should('be.enabled');
+          .should('not.have.class', 'pf-m-disabled');
       });
   });
 
@@ -177,7 +177,7 @@ describe('non-empty successful affected clusters table', () => {
         cy.wrap(el).click();
         cy.get('button')
           .contains('Disable recommendation for selected clusters')
-          .should('be.enabled');
+          .should('not.have.class', 'pf-m-disabled');
       });
   });
 
@@ -252,7 +252,7 @@ describe('non-empty successful affected clusters table', () => {
         cy.wrap(el).click();
         cy.get('button')
           .contains('Disable recommendation for selected clusters')
-          .should('be.enabled');
+          .should('not.have.class', 'pf-m-disabled');
       });
   });
 
@@ -277,7 +277,7 @@ describe('non-empty successful affected clusters table', () => {
         cy.wrap(el).click();
         cy.get('button')
           .contains('Disable recommendation for selected clusters')
-          .should('not.be.enabled'); // FIXME button is not enabled but test fails
+          .should('have.class', 'pf-m-disabled');
       });
   });
 
