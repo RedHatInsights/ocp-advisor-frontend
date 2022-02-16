@@ -5,5 +5,6 @@ const ROW = '[data-ouia-component-type="PF4/TableRow"]';
 const PAGINATION = 'div[data-ouia-component-type="PF4/Pagination"]';
 const PAGINATION_MENU =
   'div[data-ouia-component-type="PF4/PaginationOptionsMenu"]';
+const DROPDOWN = '[data-ouia-component-type="PF4/Dropdown"]'
 
-export { TOOLBAR, CHIP_GROUP, CHIP, ROW, PAGINATION, PAGINATION_MENU };
+export { TOOLBAR, CHIP_GROUP, CHIP, ROW, PAGINATION, PAGINATION_MENU, DROPDOWN };
