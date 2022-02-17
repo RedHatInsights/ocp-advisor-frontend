@@ -172,6 +172,13 @@ describe('clusters list table', () => {
       .click({ force: true });
     cy.getLastRow().find('span').should('have.text', 'N/A');
   });
+
+  it('shows correct amount of each type of the rule hits', () => {
+    cy.getFirstRow().find('td[data-label=Critical]').should('have.text', 4);
+    cy.getFirstRow().find('td[data-label=Important]').should('have.text', 9);
+    cy.getFirstRow().find('td[data-label=Moderate]').should('have.text', 16);
+    cy.getFirstRow().find('td[data-label=Low]').should('have.text', 8);
+  });
 });
 
 describe('cluster list Empty state rendering', () => {
