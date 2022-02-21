@@ -334,10 +334,7 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
                           {intl.formatMessage(
                             messages.ruleIsDisabledJustification
                           )}
-                          <i>
-                            {ackData?.justification ||
-                              intl.formatMessage(messages.none)}
-                          </i>
+                          <i>{ackData?.justification}</i>
                           {(ackData?.updated_at || ackData?.created_at) && (
                             <span>
                               &nbsp;
