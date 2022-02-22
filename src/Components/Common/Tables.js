@@ -67,7 +67,7 @@ export const passFiltersCluster = (cluster, filters) =>
           // all clusters
           filterValue.includes('all') ||
           // clusters with at least one rule hit for any of the active risk filters
-          filterValue.some((v) => cluster.hits_by_total_risk[v - 1] > 0)
+          filterValue.some((v) => cluster.hits_by_total_risk[v] > 0)
         );
       default:
         return true;
