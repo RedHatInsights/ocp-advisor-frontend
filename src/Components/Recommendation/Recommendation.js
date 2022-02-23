@@ -331,32 +331,44 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
                       !ackIsFetching &&
                       ackData && (
                         <React.Fragment>
-                          {intl.formatMessage(
-                            messages.ruleIsDisabledJustificationBeginning
-                          )}
-                          {(ackData?.updated_at || ackData?.created_at) && (
-                            <span>
-                              &nbsp;
-                              <DateFormat
-                                date={
-                                  new Date(
-                                    ackData?.updated_at || ackData?.created_at
-                                  )
+                          {ackData?.justification
+                            ? intl.formatMessage(
+                                messages.ruleIsDisabledWithJustificaiton,
+                                {
+                                  date: (
+                                    <span>
+                                      <DateFormat
+                                        date={
+                                          new Date(
+                                            ackData?.updated_at ||
+                                              ackData?.created_at
+                                          )
+                                        }
+                                        type="onlyDate"
+                                      />
+                                    </span>
+                                  ),
+                                  reason: ackData?.justification,
                                 }
-                                type="onlyDate"
-                              />
-                            </span>
-                          )}
-                          {ackData?.justification && (
-                            <span>
-                              &nbsp;because&nbsp;
-                              <i>{ackData?.justification}</i>
-                            </span>
-                          )}
-                          &nbsp;
-                          {intl.formatMessage(
-                            messages.ruleIsDisabledJustificationEnding
-                          )}
+                              )
+                            : intl.formatMessage(
+                                messages.ruleIsDisabledWithoutJustificaiton,
+                                {
+                                  date: (
+                                    <span>
+                                      <DateFormat
+                                        date={
+                                          new Date(
+                                            ackData?.updated_at ||
+                                              ackData?.created_at
+                                          )
+                                        }
+                                        type="onlyDate"
+                                      />
+                                    </span>
+                                  ),
+                                }
+                              )}
                         </React.Fragment>
                       )
                     )}

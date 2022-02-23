@@ -463,17 +463,19 @@ export default defineMessages({
     description: 'Explaining that the recommendationis disabled',
     defaultMessage: 'This recommendation has been disabled and has no results.',
   },
-  ruleIsDisabledJustificationBeginning: {
-    id: 'ruleIsDisabledJustificationBeginning',
+  ruleIsDisabledWithJustificaiton: {
+    id: 'ruleIsDisabledWithJustificaiton',
     description:
-      'Explaining that the recommendationis disabled first part of the message',
-    defaultMessage: 'This recommendation was disabled on',
+      'Explaining that the recommendationis disabled with justification provided',
+    defaultMessage:
+      'This recommendation was disabled on {date} because {reason} and has no results',
   },
-  ruleIsDisabledJustificationEnding: {
-    id: 'ruleIsDisabledJustificationEnding',
+  ruleIsDisabledWithoutJustificaiton: {
+    id: 'ruleIsDisabledWithoutJustificaiton',
     description:
-      'Explaining that the recommendationis disabled second part of the message',
-    defaultMessage: 'and has no results',
+      'Explaining that the recommendationis disabled without justification provided',
+    defaultMessage:
+      'This recommendation was disabled on {date} and has no results',
   },
   ruleIsDisabledForSystems: {
     id: 'ruleIsDisabledForSystems',
