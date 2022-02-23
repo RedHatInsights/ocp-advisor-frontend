@@ -332,9 +332,8 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
                       ackData && (
                         <React.Fragment>
                           {intl.formatMessage(
-                            messages.ruleIsDisabledJustification
+                            messages.ruleIsDisabledJustificationBeginning
                           )}
-                          <i>{ackData?.justification}</i>
                           {(ackData?.updated_at || ackData?.created_at) && (
                             <span>
                               &nbsp;
@@ -347,6 +346,16 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
                                 type="onlyDate"
                               />
                             </span>
+                          )}
+                          {ackData?.justification && (
+                            <span>
+                              &nbsp;because&nbsp;
+                              <i>{ackData?.justification}</i>
+                            </span>
+                          )}
+                          &nbsp;
+                          {intl.formatMessage(
+                            messages.ruleIsDisabledJustificationEnding
                           )}
                         </React.Fragment>
                       )

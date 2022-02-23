@@ -344,7 +344,7 @@ export default defineMessages({
     description:
       'Exclaiming that the recommendation is disabled for clusters (cluster count)',
     defaultMessage:
-      'Recommendation is disabled for {clusters, plural, one {# cluster} other {# clusters}}',
+      'Recommendation is disabled for {clusters, plural, one {# cluster} other {# clusters}} and has no results',
   },
   oneOrMore: {
     id: 'oneOrMore',
@@ -463,12 +463,17 @@ export default defineMessages({
     description: 'Explaining that the recommendationis disabled',
     defaultMessage: 'This recommendation has been disabled and has no results.',
   },
-  ruleIsDisabledJustification: {
-    id: 'ruleIsDisabledJustification',
+  ruleIsDisabledJustificationBeginning: {
+    id: 'ruleIsDisabledJustificationBeginning',
     description:
-      'Explaining that the recommendationis disabled with following justification',
-    defaultMessage:
-      'This recommendation has been disabled for all systems for the following reason: ',
+      'Explaining that the recommendationis disabled first part of the message',
+    defaultMessage: 'This recommendation was disabled on',
+  },
+  ruleIsDisabledJustificationEnding: {
+    id: 'ruleIsDisabledJustificationEnding',
+    description:
+      'Explaining that the recommendationis disabled second part of the message',
+    defaultMessage: 'and has no results',
   },
   ruleIsDisabledForSystems: {
     id: 'ruleIsDisabledForSystems',
