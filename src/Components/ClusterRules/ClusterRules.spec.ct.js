@@ -202,7 +202,7 @@ describe('cluster rules table', () => {
       it(`sort ${order} by ${label}`, () => {
         const col = `td[data-label="${label}"]`;
         const header = `th[data-label="${label}"]`;
-        cy.get(col).should('have.length', 6);
+        cy.get(col).should('have.length', data.length);
         if (category !== 'description') {
           // sort first by description to ensure consistent ordering
           cy.get(`th[data-label="Description"]`).find('button').click();
