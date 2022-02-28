@@ -5,7 +5,6 @@ import { useIntl } from 'react-intl';
 import { useGetClusterByIdQuery } from '../../Services/SmartProxy';
 import messages from '../../Messages';
 import { Cluster } from './Cluster';
-import { useGetClusterDisplayNameByIdQuery } from '../../Services/AccountManagementService';
 
 export default routerParams(({ match }) => {
   const intl = useIntl();
@@ -13,7 +12,6 @@ export default routerParams(({ match }) => {
     id: match.params.clusterId,
     includeDisabled: false,
   });
-  const displayName = useGetClusterDisplayNameByIdQuery(match.params.clusterId);
 
   useEffect(() => {
     cluster.refetch();
@@ -27,6 +25,5 @@ export default routerParams(({ match }) => {
       document.title = intl.formatMessage(messages.documentTitle, { subnav });
     }
   }, [match.params.clusterId]);
-
-  return <Cluster cluster={cluster} displayName={displayName} match={match} />;
+  return <Cluster cluster={cluster} match={match} />;
 });

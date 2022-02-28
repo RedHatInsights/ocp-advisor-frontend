@@ -23,13 +23,5 @@ export const AmsApi = createApi({
     getCurrentAccount: builder.query({
       query: () => `current_account`,
     }),
-    getClusterDisplayNameById: builder.query({
-      query: (clusterId) =>
-        `subscriptions?page=1&size=-1&search=external_cluster_id='${clusterId}'&fields=display_name`,
-      transformResponse: (response) => response?.items?.[0]?.display_name,
-    }),
   }),
 });
-
-// Export hooks for usage in functional components
-export const { useGetClusterDisplayNameByIdQuery } = AmsApi;

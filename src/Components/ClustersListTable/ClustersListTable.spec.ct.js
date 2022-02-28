@@ -108,6 +108,102 @@ describe('clusters list table', () => {
       });
   });
 
+  it('can filter clusters by the total risk critical', () => {
+    cy.get('.ins-c-primary-toolbar__filter button').click();
+    cy.get(TOOLBAR_FILTER)
+      .find('.pf-c-dropdown__menu')
+      .find('li')
+      .eq(1)
+      .click({ force: true });
+    cy.get(TOOLBAR_FILTER).find('.pf-c-select__toggle').click();
+    cy.get(TOOLBAR_FILTER)
+      .find('.pf-c-select__menu')
+      .find('input')
+      .eq(0)
+      .click({ force: true });
+    cy.get(TOOLBAR_FILTER)
+      .find('.pf-c-select__menu')
+      .find('input')
+      .eq(1)
+      .click({ force: true });
+    cy.get('.pf-c-table__sort').eq(2).click();
+    cy.getFirstRow().find('td[data-label=Critical]').should('have.text', 1);
+    cy.get('.pf-c-table__sort').eq(2).click();
+    cy.getFirstRow().find('td[data-label=Critical]').should('have.text', 4);
+  });
+
+  it('can filter clusters by the total risk Important', () => {
+    cy.get('.ins-c-primary-toolbar__filter button').click();
+    cy.get(TOOLBAR_FILTER)
+      .find('.pf-c-dropdown__menu')
+      .find('li')
+      .eq(1)
+      .click({ force: true });
+    cy.get(TOOLBAR_FILTER).find('.pf-c-select__toggle').click();
+    cy.get(TOOLBAR_FILTER)
+      .find('.pf-c-select__menu')
+      .find('input')
+      .eq(0)
+      .click({ force: true });
+    cy.get(TOOLBAR_FILTER)
+      .find('.pf-c-select__menu')
+      .find('input')
+      .eq(2)
+      .click({ force: true });
+    cy.get('.pf-c-table__sort').eq(3).click();
+    cy.getFirstRow().find('td[data-label=Important]').should('have.text', 1);
+    cy.get('.pf-c-table__sort').eq(3).click();
+    cy.getFirstRow().find('td[data-label=Important]').should('have.text', 9);
+  });
+
+  it('can filter clusters by the total risk Moderate', () => {
+    cy.get('.ins-c-primary-toolbar__filter button').click();
+    cy.get(TOOLBAR_FILTER)
+      .find('.pf-c-dropdown__menu')
+      .find('li')
+      .eq(1)
+      .click({ force: true });
+    cy.get(TOOLBAR_FILTER).find('.pf-c-select__toggle').click();
+    cy.get(TOOLBAR_FILTER)
+      .find('.pf-c-select__menu')
+      .find('input')
+      .eq(0)
+      .click({ force: true });
+    cy.get(TOOLBAR_FILTER)
+      .find('.pf-c-select__menu')
+      .find('input')
+      .eq(3)
+      .click({ force: true });
+    cy.get('.pf-c-table__sort').eq(4).click();
+    cy.getFirstRow().find('td[data-label=Moderate]').should('have.text', 3);
+    cy.get('.pf-c-table__sort').eq(4).click();
+    cy.getFirstRow().find('td[data-label=Moderate]').should('have.text', 19);
+  });
+
+  it('can filter clusters by the total risk Low', () => {
+    cy.get('.ins-c-primary-toolbar__filter button').click();
+    cy.get(TOOLBAR_FILTER)
+      .find('.pf-c-dropdown__menu')
+      .find('li')
+      .eq(1)
+      .click({ force: true });
+    cy.get(TOOLBAR_FILTER).find('.pf-c-select__toggle').click();
+    cy.get(TOOLBAR_FILTER)
+      .find('.pf-c-select__menu')
+      .find('input')
+      .eq(0)
+      .click({ force: true });
+    cy.get(TOOLBAR_FILTER)
+      .find('.pf-c-select__menu')
+      .find('input')
+      .eq(4)
+      .click({ force: true });
+    cy.get('.pf-c-table__sort').eq(5).click();
+    cy.getFirstRow().find('td[data-label=Low]').should('have.text', 1);
+    cy.get('.pf-c-table__sort').eq(5).click();
+    cy.getFirstRow().find('td[data-label=Low]').should('have.text', 14);
+  });
+
   it('can filter by name', () => {
     // search by "cc" search input
     cy.get(TOOLBAR_FILTER).find('.pf-c-form-control').type('cc');
@@ -171,6 +267,13 @@ describe('clusters list table', () => {
       .find('button')
       .click({ force: true });
     cy.getLastRow().find('span').should('have.text', 'N/A');
+  });
+
+  it('shows correct amount of each type of the rule hits', () => {
+    cy.getFirstRow().find('td[data-label=Critical]').should('have.text', 4);
+    cy.getFirstRow().find('td[data-label=Important]').should('have.text', 9);
+    cy.getFirstRow().find('td[data-label=Moderate]').should('have.text', 16);
+    cy.getFirstRow().find('td[data-label=Low]').should('have.text', 8);
   });
 });
 

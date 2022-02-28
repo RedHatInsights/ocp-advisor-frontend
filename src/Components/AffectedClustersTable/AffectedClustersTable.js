@@ -25,7 +25,11 @@ import {
   NoAffectedClusters,
   NoMatchingClusters,
 } from '../MessageState/EmptyStates';
-import { AFFECTED_CLUSTERS_COLUMNS } from '../../AppConstants';
+import {
+  AFFECTED_CLUSTERS_COLUMNS,
+  AFFECTED_CLUSTERS_LAST_SEEN,
+  AFFECTED_CLUSTERS_NAME_CELL,
+} from '../../AppConstants';
 import Loading from '../Loading/Loading';
 import { updateAffectedClustersFilters } from '../../Services/Filters';
 import messages from '../../Messages';
@@ -134,10 +138,19 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
         return row?.cells[0].toLowerCase().includes(filters.text.toLowerCase());
       })
       .sort((a, b) => {
-        if (filters.sortDirection === 'asc') {
-          return a?.cells[0].localeCompare(b?.cells[0]);
+        let fst, snd;
+        const d = filters.sortDirection === 'asc' ? 1 : -1;
+        switch (filters.sortIndex) {
+          case AFFECTED_CLUSTERS_NAME_CELL:
+            if (filters.sortDirection === 'asc') {
+              return a?.cells[0].localeCompare(b?.cells[0]);
+            }
+            return b?.cells[0].localeCompare(a?.cells[0]);
+          case AFFECTED_CLUSTERS_LAST_SEEN:
+            fst = new Date(a.last_checked_at || 0);
+            snd = new Date(b.last_checked_at || 0);
+            return fst > snd ? d : snd > fst ? -d : 0;
         }
-        return b?.cells[0].localeCompare(a?.cells[0]);
       });
   };
 
@@ -284,7 +297,6 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
           {
             title: 'Disable recommendation for cluster',
             onClick: (event, rowIndex) => {
-              console.log(filteredRows[rowIndex]);
               return handleModalToggle(true, filteredRows[rowIndex].id);
             },
           },
