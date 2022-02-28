@@ -220,7 +220,7 @@ describe('clusters list table', () => {
     // check initial state
     cy.getFirstRow()
       .find('td[data-label=Name]')
-      .should('have.text', 'gvgubed6h jzcmr99ojh');
+      .should('have.text', '947b8f15-cc44-47ca-9265-945085d4f3b8');
     // click on the Name sorting button
     cy.get('.pf-c-table__sort').eq(0).click();
     cy.getFirstRow()
@@ -247,8 +247,8 @@ describe('clusters list table', () => {
   it('names of rows are links', () => {
     cy.getFirstRow()
       .find('td[data-label=Name]')
-      .find('a[href="/clusters/e488c993-821c-4915-bd08-5a51ed7aa3a2"]')
-      .should('have.text', 'gvgubed6h jzcmr99ojh');
+      .find('a[href="/clusters/947b8f15-cc44-47ca-9265-945085d4f3b8"]')
+      .should('have.text', '947b8f15-cc44-47ca-9265-945085d4f3b8');
   });
 
   it('sorts N/A in last seen correctly', () => {
@@ -270,10 +270,10 @@ describe('clusters list table', () => {
   });
 
   it('shows correct amount of each type of the rule hits', () => {
-    cy.getFirstRow().find('td[data-label=Critical]').should('have.text', 4);
-    cy.getFirstRow().find('td[data-label=Important]').should('have.text', 9);
-    cy.getFirstRow().find('td[data-label=Moderate]').should('have.text', 16);
-    cy.getFirstRow().find('td[data-label=Low]').should('have.text', 8);
+    cy.getFirstRow().find('td[data-label=Critical]').should('have.text', 2);
+    cy.getFirstRow().find('td[data-label=Important]').should('have.text', 7);
+    cy.getFirstRow().find('td[data-label=Moderate]').should('have.text', 9);
+    cy.getFirstRow().find('td[data-label=Low]').should('have.text', 5);
   });
 });
 
