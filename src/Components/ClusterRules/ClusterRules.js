@@ -187,7 +187,7 @@ const ClusterRules = ({ reports }) => {
     } else if (firstRule) {
       const i = rows.findIndex((row) => {
         const rule = row[0].rule;
-        /* rule_id is given with the plugin name only, 
+        /* rule_id is given with the plugin name only,
            thus we need to look at extra_data for the error key */
         return (
           rule.rule_id.split('.report')[0] === getPluginName(firstRule) &&
@@ -369,7 +369,7 @@ const ClusterRules = ({ reports }) => {
         expandAll={{ isAllExpanded, onClick: collapseAll }}
         filterConfig={{
           items: filterConfigItems,
-          isDisabled: filteredRows.length === 0,
+          isDisabled: reports.length === 0,
         }}
         pagination={
           <React.Fragment>
