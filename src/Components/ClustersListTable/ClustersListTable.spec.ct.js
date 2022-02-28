@@ -7,6 +7,7 @@ import { Intl } from '../../Utilities/intlHelper';
 import getStore from '../../Store';
 import { ClustersListTable } from './ClustersListTable';
 import props from '../../../cypress/fixtures/ClustersListTable/data.json';
+import '@patternfly/patternfly/patternfly.scss';
 
 describe('clusters list table', () => {
   const CLUSTERS_LIST_TABLE = 'div[id=clusters-list-table]';
@@ -107,6 +108,102 @@ describe('clusters list table', () => {
       });
   });
 
+  it('can filter clusters by the total risk critical', () => {
+    cy.get('.ins-c-primary-toolbar__filter button').click();
+    cy.get(TOOLBAR_FILTER)
+      .find('.pf-c-dropdown__menu')
+      .find('li')
+      .eq(1)
+      .click({ force: true });
+    cy.get(TOOLBAR_FILTER).find('.pf-c-select__toggle').click();
+    cy.get(TOOLBAR_FILTER)
+      .find('.pf-c-select__menu')
+      .find('input')
+      .eq(0)
+      .click({ force: true });
+    cy.get(TOOLBAR_FILTER)
+      .find('.pf-c-select__menu')
+      .find('input')
+      .eq(1)
+      .click({ force: true });
+    cy.get('.pf-c-table__sort').eq(2).click();
+    cy.getFirstRow().find('td[data-label=Critical]').should('have.text', 1);
+    cy.get('.pf-c-table__sort').eq(2).click();
+    cy.getFirstRow().find('td[data-label=Critical]').should('have.text', 4);
+  });
+
+  it('can filter clusters by the total risk Important', () => {
+    cy.get('.ins-c-primary-toolbar__filter button').click();
+    cy.get(TOOLBAR_FILTER)
+      .find('.pf-c-dropdown__menu')
+      .find('li')
+      .eq(1)
+      .click({ force: true });
+    cy.get(TOOLBAR_FILTER).find('.pf-c-select__toggle').click();
+    cy.get(TOOLBAR_FILTER)
+      .find('.pf-c-select__menu')
+      .find('input')
+      .eq(0)
+      .click({ force: true });
+    cy.get(TOOLBAR_FILTER)
+      .find('.pf-c-select__menu')
+      .find('input')
+      .eq(2)
+      .click({ force: true });
+    cy.get('.pf-c-table__sort').eq(3).click();
+    cy.getFirstRow().find('td[data-label=Important]').should('have.text', 1);
+    cy.get('.pf-c-table__sort').eq(3).click();
+    cy.getFirstRow().find('td[data-label=Important]').should('have.text', 9);
+  });
+
+  it('can filter clusters by the total risk Moderate', () => {
+    cy.get('.ins-c-primary-toolbar__filter button').click();
+    cy.get(TOOLBAR_FILTER)
+      .find('.pf-c-dropdown__menu')
+      .find('li')
+      .eq(1)
+      .click({ force: true });
+    cy.get(TOOLBAR_FILTER).find('.pf-c-select__toggle').click();
+    cy.get(TOOLBAR_FILTER)
+      .find('.pf-c-select__menu')
+      .find('input')
+      .eq(0)
+      .click({ force: true });
+    cy.get(TOOLBAR_FILTER)
+      .find('.pf-c-select__menu')
+      .find('input')
+      .eq(3)
+      .click({ force: true });
+    cy.get('.pf-c-table__sort').eq(4).click();
+    cy.getFirstRow().find('td[data-label=Moderate]').should('have.text', 3);
+    cy.get('.pf-c-table__sort').eq(4).click();
+    cy.getFirstRow().find('td[data-label=Moderate]').should('have.text', 19);
+  });
+
+  it('can filter clusters by the total risk Low', () => {
+    cy.get('.ins-c-primary-toolbar__filter button').click();
+    cy.get(TOOLBAR_FILTER)
+      .find('.pf-c-dropdown__menu')
+      .find('li')
+      .eq(1)
+      .click({ force: true });
+    cy.get(TOOLBAR_FILTER).find('.pf-c-select__toggle').click();
+    cy.get(TOOLBAR_FILTER)
+      .find('.pf-c-select__menu')
+      .find('input')
+      .eq(0)
+      .click({ force: true });
+    cy.get(TOOLBAR_FILTER)
+      .find('.pf-c-select__menu')
+      .find('input')
+      .eq(4)
+      .click({ force: true });
+    cy.get('.pf-c-table__sort').eq(5).click();
+    cy.getFirstRow().find('td[data-label=Low]').should('have.text', 1);
+    cy.get('.pf-c-table__sort').eq(5).click();
+    cy.getFirstRow().find('td[data-label=Low]').should('have.text', 14);
+  });
+
   it('can filter by name', () => {
     // search by "cc" search input
     cy.get(TOOLBAR_FILTER).find('.pf-c-form-control').type('cc');
@@ -123,7 +220,7 @@ describe('clusters list table', () => {
     // check initial state
     cy.getFirstRow()
       .find('td[data-label=Name]')
-      .should('have.text', 'gvgubed6h jzcmr99ojh');
+      .should('have.text', '947b8f15-cc44-47ca-9265-945085d4f3b8');
     // click on the Name sorting button
     cy.get('.pf-c-table__sort').eq(0).click();
     cy.getFirstRow()
@@ -150,8 +247,8 @@ describe('clusters list table', () => {
   it('names of rows are links', () => {
     cy.getFirstRow()
       .find('td[data-label=Name]')
-      .find('a[href="/clusters/e488c993-821c-4915-bd08-5a51ed7aa3a2"]')
-      .should('have.text', 'gvgubed6h jzcmr99ojh');
+      .find('a[href="/clusters/947b8f15-cc44-47ca-9265-945085d4f3b8"]')
+      .should('have.text', '947b8f15-cc44-47ca-9265-945085d4f3b8');
   });
 
   it('sorts N/A in last seen correctly', () => {
@@ -170,6 +267,13 @@ describe('clusters list table', () => {
       .find('button')
       .click({ force: true });
     cy.getLastRow().find('span').should('have.text', 'N/A');
+  });
+
+  it('shows correct amount of each type of the rule hits', () => {
+    cy.getFirstRow().find('td[data-label=Critical]').should('have.text', 2);
+    cy.getFirstRow().find('td[data-label=Important]').should('have.text', 7);
+    cy.getFirstRow().find('td[data-label=Moderate]').should('have.text', 9);
+    cy.getFirstRow().find('td[data-label=Low]').should('have.text', 5);
   });
 });
 

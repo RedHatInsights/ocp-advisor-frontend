@@ -67,7 +67,7 @@ export const passFiltersCluster = (cluster, filters) =>
           // all clusters
           filterValue.includes('all') ||
           // clusters with at least one rule hit for any of the active risk filters
-          filterValue.some((v) => cluster.hits_by_total_risk[v - 1] > 0)
+          filterValue.some((v) => cluster.hits_by_total_risk[v] > 0)
         );
       default:
         return true;
@@ -84,10 +84,10 @@ export const mapClustersToRows = (clusters) =>
         </Link>
       </span>,
       cluster.total_hit_count,
+      cluster.hits_by_total_risk?.[4] || 0,
       cluster.hits_by_total_risk?.[3] || 0,
       cluster.hits_by_total_risk?.[2] || 0,
       cluster.hits_by_total_risk?.[1] || 0,
-      cluster.hits_by_total_risk?.[0] || 0,
       <span key={index}>
         {cluster.last_checked_at ? (
           <DateFormat
@@ -182,15 +182,12 @@ export const paramParser = (search) => {
   return Array.from(searchParams).reduce(
     (acc, [key, value]) => ({
       ...acc,
-      [key]:
-        key === 'text'
-          ? // just copy the full value
-            value
-          : value === 'true' || value === 'false'
-          ? // parse boolean
-            JSON.parse(value)
-          : // parse array of values
-            value.split(','),
+      [key]: ['text', 'first'].includes(key)
+        ? value // just copy the full value
+        : value === 'true' || value === 'false'
+        ? JSON.parse(value) // parse boolean
+        : // parse array of values
+          value.split(','),
     }),
     {}
   );

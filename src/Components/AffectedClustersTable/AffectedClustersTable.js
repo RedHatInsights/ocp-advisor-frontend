@@ -8,24 +8,28 @@ import { conditionalFilterType } from '@redhat-cloud-services/frontend-component
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
 import { EmptyTable } from '@redhat-cloud-services/frontend-components/EmptyTable';
 import { TableToolbar } from '@redhat-cloud-services/frontend-components/TableToolbar';
-
+import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
 import { Card, CardBody } from '@patternfly/react-core/dist/js/components/Card';
-import { sortable } from '@patternfly/react-table/dist/js/components/Table/utils/decorators/sortable';
 import { Table } from '@patternfly/react-table/dist/js/components/Table/Table';
 import { TableBody } from '@patternfly/react-table/dist/js/components/Table/Body';
 import { TableHeader } from '@patternfly/react-table/dist/js/components/Table/Header';
 import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
+import { Tooltip } from '@patternfly/react-core/dist/js/components/Tooltip';
 import {
   Pagination,
   PaginationVariant,
 } from '@patternfly/react-core/dist/js/components/Pagination/Pagination';
-import { cellWidth } from '@patternfly/react-table';
 
 import {
   ErrorState,
   NoAffectedClusters,
   NoMatchingClusters,
 } from '../MessageState/EmptyStates';
+import {
+  AFFECTED_CLUSTERS_COLUMNS,
+  AFFECTED_CLUSTERS_LAST_SEEN,
+  AFFECTED_CLUSTERS_NAME_CELL,
+} from '../../AppConstants';
 import Loading from '../Loading/Loading';
 import { updateAffectedClustersFilters } from '../../Services/Filters';
 import messages from '../../Messages';
@@ -47,8 +51,8 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
     isUninitialized,
     isFetching,
     isSuccess,
-    /* the response contains two lists: `disabled` has clusters 
-       for which the rec is disabled (acked), and `enable` contains
+    /* the response contains two lists: `disabled` has clusters
+      for which the rec is disabled (acked), and `enable` contains
        clusters that are affected by the rec */
     data = { disabled: [], enabled: [] },
   } = query;
@@ -127,16 +131,26 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
     const rows = allRows.map((r) => ({
       id: r.cluster,
       cells: [r?.cluster_name || r.cluster],
+      last_checked_at: r?.last_checked_at,
     }));
     return rows
       .filter((row) => {
         return row?.cells[0].toLowerCase().includes(filters.text.toLowerCase());
       })
       .sort((a, b) => {
-        if (filters.sortDirection === 'asc') {
-          return a?.cells[0].localeCompare(b?.cells[0]);
+        let fst, snd;
+        const d = filters.sortDirection === 'asc' ? 1 : -1;
+        switch (filters.sortIndex) {
+          case AFFECTED_CLUSTERS_NAME_CELL:
+            if (filters.sortDirection === 'asc') {
+              return a?.cells[0].localeCompare(b?.cells[0]);
+            }
+            return b?.cells[0].localeCompare(a?.cells[0]);
+          case AFFECTED_CLUSTERS_LAST_SEEN:
+            fst = new Date(a.last_checked_at || 0);
+            snd = new Date(b.last_checked_at || 0);
+            return fst > snd ? d : snd > fst ? -d : 0;
         }
-        return b?.cells[0].localeCompare(a?.cells[0]);
       });
   };
 
@@ -147,7 +161,30 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
         ...r,
         cells: [
           <span key={r.id}>
-            <Link to={`/clusters/${r.id}`}>{r.cells[0]}</Link>
+            <Link to={`/clusters/${r.id}?first=${rule.rule_id}`}>
+              {r.cells[0]}
+            </Link>
+          </span>,
+          <span key={r.id}>
+            {r.last_checked_at ? (
+              <DateFormat
+                extraTitle={`${intl.formatMessage(messages.lastSeen)}: `}
+                date={r.last_checked_at}
+                variant="relative"
+              />
+            ) : (
+              <Tooltip
+                key={r.id}
+                content={
+                  <span>
+                    {intl.formatMessage(messages.lastSeen) + ': '}
+                    {intl.formatMessage(messages.nA)}
+                  </span>
+                }
+              >
+                <span>{intl.formatMessage(messages.nA)}</span>
+              </Tooltip>
+            )}
           </span>,
         ],
       }));
@@ -247,12 +284,7 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
         aria-label="Table of affected clusters"
         ouiaId="clusters"
         variant="compact"
-        cells={[
-          {
-            title: intl.formatMessage(messages.name),
-            transforms: [sortable, cellWidth(100)],
-          },
-        ]}
+        cells={AFFECTED_CLUSTERS_COLUMNS}
         rows={displayedRows}
         sortBy={{
           index: filters.sortIndex,
@@ -265,7 +297,6 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
           {
             title: 'Disable recommendation for cluster',
             onClick: (event, rowIndex) => {
-              console.log(filteredRows[rowIndex]);
               return handleModalToggle(true, filteredRows[rowIndex].id);
             },
           },

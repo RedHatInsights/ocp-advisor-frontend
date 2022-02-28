@@ -3,6 +3,7 @@ import { mount } from '@cypress/react';
 
 import { Intl } from '../../Utilities/intlHelper';
 import { ClusterHeader } from './ClusterHeader';
+import '@patternfly/patternfly/patternfly.scss';
 
 // selectors
 const HEADER_TITLE = '#cluster-header-title';
@@ -15,16 +16,16 @@ describe('cluster page header', () => {
   beforeEach(() => {
     props = {
       clusterId: 'foobar',
-      displayName: {
-        isUninitialized: false,
-        isFetching: false,
-        data: 'Cluster with issues',
-      },
       clusterData: {
         isUninitialized: false,
         isFetching: false,
         data: {
-          report: { meta: { last_checked_at: '2021-07-24T14:22:36.109Z' } },
+          report: {
+            meta: {
+              last_checked_at: '2021-07-24T14:22:36.109Z',
+              cluster_name: 'Cluster with issues',
+            },
+          },
         },
       },
     };
@@ -57,15 +58,16 @@ describe('cluster page header', () => {
       </Intl>
     );
     // check title
-    cy.get(HEADER_TITLE).should('have.length', 0);
-    cy.get('.ins-c-skeleton').should('have.length', 1);
+    cy.get(HEADER_TITLE).should('have.length', 1);
+    cy.get('.ins-c-skeleton').should('have.length', 0);
     // check uuid text
     cy.get(UUID_FIELD).should('have.text', 'foobar');
     // check uuid text
     cy.get(LAST_SEEN_FIELD).should('have.text', '24 Jul 2021 14:22 UTC');
   });
+
   it('show UUID when display name is unavailable', () => {
-    props.displayName.data = undefined;
+    props.clusterData.data.report.meta.cluster_name = undefined;
     mount(
       <Intl>
         <ClusterHeader {...props} />

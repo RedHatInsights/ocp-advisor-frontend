@@ -1,0 +1,297 @@
+[
+    {
+      "rule_id": "external.rules.rule_n_one|ERROR_KEY_N1",
+      "created_at": "2020-01-03T08:25:00Z",
+      "description": "1Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "details": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.\n\n[Foo Bar](https://foo.bar.com:1337/solutions/123)\n",
+      "reason": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.\n",
+      "resolution": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.\n * [Foo Bar `FooBarError`](https://foo.bar.com:1337/solutions/123)\n",
+      "more_info": "Lorem ipsum dolor sit amet, consectetur adipiscing [foo bar](https://foo.bar.com:1337/solutions/123)\n",
+      "total_risk": 2,
+      "risk_of_change": 0,
+      "disabled": false,
+      "disable_feedback": "note1",
+      "disabled_at": "2021-09-14T12:48:22Z",
+      "internal": false,
+      "user_vote": 1,
+      "extra_data": {
+        "error_key": "ERROR_KEY_N1",
+        "op": {
+          "available": {
+            "last_trans_time": "2020-03-21T12:46:28Z",
+            "message": "",
+            "reason": "NoData",
+            "status": null
+          },
+          "degraded": {
+            "last_trans_time": "2020-04-21T12:46:29Z",
+            "message": "WellKnownEndpointDegraded: failed to GET well-known",
+            "reason": "AsExpected",
+            "status": true
+          },
+          "name": "authentication",
+          "progressing": {
+            "last_trans_time": "2020-04-21T12:46:28Z",
+            "message": "",
+            "reason": "NoData",
+            "status": null
+          },
+          "upgradeable": {
+            "last_trans_time": "2020-04-21T12:46:28Z",
+            "message": "",
+            "reason": "AsExpected",
+            "status": true
+          },
+          "version": null
+        },
+        "type": "rule"
+      },
+      "tags": ["security", "service_availability"]
+    },
+    {
+      "rule_id": "external.rules.rule_n_one|ERROR_KEY_N2",
+      "created_at": "2020-01-03T08:25:00Z",
+      "description": "2Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "details": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.\n\n[Foo Bar](https://foo.bar.com:1337/solutions/123)\n",
+      "reason": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.\n",
+      "resolution": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.\n * [Foo Bar `FooBarError`](https://foo.bar.com:1337/solutions/123)\n",
+      "more_info": "Lorem ipsum dolor sit amet, consectetur adipiscing [foo bar](https://foo.bar.com:1337/solutions/123)\n",
+      "total_risk": 4,
+      "risk_of_change": 0,
+      "disabled": false,
+      "disable_feedback": "note1",
+      "disabled_at": "2021-09-14T12:48:22Z",
+      "internal": false,
+      "user_vote": 1,
+      "extra_data": {
+        "error_key": "ERROR_KEY_N2",
+        "op": {
+          "available": {
+            "last_trans_time": "2020-03-21T12:46:28Z",
+            "message": "",
+            "reason": "NoData",
+            "status": null
+          },
+          "degraded": {
+            "last_trans_time": "2020-04-21T12:46:29Z",
+            "message": "WellKnownEndpointDegraded: failed to GET well-known",
+            "reason": "AsExpected",
+            "status": true
+          },
+          "name": "authentication",
+          "progressing": {
+            "last_trans_time": "2020-04-21T12:46:28Z",
+            "message": "",
+            "reason": "NoData",
+            "status": null
+          },
+          "upgradeable": {
+            "last_trans_time": "2020-04-21T12:46:28Z",
+            "message": "",
+            "reason": "AsExpected",
+            "status": true
+          },
+          "version": null
+        },
+        "type": "rule"
+      },
+      "tags": ["service_availability"]
+    },
+    {
+      "rule_id": "external.rules.rule_n_one|ERROR_KEY_N3",
+      "created_at": "2020-12-03T08:25:00Z",
+      "description": "3Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "details": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.\n\n[Foo Bar](https://foo.bar.com:1337/solutions/123)\n",
+      "reason": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.\n",
+      "resolution": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.\n * [Foo Bar `FooBarError`](https://foo.bar.com:1337/solutions/123)\n",
+      "more_info": "Lorem ipsum dolor sit amet, consectetur adipiscing [foo bar](https://foo.bar.com:1337/solutions/123)\n",
+      "total_risk": 1,
+      "risk_of_change": 0,
+      "disabled": false,
+      "disable_feedback": "note1",
+      "disabled_at": "2021-09-14T12:48:22Z",
+      "internal": false,
+      "user_vote": 1,
+      "extra_data": {
+        "error_key": "ERROR_KEY_N3",
+        "op": {
+          "available": {
+            "last_trans_time": "2020-03-21T12:46:28Z",
+            "message": "",
+            "reason": "NoData",
+            "status": null
+          },
+          "degraded": {
+            "last_trans_time": "2020-04-21T12:46:29Z",
+            "message": "WellKnownEndpointDegraded: failed to GET well-known",
+            "reason": "AsExpected",
+            "status": true
+          },
+          "name": "authentication",
+          "progressing": {
+            "last_trans_time": "2020-04-21T12:46:28Z",
+            "message": "",
+            "reason": "NoData",
+            "status": null
+          },
+          "upgradeable": {
+            "last_trans_time": "2020-04-21T12:46:28Z",
+            "message": "",
+            "reason": "AsExpected",
+            "status": true
+          },
+          "version": null
+        },
+        "type": "rule"
+      },
+      "tags": ["performance", "service_availability"]
+    },
+    {
+      "rule_id": "external.rules.rule_n_one|ERROR_KEY_N4",
+      "created_at": "2020-07-03T08:25:00Z",
+      "description": "4Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "details": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.\n\n[Foo Bar](https://foo.bar.com:1337/solutions/123)\n",
+      "reason": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.\n",
+      "resolution": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.\n * [Foo Bar `FooBarError`](https://foo.bar.com:1337/solutions/123)\n",
+      "more_info": "Lorem ipsum dolor sit amet, consectetur adipiscing [foo bar](https://foo.bar.com:1337/solutions/123)\n",
+      "total_risk": 2,
+      "risk_of_change": 0,
+      "disabled": false,
+      "disable_feedback": "note1",
+      "disabled_at": "2021-09-14T12:48:22Z",
+      "internal": false,
+      "user_vote": 1,
+      "extra_data": {
+        "error_key": "ERROR_KEY_N4",
+        "op": {
+          "available": {
+            "last_trans_time": "2020-03-21T12:46:28Z",
+            "message": "",
+            "reason": "NoData",
+            "status": null
+          },
+          "degraded": {
+            "last_trans_time": "2020-04-21T12:46:29Z",
+            "message": "WellKnownEndpointDegraded: failed to GET well-known",
+            "reason": "AsExpected",
+            "status": true
+          },
+          "name": "authentication",
+          "progressing": {
+            "last_trans_time": "2020-04-21T12:46:28Z",
+            "message": "",
+            "reason": "NoData",
+            "status": null
+          },
+          "upgradeable": {
+            "last_trans_time": "2020-04-21T12:46:28Z",
+            "message": "",
+            "reason": "AsExpected",
+            "status": true
+          },
+          "version": null
+        },
+        "type": "rule"
+      },
+      "tags": ["security", "service_availability", "fault_tolerance"]
+    },
+    {
+      "rule_id": "external.rules.rule_n_one|ERROR_KEY_N5",
+      "created_at": "2020-01-03T08:25:00Z",
+      "description": "5Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "details": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.\n\n[Foo Bar](https://foo.bar.com:1337/solutions/123)\n",
+      "reason": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.\n",
+      "resolution": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.\n * [Foo Bar `FooBarError`](https://foo.bar.com:1337/solutions/123)\n",
+      "more_info": "Lorem ipsum dolor sit amet, consectetur adipiscing [foo bar](https://foo.bar.com:1337/solutions/123)\n",
+      "total_risk": 2,
+      "risk_of_change": 0,
+      "disabled": false,
+      "disable_feedback": "note1",
+      "disabled_at": "2021-09-14T12:48:22Z",
+      "internal": false,
+      "user_vote": 1,
+      "extra_data": {
+        "error_key": "ERROR_KEY_N5",
+        "op": {
+          "available": {
+            "last_trans_time": "2020-03-21T12:46:28Z",
+            "message": "",
+            "reason": "NoData",
+            "status": null
+          },
+          "degraded": {
+            "last_trans_time": "2020-04-21T12:46:29Z",
+            "message": "WellKnownEndpointDegraded: failed to GET well-known",
+            "reason": "AsExpected",
+            "status": true
+          },
+          "name": "authentication",
+          "progressing": {
+            "last_trans_time": "2020-04-21T12:46:28Z",
+            "message": "",
+            "reason": "NoData",
+            "status": null
+          },
+          "upgradeable": {
+            "last_trans_time": "2020-04-21T12:46:28Z",
+            "message": "",
+            "reason": "AsExpected",
+            "status": true
+          },
+          "version": null
+        },
+        "type": "rule"
+      },
+      "tags": ["security", "service_availability"]
+    },
+    {
+      "rule_id": "external.rules.rule_n_one|ERROR_KEY_N6",
+      "created_at": "2020-01-03T08:25:00Z",
+      "description": "6Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "details": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.\n\n[Foo Bar](https://foo.bar.com:1337/solutions/123)\n",
+      "reason": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.\n",
+      "resolution": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.\n * [Foo Bar `FooBarError`](https://foo.bar.com:1337/solutions/123)\n",
+      "more_info": "Lorem ipsum dolor sit amet, consectetur adipiscing [foo bar](https://foo.bar.com:1337/solutions/123)\n",
+      "total_risk": 3,
+      "risk_of_change": 0,
+      "disabled": false,
+      "disable_feedback": "note1",
+      "disabled_at": "2021-09-14T12:48:22Z",
+      "internal": false,
+      "user_vote": 1,
+      "extra_data": {
+        "error_key": "ERROR_KEY_N6",
+        "op": {
+          "available": {
+            "last_trans_time": "2020-03-21T12:46:28Z",
+            "message": "",
+            "reason": "NoData",
+            "status": null
+          },
+          "degraded": {
+            "last_trans_time": "2020-04-21T12:46:29Z",
+            "message": "WellKnownEndpointDegraded: failed to GET well-known",
+            "reason": "AsExpected",
+            "status": true
+          },
+          "name": "authentication",
+          "progressing": {
+            "last_trans_time": "2020-04-21T12:46:28Z",
+            "message": "",
+            "reason": "NoData",
+            "status": null
+          },
+          "upgradeable": {
+            "last_trans_time": "2020-04-21T12:46:28Z",
+            "message": "",
+            "reason": "AsExpected",
+            "status": true
+          },
+          "version": null
+        },
+        "type": "rule"
+      },
+      "tags": ["security"]
+    }
+  ]
+  

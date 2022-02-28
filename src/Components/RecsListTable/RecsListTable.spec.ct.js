@@ -7,6 +7,7 @@ import { RecsListTable } from './RecsListTable';
 import getStore from '../../Store';
 import props from '../../../cypress/fixtures/RecsListTable/data.json';
 import { Intl } from '../../Utilities/intlHelper';
+import '@patternfly/patternfly/patternfly.scss';
 
 // selectors
 const RECS_LIST_TABLE = 'div[id=recs-list-table]';
@@ -403,5 +404,81 @@ describe('empty recommendations list table', () => {
     cy.get('#error-state-message')
       .find('h4')
       .should('have.text', 'Something went wrong');
+  });
+});
+
+describe('Recs list is requested with additional parameters №1', () => {
+  before(() => {
+    mount(
+      <MemoryRouter
+        initialEntries={[
+          '/recommendations?total_risk=1&text=foo+bar&category=1&rule_status=disabled&impacting=false',
+        ]}
+        initialIndex={0}
+      >
+        <Intl>
+          <Provider store={getStore()}>
+            <RecsListTable
+              query={{
+                isError: false,
+                isFetching: false,
+                isUninitialized: false,
+                isSuccess: true,
+                data: props,
+              }}
+            />
+          </Provider>
+        </Intl>
+      </MemoryRouter>
+    );
+  });
+
+  it('Adds first iteration of filters to the table', () => {
+    cy.get(RECS_LIST_TABLE)
+      .find('span[class=pf-c-chip-group__label]')
+      .should('have.length', 5);
+    getChipGroup('Total risk').contains('.pf-c-chip', 'Low');
+    getChipGroup('Name').contains('.pf-c-chip', 'foo bar');
+    getChipGroup('Category').contains('.pf-c-chip', 'Service Availability');
+    getChipGroup('Status').contains('.pf-c-chip', 'Disabled');
+    getChipGroup('Clusters impacted').contains('.pf-c-chip', 'None');
+  });
+});
+
+describe('Recs list is requested with additional parameters №2', () => {
+  before(() => {
+    mount(
+      <MemoryRouter
+        initialEntries={[
+          '/recommendations?total_risk=2&text=foo+bar&category=2&rule_status=enabled&impacting=true',
+        ]}
+        initialIndex={0}
+      >
+        <Intl>
+          <Provider store={getStore()}>
+            <RecsListTable
+              query={{
+                isError: false,
+                isFetching: false,
+                isUninitialized: false,
+                isSuccess: true,
+                data: props,
+              }}
+            />
+          </Provider>
+        </Intl>
+      </MemoryRouter>
+    );
+  });
+
+  it('Adds second iteration of filters to the table', () => {
+    cy.get(RECS_LIST_TABLE)
+      .find('span[class=pf-c-chip-group__label]')
+      .should('have.length', 5);
+    getChipGroup('Total risk').contains('.pf-c-chip', 'Moderate');
+    getChipGroup('Name').contains('.pf-c-chip', 'foo bar');
+    getChipGroup('Category').contains('.pf-c-chip', 'Performance');
+    getChipGroup('Status').contains('.pf-c-chip', 'Enabled');
+    getChipGroup('Clusters impacted').contains('.pf-c-chip', '1 or more');
   });
 });
