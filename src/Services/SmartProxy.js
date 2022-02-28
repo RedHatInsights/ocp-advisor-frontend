@@ -26,6 +26,11 @@ export const SmartProxyApi = createApi({
     getClusters: builder.query({
       query: () => `v2/clusters`,
     }),
+    getDisplayName: builder.query({
+      query: ({ id, includeDisabled }) =>
+        `v2/cluster/${id}/reports?get_disabled=${includeDisabled}`,
+      transformResponse: (response) => response?.report?.meta?.cluster_name,
+    }),
   }),
 });
 
@@ -38,4 +43,5 @@ export const {
   useGetRecsQuery,
   useLazyGetRecsQuery,
   useGetClustersQuery,
+  useGetDisplayNameQuery,
 } = SmartProxyApi;

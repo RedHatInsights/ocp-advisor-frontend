@@ -11,14 +11,8 @@ import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat/Da
 import messages from '../../Messages';
 import { OneLineLoader } from '../../Utilities/Loaders';
 
-export const ClusterHeader = ({ clusterId, clusterData, displayName }) => {
+export const ClusterHeader = ({ clusterId, clusterData }) => {
   const intl = useIntl();
-  const {
-    isUninitialized: isUninitializedDisplayName,
-    isFetching: isFetchingDisplayName,
-    data: clusterName,
-  } = displayName;
-
   // subscribe to the cluster data query
   const {
     isUninitialized: isUninitializedCluster,
@@ -29,7 +23,7 @@ export const ClusterHeader = ({ clusterId, clusterData, displayName }) => {
   return (
     <Grid id="cluster-header" md={12} hasGutter>
       <GridItem>
-        {isUninitializedDisplayName || isFetchingDisplayName ? (
+        {isUninitializedCluster || isFetchingCluster ? (
           <Skeleton size="sm" />
         ) : (
           <Title
@@ -38,7 +32,7 @@ export const ClusterHeader = ({ clusterId, clusterData, displayName }) => {
             id="cluster-header-title"
             ouiaId="cluster-name"
           >
-            {clusterName || clusterId}
+            {clusterData?.data?.report?.meta.cluster_name || clusterId}
           </Title>
         )}
       </GridItem>

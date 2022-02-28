@@ -9,17 +9,16 @@ import getStore from '../../Store';
 import '@patternfly/patternfly/patternfly.scss';
 import singleClusterPageReport from '../../../cypress/fixtures/Cluster/report.json';
 
+// selectors
+const CLUSTER_HEADER = '#cluster-header';
+const BREADCRUMBS = 'nav[class=pf-c-breadcrumb]';
+const RULES_TABLE = '#cluster-recs-list-table';
+const FILTER_CHIPS = 'li[class=pf-c-chip-group__list-item]';
+const ROW = 'tbody[role=rowgroup]';
+Cypress.Commands.add('getAllRows', () => cy.get(RULES_TABLE).find(ROW));
+let props;
+
 describe('cluster page', () => {
-  // selectors
-  const CLUSTER_HEADER = '#cluster-header';
-  const BREADCRUMBS = 'nav[class=pf-c-breadcrumb]';
-  const RULES_TABLE = '#cluster-recs-list-table';
-  const FILTER_CHIPS = 'li[class=pf-c-chip-group__list-item]';
-  const ROW = 'tbody[role=rowgroup]';
-  Cypress.Commands.add('getAllRows', () => cy.get(RULES_TABLE).find(ROW));
-
-  let props;
-
   beforeEach(() => {
     cy.intercept('*', (req) => {
       req.destroy();
@@ -47,7 +46,7 @@ describe('cluster page', () => {
         data: singleClusterPageReport,
       },
       displayName: {
-        data: 'display-name-123',
+        data: singleClusterPageReport.report.meta.cluster_name,
       },
       match: {
         params: {
@@ -72,7 +71,7 @@ describe('cluster page', () => {
     cy.get(BREADCRUMBS)
       .should('have.length', 1)
       .get('.pf-c-breadcrumb__list > :nth-child(2)')
-      .should('have.text', 'display-name-123');
+      .should('have.text', 'Cluster With Issues');
     // renders cluster header
     cy.get(CLUSTER_HEADER).should('have.length', 1);
     // renders table component
@@ -180,5 +179,58 @@ describe('cluster page', () => {
       ])
     );
     cy.getAllRows().should('have.length', 1);
+  });
+});
+
+describe('Cluster page display name test №1', () => {
+  before(() => {
+    props = {
+      cluster: {
+        isError: false,
+        isUninitialized: false,
+        isLoading: false,
+        isFetching: false,
+        isSuccess: true,
+        data: singleClusterPageReport,
+      },
+      match: {
+        params: {
+          clusterId: 'Cluster Id',
+        },
+        url: 'foobar',
+      },
+    };
+  });
+
+  it('Cluster breadcrumbs name should be Cluster With Issues', () => {
+    mount(
+      <MemoryRouter>
+        <Intl>
+          <Provider store={getStore()}>
+            <Cluster {...props} />
+          </Provider>
+        </Intl>
+      </MemoryRouter>
+    );
+    cy.get(BREADCRUMBS)
+      .should('have.length', 1)
+      .get('.pf-c-breadcrumb__list > :nth-child(2)')
+      .should('have.text', 'Cluster With Issues');
+  });
+
+  it('Cluster breadcrumbs name should be = Cluster Id', () => {
+    mount(
+      <MemoryRouter>
+        <Intl>
+          <Provider store={getStore()}>
+            <Cluster cluster="" match={props.match} />
+          </Provider>
+        </Intl>
+      </MemoryRouter>
+    );
+    cy.get(BREADCRUMBS)
+      .should('have.length', 1)
+      .get('.pf-c-breadcrumb__list > :nth-child(2)')
+      .should('have.text', 'Cluster Id');
   });
 });

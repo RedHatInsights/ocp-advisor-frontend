@@ -3,9 +3,19 @@ const PAGINATION = 'div[data-ouia-component-type="PF4/Pagination"]';
 const PAGINATION_MENU = `${TOOLBAR} ${PAGINATION} div[data-ouia-component-type="PF4/PaginationOptionsMenu"]`;
 const PAGINATION_NEXT = `${TOOLBAR} ${PAGINATION} button[data-action="next"]`;
 const CHIPS = `${TOOLBAR} div[data-ouia-component-type="PF4/ChipGroup"]`;
+const CHIP_GROUP = 'div[data-ouia-component-type="PF4/ChipGroup"]';
+const CHIP = '[data-ouia-component-type="PF4/Chip"]';
 const EMPTY_STATE = 'table .pf-c-empty-state';
 const TOGGLE_CHECKBOX = `${TOOLBAR} [data-ouia-component-id="clusters-selector-toggle-checkbox"]`;
 const TOGGLE_CHECKBOX_TEXT = `${TOOLBAR} #toggle-checkbox-text`;
+const ROWS = '[data-ouia-component-type="PF4/TableRow"]';
+
+function checkRowCounts(n) {
+  return cy
+    .get('table tbody[role=rowgroup]')
+    .find(ROWS)
+    .should('have.length', n);
+}
 
 const filterableTable = {
   isDisplayed: (id) =>
@@ -61,4 +71,4 @@ const filterableTable = {
   toggleCheckboxText: () => cy.get(TOGGLE_CHECKBOX_TEXT),
 };
 
-export { filterableTable };
+export { filterableTable, CHIP_GROUP, CHIP, ROWS, checkRowCounts };
