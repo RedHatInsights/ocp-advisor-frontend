@@ -369,8 +369,7 @@ const ClusterRules = ({ reports }) => {
         expandAll={{ isAllExpanded, onClick: collapseAll }}
         filterConfig={{
           items: filterConfigItems,
-          isDisabled:
-            reports.length === 0 ? filteredRows.length === 0 : undefined,
+          isDisabled: reports.length === 0,
         }}
         pagination={
           <React.Fragment>
