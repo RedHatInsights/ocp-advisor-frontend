@@ -68,6 +68,7 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
   } = rule;
   // justification note, last time acknowledged, etc.
   const { data: ackData, isFetching: ackIsFetching, refetch: refetchAck } = ack;
+  const ruleDate = new Date(ackData?.updated_at || ackData?.created_at);
   // affected and acked clusters lists
   const {
     data: clustersData,
@@ -338,17 +339,12 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
                                   date: (
                                     <span>
                                       <DateFormat
-                                        date={
-                                          new Date(
-                                            ackData?.updated_at ||
-                                              ackData?.created_at
-                                          )
-                                        }
+                                        date={ruleDate}
                                         type="onlyDate"
                                       />
                                     </span>
                                   ),
-                                  reason: ackData?.justification,
+                                  reason: ackData.justification,
                                 }
                               )
                             : intl.formatMessage(
@@ -357,12 +353,7 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
                                   date: (
                                     <span>
                                       <DateFormat
-                                        date={
-                                          new Date(
-                                            ackData?.updated_at ||
-                                              ackData?.created_at
-                                          )
-                                        }
+                                        date={ruleDate}
                                         type="onlyDate"
                                       />
                                     </span>
