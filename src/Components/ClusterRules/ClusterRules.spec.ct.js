@@ -202,7 +202,7 @@ describe('cluster rules table', () => {
       it(`sort ${order} by ${label}`, () => {
         const col = `td[data-label="${label}"]`;
         const header = `th[data-label="${label}"]`;
-        cy.get(col).should('have.length', data.length);
+        cy.get(col).should('have.length', RULES_ENABLED);
         if (category !== 'description') {
           // sort first by description to ensure consistent ordering
           cy.get(`th[data-label="Description"]`).find('button').click();
@@ -402,8 +402,6 @@ describe('empty cluster rules table', () => {
 });
 
 // TODO what will happen if server fails to respond?
-
-
 
 describe('cluster rules table testing the first query parameter', () => {
   beforeEach(() => {
