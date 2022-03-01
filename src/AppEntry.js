@@ -1,16 +1,26 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import { init } from './store';
-import App from './App';
-import { getBaseName } from '@redhat-cloud-services/frontend-components-utilities/helpers';
 
-const AppEntry = () => (
-  <Provider store={init().getStore()}>
-    <Router basename={getBaseName(window.location.pathname)}>
-      <App />
+import { getBaseName } from '@redhat-cloud-services/frontend-components-utilities/helpers/helpers';
+
+import App from './App';
+import { Intl } from './Utilities/intlHelper';
+
+const AppEntry = ({ useLogger }) => (
+  <Intl>
+    <Router basename={getBaseName(window.location.pathname, 3)}>
+      <App useLogger={useLogger} />
     </Router>
-  </Provider>
+  </Intl>
 );
+
+AppEntry.propTypes = {
+  useLogger: PropTypes.bool,
+};
+
+AppEntry.defaultProps = {
+  useLogger: false,
+};
 
 export default AppEntry;

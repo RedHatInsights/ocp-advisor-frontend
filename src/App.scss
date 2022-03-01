@@ -1,2 +1,15 @@
 // Importing Global Variables
 @import "~@redhat-cloud-services/frontend-components-utilities/styles/_all";
+
+#coming-soon-message {
+    .pf-c-empty-state__content {
+        .pf-c-empty-state__body {
+            margin-bottom: 1rem;
+        }
+    }
+}
+
+.pf-c-table tr > *:first-child {
+    --pf-c-table--cell--PaddingLeft: 1rem;
+    --pf-c-table--cell--PaddingRight: 1rem;
+}

@@ -1,45 +1,38 @@
-[![Build Status](https://travis-ci.org/RedHatInsights/frontend-starter-app.svg?branch=master)](https://travis-ci.org/RedHatInsights/frontend-starter-app)
+[![Build Status](https://app.travis-ci.com/RedHatInsights/ocp-advisor-frontend.svg?branch=master)](https://app.travis-ci.com/RedHatInsights/ocp-advisor-frontend)
 
-# frontend-starter-app
+# OCP Advisor Frontend
 
-React.js starter app for Red Hat Insights products that includes Patternfly 4 and shared Red Hat cloud service frontend components.
+## Running locally
 
-## Getting started
+1. `npm install`
 
-1. ```npm install```
+2. Check whether `env` in the `dev.webpack.config.js` is set to the preferred chrome + API environment.
 
-2. ```npm run start:proxy``` / ```npm run start:beta:proxy```
+3. `npm run start:beta`
 
-Update `config/dev.webpack.config.js` according to your application URL. [Read more](https://github.com/RedHatInsights/frontend-components/tree/master/packages/config#useproxy).
+4. Open https://prod.foo.redhat.com:1337/beta/openshifts/insights/advisor (or whatever environment is specified). Please, make sure that OCP Advisor is temporarily not available under **non-beta** environments.
 
-## Run with insights-proxy
+### Using insights-results-aggregator-mock
 
-You'll need to clone:
+You can use the mocked version of Insights Results Aggregator (or Smart Proxy) API.
 
-- [Insights Proxy](https://github.com/RedHatInsights/insights-proxy)
-- Frontend Starter App (this repo)
+1. Clone https://github.com/RedHatInsights/insights-results-aggregator-mock.
 
-1. Run [insights-proxy](https://github.com/RedHatInsights/insights-proxy) (requires [Docker](https://www.docker.com/) and modifying /etc/hosts). It's recommended to set a PROXY_PATH environment variable in your .bashrc to avoid having to write the full path to where you clone the repo.
+2. Follow "How to build the service" and "How to start the service."
 
-```shell
-SPANDX_CONFIG="./profiles/local-frontend.js" bash $PROXY_PATH/scripts/run.sh
-```
+3. Once having IRA-mock server running locally, run the OCP Advisor with `npm run start:beta:mock`.
 
-2. ```npm install```
+## Environments (local)
 
-3. ```npm run start```
-
-4. Open one of the following environments behind the Red Hat VPN and accept the certs:
-  - https://ci.foo.redhat.com:1337/beta/staging/starter
-  - https://qa.foo.redhat.com:1337/beta/staging/starter
-  - https://stage.foo.redhat.com:1337/beta/staging/starter
-  - https://prod.foo.redhat.com:1337/beta/staging/starter
-
-Should you need more help, there is a [comprehensive quick start guide in the Storybook Documentation.](https://github.com/RedHatInsights/insights-frontend-storybook/blob/master/src/docs/welcome/quickStart/DOC.md)
+- https://ci.foo.redhat.com:1337/beta/openshift/insights/advisor
+- https://qa.foo.redhat.com:1337/beta/openshift/insights/advisor
+- https://stage.foo.redhat.com:1337/beta/openshift/insights/advisor
+- https://prod.foo.redhat.com:1337/beta/openshift/insights/advisor
 
 ### Testing
 
-`npm run verify` will run `npm run lint` (eslint) and `npm test` (Jest)
+- Run `npm run test` to execute unit-test suite (Jest + Cypress component testing).
+- Run `npx cypress open-ct` to open Cypress in component tesing mode.
 
 ## Deploying
 
@@ -51,5 +44,12 @@ Should you need more help, there is a [comprehensive quick start guide in the St
     - `qa-stable` (deployed by pushing to `qa-stable` on this repo)
     - `prod-beta` (deployed by pushing to `prod-beta` on this repo)
     - `prod-stable` (deployed by pushing to `prod-stable` on this repo)
-- Travis uploads results to RedHatInight's [codecov](https://codecov.io) account. To change the account, modify CODECOV_TOKEN on https://travis-ci.com/.
+- Travis uploads results to RedHatInsight's [codecov](https://codecov.io) account. To change the account, modify CODECOV_TOKEN on https://travis-ci.com/.
 
+## Recommendation ID examples
+
+- `ccx_rules_ocp.external.rules.nodes_requirements_check|NODES_MINIMUM_REQUIREMENTS_NOT_MET`
+- `ccx_rules_ocp.external.rules.vsphere_upi_machine_is_in_phase|VSPHERE_UPI_MACHINE_WITH_NO_RUNNING_PHASE`
+- `ccx_rules_ocp.external.rules.machineconfig_stuck_by_node_taints|NODE_HAS_TAINTS_APPLIED`
+- `ccx_rules_ocp.external.rules.ocp_version_end_of_life|OCP4X_EOL_APPROACHING`
+- `ccx_rules_ocp.external.rules.ocp_version_end_of_life|OCP4X_BEYOND_EOL`

@@ -1,16 +1,25 @@
 const { resolve } = require('path');
 const config = require('@redhat-cloud-services/frontend-components-config');
+
 const { config: webpackConfig, plugins } = config({
   rootFolder: resolve(__dirname, '../'),
   debug: true,
-  https: true,
-  appUrl: '/openshift/insights/advisor',
-  useFileHash: false,
   deployment: process.env.BETA ? 'beta/apps' : 'apps',
-  ...(process.env.PROXY && {
-    useProxy: true,
-    appUrl: process.env.BETA ? '/beta/staging/starter' : '/staging/starter',
-  }),
+  useProxy: true,
+  appUrl: process.env.BETA
+    ? ['/beta/openshift/insights/advisor']
+    : ['/openshift/insights/advisor'],
+  env: process.env.BETA ? 'stage-beta' : 'qa-stable',
+  sassPrefix: '.ocp-advisor, .ocpAdvisor',
+  ...(process.env.MOCK
+    ? {
+        routes: {
+          '/api/insights-results-aggregator': {
+            host: 'http://localhost:8080',
+          },
+        },
+      }
+    : {}),
 });
 
 plugins.push(
@@ -19,7 +28,7 @@ plugins.push(
       root: resolve(__dirname, '../'),
       useFileHash: false,
       exposes: {
-        './RootApp': resolve(__dirname, '../src/DevEntry'),
+        './RootApp': resolve(__dirname, '../src/AppEntry'),
       },
     }
   )
