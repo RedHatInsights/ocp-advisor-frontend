@@ -392,7 +392,7 @@ describe('clusters list table', () => {
     // check initial state
     cy.getFirstRow()
       .find('td[data-label=Name]')
-      .should('have.text', 'gvgubed6h jzcmr99ojh');
+      .should('have.text', '947b8f15-cc44-47ca-9265-945085d4f3b8');
     // click on the Name sorting button
     cy.get('.pf-c-table__sort').eq(0).click();
     cy.getFirstRow()
@@ -444,10 +444,10 @@ describe('clusters list table', () => {
   });
 
   it('shows correct amount of each type of the rule hits', () => {
-    cy.getFirstRow().find('td[data-label=Critical]').should('have.text', 4);
-    cy.getFirstRow().find('td[data-label=Important]').should('have.text', 9);
-    cy.getFirstRow().find('td[data-label=Moderate]').should('have.text', 16);
-    cy.getFirstRow().find('td[data-label=Low]').should('have.text', 8);
+    cy.getFirstRow().find('td[data-label=Critical]').should('have.text', 2);
+    cy.getFirstRow().find('td[data-label=Important]').should('have.text', 7);
+    cy.getFirstRow().find('td[data-label=Moderate]').should('have.text', 9);
+    cy.getFirstRow().find('td[data-label=Low]').should('have.text', 5);
   });
 
   // TODO fix test: double sorting? keep ordering in single sorting?

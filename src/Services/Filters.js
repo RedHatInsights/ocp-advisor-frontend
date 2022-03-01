@@ -25,7 +25,7 @@ export const CLUSTERS_LIST_INITIAL_STATE = {
   limit: 20,
   offset: 0,
   hits: ['all'],
-  sortIndex: -1,
+  sortIndex: 6,
   sortDirection: 'desc',
   text: '',
 };
