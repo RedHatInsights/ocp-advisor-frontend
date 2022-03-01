@@ -38,6 +38,12 @@ namedClusters.forEach((it) => {
       : 0;
   });
 });
+// default sorting
+let namedClustersDefaultSorting = _.orderBy(
+  namedClusters,
+  ['last_checked_at'],
+  ['desc']
+);
 
 const TABLE = 'div[id=clusters-list-table]';
 const TABLE_HEADERS = [
@@ -407,7 +413,7 @@ describe('clusters list table', () => {
   });
 
   it('rows show cluster names instead uuids when available', () => {
-    const names = _.map(namedClusters, 'name');
+    const names = _.map(namedClustersDefaultSorting, 'name');
     cy.get(`td[data-label="Name"]`)
       .then(($els) => {
         return _.map(Cypress.$.makeArray($els), 'innerText');
@@ -421,8 +427,10 @@ describe('clusters list table', () => {
   it('names of rows are links', () => {
     cy.getFirstRow()
       .find('td[data-label=Name]')
-      .find(`a[href="/clusters/${data[0]['cluster_id']}"]`)
-      .should('have.text', data[0]['cluster_name']);
+      .find(
+        `a[href="/clusters/${namedClustersDefaultSorting[0]['cluster_id']}"]`
+      )
+      .should('have.text', namedClustersDefaultSorting[0]['name']);
   });
 
   it('sorts N/A in last seen correctly', () => {
