@@ -17,7 +17,7 @@ import {
   CHIP_GROUP,
   DROPDOWN,
   DROPDOWN_TOGGLE,
-  DROPDOWN_ITEM
+  DROPDOWN_ITEM,
 } from '../../../cypress/utils/components';
 import {
   DEFAULT_ROW_COUNT,
@@ -135,7 +135,6 @@ describe('non-empty successful affected clusters table', () => {
       .eq(0)
       .should('have.text', '1 - 20');
   });
-
 
   it('bulk disabling is disabled by default', () => {
     cy.get(TOOLBAR)
@@ -303,10 +302,7 @@ describe('non-empty successful affected clusters table', () => {
   });
 
   it('pagination defaults are expected ones', () => {
-    cy.get(TOOLBAR)
-      .find(PAGINATION_MENU)
-      .find(DROPDOWN_TOGGLE)
-      .click();
+    cy.get(TOOLBAR).find(PAGINATION_MENU).find(DROPDOWN_TOGGLE).click();
     cy.get(TOOLBAR)
       .find(PAGINATION_MENU)
       .find('ul[class=pf-c-options-menu__menu]')
@@ -322,10 +318,7 @@ describe('non-empty successful affected clusters table', () => {
   it('can change page limit', () => {
     // FIXME: best way to make the loop
     cy.wrap(PAGINATION_VALUES).each((el) => {
-      cy.get(TOOLBAR)
-        .find(PAGINATION_MENU)
-        .find(DROPDOWN_TOGGLE)
-        .click();
+      cy.get(TOOLBAR).find(PAGINATION_MENU).find(DROPDOWN_TOGGLE).click();
       cy.get(TOOLBAR)
         .find(PAGINATION_MENU)
         .find('ul[class=pf-c-options-menu__menu]')
@@ -491,10 +484,6 @@ describe('non-empty successful affected clusters table', () => {
           'have.length',
           Math.min(DEFAULT_ROW_COUNT, data['enabled'].length)
         );
-        if (category !== 'name') {
-          // sort first by name to ensure consistent ordering
-          cy.get(`th[data-label="Name"]`).find('button').click();
-        }
         cy.get(header).find('button').click();
         // FIXME right way to do the second click?
         if (order === 'descending') {
@@ -510,14 +499,21 @@ describe('non-empty successful affected clusters table', () => {
               ? it['cluster_name']
               : it['cluster'])
         );
+        // convert N/A timestamps as really old ones
+        sortedClusters.forEach((it) => {
+          if (it['last_checked_at'] === '') {
+            it['last_checked_at'] = '1970-01-01T01:00:00.001Z';
+          }
+        });
+
         sortedClusters = _.map(
-          _.sortBy(sortedClusters, [category, 'name']),
+          _.orderBy(
+            sortedClusters,
+            [category],
+            [order === 'descending' ? 'desc' : 'asc']
+          ),
           'name'
         );
-        if (order === 'descending') {
-          // reverse order
-          sortedClusters = _.reverse(sortedClusters);
-        }
         cy.get(`td[data-label="Name"]`)
           .then(($els) => {
             return _.map(Cypress.$.makeArray($els), 'innerText');
