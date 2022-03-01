@@ -1,19 +1,46 @@
+import { Route, Switch, Redirect } from 'react-router-dom';
 import React, { Suspense, lazy } from 'react';
-import { Redirect, Route, Switch } from 'react-router-dom';
 
-import { Bullseye, Spinner } from '@patternfly/react-core';
+import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
+import { Spinner } from '@patternfly/react-core/dist/js/components/Spinner';
+import { EmptyState } from '@patternfly/react-core/dist/js/components/EmptyState';
+import { EmptyStateBody } from '@patternfly/react-core/dist/js/components/EmptyState';
+import InvalidObject from '@redhat-cloud-services/frontend-components/InvalidObject/InvalidObject';
 
-const SamplePage = lazy(() =>
-  import(/* webpackChunkName: "SamplePage" */ './Routes/SamplePage/SamplePage')
+const Cluster = lazy(() =>
+  import(/* webpackChunkName: "ClusterDetails" */ './Components/Cluster')
 );
-const OopsPage = lazy(() =>
-  import(/* webpackChunkName: "OopsPage" */ './Routes/OopsPage/OopsPage')
+
+const Recommendation = lazy(() =>
+  import(/* webpackChunkName: "Recommendation" */ './Components/Recommendation')
 );
-const NoPermissionsPage = lazy(() =>
-  import(
-    /* webpackChunkName: "NoPermissionsPage" */ './Routes/NoPermissionsPage/NoPermissionsPage'
-  )
+
+const RecsList = lazy(() =>
+  import(/* webpackChunkName: "RecsList" */ './Components/RecsList')
 );
+
+const ClustersList = lazy(() =>
+  import(/* webpackChunkName: "ClustersList" */ './Components/ClustersList')
+);
+
+const paths = [
+  {
+    title: 'Clusters',
+    path: '/clusters/:clusterId',
+    component: Cluster,
+  },
+  { title: 'Clusters', path: '/clusters', component: ClustersList },
+  {
+    title: 'Recommendations',
+    path: '/recommendations/:recommendationId',
+    component: Recommendation,
+  },
+  {
+    title: 'Recommendations',
+    path: '/recommendations',
+    component: RecsList,
+  },
+];
 
 /**
  * the Switch component changes routes depending on the path.
@@ -32,13 +59,21 @@ export const Routes = () => (
     }
   >
     <Switch>
-      <Route path="/sample" component={SamplePage} />
-      <Route path="/oops" component={OopsPage} />
-      <Route path="/no-permissions" component={NoPermissionsPage} />
+      {paths.map((path) => (
+        <Route key={path.title} path={path.path} component={path.component} />
+      ))}
+      <Redirect exact from="/" to="/recommendations" />
       {/* Finally, catch all unmatched routes */}
-      <Route>
-        <Redirect to="/sample" />
-      </Route>
+      <Route
+        path="*"
+        component={() => (
+          <EmptyState>
+            <EmptyStateBody>
+              <InvalidObject />
+            </EmptyStateBody>
+          </EmptyState>
+        )}
+      />
     </Switch>
   </Suspense>
 );
