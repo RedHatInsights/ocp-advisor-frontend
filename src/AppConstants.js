@@ -285,3 +285,27 @@ export const CLUSTER_RULES_COLUMNS = [
     transforms: [sortable, cellWidth(15)],
   },
 ];
+export const IMPACT_LABEL_LOWER = {
+  1: intlHelper(intl.formatMessage(messages.low).toLowerCase(), intlSettings),
+  2: intlHelper(
+    intl.formatMessage(messages.medium).toLowerCase(),
+    intlSettings
+  ),
+  3: intlHelper(intl.formatMessage(messages.high).toLowerCase(), intlSettings),
+  4: intlHelper(
+    intl.formatMessage(messages.critical).toLowerCase(),
+    intlSettings
+  ),
+};
+export const LIKELIHOOD_LABEL_LOWER = {
+  1: intlHelper(intl.formatMessage(messages.low).toLowerCase(), intlSettings),
+  2: intlHelper(
+    intl.formatMessage(messages.medium).toLowerCase(),
+    intlSettings
+  ),
+  3: intlHelper(intl.formatMessage(messages.high).toLowerCase(), intlSettings),
+  4: intlHelper(
+    intl.formatMessage(messages.critical).toLowerCase(),
+    intlSettings
+  ),
+};
