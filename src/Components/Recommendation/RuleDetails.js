@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 
-import AsyncComponent from '@redhat-cloud-services/frontend-components/AsyncComponent';
+// import AsyncComponent from '@redhat-cloud-services/frontend-components/AsyncComponent';
+import RuleDetailsLocal from '../RuleDetailsLocal';
 
 import Loading from '../Loading/Loading';
 import messages from '../../Messages';
@@ -14,7 +15,7 @@ const RuleDetails = ({ children, ...props }) => {
 
   return (
     <div className="advisor">
-      <AsyncComponent
+      <RuleDetailsLocal
         appName="advisor"
         module="./AdvisorRecommendationDetails"
         fallback={<Loading />}
@@ -25,7 +26,7 @@ const RuleDetails = ({ children, ...props }) => {
         {...props}
       >
         {children}
-      </AsyncComponent>
+      </RuleDetailsLocal>
     </div>
   );
 };

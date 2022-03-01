@@ -565,4 +565,25 @@ export default defineMessages({
     defaultMessage:
       'To get started, create or register your cluster to get recommendations from Insights Advisor.',
   },
+  rulesDetailsTotalriskBody: {
+    id: 'rulesdetails.totalriskbody',
+    description: 'Text explaining the total risk value of this recommendation',
+    defaultMessage: `The total risk of this remediation is <strong>{risk}</strong>,
+                        based on the combination of likelihood and impact to remediate.`,
+  },
+  riskofchange: {
+    id: 'riskofchange',
+    description: 'Risk of Change',
+    defaultMessage: 'Risk of change',
+  },
+  ruleHelpful: {
+    id: 'ruleHelpful',
+    description: 'Asking the user if they find a recommendation helpful',
+    defaultMessage: 'Is this recommendation helpful?',
+  },
+  feedbackThankyou: {
+    id: 'feedbackThankyou',
+    description: 'Thanking user for feedback',
+    defaultMessage: 'Thank you for your feedback!',
+  },
 });
