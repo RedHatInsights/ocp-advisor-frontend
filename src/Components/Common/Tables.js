@@ -57,12 +57,9 @@ export const passFiltersCluster = (cluster, filters) =>
   Object.entries(filters).every(([filterKey, filterValue]) => {
     switch (filterKey) {
       case 'text':
-        if (cluster.cluster_id) {
-          return (cluster.cluster_name || cluster.cluster_id)
-            .toLowerCase()
-            .includes(filterValue.toLowerCase());
-        }
-        break;
+        return (cluster.cluster_name || cluster.cluster_id)
+          .toLowerCase()
+          .includes(filterValue.toLowerCase());
       case CLUSTER_FILTER_CATEGORIES.hits.urlParam:
         return (
           // clusters with at least one rule hit
