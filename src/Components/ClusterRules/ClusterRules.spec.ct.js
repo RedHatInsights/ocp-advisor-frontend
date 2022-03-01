@@ -203,24 +203,25 @@ describe('cluster rules table', () => {
         const col = `td[data-label="${label}"]`;
         const header = `th[data-label="${label}"]`;
         cy.get(col).should('have.length', RULES_ENABLED);
-        if (category !== 'description') {
-          // sort first by description to ensure consistent ordering
-          cy.get(`th[data-label="Description"]`).find('button').click();
-        }
         cy.get(`th[data-label="${label}"]`).find('button').click();
         // FIXME right way to do the second click?
         if (order === 'descending') {
           // click a second time to reverse sorting
           cy.get(header).find('button').click();
         }
+        // FIXME original order is not retained but reversed when descending
+        // let sortedDescriptions = _.map(
+        //   _.orderBy(data, [category], [(order === 'descending')? 'desc': 'asc']),
+        //   'description'
+        // );
         let sortedDescriptions = _.map(
-          _.sortBy(data, [category, 'description']),
+          _.orderBy(data, [category], ['asc']),
           'description'
         );
         if (order === 'descending') {
-          // reverse order
-          sortedDescriptions = _.reverse(sortedDescriptions);
+          sortedDescriptions = sortedDescriptions.reverse();
         }
+
         cy.get(`td[data-label="Description"]`)
           .then(($els) => {
             return _.map(Cypress.$.makeArray($els), 'innerText');

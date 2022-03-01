@@ -30,6 +30,14 @@ namedClusters.forEach(
   (it) =>
     (it['name'] = it['cluster_name'] ? it['cluster_name'] : it['cluster_id'])
 );
+// fill possible missing values
+namedClusters.forEach((it) => {
+  ['1', '2', '3', '4'].forEach((k) => {
+    it['hits_by_total_risk'][k] = it['hits_by_total_risk'][k]
+      ? it['hits_by_total_risk'][k]
+      : 0;
+  });
+});
 
 const TABLE = 'div[id=clusters-list-table]';
 const TABLE_HEADERS = [
