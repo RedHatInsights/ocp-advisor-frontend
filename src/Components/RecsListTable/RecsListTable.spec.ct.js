@@ -8,17 +8,12 @@ import getStore from '../../Store';
 import data from '../../../cypress/fixtures/RecsListTable/data.json';
 import { Intl } from '../../Utilities/intlHelper';
 import '@patternfly/patternfly/patternfly.scss';
-import {
-  TOOLBAR,
-  ROW,
-  PAGINATION,
-  PAGINATION_MENU,
-  CHIP_GROUP,
-} from '../../../cypress/utils/components';
+// TODO use ../../../cypress/utils/components
 
 // selectors
 const RECS_LIST_TABLE = 'div[id=recs-list-table]';
 const CHIP = 'div[class=pf-c-chip]';
+const ROW = 'tbody[role=rowgroup]'; // FIXME use ROW from components
 const FILTERS_DROPDOWN = 'ul[class=pf-c-dropdown__menu]';
 const FILTER_TOGGLE = 'span[class=pf-c-select__toggle-arrow]';
 
@@ -217,15 +212,13 @@ describe('successful non-empty recommendations list table', () => {
       .should('have.class', 'pf-c-table__sort');
   });
 
+  // TODO make sorting tests data independent
   it('sort the data by Name', () => {
     cy.sortByCol(0);
     cy.getAllRows()
       .eq(0)
       .find('td[data-label=Name]')
-      .should(
-        'contain',
-        'Additional risks would occur possibly when having the masters defined as machinesets'
-      );
+      .should('contain', '1Lorem');
     cy.sortByCol(0);
     cy.getAllRows()
       .eq(0)
@@ -241,10 +234,7 @@ describe('successful non-empty recommendations list table', () => {
     cy.getAllRows()
       .eq(0)
       .find('td[data-label=Name]')
-      .should(
-        'contain',
-        'Additional risks would occur possibly when having the masters defined as machinesets'
-      );
+      .should('contain', '1Lorem');
     cy.sortByCol(1);
     cy.getAllRows()
       .eq(0)
@@ -342,10 +332,7 @@ describe('successful non-empty recommendations list table', () => {
     cy.getAllRows()
       .eq(0)
       .find('td[data-label=Name]')
-      .should(
-        'contain',
-        'Additional risks would occur possibly when having the masters defined as machinesets'
-      );
+      .should('contain', '1Lorem');
     cy.getAllRows()
       .eq(0)
       .find('td[data-label=Category]')
