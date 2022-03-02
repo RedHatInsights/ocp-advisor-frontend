@@ -7,6 +7,7 @@ export const SmartProxyApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_URL,
   }),
+  refetchOnReconnect: true,
   endpoints: (builder) => ({
     getClusterById: builder.query({
       query: ({ id, includeDisabled }) =>
@@ -30,6 +31,7 @@ export const SmartProxyApi = createApi({
           data: response.data.filter((element) => element.cluster_id !== ''),
         };
       },
+      keepUnusedDataFor: 5,
     }),
   }),
 });
