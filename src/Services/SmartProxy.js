@@ -23,6 +23,7 @@ export const SmartProxyApi = createApi({
     }),
     getRecs: builder.query({
       query: () => `v2/rule`,
+      keepUnusedDataFor: 5,
     }),
     getClusters: builder.query({
       query: () => `v2/clusters`,
