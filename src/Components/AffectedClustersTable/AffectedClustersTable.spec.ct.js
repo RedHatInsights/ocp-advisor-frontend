@@ -466,61 +466,61 @@ describe('non-empty successful affected clusters table', () => {
       .should('have.text', 'dd2ef343-9131-46f5-8962-290fdfdf2199');
   });
 
-  Object.entries(
-    _.zipObject(['name', 'last_checked_at'], TABLE_HEADERS)
-  ).forEach(([category, label]) => {
-    SORTING_ORDERS.forEach((order) => {
-      it(`sort ${order} by ${label}`, () => {
-        const col = `td[data-label="${label}"]`;
-        const header = `th[data-label="${label}"]`;
+  _.zip(['name', 'last_checked_at'], TABLE_HEADERS).forEach(
+    ([category, label]) => {
+      SORTING_ORDERS.forEach((order) => {
+        it(`sort ${order} by ${label}`, () => {
+          const col = `td[data-label="${label}"]`;
+          const header = `th[data-label="${label}"]`;
 
-        cy.get(col).should(
-          'have.length',
-          Math.min(DEFAULT_ROW_COUNT, data['enabled'].length)
-        );
-        if (order === 'ascending') {
-          cy.get(header).find('button').click();
-        } else {
-          cy.get(header).find('button').dblclick();
-        }
-
-        // add property name to clusters
-        let sortedClusters = _.cloneDeep(data['enabled']);
-        sortedClusters.forEach(
-          (it) =>
-            (it['name'] = it['cluster_name']
-              ? it['cluster_name']
-              : it['cluster'])
-        );
-        // convert N/A timestamps as really old ones
-        sortedClusters.forEach((it) => {
-          if (it['last_checked_at'] === '') {
-            it['last_checked_at'] = '1970-01-01T01:00:00.001Z';
-          }
-        });
-
-        sortedClusters = _.map(
-          _.orderBy(
-            sortedClusters,
-            [category],
-            [order === 'ascending' ? 'asc' : 'desc']
-          ),
-          'name'
-        );
-        cy.get(`td[data-label="Name"]`)
-          .then(($els) => {
-            return _.map(Cypress.$.makeArray($els), 'innerText');
-          })
-          .should(
-            'deep.equal',
-            sortedClusters.slice(
-              0,
-              Math.min(DEFAULT_ROW_COUNT, sortedClusters.length)
-            )
+          cy.get(col).should(
+            'have.length',
+            Math.min(DEFAULT_ROW_COUNT, data['enabled'].length)
           );
+          if (order === 'ascending') {
+            cy.get(header).find('button').click();
+          } else {
+            cy.get(header).find('button').dblclick();
+          }
+
+          // add property name to clusters
+          let sortedClusters = _.cloneDeep(data['enabled']);
+          sortedClusters.forEach(
+            (it) =>
+              (it['name'] = it['cluster_name']
+                ? it['cluster_name']
+                : it['cluster'])
+          );
+          // convert N/A timestamps as really old ones
+          sortedClusters.forEach((it) => {
+            if (it['last_checked_at'] === '') {
+              it['last_checked_at'] = '1970-01-01T01:00:00.001Z';
+            }
+          });
+
+          sortedClusters = _.map(
+            _.orderBy(
+              sortedClusters,
+              [category],
+              [order === 'ascending' ? 'asc' : 'desc']
+            ),
+            'name'
+          );
+          cy.get(`td[data-label="Name"]`)
+            .then(($els) => {
+              return _.map(Cypress.$.makeArray($els), 'innerText');
+            })
+            .should(
+              'deep.equal',
+              sortedClusters.slice(
+                0,
+                Math.min(DEFAULT_ROW_COUNT, sortedClusters.length)
+              )
+            );
+        });
       });
-    });
-  });
+    }
+  );
 });
 
 describe('empty successful affected clusters table', () => {

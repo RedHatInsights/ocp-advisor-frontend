@@ -197,41 +197,41 @@ describe('cluster rules table', () => {
     cy.get('button').contains('Reset filters').should('not.exist');
   });
 
-  Object.entries(
-    _.zipObject(['description', 'created_at', 'total_risk'], TABLE_HEADERS)
-  ).forEach(([category, label]) => {
-    SORTING_ORDERS.forEach((order) => {
-      it(`sort ${order} by ${label}`, () => {
-        const col = `td[data-label="${label}"]`;
-        const header = `th[data-label="${label}"]`;
-        cy.get(col).should('have.length', RULES_ENABLED);
+  _.zip(['description', 'created_at', 'total_risk'], TABLE_HEADERS).forEach(
+    ([category, label]) => {
+      SORTING_ORDERS.forEach((order) => {
+        it(`sort ${order} by ${label}`, () => {
+          const col = `td[data-label="${label}"]`;
+          const header = `th[data-label="${label}"]`;
+          cy.get(col).should('have.length', RULES_ENABLED);
 
-        if (order === 'ascending') {
-          cy.get(header).find('button').click();
-        } else {
-          cy.get(header).find('button').dblclick();
-        }
-        // FIXME original order is not retained but reversed when descending
-        // let sortedDescriptions = _.map(
-        //   _.orderBy(data, [category], [(order === 'descending')? 'desc': 'asc']),
-        //   'description'
-        // );
-        let sortedDescriptions = _.map(
-          _.orderBy(data, [category], ['asc']),
-          'description'
-        );
-        if (order === 'descending') {
-          sortedDescriptions = sortedDescriptions.reverse();
-        }
+          if (order === 'ascending') {
+            cy.get(header).find('button').click();
+          } else {
+            cy.get(header).find('button').dblclick();
+          }
+          // FIXME original order is not retained but reversed when descending
+          // let sortedDescriptions = _.map(
+          //   _.orderBy(data, [category], [(order === 'descending')? 'desc': 'asc']),
+          //   'description'
+          // );
+          let sortedDescriptions = _.map(
+            _.orderBy(data, [category], ['asc']),
+            'description'
+          );
+          if (order === 'descending') {
+            sortedDescriptions = sortedDescriptions.reverse();
+          }
 
-        cy.get(`td[data-label="Description"]`)
-          .then(($els) => {
-            return _.map(Cypress.$.makeArray($els), 'innerText');
-          })
-          .should('deep.equal', sortedDescriptions);
+          cy.get(`td[data-label="Description"]`)
+            .then(($els) => {
+              return _.map(Cypress.$.makeArray($els), 'innerText');
+            })
+            .should('deep.equal', sortedDescriptions);
+        });
       });
-    });
-  });
+    }
+  );
 
   it('clear filters work', () => {
     // apply some filters
