@@ -484,11 +484,10 @@ describe('non-empty successful affected clusters table', () => {
           'have.length',
           Math.min(DEFAULT_ROW_COUNT, data['enabled'].length)
         );
-        cy.get(header).find('button').click();
-        // FIXME right way to do the second click?
-        if (order === 'descending') {
-          // click a second time to reverse sorting
+        if (order === 'ascending') {
           cy.get(header).find('button').click();
+        } else {
+          cy.get(header).find('button').dblclick();
         }
 
         // add property name to clusters
@@ -510,7 +509,7 @@ describe('non-empty successful affected clusters table', () => {
           _.orderBy(
             sortedClusters,
             [category],
-            [order === 'descending' ? 'desc' : 'asc']
+            [order === 'ascending' ? 'asc' : 'desc']
           ),
           'name'
         );

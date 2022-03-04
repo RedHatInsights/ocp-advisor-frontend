@@ -205,11 +205,11 @@ describe('cluster rules table', () => {
         const col = `td[data-label="${label}"]`;
         const header = `th[data-label="${label}"]`;
         cy.get(col).should('have.length', RULES_ENABLED);
-        cy.get(`th[data-label="${label}"]`).find('button').click();
-        // FIXME right way to do the second click?
-        if (order === 'descending') {
-          // click a second time to reverse sorting
+
+        if (order === 'ascending') {
           cy.get(header).find('button').click();
+        } else {
+          cy.get(header).find('button').dblclick();
         }
         // FIXME original order is not retained but reversed when descending
         // let sortedDescriptions = _.map(

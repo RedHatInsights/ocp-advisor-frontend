@@ -482,11 +482,10 @@ describe('clusters list table', () => {
           'have.length',
           Math.min(DEFAULT_ROW_COUNT, namedClusters.length)
         );
-        cy.get(header).find('button').click();
-        // FIXME right way to do the second click?
-        if (order === 'descending') {
-          // click a second time to reverse sorting
+        if (order === 'ascending') {
           cy.get(header).find('button').click();
+        } else {
+          cy.get(header).find('button').dblclick();
         }
 
         // add property name to clusters
@@ -495,7 +494,7 @@ describe('clusters list table', () => {
           _.orderBy(
             _.cloneDeep(namedClusters),
             [category],
-            [order === 'descending' ? 'desc' : 'asc']
+            [order === 'ascending' ? 'asc' : 'desc']
           ),
           'name'
         );
