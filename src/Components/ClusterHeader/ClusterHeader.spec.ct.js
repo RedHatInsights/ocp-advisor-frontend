@@ -44,7 +44,6 @@ describe('cluster page header', () => {
     // check last seen text
     cy.get(LAST_SEEN_FIELD).should('have.text', '24 Jul 2021 14:22 UTC');
   });
-  //FIXME skeleton does not affect UUID/last seen?
   it('show skeleton when in the loading state', () => {
     props = {
       ...props,
