@@ -390,6 +390,34 @@ describe('empty recommendations list table', () => {
   });
 });
 
+describe('error recommendations list table', () => {
+  beforeEach(() => {
+    mount(
+      <MemoryRouter initialEntries={['/recommendations']} initialIndex={0}>
+        <Intl>
+          <Provider store={getStore()}>
+            <RecsListTable
+              query={{
+                isError: true,
+                isFetching: false,
+                isUninitialized: false,
+                isSuccess: false,
+                data: undefined,
+              }}
+            />
+          </Provider>
+        </Intl>
+      </MemoryRouter>
+    );
+  });
+
+  it('renders error message', () => {
+    cy.get('#error-state-message')
+      .find('h4')
+      .should('have.text', 'Something went wrong');
+  });
+});
+
 describe('Recs list is requested with additional parameters №1', () => {
   before(() => {
     mount(
@@ -465,5 +493,3 @@ describe('Recs list is requested with additional parameters №2', () => {
     getChipGroup('Clusters impacted').contains('.pf-c-chip', '1 or more');
   });
 });
-
-// TODO what will happen on request error?
