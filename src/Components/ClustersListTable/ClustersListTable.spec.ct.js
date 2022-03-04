@@ -195,7 +195,7 @@ describe('clusters list table', () => {
         .find('ul[class=pf-c-options-menu__menu]')
         .find(DROPDOWN_ITEM)
         .contains(`${el}`)
-        .click({ force: true }); // caused by the css issue
+        .click();
       checkRowCounts(Math.min(el, data.length));
     });
   });
@@ -257,19 +257,16 @@ describe('clusters list table', () => {
       .find('.pf-c-dropdown__menu')
       .find('li')
       .eq(1)
-      .click({ force: true });
+      .click();
     cy.get(TOOLBAR_FILTER).find('.pf-c-select__toggle').click();
     // remove "All clusters" filter value
     cy.get(TOOLBAR_FILTER)
       .find('.pf-c-select__menu')
       .find('input')
       .eq(0)
-      .click({ force: true });
+      .click();
     // open pagination
-    cy.get(PAGINATION)
-      .eq(0)
-      .find('.pf-c-options-menu__toggle-button')
-      .click({ force: true });
+    cy.get(PAGINATION).eq(0).find('.pf-c-options-menu__toggle-button').click();
     // set to 50 clusters per page
     cy.get(PAGINATION)
       .eq(0)
@@ -277,7 +274,7 @@ describe('clusters list table', () => {
       .find('li')
       .eq(2)
       .find('button')
-      .click({ force: true });
+      .click();
     cy.getTotalClusters().should('have.text', 26);
     // check all shown clusters have recommendations > 0
     cy.get('TBODY')
@@ -293,18 +290,18 @@ describe('clusters list table', () => {
       .find('.pf-c-dropdown__menu')
       .find('li')
       .eq(1)
-      .click({ force: true });
+      .click();
     cy.get(TOOLBAR_FILTER).find('.pf-c-select__toggle').click();
     cy.get(TOOLBAR_FILTER)
       .find('.pf-c-select__menu')
       .find('input')
       .eq(0)
-      .click({ force: true });
+      .click();
     cy.get(TOOLBAR_FILTER)
       .find('.pf-c-select__menu')
       .find('input')
       .eq(1)
-      .click({ force: true });
+      .click();
     cy.get('.pf-c-table__sort').eq(2).click();
     cy.getFirstRow().find('td[data-label=Critical]').should('have.text', 1);
     cy.get('.pf-c-table__sort').eq(2).click();
@@ -317,18 +314,18 @@ describe('clusters list table', () => {
       .find('.pf-c-dropdown__menu')
       .find('li')
       .eq(1)
-      .click({ force: true });
+      .click();
     cy.get(TOOLBAR_FILTER).find('.pf-c-select__toggle').click();
     cy.get(TOOLBAR_FILTER)
       .find('.pf-c-select__menu')
       .find('input')
       .eq(0)
-      .click({ force: true });
+      .click();
     cy.get(TOOLBAR_FILTER)
       .find('.pf-c-select__menu')
       .find('input')
       .eq(2)
-      .click({ force: true });
+      .click();
     cy.get('.pf-c-table__sort').eq(3).click();
     cy.getFirstRow().find('td[data-label=Important]').should('have.text', 1);
     cy.get('.pf-c-table__sort').eq(3).click();
@@ -341,18 +338,18 @@ describe('clusters list table', () => {
       .find('.pf-c-dropdown__menu')
       .find('li')
       .eq(1)
-      .click({ force: true });
+      .click();
     cy.get(TOOLBAR_FILTER).find('.pf-c-select__toggle').click();
     cy.get(TOOLBAR_FILTER)
       .find('.pf-c-select__menu')
       .find('input')
       .eq(0)
-      .click({ force: true });
+      .click();
     cy.get(TOOLBAR_FILTER)
       .find('.pf-c-select__menu')
       .find('input')
       .eq(3)
-      .click({ force: true });
+      .click();
     cy.get('.pf-c-table__sort').eq(4).click();
     cy.getFirstRow().find('td[data-label=Moderate]').should('have.text', 3);
     cy.get('.pf-c-table__sort').eq(4).click();
@@ -365,18 +362,18 @@ describe('clusters list table', () => {
       .find('.pf-c-dropdown__menu')
       .find('li')
       .eq(1)
-      .click({ force: true });
+      .click();
     cy.get(TOOLBAR_FILTER).find('.pf-c-select__toggle').click();
     cy.get(TOOLBAR_FILTER)
       .find('.pf-c-select__menu')
       .find('input')
       .eq(0)
-      .click({ force: true });
+      .click();
     cy.get(TOOLBAR_FILTER)
       .find('.pf-c-select__menu')
       .find('input')
       .eq(4)
-      .click({ force: true });
+      .click();
     cy.get('.pf-c-table__sort').eq(5).click();
     cy.getFirstRow().find('td[data-label=Low]').should('have.text', 1);
     cy.get('.pf-c-table__sort').eq(5).click();
@@ -438,17 +435,14 @@ describe('clusters list table', () => {
     cy.get('.pf-c-table__sort').eq(6).click();
     cy.getFirstRow().find('span').should('have.text', 'N/A');
     cy.get('.pf-c-table__sort').eq(6).click();
-    cy.get(PAGINATION)
-      .eq(0)
-      .find('.pf-c-options-menu__toggle-button')
-      .click({ force: true });
+    cy.get(PAGINATION).eq(0).find('.pf-c-options-menu__toggle-button').click();
     cy.get(PAGINATION)
       .eq(0)
       .find('.pf-c-options-menu')
       .find('li')
       .eq(2)
       .find('button')
-      .click({ force: true });
+      .click();
     cy.getLastRow().find('span').should('have.text', 'N/A');
   });
 

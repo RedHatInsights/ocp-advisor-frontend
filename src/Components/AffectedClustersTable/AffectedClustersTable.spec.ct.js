@@ -326,7 +326,7 @@ describe('non-empty successful affected clusters table', () => {
         .find('ul[class=pf-c-options-menu__menu]')
         .find(DROPDOWN_ITEM)
         .contains(`${el}`)
-        .click({ force: true }); // caused by the css issue
+        .click();
       checkRowCounts(Math.min(el, filterData().length));
     });
   });
@@ -392,10 +392,7 @@ describe('non-empty successful affected clusters table', () => {
         `${filterData().length} selected`
       );
       cy.get('.pf-c-dropdown__toggle').find('button').click();
-      cy.get('ul[class=pf-c-dropdown__menu]')
-        .find('li')
-        .eq(1)
-        .click({ force: true });
+      cy.get('ul[class=pf-c-dropdown__menu]').find('li').eq(1).click();
       cy.get('#toggle-checkbox-text').should('not.exist');
     });
   });
@@ -405,10 +402,7 @@ describe('non-empty successful affected clusters table', () => {
       .find('[data-ouia-component-id="clusters-selector-toggle-checkbox"]')
       .click();
     cy.get(TOOLBAR).find('button[aria-label=Actions]').click();
-    cy.get('.pf-c-dropdown__menu')
-      .find('li')
-      .find('button')
-      .click({ force: true });
+    cy.get('.pf-c-dropdown__menu').find('li').find('button').click();
     cy.get('.pf-c-modal-box')
       .find('.pf-c-check label')
       .should('have.text', 'Disable recommendation for selected clusters');
@@ -419,12 +413,12 @@ describe('non-empty successful affected clusters table', () => {
       .find(ROW)
       .eq(0)
       .find('.pf-c-table__action button')
-      .click({ force: true });
+      .click();
     cy.get('table tbody[role=rowgroup]')
       .find(ROW)
       .eq(0)
       .find('.pf-c-dropdown__menu button')
-      .click({ force: true });
+      .click();
     cy.get('.pf-c-modal-box')
       .find('.pf-c-check label')
       .should('have.text', 'Disable only for this cluster');
