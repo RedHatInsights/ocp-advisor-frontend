@@ -13,7 +13,6 @@ const LAST_SEEN_FIELD = '#cluster-header-last-seen > :nth-child(2)';
 describe('cluster page header', () => {
   let props;
 
-  //FIXME where is clusterId computed?
   beforeEach(() => {
     props = {
       clusterId: 'foobar',
