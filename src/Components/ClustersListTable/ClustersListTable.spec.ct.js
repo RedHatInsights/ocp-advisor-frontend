@@ -459,16 +459,20 @@ describe('clusters list table', () => {
     cy.getFirstRow().find('td[data-label=Low]').should('have.text', 5);
   });
 
-  // TODO fix test: double sorting? keep ordering in single sorting?
-  Object.entries({
-    name: 'Name',
-    total_hit_count: 'Recommendations',
-    'hits_by_total_risk.4': 'Critical',
-    'hits_by_total_risk.3': 'Important',
-    'hits_by_total_risk.2': 'Moderate',
-    'hits_by_total_risk.1': 'Low',
-    last_checked_at: 'Last seen',
-  }).forEach(([category, label]) => {
+  Object.entries(
+    _.zipObject(
+      [
+        'name',
+        'total_hit_count',
+        'hits_by_total_risk.4',
+        'hits_by_total_risk.3',
+        'hits_by_total_risk.2',
+        'hits_by_total_risk.1',
+        'last_checked_at',
+      ],
+      TABLE_HEADERS
+    )
+  ).forEach(([category, label]) => {
     SORTING_ORDERS.forEach((order) => {
       it(`sort ${order} by ${label}`, () => {
         const col = `td[data-label="${label}"]`;

@@ -197,11 +197,9 @@ describe('cluster rules table', () => {
     cy.get('button').contains('Reset filters').should('not.exist');
   });
 
-  Object.entries({
-    description: 'Description',
-    created_at: 'Added',
-    total_risk: 'Total risk',
-  }).forEach(([category, label]) => {
+  Object.entries(
+    _.zipObject(['description', 'created_at', 'total_risk'], TABLE_HEADERS)
+  ).forEach(([category, label]) => {
     SORTING_ORDERS.forEach((order) => {
       it(`sort ${order} by ${label}`, () => {
         const col = `td[data-label="${label}"]`;
