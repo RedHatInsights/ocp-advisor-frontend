@@ -31,7 +31,6 @@ const SEARCH_ITEMS = ['ff', 'CUSTOM', 'Foobar', 'Not existing cluster'];
 const TABLE_HEADERS = ['Name', 'Last seen'];
 
 function filterData(text = '') {
-  // FIXME: is this the right way to use loadash?
   return _.filter(data['enabled'], (it) =>
     (it?.cluster_name || it.cluster).toLowerCase().includes(text.toLowerCase())
   );
@@ -74,15 +73,17 @@ describe('test data', () => {
   });
   it('has one enabled clusters with "foobar" in name', () => {
     cy.wrap(filterData('foobar')).its('length').should('be.eq', 1);
-    expect(_.map(SEARCH_ITEMS, (it) => it.toLowerCase())).to.include('foobar');
+    cy.wrap(_.map(SEARCH_ITEMS, (it) => it.toLowerCase())).should((arr) => {
+      expect(arr).to.include('foobar');
+    });
   });
   it('has none enabled clusters with "Not existing cluster" in name', () => {
     cy.wrap(filterData('Not existing cluster'))
       .its('length')
       .should('be.eq', 0);
-    expect(_.map(SEARCH_ITEMS, (it) => it.toLowerCase())).to.include(
-      'not existing cluster'
-    );
+    cy.wrap(_.map(SEARCH_ITEMS, (it) => it.toLowerCase())).should((arr) => {
+      expect(arr).to.include('not existing cluster');
+    });
   });
   it('has at least one entry with N/A time', () => {
     cy.wrap(_.filter(data['enabled'], (it) => it['last_checked_at'] === ''))
