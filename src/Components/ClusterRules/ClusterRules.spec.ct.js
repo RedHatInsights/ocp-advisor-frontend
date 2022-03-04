@@ -9,7 +9,11 @@ import getStore from '../../Store';
 import ClusterRules from './ClusterRules';
 import '@patternfly/patternfly/patternfly.scss';
 import data from '../../../cypress/fixtures/ClusterRules/data.json';
-import { TOTAL_RISK, CATEGORIES } from '../../../cypress/utils/globals';
+import {
+  TOTAL_RISK,
+  CATEGORIES,
+  SORTING_ORDERS,
+} from '../../../cypress/utils/globals';
 import { applyFilters } from '../../../cypress/utils/filters';
 import { cumulativeCombinations } from '../../../cypress/utils/combine';
 import { CHIP_GROUP, CHIP, ROWS } from '../../../cypress/views/filterableTable';
@@ -198,7 +202,7 @@ describe('cluster rules table', () => {
     created_at: 'Added',
     total_risk: 'Total risk',
   }).forEach(([category, label]) => {
-    ['ascending', 'descending'].forEach((order) => {
+    SORTING_ORDERS.forEach((order) => {
       it(`sort ${order} by ${label}`, () => {
         const col = `td[data-label="${label}"]`;
         const header = `th[data-label="${label}"]`;

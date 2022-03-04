@@ -22,6 +22,7 @@ import {
   DEFAULT_ROW_COUNT,
   PAGINATION_VALUES,
 } from '../../../cypress/utils/defaults';
+import { SORTING_ORDERS } from '../../../cypress/utils/globals';
 
 const data = props['data'];
 // add property name to clusters
@@ -468,7 +469,7 @@ describe('clusters list table', () => {
     'hits_by_total_risk.1': 'Low',
     last_checked_at: 'Last seen',
   }).forEach(([category, label]) => {
-    ['ascending', 'descending'].forEach((order) => {
+    SORTING_ORDERS.forEach((order) => {
       it(`sort ${order} by ${label}`, () => {
         const col = `td[data-label="${label}"]`;
         const header = `th[data-label="${label}"]`;

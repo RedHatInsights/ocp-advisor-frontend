@@ -23,6 +23,7 @@ import {
   DEFAULT_ROW_COUNT,
   PAGINATION_VALUES,
 } from '../../../cypress/utils/defaults';
+import { SORTING_ORDERS } from '../../../cypress/utils/globals';
 
 // selectors
 const TABLE = 'div[id=affected-list-table]';
@@ -471,12 +472,10 @@ describe('non-empty successful affected clusters table', () => {
       .should('have.text', 'dd2ef343-9131-46f5-8962-290fdfdf2199');
   });
 
-  // TODO fix test: double sorting? keep ordering in single sorting?
-  Object.entries({
-    name: 'Name',
-    last_checked_at: 'Last seen',
-  }).forEach(([category, label]) => {
-    ['ascending', 'descending'].forEach((order) => {
+  Object.entries(
+    _.zipObject(['name', 'last_checked_at'], TABLE_HEADERS)
+  ).forEach(([category, label]) => {
+    SORTING_ORDERS.forEach((order) => {
       it(`sort ${order} by ${label}`, () => {
         const col = `td[data-label="${label}"]`;
         const header = `th[data-label="${label}"]`;
