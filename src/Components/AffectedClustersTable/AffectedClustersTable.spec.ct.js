@@ -72,13 +72,13 @@ describe('test data', () => {
   it('has more than one enabled clusters with "custom" in name', () => {
     cy.wrap(filterData('custom')).its('length').should('be.gt', 1);
   });
-  it('has one enabled clusters with "foobar" in name', () => {
+  it('"foobar" is in the list of names to search and thre is at least one enabled cluster matching', () => {
     cy.wrap(filterData('foobar')).its('length').should('be.eq', 1);
     cy.wrap(_.map(SEARCH_ITEMS, (it) => it.toLowerCase())).should((arr) => {
       expect(arr).to.include('foobar');
     });
   });
-  it('has none enabled clusters with "Not existing cluster" in name', () => {
+  it('"Not existing cluster" is in the list of names to search and there are no enabled clusters matching it', () => {
     cy.wrap(filterData('Not existing cluster'))
       .its('length')
       .should('be.eq', 0);
