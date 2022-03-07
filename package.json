@@ -36,7 +36,7 @@
     "babel-plugin-formatjs": "^10.3.2",
     "classnames": "2.3.1",
     "lodash": "^4.17.21",
-    "qs": "6.10.1",
+    "qs": "6.10.3",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-intl": "5.20.4",
