@@ -83,50 +83,65 @@
     "webpack-cli": "4.9.0"
   },
   "release": {
-    "analyzeCommits": {
-      "preset": "angular",
-      "releaseRules": [
-        {
-          "type": "refactor",
-          "release": "patch"
-        },
-        {
-          "type": "style",
-          "release": "patch"
-        },
-        {
-          "type": "update",
-          "release": "patch"
-        },
-        {
-          "type": "docs",
-          "release": "patch"
-        },
-        {
-          "type": "test",
-          "release": "patch"
-        }
-      ]
-    },
     "branches": "master",
     "verifyConditions": [
       "@semantic-release/github"
     ],
     "prepare": [
-      "@semantic-release/npm",
-      "@semantic-release/changelog",
       [
-        "@semantic-release/git",
+        "@semantic-release/npm",
         {
-          "message": "chore(release): ${nextRelease.version}\n\n${nextRelease.notes}"
+          "npmPublish": false
         }
-      ]
+      ],
+      "@semantic-release/changelog",
+      "@semantic-release/git"
     ],
     "plugins": [
       [
         "@semantic-release/npm",
         {
           "npmPublish": false
+        }
+      ],
+      [
+        "@semantic-release/commit-analyzer",
+        {
+          "preset": "angular",
+          "releaseRules": [
+            {
+              "type": "refactor",
+              "release": "patch"
+            },
+            {
+              "type": "style",
+              "release": "patch"
+            },
+            {
+              "type": "update",
+              "release": "patch"
+            },
+            {
+              "type": "docs",
+              "release": "patch"
+            },
+            {
+              "type": "test",
+              "release": "patch"
+            }
+          ],
+          "parserOpts": {
+            "noteKeywords": [
+              "BREAKING CHANGE",
+              "BREAKING CHANGES"
+            ]
+          }
+        }
+      ],
+      [
+        "@semantic-release/git",
+        {
+          "message": "chore(release): ${nextRelease.version}\n\n${nextRelease.notes}"
         }
       ]
     ]
