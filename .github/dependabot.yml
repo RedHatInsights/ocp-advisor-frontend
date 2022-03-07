@@ -8,11 +8,11 @@ updates:
   - package-ecosystem: "npm" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
-      interval: "weekly"
+      interval: "monthly"
     reviewers:
-      - "gkarat"
-    assignees:
       - "gkarat"
     labels:
       - "dependencies"
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 15
+    commit-message:
+      - prefix: "chore(deps):"
