@@ -95,7 +95,16 @@
         }
       ],
       "@semantic-release/changelog",
-      "@semantic-release/git"
+      [
+        "@semantic-release/git",
+        {
+          "message": "chore(release): ${nextRelease.version}\n\n${nextRelease.notes}"
+        }
+      ]
+    ],
+    "publish": [
+      "@semantic-release/github",
+      "@semantic-release/npm"
     ],
     "plugins": [
       [
