@@ -30,7 +30,7 @@
     "@redhat-cloud-services/frontend-components-notifications": "3.2.4",
     "@redhat-cloud-services/frontend-components-translations": "3.2.2",
     "@redhat-cloud-services/frontend-components-utilities": "3.2.3",
-    "@redhat-cloud-services/rule-components": "3.2.2",
+    "@redhat-cloud-services/rule-components": "3.2.5",
     "@reduxjs/toolkit": "1.6.0",
     "axios": "^0.21.4",
     "babel-plugin-formatjs": "^10.3.2",
@@ -80,7 +80,7 @@
     "stylelint-config-recommended-scss": "4.3.0",
     "stylelint-scss": "3.19.0",
     "webpack-bundle-analyzer": "4.4.2",
-    "webpack-cli": "4.9.0"
+    "webpack-cli": "4.9.2"
   },
   "release": {
     "branches": "master",
