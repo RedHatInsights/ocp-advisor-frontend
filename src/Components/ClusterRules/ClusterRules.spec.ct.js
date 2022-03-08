@@ -9,7 +9,11 @@ import getStore from '../../Store';
 import ClusterRules from './ClusterRules';
 import '@patternfly/patternfly/patternfly.scss';
 import data from '../../../cypress/fixtures/ClusterRules/data.json';
-import { TOTAL_RISK, CATEGORIES } from '../../../cypress/utils/globals';
+import {
+  TOTAL_RISK,
+  CATEGORIES,
+  SORTING_ORDERS,
+} from '../../../cypress/utils/globals';
 import { applyFilters } from '../../../cypress/utils/filters';
 import { cumulativeCombinations } from '../../../cypress/utils/combine';
 import { CHIP_GROUP, CHIP, ROWS } from '../../../cypress/views/filterableTable';
@@ -193,42 +197,41 @@ describe('cluster rules table', () => {
     cy.get('button').contains('Reset filters').should('not.exist');
   });
 
-  Object.entries({
-    description: 'Description',
-    created_at: 'Added',
-    total_risk: 'Total risk',
-  }).forEach(([category, label]) => {
-    ['ascending', 'descending'].forEach((order) => {
-      it(`sort ${order} by ${label}`, () => {
-        const col = `td[data-label="${label}"]`;
-        const header = `th[data-label="${label}"]`;
-        cy.get(col).should('have.length', RULES_ENABLED);
-        if (category !== 'description') {
-          // sort first by description to ensure consistent ordering
-          cy.get(`th[data-label="Description"]`).find('button').click();
-        }
-        cy.get(`th[data-label="${label}"]`).find('button').click();
-        // FIXME right way to do the second click?
-        if (order === 'descending') {
-          // click a second time to reverse sorting
-          cy.get(header).find('button').click();
-        }
-        let sortedDescriptions = _.map(
-          _.sortBy(data, [category, 'description']),
-          'description'
-        );
-        if (order === 'descending') {
-          // reverse order
-          sortedDescriptions = _.reverse(sortedDescriptions);
-        }
-        cy.get(`td[data-label="Description"]`)
-          .then(($els) => {
-            return _.map(Cypress.$.makeArray($els), 'innerText');
-          })
-          .should('deep.equal', sortedDescriptions);
+  _.zip(['description', 'created_at', 'total_risk'], TABLE_HEADERS).forEach(
+    ([category, label]) => {
+      SORTING_ORDERS.forEach((order) => {
+        it(`sort ${order} by ${label}`, () => {
+          const col = `td[data-label="${label}"]`;
+          const header = `th[data-label="${label}"]`;
+          cy.get(col).should('have.length', RULES_ENABLED);
+
+          if (order === 'ascending') {
+            cy.get(header).find('button').click();
+          } else {
+            cy.get(header).find('button').dblclick();
+          }
+          // FIXME original order is not retained but reversed when descending
+          // let sortedDescriptions = _.map(
+          //   _.orderBy(data, [category], [(order === 'descending')? 'desc': 'asc']),
+          //   'description'
+          // );
+          let sortedDescriptions = _.map(
+            _.orderBy(data, [category], ['asc']),
+            'description'
+          );
+          if (order === 'descending') {
+            sortedDescriptions = sortedDescriptions.reverse();
+          }
+
+          cy.get(`td[data-label="Description"]`)
+            .then(($els) => {
+              return _.map(Cypress.$.makeArray($els), 'innerText');
+            })
+            .should('deep.equal', sortedDescriptions);
+        });
       });
-    });
-  });
+    }
+  );
 
   it('clear filters work', () => {
     // apply some filters

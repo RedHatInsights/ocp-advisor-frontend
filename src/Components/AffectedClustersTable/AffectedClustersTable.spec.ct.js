@@ -2,7 +2,7 @@ import React from 'react';
 import { mount } from '@cypress/react';
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import filter from 'lodash/filter';
+import _ from 'lodash';
 
 import { AffectedClustersTable } from './AffectedClustersTable';
 import data from '../../../cypress/fixtures/AffectedClustersTable/data.json';
@@ -16,19 +16,23 @@ import {
   PAGINATION_MENU,
   CHIP_GROUP,
   DROPDOWN,
+  DROPDOWN_TOGGLE,
+  DROPDOWN_ITEM,
 } from '../../../cypress/utils/components';
+import {
+  DEFAULT_ROW_COUNT,
+  PAGINATION_VALUES,
+} from '../../../cypress/utils/defaults';
+import { SORTING_ORDERS } from '../../../cypress/utils/globals';
 
 // selectors
 const TABLE = 'div[id=affected-list-table]';
 const BULK_SELECT = '[data-ouia-component-id="clusters-selector"]';
-const DEFAULT_ROW_COUNT = 20;
-// FIXME is this shared by all tables?
-const PAGINATION_VALUES = [10, 20, 50, 100];
 const SEARCH_ITEMS = ['ff', 'CUSTOM', 'Foobar', 'Not existing cluster'];
+const TABLE_HEADERS = ['Name', 'Last seen'];
 
 function filterData(text = '') {
-  // FIXME: is this the right way to use loadash?
-  return filter(data['enabled'], (it) =>
+  return _.filter(data['enabled'], (it) =>
     (it?.cluster_name || it.cluster).toLowerCase().includes(text.toLowerCase())
   );
 }
@@ -68,13 +72,24 @@ describe('test data', () => {
   it('has more than one enabled clusters with "custom" in name', () => {
     cy.wrap(filterData('custom')).its('length').should('be.gt', 1);
   });
-  it('has one enabled clusters with "foobar" in name', () => {
+  it('"foobar" is in the list of names to search and thre is at least one enabled cluster matching', () => {
     cy.wrap(filterData('foobar')).its('length').should('be.eq', 1);
+    cy.wrap(_.map(SEARCH_ITEMS, (it) => it.toLowerCase())).should((arr) => {
+      expect(arr).to.include('foobar');
+    });
   });
-  it('has none enabled clusters with "Not existing cluster" in name', () => {
+  it('"Not existing cluster" is in the list of names to search and there are no enabled clusters matching it', () => {
     cy.wrap(filterData('Not existing cluster'))
       .its('length')
       .should('be.eq', 0);
+    cy.wrap(_.map(SEARCH_ITEMS, (it) => it.toLowerCase())).should((arr) => {
+      expect(arr).to.include('not existing cluster');
+    });
+  });
+  it('has at least one entry with N/A time', () => {
+    cy.wrap(_.filter(data['enabled'], (it) => it['last_checked_at'] === ''))
+      .its('length')
+      .should('be.gte', 1);
   });
 });
 
@@ -102,7 +117,7 @@ describe('non-empty successful affected clusters table', () => {
   });
 
   it('renders table', () => {
-    cy.get(`div[id=affected-list-table]`).within(() => {
+    cy.get(TABLE).within(() => {
       cy.get(TOOLBAR).should('have.length', 1);
       cy.get('table').should('have.length', 1);
       cy.get('div[data-ouia-component-type="RHI/TableToolbar"]').should(
@@ -114,6 +129,13 @@ describe('non-empty successful affected clusters table', () => {
 
   it('shows first twenty clusters', () => {
     checkRowCounts(DEFAULT_ROW_COUNT);
+  });
+
+  it(`pagination default is set to ${DEFAULT_ROW_COUNT}`, () => {
+    cy.get('.pf-c-options-menu__toggle-text')
+      .find('b')
+      .eq(0)
+      .should('have.text', '1 - 20');
   });
 
   it('bulk disabling is disabled by default', () => {
@@ -282,10 +304,7 @@ describe('non-empty successful affected clusters table', () => {
   });
 
   it('pagination defaults are expected ones', () => {
-    cy.get(TOOLBAR)
-      .find(PAGINATION_MENU)
-      .find('button[data-ouia-component-type="PF4/DropdownToggle"]')
-      .click();
+    cy.get(TOOLBAR).find(PAGINATION_MENU).find(DROPDOWN_TOGGLE).click();
     cy.get(TOOLBAR)
       .find(PAGINATION_MENU)
       .find('ul[class=pf-c-options-menu__menu]')
@@ -301,18 +320,20 @@ describe('non-empty successful affected clusters table', () => {
   it('can change page limit', () => {
     // FIXME: best way to make the loop
     cy.wrap(PAGINATION_VALUES).each((el) => {
-      cy.get(TOOLBAR)
-        .find(PAGINATION_MENU)
-        .find('button[data-ouia-component-type="PF4/DropdownToggle"]')
-        .click();
+      cy.get(TOOLBAR).find(PAGINATION_MENU).find(DROPDOWN_TOGGLE).click();
       cy.get(TOOLBAR)
         .find(PAGINATION_MENU)
         .find('ul[class=pf-c-options-menu__menu]')
-        .find('[data-ouia-component-type="PF4/DropdownItem"]')
+        .find(DROPDOWN_ITEM)
         .contains(`${el}`)
-        .click({ force: true }); // caused by the css issue
+        .click();
       checkRowCounts(Math.min(el, filterData().length));
     });
+  });
+
+  it('no chips are displayed by default', () => {
+    cy.get(CHIP_GROUP).should('not.exist');
+    cy.get('button').contains('Clear filters').should('not.exist');
   });
 
   // outer loop required to clean up filter bar
@@ -324,6 +345,7 @@ describe('non-empty successful affected clusters table', () => {
         .find(CHIP_GROUP)
         .should('contain', 'Name')
         .and('contain', el);
+      cy.get('button').contains('Clear filters').should('exist');
       // check matched clusters
       cy.wrap(filterData(el)).then((data) => {
         if (data.length === 0) {
@@ -370,10 +392,7 @@ describe('non-empty successful affected clusters table', () => {
         `${filterData().length} selected`
       );
       cy.get('.pf-c-dropdown__toggle').find('button').click();
-      cy.get('ul[class=pf-c-dropdown__menu]')
-        .find('li')
-        .eq(1)
-        .click({ force: true });
+      cy.get('ul[class=pf-c-dropdown__menu]').find('li').eq(1).click();
       cy.get('#toggle-checkbox-text').should('not.exist');
     });
   });
@@ -383,10 +402,7 @@ describe('non-empty successful affected clusters table', () => {
       .find('[data-ouia-component-id="clusters-selector-toggle-checkbox"]')
       .click();
     cy.get(TOOLBAR).find('button[aria-label=Actions]').click();
-    cy.get('.pf-c-dropdown__menu')
-      .find('li')
-      .find('button')
-      .click({ force: true });
+    cy.get('.pf-c-dropdown__menu').find('li').find('button').click();
     cy.get('.pf-c-modal-box')
       .find('.pf-c-check label')
       .should('have.text', 'Disable recommendation for selected clusters');
@@ -397,12 +413,12 @@ describe('non-empty successful affected clusters table', () => {
       .find(ROW)
       .eq(0)
       .find('.pf-c-table__action button')
-      .click({ force: true });
+      .click();
     cy.get('table tbody[role=rowgroup]')
       .find(ROW)
       .eq(0)
       .find('.pf-c-dropdown__menu button')
-      .click({ force: true });
+      .click();
     cy.get('.pf-c-modal-box')
       .find('.pf-c-check label')
       .should('have.text', 'Disable only for this cluster');
@@ -424,6 +440,7 @@ describe('non-empty successful affected clusters table', () => {
     });
   });
 
+  // TODO remove: the test is not stable for changes in data
   it('sorting the last seen column', () => {
     cy.get(TABLE)
       .find('td[data-key=1]')
@@ -432,6 +449,7 @@ describe('non-empty successful affected clusters table', () => {
       .should('have.text', '694d3942-9cb7-42b8-aad2-1f28cc7f0a3b');
   });
 
+  // TODO remove: the test is not stable for changes in data
   it('sorts N/A in last seen correctly', () => {
     cy.get(TABLE);
     cy.get('.pf-c-table__sort').eq(1).click();
@@ -447,6 +465,62 @@ describe('non-empty successful affected clusters table', () => {
       .eq(0)
       .should('have.text', 'dd2ef343-9131-46f5-8962-290fdfdf2199');
   });
+
+  _.zip(['name', 'last_checked_at'], TABLE_HEADERS).forEach(
+    ([category, label]) => {
+      SORTING_ORDERS.forEach((order) => {
+        it(`sort ${order} by ${label}`, () => {
+          const col = `td[data-label="${label}"]`;
+          const header = `th[data-label="${label}"]`;
+
+          cy.get(col).should(
+            'have.length',
+            Math.min(DEFAULT_ROW_COUNT, data['enabled'].length)
+          );
+          if (order === 'ascending') {
+            cy.get(header).find('button').click();
+          } else {
+            cy.get(header).find('button').dblclick();
+          }
+
+          // add property name to clusters
+          let sortedClusters = _.cloneDeep(data['enabled']);
+          sortedClusters.forEach(
+            (it) =>
+              (it['name'] = it['cluster_name']
+                ? it['cluster_name']
+                : it['cluster'])
+          );
+          // convert N/A timestamps as really old ones
+          sortedClusters.forEach((it) => {
+            if (it['last_checked_at'] === '') {
+              it['last_checked_at'] = '1970-01-01T01:00:00.001Z';
+            }
+          });
+
+          sortedClusters = _.map(
+            _.orderBy(
+              sortedClusters,
+              [category],
+              [order === 'ascending' ? 'asc' : 'desc']
+            ),
+            'name'
+          );
+          cy.get(`td[data-label="Name"]`)
+            .then(($els) => {
+              return _.map(Cypress.$.makeArray($els), 'innerText');
+            })
+            .should(
+              'deep.equal',
+              sortedClusters.slice(
+                0,
+                Math.min(DEFAULT_ROW_COUNT, sortedClusters.length)
+              )
+            );
+        });
+      });
+    }
+  );
 });
 
 describe('empty successful affected clusters table', () => {
@@ -481,9 +555,12 @@ describe('empty successful affected clusters table', () => {
       .should('have.text', 'No clusters');
   });
 
-  it('renders table header', () => {
-    cy.get(TABLE).find('th').children().eq(0).should('have.text', 'Name');
-    cy.get(TABLE).find('th').children().eq(1).should('have.text', 'Last seen');
+  it('renders table headers', () => {
+    cy.get('table th')
+      .then(($els) => {
+        return _.map(Cypress.$.makeArray($els), 'innerText');
+      })
+      .should('deep.equal', TABLE_HEADERS);
   });
 });
 
