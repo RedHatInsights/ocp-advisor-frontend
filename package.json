@@ -30,7 +30,7 @@
     "@redhat-cloud-services/frontend-components-notifications": "3.2.4",
     "@redhat-cloud-services/frontend-components-translations": "3.2.2",
     "@redhat-cloud-services/frontend-components-utilities": "3.2.3",
-    "@redhat-cloud-services/rule-components": "3.2.2",
+    "@redhat-cloud-services/rule-components": "3.2.5",
     "@reduxjs/toolkit": "1.6.0",
     "axios": "^0.21.4",
     "babel-plugin-formatjs": "^10.3.2",
