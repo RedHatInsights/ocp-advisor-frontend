@@ -1,3 +1,10 @@
+## [1.0.7](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.0.6...v1.0.7) (2022-03-09)
+
+
+### Bug Fixes
+
+* **labels:** make labels compact ([#168](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/168)) ([885087f](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/885087fd114684eef3fdcaa781adaaf7738c1650))
+
 ## [1.0.6](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.0.5...v1.0.6) (2022-03-09)
 
 
