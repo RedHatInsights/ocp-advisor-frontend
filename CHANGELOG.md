@@ -1,3 +1,11 @@
+## [1.0.8](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.0.7...v1.0.8) (2022-03-09)
+
+
+### Bug Fixes
+
+* **ClustersList:** rename Total Risk to Total risk ([dd3e152](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/dd3e152a632a5810c1a0dcd63ec5fc05b750b99b))
+* **SingleCluster:** show table only when not fetching ([3a537cf](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/3a537cf369aa1a2974819eee2814fea73e52589c))
+
 ## [1.0.7](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.0.6...v1.0.7) (2022-03-09)
 
 
