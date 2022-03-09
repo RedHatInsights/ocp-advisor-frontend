@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useIntl } from 'react-intl';
 import { Link, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import cloneDeep from 'lodash/cloneDeep';
 import capitalize from 'lodash/capitalize';
 import {
   SortByDirection,
@@ -31,7 +30,6 @@ import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryTo
 import { addNotification } from '@redhat-cloud-services/frontend-components-notifications/';
 
 import {
-  DEBOUNCE_DELAY,
   FILTER_CATEGORIES,
   RECS_LIST_COLUMNS,
   RECS_LIST_COLUMNS_KEYS,
@@ -51,7 +49,6 @@ import {
   passFilters,
   paramParser,
   translateSortParams,
-  debounce,
 } from '../Common/Tables';
 import DisableRule from '../Modals/DisableRule';
 import { Delete } from '../../Utilities/Api';
@@ -75,8 +72,7 @@ const RecsListTable = ({ query }) => {
   const { search } = useLocation();
   const [filterBuilding, setFilterBuilding] = useState(true);
   const updateFilters = (filters) => dispatch(updateRecsListFilters(filters));
-  const [searchText, setSearchText] = useState(filters?.text || '');
-  const debouncedSearchText = debounce(searchText, DEBOUNCE_DELAY);
+  const searchText = filters?.text || '';
 
   useEffect(() => {
     setDisplayedRows(
@@ -98,9 +94,6 @@ const RecsListTable = ({ query }) => {
     if (search && filterBuilding) {
       const paramsObject = paramParser(search);
 
-      paramsObject.text === undefined
-        ? setSearchText('')
-        : setSearchText(paramsObject.text);
       if (paramsObject.sort) {
         const sortObj = translateSortParams(paramsObject.sort[0]);
         paramsObject.sortIndex = RECS_LIST_COLUMNS_KEYS.indexOf(sortObj.name);
@@ -117,15 +110,6 @@ const RecsListTable = ({ query }) => {
     }
     setFilterBuilding(false);
   }, []);
-
-  useEffect(() => {
-    if (!filterBuilding && !isFetching && !isUninitialized) {
-      const updatedFilters = cloneDeep(filters);
-      const text = searchText.length ? { text: searchText } : {};
-      delete updatedFilters.text;
-      updateFilters({ ...updatedFilters, ...text, offset: 0 });
-    }
-  }, [debouncedSearchText]);
 
   // constructs array of rows (from the initial data) checking currently applied filters
   const buildFilteredRows = (allRows, filters) => {
@@ -281,7 +265,8 @@ const RecsListTable = ({ query }) => {
       label: intl.formatMessage(messages.name).toLowerCase(),
       filterValues: {
         key: 'text-filter',
-        onChange: (_event, value) => setSearchText(value),
+        onChange: (_event, value) =>
+          updateFilters({ ...filters, offset: 0, text: value }),
         value: searchText,
         placeholder: intl.formatMessage(messages.filterBy),
       },

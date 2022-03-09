@@ -8,5 +8,17 @@ const PAGINATION_MENU =
 const DROPDOWN = '[data-ouia-component-type="PF4/Dropdown"]';
 const DROPDOWN_TOGGLE = '[data-ouia-component-type="PF4/DropdownToggle"]';
 const DROPDOWN_ITEM = '[data-ouia-component-type="PF4/DropdownItem"]';
+const TOOLBAR_FILTER = '.ins-c-primary-toolbar__filter';
 
-export { TOOLBAR, CHIP_GROUP, CHIP, ROW, PAGINATION, PAGINATION_MENU, DROPDOWN, DROPDOWN_TOGGLE, DROPDOWN_ITEM };
+export {
+  TOOLBAR,
+  CHIP_GROUP,
+  CHIP,
+  ROW,
+  PAGINATION,
+  PAGINATION_MENU,
+  DROPDOWN,
+  DROPDOWN_TOGGLE,
+  DROPDOWN_ITEM,
+  TOOLBAR_FILTER,
+};

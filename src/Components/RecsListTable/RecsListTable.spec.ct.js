@@ -8,7 +8,8 @@ import getStore from '../../Store';
 import data from '../../../cypress/fixtures/RecsListTable/data.json';
 import { Intl } from '../../Utilities/intlHelper';
 import '@patternfly/patternfly/patternfly.scss';
-// TODO use ../../../cypress/utils/components
+import { TOOLBAR, TOOLBAR_FILTER } from '../../../cypress/utils/components';
+// TODO make more use of ../../../cypress/utils/components
 
 // selectors
 const RECS_LIST_TABLE = 'div[id=recs-list-table]';
@@ -359,6 +360,20 @@ describe('successful non-empty recommendations list table', () => {
     cy.get(FILTER_TOGGLE).click({ force: true });
     cy.get('button[class=pf-c-select__menu-item]').contains('All').click();
     cy.get('.pf-c-chip-group__list-item').contains('1 or more');
+  });
+
+  it('clears text input after Name filter chip removal', () => {
+    cy.get(TOOLBAR_FILTER).find('.pf-c-form-control').type('cc');
+    // remove the chip
+    getChipGroup('Name').find('button').click();
+    cy.get(TOOLBAR_FILTER).find('.pf-c-form-control').should('be.empty');
+  });
+
+  it('clears text input after resetting all filters', () => {
+    cy.get(TOOLBAR_FILTER).find('.pf-c-form-control').type('cc');
+    // reset all filters
+    cy.get(TOOLBAR).find('button').contains('Reset filters').click();
+    cy.get(TOOLBAR_FILTER).find('.pf-c-form-control').should('be.empty');
   });
 });
 
