@@ -1,3 +1,10 @@
+## [1.0.6](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.0.5...v1.0.6) (2022-03-09)
+
+
+### Bug Fixes
+
+* **RecsListTable:** clear name filter input ([65180f0](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/65180f04386994e2713fec0c729c60efa21a495d))
+
 ## [1.0.5](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.0.4...v1.0.5) (2022-03-08)
 
 # 1.0.0 (2022-03-07)
