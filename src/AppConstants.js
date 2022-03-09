@@ -206,7 +206,7 @@ export const RECS_LIST_COLUMNS = [
 export const CLUSTER_FILTER_CATEGORIES = {
   hits: {
     type: 'checkbox',
-    title: 'Total Risk',
+    title: 'Total risk',
     urlParam: 'hits',
     values: [
       { label: 'All clusters', text: 'All clusters', value: 'all' },
