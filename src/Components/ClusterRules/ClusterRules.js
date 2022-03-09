@@ -153,10 +153,16 @@ const ClusterRules = ({ reports }) => {
                         </span>
                       }
                     >
-                      <InsightsLabel value={value.total_risk} />
+                      <InsightsLabel
+                        value={value.total_risk}
+                        rest={{ isCompact: true }}
+                      />
                     </Tooltip>
                   ) : (
-                    <InsightsLabel value={value.total_risk} />
+                    <InsightsLabel
+                      value={value.total_risk}
+                      rest={{ isCompact: true }}
+                    />
                   )}
                 </div>
               ),
