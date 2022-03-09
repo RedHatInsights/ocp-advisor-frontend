@@ -88,7 +88,7 @@ describe('cluster page', () => {
       ...props,
       cluster: {
         ...props.cluster,
-        isLoading: true,
+        isFetching: true,
         isSuccess: false,
         data: undefined,
       },
