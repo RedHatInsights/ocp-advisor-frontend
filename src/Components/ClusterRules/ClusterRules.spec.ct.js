@@ -291,8 +291,6 @@ describe('cluster rules table', () => {
         // check chips
         for (const [k, v] of Object.entries(filters)) {
           let groupName = filtersConf[k].selectorText;
-          // TODO remove this change CCXDEV-7192
-          groupName = groupName == 'Description' ? 'Name' : groupName;
           const nExpectedItems =
             filtersConf[k].type === 'checkbox' ? v.length : 1;
           cy.get(CHIP_GROUP)
