@@ -309,7 +309,7 @@ const ClusterRules = ({ reports }) => {
               ...(item[1].length > 0
                 ? [
                     {
-                      category: 'Name',
+                      category: intl.formatMessage(messages.description),
                       chips: [{ name: item[1], value: item[1] }],
                       urlParam: item[0],
                     },
