@@ -1,3 +1,10 @@
+## [1.0.9](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.0.8...v1.0.9) (2022-03-10)
+
+
+### Bug Fixes
+
+* **ClusterRules:** description chip category name ([#173](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/173)) ([976a5ab](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/976a5aba988598c70c354f5b1d5437d0a90525a7))
+
 ## [1.0.8](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.0.7...v1.0.8) (2022-03-09)
 
 
