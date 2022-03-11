@@ -482,7 +482,7 @@ describe('clusters list table', () => {
 
         // add property name to clusters
         let sortedNames = _.map(
-          // preserver original ordering
+          // all tables must preserve original ordering
           _.orderBy(
             _.cloneDeep(namedClusters),
             [category],
