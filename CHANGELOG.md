@@ -1,3 +1,10 @@
+## [1.0.10](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.0.9...v1.0.10) (2022-03-11)
+
+
+### Bug Fixes
+
+* keep original order of entities in all tables ([#174](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/174)) ([4158502](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/415850235f4d08bd6a9da3c43b1206b265271b17))
+
 ## [1.0.9](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.0.8...v1.0.9) (2022-03-10)
 
 
