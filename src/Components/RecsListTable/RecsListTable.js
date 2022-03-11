@@ -217,6 +217,7 @@ const RecsListTable = ({ query }) => {
 
   const buildDisplayedRows = (rows, index, direction) => {
     const sortingRows = [...rows].sort((firstItem, secondItem) => {
+      const d = direction === SortByDirection.asc ? 1 : -1;
       const fst = firstItem[0].rule[RECS_LIST_COLUMNS_KEYS[index - 1]];
       const snd = secondItem[0].rule[RECS_LIST_COLUMNS_KEYS[index - 1]];
       if (index === 3) {
@@ -224,11 +225,8 @@ const RecsListTable = ({ query }) => {
           extractCategories(snd)[0]
         );
       }
-      return fst > snd ? 1 : snd > fst ? -1 : 0;
+      return fst > snd ? d : snd > fst ? -d : 0;
     });
-    if (direction === SortByDirection.desc) {
-      sortingRows.reverse();
-    }
     return sortingRows
       .slice(
         filters.limit * (page - 1),

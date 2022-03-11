@@ -197,6 +197,7 @@ describe('cluster rules table', () => {
     cy.get('button').contains('Reset filters').should('not.exist');
   });
 
+  // all tables must preserve original ordering
   _.zip(['description', 'created_at', 'total_risk'], TABLE_HEADERS).forEach(
     ([category, label]) => {
       SORTING_ORDERS.forEach((order) => {
@@ -210,19 +211,14 @@ describe('cluster rules table', () => {
           } else {
             cy.get(header).find('button').dblclick();
           }
-          // FIXME original order is not retained but reversed when descending
-          // let sortedDescriptions = _.map(
-          //   _.orderBy(data, [category], [(order === 'descending')? 'desc': 'asc']),
-          //   'description'
-          // );
           let sortedDescriptions = _.map(
-            _.orderBy(data, [category], ['asc']),
+            _.orderBy(
+              data,
+              [category],
+              [order === 'descending' ? 'desc' : 'asc']
+            ),
             'description'
           );
-          if (order === 'descending') {
-            sortedDescriptions = sortedDescriptions.reverse();
-          }
-
           cy.get(`td[data-label="Description"]`)
             .then(($els) => {
               return _.map(Cypress.$.makeArray($els), 'innerText');

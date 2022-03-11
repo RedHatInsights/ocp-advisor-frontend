@@ -328,6 +328,7 @@ describe('successful non-empty recommendations list table', () => {
       .contains('Critical');
   });
 
+  // all tables must preserve original ordering
   it('can sort by category', () => {
     cy.sortByCol(2);
     cy.getAllRows()
@@ -342,7 +343,7 @@ describe('successful non-empty recommendations list table', () => {
     cy.getAllRows()
       .eq(0)
       .find('td[data-label=Category]')
-      .should('contain', 'Service Availability');
+      .should('contain', 'Performance');
   });
 
   it('the Impacted filters work correctly', () => {
