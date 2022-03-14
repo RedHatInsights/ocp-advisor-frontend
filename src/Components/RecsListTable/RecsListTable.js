@@ -78,6 +78,7 @@ const RecsListTable = ({ query }) => {
     setDisplayedRows(
       buildDisplayedRows(filteredRows, filters.sortIndex, filters.sortDirection)
     );
+    setInterval(() => refetch(), 20000);
   }, [
     filteredRows,
     filters.limit,

@@ -43,7 +43,7 @@ import {
 } from '../MessageState/EmptyStates';
 
 const ClustersListTable = ({
-  query: { isError, isUninitialized, isFetching, isSuccess, data },
+  query: { isError, isUninitialized, isFetching, isSuccess, data, refetch },
 }) => {
   const intl = useIntl();
   const dispatch = useDispatch();
@@ -61,6 +61,7 @@ const ClustersListTable = ({
     setDisplayedRows(
       buildDisplayedRows(filteredRows, filters.sortIndex, filters.sortDirection)
     );
+    setInterval(() => refetch(), 20000);
   }, [
     filteredRows,
     filters.sortIndex,
