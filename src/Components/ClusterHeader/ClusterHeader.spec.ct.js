@@ -43,7 +43,7 @@ describe('cluster page header', () => {
     // check last seen text
     cy.get(LAST_SEEN_FIELD).should('have.text', '24 Jul 2021 14:22 UTC');
   });
-  it('show spinner when in the loading state', () => {
+  it('show skeleton when in the loading state', () => {
     props = {
       ...props,
       displayName: {
@@ -65,7 +65,7 @@ describe('cluster page header', () => {
     // check uuid text
     cy.get(LAST_SEEN_FIELD).should('have.text', '24 Jul 2021 14:22 UTC');
   });
-
+  // this test is not checking UUID but name
   it('show UUID when display name is unavailable', () => {
     props.clusterData.data.report.meta.cluster_name = undefined;
     mount(

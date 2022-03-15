@@ -8,4 +8,6 @@ const CATEGORIES = {
   Performance: ['performance'],
 };
 
-export { TOTAL_RISK, CATEGORIES };
+const SORTING_ORDERS = ['ascending', 'descending'];
+
+export { TOTAL_RISK, CATEGORIES, SORTING_ORDERS };

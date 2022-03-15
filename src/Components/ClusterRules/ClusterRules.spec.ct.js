@@ -9,13 +9,17 @@ import getStore from '../../Store';
 import ClusterRules from './ClusterRules';
 import '@patternfly/patternfly/patternfly.scss';
 import data from '../../../cypress/fixtures/ClusterRules/data.json';
-import { TOTAL_RISK, CATEGORIES } from '../../../cypress/utils/globals';
+import {
+  TOTAL_RISK,
+  CATEGORIES,
+  SORTING_ORDERS,
+} from '../../../cypress/utils/globals';
 import { applyFilters } from '../../../cypress/utils/filters';
 import { cumulativeCombinations } from '../../../cypress/utils/combine';
 import { CHIP_GROUP, CHIP, ROWS } from '../../../cypress/views/filterableTable';
 
 const EXPANDABLES = '[class="pf-c-table__expandable-row pf-m-expanded"]';
-const TABLE_HEADERS = ['Description', 'Added', 'Total risk'];
+const TABLE_HEADERS = ['Description', 'Modified', 'Total risk'];
 
 const RULES_ENABLED = _.filter(data, (it) => !it.disabled).length;
 
@@ -125,21 +129,8 @@ describe('test data', () => {
 
 describe('cluster rules table', () => {
   beforeEach(() => {
-    // tables utilizes federated module and throws error when RHEL Advisor manifestaion not found
-    window['__scalprum__'] = {
-      apps: {},
-      appsMetaData: {
-        advisor: {
-          manifestLocation:
-            'https://qa.console.redhat.com/beta/apps/advisor/fed-mods.json',
-          module: 'advisor#./RootApp',
-          name: 'advisor',
-        },
-      },
-    };
-    cy.intercept('*', (req) => {
-      req.destroy();
-    });
+    // the flag tells not to fetch external federated modules
+    window.CYPRESS_RUN = true;
 
     mount(
       <IntlProvider locale="en">
@@ -193,42 +184,37 @@ describe('cluster rules table', () => {
     cy.get('button').contains('Reset filters').should('not.exist');
   });
 
-  Object.entries({
-    description: 'Description',
-    created_at: 'Added',
-    total_risk: 'Total risk',
-  }).forEach(([category, label]) => {
-    ['ascending', 'descending'].forEach((order) => {
-      it(`sort ${order} by ${label}`, () => {
-        const col = `td[data-label="${label}"]`;
-        const header = `th[data-label="${label}"]`;
-        cy.get(col).should('have.length', RULES_ENABLED);
-        if (category !== 'description') {
-          // sort first by description to ensure consistent ordering
-          cy.get(`th[data-label="Description"]`).find('button').click();
-        }
-        cy.get(`th[data-label="${label}"]`).find('button').click();
-        // FIXME right way to do the second click?
-        if (order === 'descending') {
-          // click a second time to reverse sorting
-          cy.get(header).find('button').click();
-        }
-        let sortedDescriptions = _.map(
-          _.sortBy(data, [category, 'description']),
-          'description'
-        );
-        if (order === 'descending') {
-          // reverse order
-          sortedDescriptions = _.reverse(sortedDescriptions);
-        }
-        cy.get(`td[data-label="Description"]`)
-          .then(($els) => {
-            return _.map(Cypress.$.makeArray($els), 'innerText');
-          })
-          .should('deep.equal', sortedDescriptions);
+  // all tables must preserve original ordering
+  _.zip(['description', 'created_at', 'total_risk'], TABLE_HEADERS).forEach(
+    ([category, label]) => {
+      SORTING_ORDERS.forEach((order) => {
+        it(`sort ${order} by ${label}`, () => {
+          const col = `td[data-label="${label}"]`;
+          const header = `th[data-label="${label}"]`;
+          cy.get(col).should('have.length', RULES_ENABLED);
+
+          if (order === 'ascending') {
+            cy.get(header).find('button').click();
+          } else {
+            cy.get(header).find('button').dblclick();
+          }
+          let sortedDescriptions = _.map(
+            _.orderBy(
+              data,
+              [category],
+              [order === 'descending' ? 'desc' : 'asc']
+            ),
+            'description'
+          );
+          cy.get(`td[data-label="Description"]`)
+            .then(($els) => {
+              return _.map(Cypress.$.makeArray($els), 'innerText');
+            })
+            .should('deep.equal', sortedDescriptions);
+        });
       });
-    });
-  });
+    }
+  );
 
   it('clear filters work', () => {
     // apply some filters
@@ -288,8 +274,6 @@ describe('cluster rules table', () => {
         // check chips
         for (const [k, v] of Object.entries(filters)) {
           let groupName = filtersConf[k].selectorText;
-          // TODO remove this change CCXDEV-7192
-          groupName = groupName == 'Description' ? 'Name' : groupName;
           const nExpectedItems =
             filtersConf[k].type === 'checkbox' ? v.length : 1;
           cy.get(CHIP_GROUP)
@@ -350,21 +334,8 @@ describe('cluster rules table', () => {
 
 describe('empty cluster rules table', () => {
   beforeEach(() => {
-    // tables utilizes federated module and throws error when RHEL Advisor manifestaion not found
-    window['__scalprum__'] = {
-      apps: {},
-      appsMetaData: {
-        advisor: {
-          manifestLocation:
-            'https://qa.console.redhat.com/beta/apps/advisor/fed-mods.json',
-          module: 'advisor#./RootApp',
-          name: 'advisor',
-        },
-      },
-    };
-    cy.intercept('*', (req) => {
-      req.destroy();
-    });
+    // the flag tells not to fetch external federated modules
+    window.CYPRESS_RUN = true;
 
     mount(
       <IntlProvider locale="en">
@@ -405,21 +376,8 @@ describe('empty cluster rules table', () => {
 
 describe('cluster rules table testing the first query parameter', () => {
   beforeEach(() => {
-    // tables utilizes federated module and throws error when RHEL Advisor manifestaion not found
-    window['__scalprum__'] = {
-      apps: {},
-      appsMetaData: {
-        advisor: {
-          manifestLocation:
-            'https://qa.console.redhat.com/beta/apps/advisor/fed-mods.json',
-          module: 'advisor#./RootApp',
-          name: 'advisor',
-        },
-      },
-    };
-    cy.intercept('*', (req) => {
-      req.destroy();
-    });
+    // the flag tells not to fetch external federated modules
+    window.CYPRESS_RUN = true;
 
     cy.fixture(
       'api/insights-results-aggregator/v1/clusters/41c30565-b4c9-49f2-a4ce-3277ad22b258/report.json'
