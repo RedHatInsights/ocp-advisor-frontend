@@ -384,9 +384,7 @@ describe('non-empty successful affected clusters table', () => {
 
   it('can select/deselect all', () => {
     cy.get(TOOLBAR).within(() => {
-      cy.get(
-        '[data-ouia-component-id="clusters-selector-toggle-checkbox"]'
-      ).click();
+      cy.get('input[data-ouia-component-id="clusters-selector"]').click();
       cy.get('#toggle-checkbox-text').should(
         'have.text',
         `${filterData().length} selected`
@@ -399,7 +397,7 @@ describe('non-empty successful affected clusters table', () => {
 
   it('can disable selected clusters', () => {
     cy.get(TOOLBAR)
-      .find('[data-ouia-component-id="clusters-selector-toggle-checkbox"]')
+      .find('input[data-ouia-component-id="clusters-selector"]')
       .click();
     cy.get(TOOLBAR).find('button[aria-label=Actions]').click();
     cy.get('.pf-c-dropdown__menu').find('li').find('button').click();

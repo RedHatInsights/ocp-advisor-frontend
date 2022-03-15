@@ -20,21 +20,8 @@ let props;
 
 describe('cluster page', () => {
   beforeEach(() => {
-    cy.intercept('*', (req) => {
-      req.destroy();
-    });
-    // tables utilizes federated module and throws error when RHEL Advisor manifestaion not found
-    window['__scalprum__'] = {
-      apps: {},
-      appsMetaData: {
-        advisor: {
-          manifestLocation:
-            'https://qa.console.redhat.com/beta/apps/advisor/fed-mods.json',
-          module: 'advisor#./RootApp',
-          name: 'advisor',
-        },
-      },
-    };
+    // the flag tells not to fetch external federated modules
+    window.CYPRESS_RUN = true;
 
     props = {
       cluster: {

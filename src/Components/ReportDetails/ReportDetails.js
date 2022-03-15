@@ -8,7 +8,9 @@ import Loading from '../Loading/Loading';
 // Rule fields processing: https://docs.google.com/document/d/1D0ZLD6-2DZqBX1cUHJY2vL2QAD0dIAzY3O3xFNlEsVg/edit?usp=sharing
 
 const ReportDetails = ({ report }) => {
-  return (
+  return window.CYPRESS_RUN ? (
+    <Loading />
+  ) : (
     <div className="advisor">
       <AsyncComponent
         appName="advisor"
