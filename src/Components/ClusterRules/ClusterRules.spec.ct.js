@@ -19,7 +19,7 @@ import { cumulativeCombinations } from '../../../cypress/utils/combine';
 import { CHIP_GROUP, CHIP, ROWS } from '../../../cypress/views/filterableTable';
 
 const EXPANDABLES = '[class="pf-c-table__expandable-row pf-m-expanded"]';
-const TABLE_HEADERS = ['Description', 'Added', 'Total risk'];
+const TABLE_HEADERS = ['Description', 'Modified', 'Total risk'];
 
 const RULES_ENABLED = _.filter(data, (it) => !it.disabled).length;
 
