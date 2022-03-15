@@ -129,21 +129,8 @@ describe('test data', () => {
 
 describe('cluster rules table', () => {
   beforeEach(() => {
-    // tables utilizes federated module and throws error when RHEL Advisor manifestaion not found
-    window['__scalprum__'] = {
-      apps: {},
-      appsMetaData: {
-        advisor: {
-          manifestLocation:
-            'https://qa.console.redhat.com/beta/apps/advisor/fed-mods.json',
-          module: 'advisor#./RootApp',
-          name: 'advisor',
-        },
-      },
-    };
-    cy.intercept('*', (req) => {
-      req.destroy();
-    });
+    // the flag tells not to fetch external federated modules
+    window.CYPRESS_RUN = true;
 
     mount(
       <IntlProvider locale="en">
@@ -347,21 +334,8 @@ describe('cluster rules table', () => {
 
 describe('empty cluster rules table', () => {
   beforeEach(() => {
-    // tables utilizes federated module and throws error when RHEL Advisor manifestaion not found
-    window['__scalprum__'] = {
-      apps: {},
-      appsMetaData: {
-        advisor: {
-          manifestLocation:
-            'https://qa.console.redhat.com/beta/apps/advisor/fed-mods.json',
-          module: 'advisor#./RootApp',
-          name: 'advisor',
-        },
-      },
-    };
-    cy.intercept('*', (req) => {
-      req.destroy();
-    });
+    // the flag tells not to fetch external federated modules
+    window.CYPRESS_RUN = true;
 
     mount(
       <IntlProvider locale="en">
@@ -402,21 +376,8 @@ describe('empty cluster rules table', () => {
 
 describe('cluster rules table testing the first query parameter', () => {
   beforeEach(() => {
-    // tables utilizes federated module and throws error when RHEL Advisor manifestaion not found
-    window['__scalprum__'] = {
-      apps: {},
-      appsMetaData: {
-        advisor: {
-          manifestLocation:
-            'https://qa.console.redhat.com/beta/apps/advisor/fed-mods.json',
-          module: 'advisor#./RootApp',
-          name: 'advisor',
-        },
-      },
-    };
-    cy.intercept('*', (req) => {
-      req.destroy();
-    });
+    // the flag tells not to fetch external federated modules
+    window.CYPRESS_RUN = true;
 
     cy.fixture(
       'api/insights-results-aggregator/v1/clusters/41c30565-b4c9-49f2-a4ce-3277ad22b258/report.json'
