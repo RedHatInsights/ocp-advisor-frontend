@@ -1,3 +1,10 @@
+## [1.0.12](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.0.11...v1.0.12) (2022-03-15)
+
+
+### Bug Fixes
+
+* **RecsList & Single Cluster page:** changed the Added column to modified ([#178](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/178)) ([5bc8135](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/5bc81355514677c2c2c6da6fdb3f32570adec7cf))
+
 ## [1.0.11](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.0.10...v1.0.11) (2022-03-14)
 
 ## [1.0.10](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.0.9...v1.0.10) (2022-03-11)
