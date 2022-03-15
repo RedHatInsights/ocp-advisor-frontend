@@ -20,3 +20,6 @@ env:
   - REPO_DIR="ocp-advisor-frontend-build"
   - BRANCH=${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}
   - NODE_OPTIONS="--max-old-space-size=4096 --max_old_space_size=4096"
+notifications:
+  slack:
+    secure: j3gBWOK1WGPtKIBqVErd2qkkHJfP7GtRw0FUzB1NhAqys4woG9gVtrNmv4npuTVEAxS+E2/dUKWCjs4PYGEoCjIoBiaoh8qwABfeV74gehcqlDO5C15qgZL1ujHEDN/Ohq9buhv4BBHK/TwSAm6JcVEfF/5Lveh/5sdBrvCBHO+qzGdKwNtWiKgAveKKXf/D2XwHE/gkEa5amk+FrN9Dbm58C50EKiMPkVqsLhKoX/kmxTWF9vxUxv9xj+HPKSYvtLoIQs1wwM6dReFL9rCrbuaGFrm3jRTlbBfdxFJ2HxCrqVlvoOXkXFwlyEAyUiZxBMOfjv+CI2buJZR/VY+DSIH/s0YUhTtO+wkXpTAC/FulD99CRaciHeaR4xXxf+sGDHUWSpKGdYjxja2mr2szf9ohSMbKHyOZBjXfg5a4D/ECgfw+UrPAlXuPACQSpslR36A/X7DAhI2D458/Nmt/9d8dIZGRD5Rk1xpL+uf4oN5g39tfrboD8m5J550Y/rix7fq4QgC3XWTCvcoZ9ysHVgiYqChlFNl9zSiad5MXkMwYD+u1oTgnF6BZXSPFrNO2gE6PH0NehoKTDkpAZyCjJZ9qBS1VB9L8w9eUARRhT8wWoRKucVWdoIXiSAPQFjnXFBo5GLq0HAN2nq3vdQ+yKxDPu3ev7N1wa35u3IeG0R8=
