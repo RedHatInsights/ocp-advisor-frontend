@@ -183,7 +183,7 @@ export const RECS_LIST_COLUMNS = [
     transforms: [sortable, cellWidth(40)],
   },
   {
-    title: intl.formatMessage(messages.added),
+    title: intl.formatMessage(messages.modified),
     transforms: [sortable, cellWidth(15)],
   },
   {
@@ -277,7 +277,7 @@ export const CLUSTER_RULES_COLUMNS = [
     transforms: [sortable],
   },
   {
-    title: intl.formatMessage(messages.added),
+    title: intl.formatMessage(messages.modified),
     transforms: [sortable, cellWidth(15)],
   },
   {

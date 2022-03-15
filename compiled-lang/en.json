@@ -1,6 +1,5 @@
 {
   "actions": "Actions",
-  "added": "Added",
   "affectedClusters": "Affected clusters",
   "all": "All",
   "cancel": "Cancel",
@@ -45,6 +44,7 @@
   "low": "Low",
   "medium": "Medium",
   "moderate": "Moderate",
+  "modified": "Modified",
   "nA": "N/A",
   "name": "Name",
   "noAffectedClustersBody": "This recommendation does not affect any cluster.",

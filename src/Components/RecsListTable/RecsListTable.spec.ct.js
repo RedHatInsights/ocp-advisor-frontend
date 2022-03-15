@@ -230,7 +230,7 @@ describe('successful non-empty recommendations list table', () => {
       );
   });
 
-  it('sort the data by Added', () => {
+  it('sort the data by Modified', () => {
     cy.sortByCol(1);
     cy.getAllRows()
       .eq(0)
