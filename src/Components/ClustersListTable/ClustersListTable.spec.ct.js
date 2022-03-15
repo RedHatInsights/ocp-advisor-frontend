@@ -148,6 +148,7 @@ describe('clusters list table', () => {
                 isUninitialized: false,
                 isSuccess: true,
                 data: props,
+                refetch: cy.stub(),
               }}
             />
           </Provider>

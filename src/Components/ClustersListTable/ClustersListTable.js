@@ -43,7 +43,7 @@ import {
 } from '../MessageState/EmptyStates';
 
 const ClustersListTable = ({
-  query: { isError, isUninitialized, isFetching, isSuccess, data },
+  query: { isError, isUninitialized, isFetching, isSuccess, data, refetch },
 }) => {
   const intl = useIntl();
   const dispatch = useDispatch();
@@ -104,6 +104,8 @@ const ClustersListTable = ({
       filters.limit * (page - 1) + filters.limit
     );
   };
+
+  useEffect(() => setInterval(() => refetch(), 20000), []);
 
   const removeFilterParam = (param) => {
     const { [param]: omitted, ...newFilters } = { ...filters, offset: 0 };

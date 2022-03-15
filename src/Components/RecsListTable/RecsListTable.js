@@ -111,6 +111,8 @@ const RecsListTable = ({ query }) => {
     setFilterBuilding(false);
   }, []);
 
+  useEffect(() => setInterval(() => refetch(), 20000), []);
+
   // constructs array of rows (from the initial data) checking currently applied filters
   const buildFilteredRows = (allRows, filters) => {
     return allRows
