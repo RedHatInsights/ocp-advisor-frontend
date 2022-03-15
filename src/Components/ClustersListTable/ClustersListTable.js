@@ -61,7 +61,6 @@ const ClustersListTable = ({
     setDisplayedRows(
       buildDisplayedRows(filteredRows, filters.sortIndex, filters.sortDirection)
     );
-    setInterval(() => refetch(), 20000);
   }, [
     filteredRows,
     filters.sortIndex,
@@ -105,6 +104,8 @@ const ClustersListTable = ({
       filters.limit * (page - 1) + filters.limit
     );
   };
+
+  useEffect(() => setInterval(() => refetch(), 20000), []);
 
   const removeFilterParam = (param) => {
     const { [param]: omitted, ...newFilters } = { ...filters, offset: 0 };
