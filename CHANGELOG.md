@@ -1,3 +1,10 @@
+## [1.0.13](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.0.12...v1.0.13) (2022-03-15)
+
+
+### Bug Fixes
+
+* pages periodic refresh and Smart Proxy service fix ([#177](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/177)) ([50212ae](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/50212ae9097685edcecf7e2b3c3540a1fb4f84fb))
+
 ## [1.0.12](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.0.11...v1.0.12) (2022-03-15)
 
 
