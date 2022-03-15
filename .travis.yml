@@ -11,8 +11,10 @@ jobs:
   - stage: Test
     script: npm run test && npm run coverage
   - stage: Deploy
+    if: type = push AND fork = false
     script: npm run build && curl -sSL https://raw.githubusercontent.com/RedHatInsights/insights-frontend-builder-common/master/src/bootstrap.sh | bash -s
   - stage: Release
+    if: type = push AND fork = false
     script: npm run release
 env:
   global:
