@@ -1,0 +1,163 @@
+{
+  "data": {
+    "enabled": [
+      {
+        "cluster_id": "c15a9d59-8152-40eb-94e4-f658852a32a9",
+        "cluster_name": "Cluster 1",
+        "last_checked_at": "2022-02-09T01:27:11.594898Z"
+      },
+      {
+        "cluster_id": "3ccc8a71-3935-459d-8492-43ed9be5b859",
+        "cluster_name": "Cluster 1",
+        "last_checked_at": "2022-02-09T01:27:11.594898Z"
+      },
+      {
+        "cluster_id": "054ba717-034f-4241-8111-6d382b8a7db0",
+        "cluster_name": "",
+        "last_checked_at": "2022-02-09T01:27:11.594898Z"
+      },
+      {
+        "cluster_id": "28527df6-89cf-48c0-8319-dc3404299279",
+        "cluster_name": "",
+        "last_checked_at": "2022-02-09T01:27:11.594898Z"
+      },
+      {
+        "cluster_id": "8eabc8f3-5e13-4b34-95ad-3438b11ef0ce",
+        "cluster_name": "",
+        "last_checked_at": "2022-02-09T01:27:11.594898Z"
+      },
+      {
+        "cluster_id": "655f739a-4a76-49d6-85d9-6c64d8d40be8",
+        "cluster_name": "",
+        "last_checked_at": "2022-02-09T01:27:11.594898Z"
+      },
+      {
+        "cluster_id": "0dd46aa7-c4e5-4c2c-9d44-8eaa1ea4893d",
+        "cluster_name": "",
+        "last_checked_at": "2022-02-09T01:27:11.594898Z"
+      },
+      {
+        "cluster_id": "c5bd1083-d480-4290-a531-90d75be9641d",
+        "cluster_name": "",
+        "last_checked_at": "2022-02-09T01:27:11.594898Z"
+      },
+      {
+        "cluster_id": "d7745219-e338-418a-bd0e-ee81c0ecc177",
+        "cluster_name": "",
+        "last_checked_at": "2022-02-09T01:27:11.594898Z"
+      },
+      {
+        "cluster_id": "b7114c99-a4af-4619-b379-31cb9ce394cb",
+        "cluster_name": "",
+        "last_checked_at": "2022-02-09T01:27:11.594898Z"
+      },
+      {
+        "cluster_id": "ef1c9265-be5d-49c0-820b-59104e22f20f",
+        "cluster_name": "",
+        "last_checked_at": "2022-02-09T01:27:11.594898Z"
+      },
+      {
+        "cluster_id": "94079b43-4b7a-432e-9257-a6067f4506a3",
+        "cluster_name": "",
+        "last_checked_at": "2022-02-09T01:27:11.594898Z"
+      },
+      {
+        "cluster_id": "4e0e6be9-6e9f-409a-8891-d93b74db33b1",
+        "cluster_name": "",
+        "last_checked_at": "2022-02-09T01:27:11.594898Z"
+      },
+      {
+        "cluster_id": "975a9fe5-4e93-4145-a9ca-ffe2701e1b0e",
+        "cluster_name": "",
+        "last_checked_at": "2022-02-09T01:27:11.594898Z"
+      },
+      {
+        "cluster_id": "f1d81474-da9c-4f86-abee-dac1b04e6ae7",
+        "cluster_name": "",
+        "last_checked_at": "2022-02-09T01:27:11.594898Z"
+      },
+      {
+        "cluster_id": "6a4bb724-bd2e-469f-a48f-87d6db027bfc",
+        "cluster_name": "",
+        "last_checked_at": "2022-02-09T01:27:11.594898Z"
+      },
+      {
+        "cluster_id": "acad1a70-c888-4a16-8b95-be631b854711",
+        "cluster_name": "",
+        "last_checked_at": "2022-02-09T01:27:11.594898Z"
+      },
+      {
+        "cluster_id": "0e856aef-f6f9-40cc-b1a1-011c0b8439ad",
+        "cluster_name": "",
+        "last_checked_at": "2022-02-09T01:27:11.594898Z"
+      },
+      {
+        "cluster_id": "0af751a5-d535-4827-8fea-aaa474d7d98d",
+        "cluster_name": "",
+        "last_checked_at": "2022-02-09T01:27:11.594898Z"
+      },
+      {
+        "cluster_id": "df769ca6-cadf-4a1d-b100-73e85d49d183",
+        "cluster_name": "",
+        "last_checked_at": "2022-02-09T01:27:11.594898Z"
+      },
+      {
+        "cluster_id": "6b667fcf-1456-47ba-a923-92e22a70a70f",
+        "cluster_name": "",
+        "last_checked_at": "2022-02-09T01:27:11.594898Z"
+      },
+      {
+        "cluster_id": "99dc19c7-0026-4a4f-9328-7c9c4dc6b0c9",
+        "cluster_name": "",
+        "last_checked_at": "2022-02-09T01:27:11.594898Z"
+      },
+      {
+        "cluster_id": "2cc844be-fe7d-4ca4-b973-b08745bd1d8c",
+        "cluster_name": "",
+        "last_checked_at": "2022-02-09T01:27:11.594898Z"
+      },
+      {
+        "cluster_id": "0dd47216-94a5-437d-8bc6-e7ec438be89e",
+        "cluster_name": "",
+        "last_checked_at": "2022-02-09T01:27:11.594898Z"
+      },
+      {
+        "cluster_id": "9613ca56-c382-4094-a0f0-6ebd8ade2302",
+        "cluster_name": "",
+        "last_checked_at": "2022-02-09T01:27:11.594898Z"
+      },
+      {
+        "cluster_id": "2116e4c0-6de4-406e-8e3f-b870197c5a82",
+        "cluster_name": "",
+        "last_checked_at": "2022-02-09T01:27:11.594898Z"
+      }
+    ],
+    "disabled": [
+      {
+        "cluster_id": "c194947c-9922-4264-b978-5aca85441715",
+        "cluster_name": "Cluster X",
+        "disabled_at": "2022-02-09T01:27:11.594898Z",
+        "justification": "Test"
+      },
+      {
+        "cluster_id": "35999bd1-8f9a-490e-b15e-f131ebc040d6",
+        "cluster_name": "Cluster Y",
+        "disabled_at": "2022-02-09T01:27:11.594898Z",
+        "justification": ""
+      },
+      {
+        "cluster_id": "72d7c7aa-b2ba-4c89-b37c-57b01b2aecf6",
+        "cluster_name": "",
+        "disabled_at": "2022-02-09T01:27:11.594898Z",
+        "justification": "Random justification"
+      },
+      {
+        "cluster_id": "43434ea8-da30-409a-8e74-77dc8c4ea536",
+        "cluster_name": "",
+        "disabled_at": "2022-02-09T01:27:11.594898Z",
+        "justification": ""
+      }
+    ]
+  },
+  "status": "ok"
+}

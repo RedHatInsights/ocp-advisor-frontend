@@ -1,11 +1,10 @@
 {
   "name": "ocp-advisor-frontend",
-  "version": "1.0.0",
+  "version": "1.0.13",
   "private": false,
   "scripts": {
     "build": "NODE_ENV=production webpack --config config/prod.webpack.config.js",
     "analyze": "NODE_ENV=production webpack --config config/prod.webpack.config.js --env analyze=true",
-    "deploy": "npm-run-all build lint test",
     "lint": "npm-run-all lint:*",
     "lint:js": "eslint config src",
     "lint:js:fix": "eslint config src --fix",
@@ -17,69 +16,159 @@
     "test:ct": "cypress run-ct",
     "test:jest": "jest --verbose --passWithNoTests",
     "test": "npm run test:ct && npm run test:jest",
+    "coverage": "bash coverage.sh",
     "translations": "npm-run-all translations:*",
     "translations:extract": "formatjs extract 'src/**/*.js*' --out-file lang/en.json --id-interpolation-pattern '[sha512:contenthash:base64:6]'",
     "translations:compile": "formatjs compile lang/en.json --out-file compiled-lang/en.json",
-    "verify": "npm-run-all build lint test"
+    "verify": "npm-run-all build lint test",
+    "release": "semantic-release",
+    "report:combined": "npx nyc report --reporter lcov --reporter text --report-dir coverage"
   },
   "dependencies": {
-    "@patternfly/react-core": "^4.182.0",
+    "@patternfly/react-core": "^4.198.5",
     "@patternfly/react-table": "^4.51.0",
-    "@redhat-cloud-services/frontend-components": "3.3.13",
+    "@redhat-cloud-services/frontend-components": "3.7.6",
     "@redhat-cloud-services/frontend-components-charts": "^3.2.2",
     "@redhat-cloud-services/frontend-components-notifications": "3.2.4",
-    "@redhat-cloud-services/frontend-components-translations": "3.2.2",
-    "@redhat-cloud-services/frontend-components-utilities": "3.2.3",
-    "@redhat-cloud-services/rule-components": "3.2.2",
+    "@redhat-cloud-services/frontend-components-translations": "3.2.4",
+    "@redhat-cloud-services/frontend-components-utilities": "3.2.10",
+    "@redhat-cloud-services/rule-components": "3.2.5",
     "@reduxjs/toolkit": "1.6.0",
-    "axios": "^0.21.4",
-    "babel-plugin-formatjs": "^10.3.2",
+    "axios": "^0.26.0",
+    "babel-plugin-formatjs": "^10.3.18",
     "classnames": "2.3.1",
     "lodash": "^4.17.21",
-    "qs": "6.10.1",
+    "qs": "6.10.3",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "react-intl": "5.20.4",
+    "react-intl": "5.24.6",
     "react-markdown": "^8.0.0",
-    "react-redux": "7.2.4",
+    "react-redux": "7.2.6",
     "react-router-dom": "5.2.0",
-    "redux": "4.1.0",
+    "redux": "4.1.2",
     "redux-logger": "3.0.6"
   },
   "devDependencies": {
-    "@babel/core": "7.14.6",
+    "@babel/core": "7.17.5",
     "@babel/plugin-proposal-object-rest-spread": "7.14.7",
-    "@babel/plugin-transform-runtime": "7.14.5",
-    "@babel/preset-env": "7.14.7",
-    "@babel/preset-react": "7.14.5",
-    "@cypress/react": "^5.10.0",
-    "@cypress/webpack-dev-server": "^1.6.0",
-    "@formatjs/cli": "4.2.27",
+    "@babel/plugin-transform-runtime": "7.17.0",
+    "@babel/preset-env": "7.16.11",
+    "@babel/preset-react": "7.16.7",
+    "@cypress/code-coverage": "^3.9.12",
+    "@cypress/react": "^5.12.4",
+    "@cypress/webpack-dev-server": "^1.8.2",
+    "@formatjs/cli": "4.8.2",
     "@patternfly/patternfly": "^4.164.2",
     "@redhat-cloud-services/eslint-config-redhat-cloud-services": "1.2.1",
     "@redhat-cloud-services/frontend-components-config": "^4.2.7",
+    "@semantic-release/changelog": "^6.0.1",
+    "@semantic-release/git": "^10.0.1",
     "babel-core": "7.0.0-bridge.0",
-    "babel-jest": "27.0.6",
+    "babel-jest": "27.5.1",
     "babel-plugin-dual-import": "1.2.1",
+    "babel-plugin-istanbul": "^6.1.1",
     "babel-plugin-transform-imports": "2.0.0",
-    "cypress": "^8.4.0",
-    "eslint": "7.30.0",
+    "cypress": "^9.5.1",
+    "eslint": "7.32.0",
     "eslint-loader": "4.0.2",
     "eslint-plugin-cypress": "^2.12.1",
     "identity-obj-proxy": "3.0.0",
-    "jest": "27.0.6",
+    "jest": "27.5.1",
     "npm-run-all": "4.1.5",
-    "prop-types": "15.7.2",
+    "prop-types": "15.8.1",
     "rehype-raw": "^6.1.1",
     "rehype-sanitize": "^5.0.1",
+    "semantic-release": "^19.0.2",
     "style-loader": "^3.3.1",
     "stylelint": "13.13.1",
     "stylelint-config-recommended-scss": "4.3.0",
-    "stylelint-scss": "3.19.0",
-    "webpack-bundle-analyzer": "4.4.2",
-    "webpack-cli": "4.9.0"
+    "stylelint-scss": "3.21.0",
+    "webpack-bundle-analyzer": "4.5.0",
+    "webpack-cli": "4.9.2"
   },
+  "release": {
+    "branches": "master",
+    "analyzeCommits": {
+      "preset": "angular",
+      "releaseRules": [
+        {
+          "type": "refactor",
+          "release": "patch"
+        },
+        {
+          "type": "style",
+          "release": "patch"
+        },
+        {
+          "type": "update",
+          "release": "patch"
+        },
+        {
+          "type": "docs",
+          "release": "patch"
+        },
+        {
+          "type": "test",
+          "release": "patch"
+        }
+      ]
+    },
+    "prepare": [
+      [
+        "@semantic-release/npm",
+        {
+          "npmPublish": false
+        }
+      ],
+      "@semantic-release/changelog",
+      "@semantic-release/git"
+    ],
+    "publish": [
+      "@semantic-release/github",
+      [
+        "@semantic-release/npm",
+        {
+          "npmPublish": false
+        }
+      ]
+    ]
+  },
+  "repository": "git@github.com:RedHatInsights/ocp-advisor-frontend.git",
   "insights": {
     "appname": "ocp-advisor"
+  },
+  "jest": {
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx}",
+      "!**/node_modules/**",
+      "!**/vendor/**"
+    ],
+    "coverageDirectory": "./jest-coverage",
+    "moduleNameMapper": {
+      "\\.(css|scss)$": "identity-obj-proxy"
+    },
+    "roots": [
+      "<rootDir>/src/"
+    ],
+    "setupFiles": [
+      "<rootDir>/config/setupTests.js"
+    ],
+    "transformIgnorePatterns": [
+      "/node_modules/(?!@redhat-cloud-services)",
+      "/node_modules/(?!@patternfly)"
+    ]
+  },
+  "nyc": {
+    "report-dir": "cypress-coverage",
+    "include": [
+      "src/Components",
+      "src/Services",
+      "src/Utilities"
+    ],
+    "exclude": [
+      "src/**/*.spec.ct.js",
+      "src/**/*.test.js"
+    ]
   }
 }

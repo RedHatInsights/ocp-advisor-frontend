@@ -21,15 +21,8 @@ import messages from '../../Messages';
 
 export const Cluster = ({ cluster, match }) => {
   const intl = useIntl();
-  const {
-    isError,
-    isUninitialized,
-    isLoading,
-    isFetching,
-    isSuccess,
-    data,
-    error,
-  } = cluster;
+  const { isError, isUninitialized, isFetching, isSuccess, data, error } =
+    cluster;
 
   return (
     <React.Fragment>
@@ -42,7 +35,7 @@ export const Cluster = ({ cluster, match }) => {
         />
         <ClusterHeader />
       </PageHeader>
-      {(isUninitialized || isLoading || isFetching) && (
+      {(isUninitialized || isFetching) && (
         <Main id="loading-skeleton">
           <Loading />
         </Main>
@@ -76,7 +69,7 @@ export const Cluster = ({ cluster, match }) => {
             />
           </Main>
         ))}
-      {isSuccess && (
+      {isSuccess && !isFetching && (
         <React.Fragment>
           <Main>
             <React.Fragment>

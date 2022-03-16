@@ -5,16 +5,19 @@ import { Provider } from 'react-redux';
 
 import { RecsListTable } from './RecsListTable';
 import getStore from '../../Store';
-import props from '../../../cypress/fixtures/RecsListTable/data.json';
+import data from '../../../cypress/fixtures/RecsListTable/data.json';
 import { Intl } from '../../Utilities/intlHelper';
 import '@patternfly/patternfly/patternfly.scss';
+import { TOOLBAR, TOOLBAR_FILTER } from '../../../cypress/utils/components';
+// TODO make more use of ../../../cypress/utils/components
 
 // selectors
 const RECS_LIST_TABLE = 'div[id=recs-list-table]';
 const CHIP = 'div[class=pf-c-chip]';
-const ROW = 'tbody[role=rowgroup]';
+const ROW = 'tbody[role=rowgroup]'; // FIXME use ROW from components
 const FILTERS_DROPDOWN = 'ul[class=pf-c-dropdown__menu]';
 const FILTER_TOGGLE = 'span[class=pf-c-select__toggle-arrow]';
+
 // actions
 Cypress.Commands.add('getAllRows', () => cy.get(RECS_LIST_TABLE).find(ROW));
 Cypress.Commands.add('removeStatusFilter', () => {
@@ -50,21 +53,8 @@ const getChipGroup = (label) =>
   cy.contains('.pf-c-chip-group__label', label).parent();
 
 before(() => {
-  cy.intercept('*', (req) => {
-    req.destroy();
-  });
-  // tables utilizes federated module and throws error when RHEL Advisor manifestaion not found
-  window['__scalprum__'] = {
-    apps: {},
-    appsMetaData: {
-      advisor: {
-        manifestLocation:
-          'https://qa.console.redhat.com/beta/apps/advisor/fed-mods.json',
-        module: 'advisor#./RootApp',
-        name: 'advisor',
-      },
-    },
-  };
+  // the flag tells not to fetch external federated modules
+  window.CYPRESS_RUN = true;
 });
 
 describe('pre-filled url search parameters', () => {
@@ -84,7 +74,7 @@ describe('pre-filled url search parameters', () => {
                 isFetching: false,
                 isUninitialized: false,
                 isSuccess: true,
-                data: props,
+                data: data,
               }}
             />
           </Provider>
@@ -135,7 +125,7 @@ describe('successful non-empty recommendations list table', () => {
                 isFetching: false,
                 isUninitialized: false,
                 isSuccess: true,
-                data: props,
+                data: data,
               }}
             />
           </Provider>
@@ -210,15 +200,13 @@ describe('successful non-empty recommendations list table', () => {
       .should('have.class', 'pf-c-table__sort');
   });
 
+  // TODO make sorting tests data independent
   it('sort the data by Name', () => {
     cy.sortByCol(0);
     cy.getAllRows()
       .eq(0)
       .find('td[data-label=Name]')
-      .should(
-        'contain',
-        'Additional risks would occur possibly when having the masters defined as machinesets'
-      );
+      .should('contain', '1Lorem');
     cy.sortByCol(0);
     cy.getAllRows()
       .eq(0)
@@ -229,15 +217,12 @@ describe('successful non-empty recommendations list table', () => {
       );
   });
 
-  it('sort the data by Added', () => {
+  it('sort the data by Modified', () => {
     cy.sortByCol(1);
     cy.getAllRows()
       .eq(0)
       .find('td[data-label=Name]')
-      .should(
-        'contain',
-        'Additional risks would occur possibly when having the masters defined as machinesets'
-      );
+      .should('contain', '1Lorem');
     cy.sortByCol(1);
     cy.getAllRows()
       .eq(0)
@@ -330,15 +315,13 @@ describe('successful non-empty recommendations list table', () => {
       .contains('Critical');
   });
 
+  // all tables must preserve original ordering
   it('can sort by category', () => {
     cy.sortByCol(2);
     cy.getAllRows()
       .eq(0)
       .find('td[data-label=Name]')
-      .should(
-        'contain',
-        'Additional risks would occur possibly when having the masters defined as machinesets'
-      );
+      .should('contain', '1Lorem');
     cy.getAllRows()
       .eq(0)
       .find('td[data-label=Category]')
@@ -347,35 +330,38 @@ describe('successful non-empty recommendations list table', () => {
     cy.getAllRows()
       .eq(0)
       .find('td[data-label=Category]')
-      .should('contain', 'Service Availability');
+      .should('contain', 'Performance');
   });
 
   it('the Impacted filters work correctly', () => {
-    cy.get(RECS_LIST_TABLE)
-      .find('button[class=pf-c-dropdown__toggle]')
-      .click({ force: true });
-    cy.get(FILTERS_DROPDOWN)
-      .contains('Clusters impacted')
-      .click({ force: true });
+    cy.get(RECS_LIST_TABLE).find('button[class=pf-c-dropdown__toggle]').click();
+    cy.get(FILTERS_DROPDOWN).contains('Clusters impacted').click();
     cy.get(FILTER_TOGGLE).then((element) => {
       cy.wrap(element);
-      element[0].click({ force: true });
+      element[0].click();
     });
-    cy.get('.pf-c-select__menu')
-      .find('label > input')
-      .eq(1)
-      .check({ force: true });
+    cy.get('.pf-c-select__menu').find('label > input').eq(1).check();
     cy.get('.pf-c-chip-group__list-item').contains('1 or more');
 
-    cy.get(RECS_LIST_TABLE)
-      .find('button[class=pf-c-dropdown__toggle]')
-      .click({ force: true });
-    cy.get(FILTERS_DROPDOWN).contains('Status').click({ force: true });
+    cy.get(RECS_LIST_TABLE).find('button[class=pf-c-dropdown__toggle]').click();
+    cy.get(FILTERS_DROPDOWN).contains('Status').click();
     cy.get(FILTER_TOGGLE).click({ force: true });
-    cy.get('button[class=pf-c-select__menu-item]')
-      .contains('All')
-      .click({ force: true });
+    cy.get('button[class=pf-c-select__menu-item]').contains('All').click();
     cy.get('.pf-c-chip-group__list-item').contains('1 or more');
+  });
+
+  it('clears text input after Name filter chip removal', () => {
+    cy.get(TOOLBAR_FILTER).find('.pf-c-form-control').type('cc');
+    // remove the chip
+    getChipGroup('Name').find('button').click();
+    cy.get(TOOLBAR_FILTER).find('.pf-c-form-control').should('be.empty');
+  });
+
+  it('clears text input after resetting all filters', () => {
+    cy.get(TOOLBAR_FILTER).find('.pf-c-form-control').type('cc');
+    // reset all filters
+    cy.get(TOOLBAR).find('button').contains('Reset filters').click();
+    cy.get(TOOLBAR_FILTER).find('.pf-c-form-control').should('be.empty');
   });
 });
 
@@ -392,6 +378,34 @@ describe('empty recommendations list table', () => {
                 isUninitialized: false,
                 isSuccess: true,
                 data: { recommendations: [], status: 'ok' },
+              }}
+            />
+          </Provider>
+        </Intl>
+      </MemoryRouter>
+    );
+  });
+
+  it('renders error message', () => {
+    cy.get('#error-state-message')
+      .find('h4')
+      .should('have.text', 'Something went wrong');
+  });
+});
+
+describe('error recommendations list table', () => {
+  beforeEach(() => {
+    mount(
+      <MemoryRouter initialEntries={['/recommendations']} initialIndex={0}>
+        <Intl>
+          <Provider store={getStore()}>
+            <RecsListTable
+              query={{
+                isError: true,
+                isFetching: false,
+                isUninitialized: false,
+                isSuccess: false,
+                data: undefined,
               }}
             />
           </Provider>
@@ -424,7 +438,7 @@ describe('Recs list is requested with additional parameters №1', () => {
                 isFetching: false,
                 isUninitialized: false,
                 isSuccess: true,
-                data: props,
+                data: data,
               }}
             />
           </Provider>
@@ -462,7 +476,7 @@ describe('Recs list is requested with additional parameters №2', () => {
                 isFetching: false,
                 isUninitialized: false,
                 isSuccess: true,
-                data: props,
+                data: data,
               }}
             />
           </Provider>

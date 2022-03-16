@@ -7,6 +7,8 @@ export const SmartProxyApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_URL,
   }),
+  refetchOnReconnect: true,
+  refetchOnMountOrArgChange: 3,
   endpoints: (builder) => ({
     getClusterById: builder.query({
       query: ({ id, includeDisabled }) =>

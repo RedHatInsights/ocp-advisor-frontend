@@ -13,10 +13,10 @@ export default defineMessages({
       'Clusters title used in recommendation table column and clusters tab header',
     defaultMessage: 'Clusters',
   },
-  added: {
-    id: 'added',
+  modified: {
+    id: 'modified',
     description: 'Recommendation table column title',
-    defaultMessage: 'Added',
+    defaultMessage: 'Modified',
   },
   loading: {
     id: 'loading',
