@@ -419,11 +419,13 @@ const RecsListTable = ({ query }) => {
   };
 
   const activeFiltersConfig = {
+    showDeleteButton: true,
     deleteTitle: intl.formatMessage(messages.resetFilters),
     filters: buildFilterChips(),
     onDelete: (_event, itemsToRemove, isAll) => {
-      if (isAll) {
+      if (isAll || filters === RECS_LIST_INITIAL_STATE) {
         updateFilters(RECS_LIST_INITIAL_STATE);
+        refetch();
       } else {
         itemsToRemove.map((item) => {
           const newFilter = {
