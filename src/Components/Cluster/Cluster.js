@@ -19,29 +19,23 @@ import MessageState from '../MessageState/MessageState';
 import Loading from '../Loading/Loading';
 import messages from '../../Messages';
 
-export const Cluster = ({ cluster, displayName, match }) => {
+export const Cluster = ({ cluster, match }) => {
   const intl = useIntl();
-  const {
-    isError,
-    isUninitialized,
-    isLoading,
-    isFetching,
-    isSuccess,
-    data,
-    error,
-  } = cluster;
-  const { data: clusterDisplayName } = displayName;
+  const { isError, isUninitialized, isFetching, isSuccess, data, error } =
+    cluster;
 
   return (
     <React.Fragment>
       <PageHeader className="pf-m-light ins-inventory-detail">
         <Breadcrumbs
-          current={clusterDisplayName || match.params.clusterId}
+          current={
+            cluster?.data?.report.meta.cluster_name || match.params.clusterId
+          }
           match={match}
         />
         <ClusterHeader />
       </PageHeader>
-      {(isUninitialized || isLoading || isFetching) && (
+      {(isUninitialized || isFetching) && (
         <Main id="loading-skeleton">
           <Loading />
         </Main>
@@ -75,7 +69,7 @@ export const Cluster = ({ cluster, displayName, match }) => {
             />
           </Main>
         ))}
-      {isSuccess && (
+      {isSuccess && !isFetching && (
         <React.Fragment>
           <Main>
             <React.Fragment>

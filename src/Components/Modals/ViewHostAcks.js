@@ -72,7 +72,7 @@ const ViewHostAcks = ({
   useEffect(() => {
     const rows = hostAcks?.map((item) => ({
       cells: [
-        item.display_name || item.cluster_id,
+        item.cluster_name || item.cluster_id,
         item.justification || intl.formatMessage(messages.none),
         {
           title: (

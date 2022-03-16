@@ -13,10 +13,10 @@ export default defineMessages({
       'Clusters title used in recommendation table column and clusters tab header',
     defaultMessage: 'Clusters',
   },
-  added: {
-    id: 'added',
+  modified: {
+    id: 'modified',
     description: 'Recommendation table column title',
-    defaultMessage: 'Added',
+    defaultMessage: 'Modified',
   },
   loading: {
     id: 'loading',
@@ -344,7 +344,7 @@ export default defineMessages({
     description:
       'Exclaiming that the recommendation is disabled for clusters (cluster count)',
     defaultMessage:
-      'Recommendation is disabled for {clusters, plural, one {# cluster} other {# clusters}}',
+      'Recommendation is disabled for {clusters, plural, one {# cluster} other {# clusters}} and has no results.',
   },
   oneOrMore: {
     id: 'oneOrMore',
@@ -463,12 +463,19 @@ export default defineMessages({
     description: 'Explaining that the recommendationis disabled',
     defaultMessage: 'This recommendation has been disabled and has no results.',
   },
-  ruleIsDisabledJustification: {
-    id: 'ruleIsDisabledJustification',
+  ruleIsDisabledWithJustificaiton: {
+    id: 'ruleIsDisabledWithJustificaiton',
     description:
-      'Explaining that the recommendationis disabled with following justification',
+      'Explaining that the recommendationis disabled with justification provided',
     defaultMessage:
-      'This recommendation has been disabled for all systems for the following reason: ',
+      'This recommendation was disabled on {date} because {reason} and has no results.',
+  },
+  ruleIsDisabledWithoutJustificaiton: {
+    id: 'ruleIsDisabledWithoutJustificaiton',
+    description:
+      'Explaining that the recommendationis disabled without justification provided',
+    defaultMessage:
+      'This recommendation was disabled on {date} and has no results.',
   },
   ruleIsDisabledForSystems: {
     id: 'ruleIsDisabledForSystems',
@@ -557,5 +564,26 @@ export default defineMessages({
     description: 'Cluster List Page received 0 clusters',
     defaultMessage:
       'To get started, create or register your cluster to get recommendations from Insights Advisor.',
+  },
+  rulesDetailsTotalriskBody: {
+    id: 'rulesdetails.totalriskbody',
+    description: 'Text explaining the total risk value of this recommendation',
+    defaultMessage: `The total risk of this remediation is <strong>{risk}</strong>,
+                        based on the combination of likelihood and impact to remediate.`,
+  },
+  riskofchange: {
+    id: 'riskofchange',
+    description: 'Risk of Change',
+    defaultMessage: 'Risk of change',
+  },
+  ruleHelpful: {
+    id: 'ruleHelpful',
+    description: 'Asking the user if they find a recommendation helpful',
+    defaultMessage: 'Is this recommendation helpful?',
+  },
+  feedbackThankyou: {
+    id: 'feedbackThankyou',
+    description: 'Thanking user for feedback',
+    defaultMessage: 'Thank you for your feedback!',
   },
 });

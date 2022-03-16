@@ -1,7 +1,7 @@
 language: node_js
 sudo: required
 node_js:
-- '12'
+- '16'
 install:
 - npm ci
 jobs:
@@ -9,12 +9,19 @@ jobs:
   - stage: Lint
     script: npm run lint
   - stage: Test
-    script: npm run test && npx codecov
+    script: npm run test && npm run coverage
   - stage: Deploy
-    script: npm run deploy && curl -sSL https://raw.githubusercontent.com/RedHatInsights/insights-frontend-builder-common/master/src/bootstrap.sh | bash -s
+    if: type = push AND fork = false
+    script: npm run build && curl -sSL https://raw.githubusercontent.com/RedHatInsights/insights-frontend-builder-common/master/src/bootstrap.sh | bash -s
+  - stage: Release
+    if: type = push AND fork = false
+    script: npm run release
 env:
   global:
   - REPO="git@github.com:RedHatInsights/ocp-advisor-frontend-build"
   - REPO_DIR="ocp-advisor-frontend-build"
   - BRANCH=${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}
   - NODE_OPTIONS="--max-old-space-size=4096 --max_old_space_size=4096"
+notifications:
+  slack:
+    secure: mv8wXHZWkscXmT7j4qanqiYy2Ffiv3j1JZQPQ9eHSrsLwSl+sISClBxTLECmHz/DJWn+TW2H9ZjfjTbXhQeOw4r9PNDSU2rPL+Jv/CRgWIe6KfCs6mStCxL3ckYqwzMGduWTf5186sJYkoY8ZM1Ul00Hp1HzaRWHSG0giORUTUvodJ+7Vgz8BhxMc57xy8Z89qV5JxukkC0BOYZM/V9n+Fa9TKWiE+0tCQCTRTn7U899XfP0F40XYi8qy67DPGZ+t1tpYq8oVkrp8VUMdFOq3gKDtspO47Ob/oWjCYz1q5LW/Wg/8Sf1+NuHC+TIw1WKfnQOvbTVjSg6KGhV3sFNImcRsZQ5oD5lXWNtE8i203B1q9mvgYmHhcfdFpqvK5jgD13dfp7xaE1SwDaXgA+hjEoo1nWCi5DMZQsQjaK8k0ApS0U2+ayXDypU1T11IIP87HH7xhBqm3VoDq17nX1Q49fOD3GL23tel4aZ7rekIYgPszjQxMgcUNxS6KJaH2B9/Bq2Bp1BZkOopN/YvVrN6uqe4vww67kuARahQcOb54KYVMkrj5FtvQnM5ooWW4Uu2tcgGu4lVnD/jVOr+2Rd3n2zmRybCw/YdlCafLA31BdzSEbFo3orReEksua8VEhSBNAvrgg8Q4jqfd8wzYBMur17mpTsx06vkIbjgJPMW+E=

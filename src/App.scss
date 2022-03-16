@@ -8,3 +8,8 @@
         }
     }
 }
+
+.pf-c-table tr > *:first-child {
+    --pf-c-table--cell--PaddingLeft: 1rem;
+    --pf-c-table--cell--PaddingRight: 1rem;
+}

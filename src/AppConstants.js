@@ -183,7 +183,7 @@ export const RECS_LIST_COLUMNS = [
     transforms: [sortable, cellWidth(40)],
   },
   {
-    title: intl.formatMessage(messages.added),
+    title: intl.formatMessage(messages.modified),
     transforms: [sortable, cellWidth(15)],
   },
   {
@@ -206,7 +206,7 @@ export const RECS_LIST_COLUMNS = [
 export const CLUSTER_FILTER_CATEGORIES = {
   hits: {
     type: 'checkbox',
-    title: 'Total Risk',
+    title: 'Total risk',
     urlParam: 'hits',
     values: [
       { label: 'All clusters', text: 'All clusters', value: 'all' },
@@ -277,7 +277,7 @@ export const CLUSTER_RULES_COLUMNS = [
     transforms: [sortable],
   },
   {
-    title: intl.formatMessage(messages.added),
+    title: intl.formatMessage(messages.modified),
     transforms: [sortable, cellWidth(15)],
   },
   {
@@ -285,3 +285,27 @@ export const CLUSTER_RULES_COLUMNS = [
     transforms: [sortable, cellWidth(15)],
   },
 ];
+export const IMPACT_LABEL_LOWER = {
+  1: intlHelper(intl.formatMessage(messages.low).toLowerCase(), intlSettings),
+  2: intlHelper(
+    intl.formatMessage(messages.medium).toLowerCase(),
+    intlSettings
+  ),
+  3: intlHelper(intl.formatMessage(messages.high).toLowerCase(), intlSettings),
+  4: intlHelper(
+    intl.formatMessage(messages.critical).toLowerCase(),
+    intlSettings
+  ),
+};
+export const LIKELIHOOD_LABEL_LOWER = {
+  1: intlHelper(intl.formatMessage(messages.low).toLowerCase(), intlSettings),
+  2: intlHelper(
+    intl.formatMessage(messages.medium).toLowerCase(),
+    intlSettings
+  ),
+  3: intlHelper(intl.formatMessage(messages.high).toLowerCase(), intlSettings),
+  4: intlHelper(
+    intl.formatMessage(messages.critical).toLowerCase(),
+    intlSettings
+  ),
+};

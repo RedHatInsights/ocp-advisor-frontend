@@ -153,10 +153,16 @@ const ClusterRules = ({ reports }) => {
                         </span>
                       }
                     >
-                      <InsightsLabel value={value.total_risk} />
+                      <InsightsLabel
+                        value={value.total_risk}
+                        rest={{ isCompact: true }}
+                      />
                     </Tooltip>
                   ) : (
-                    <InsightsLabel value={value.total_risk} />
+                    <InsightsLabel
+                      value={value.total_risk}
+                      rest={{ isCompact: true }}
+                    />
                   )}
                 </div>
               ),
@@ -176,18 +182,16 @@ const ClusterRules = ({ reports }) => {
   const buildDisplayedRows = (rows, index, direction) => {
     let sortingRows = [...rows];
     if (index >= 0) {
+      const d = direction === SortByDirection.asc ? 1 : -1;
       sortingRows = [...rows].sort((firstItem, secondItem) => {
         const fst = firstItem[0].rule[CLUSTER_RULES_COLUMNS_KEYS[index - 1]];
         const snd = secondItem[0].rule[CLUSTER_RULES_COLUMNS_KEYS[index - 1]];
-        return fst > snd ? 1 : snd > fst ? -1 : 0;
+        return fst > snd ? d : snd > fst ? -d : 0;
       });
-      if (direction === SortByDirection.desc) {
-        sortingRows.reverse();
-      }
     } else if (firstRule) {
       const i = rows.findIndex((row) => {
         const rule = row[0].rule;
-        /* rule_id is given with the plugin name only, 
+        /* rule_id is given with the plugin name only,
            thus we need to look at extra_data for the error key */
         return (
           rule.rule_id.split('.report')[0] === getPluginName(firstRule) &&
@@ -206,8 +210,14 @@ const ClusterRules = ({ reports }) => {
     });
   };
 
-  const onSort = (_e, index, direction) =>
-    updateFilters({ ...filters, sortIndex: index, sortDirection: direction });
+  const onSort = (_e, index, direction) => {
+    //setExpandFirst(false);
+    return updateFilters({
+      ...filters,
+      sortIndex: index,
+      sortDirection: direction,
+    });
+  };
 
   const removeFilterParam = (param) => {
     const filter = { ...filters, offset: 0 };
@@ -303,7 +313,7 @@ const ClusterRules = ({ reports }) => {
               ...(item[1].length > 0
                 ? [
                     {
-                      category: 'Name',
+                      category: intl.formatMessage(messages.description),
                       chips: [{ name: item[1], value: item[1] }],
                       urlParam: item[0],
                     },
@@ -369,7 +379,7 @@ const ClusterRules = ({ reports }) => {
         expandAll={{ isAllExpanded, onClick: collapseAll }}
         filterConfig={{
           items: filterConfigItems,
-          isDisabled: filteredRows.length === 0,
+          isDisabled: reports.length === 0,
         }}
         pagination={
           <React.Fragment>
