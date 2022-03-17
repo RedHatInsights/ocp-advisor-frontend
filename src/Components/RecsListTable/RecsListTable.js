@@ -423,7 +423,10 @@ const RecsListTable = ({ query }) => {
     deleteTitle: intl.formatMessage(messages.resetFilters),
     filters: buildFilterChips(),
     onDelete: (_event, itemsToRemove, isAll) => {
-      if (isAll) {
+      if (
+        (filters == RECS_LIST_INITIAL_STATE && isAll) ||
+        (itemsToRemove.length === 0 && isAll)
+      ) {
         updateFilters(RECS_LIST_INITIAL_STATE);
         refetch();
       } else {
