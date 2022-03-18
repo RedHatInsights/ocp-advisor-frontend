@@ -19,6 +19,7 @@ import {
   PaginationVariant,
 } from '@patternfly/react-core/dist/js/components/Pagination';
 import { Stack } from '@patternfly/react-core/dist/js/layouts/Stack';
+import { isEqual } from 'lodash';
 import {
   Tooltip,
   TooltipPosition,
@@ -418,26 +419,17 @@ const RecsListTable = ({ query }) => {
     return pruneFilters(localFilters, FILTER_CATEGORIES);
   };
 
-  console.log(RECS_LIST_INITIAL_STATE);
   const activeFiltersConfig = {
     showDeleteButton: true,
     deleteTitle: intl.formatMessage(messages.resetFilters),
     filters: buildFilterChips(),
     onDelete: (_event, itemsToRemove, isAll) => {
-      if (
-        itemsToRemove.length === 2 &&
-        itemsToRemove[0].chips[0].name.props.children === '1 or more' &&
-        itemsToRemove[1].chips[0].name.props.children === 'Enabled' &&
-        isAll
-      ) {
-        refetch();
-      } else if (
-        (itemsToRemove.length === 0 && isAll) ||
-        (itemsToRemove.length === 1 && isAll) ||
-        isAll
-      ) {
-        updateFilters(RECS_LIST_INITIAL_STATE);
-        refetch();
+      if (isAll) {
+        if (isEqual(filters, RECS_LIST_INITIAL_STATE)) {
+          refetch();
+        } else {
+          updateFilters(RECS_LIST_INITIAL_STATE);
+        }
       } else {
         itemsToRemove.map((item) => {
           const newFilter = {
