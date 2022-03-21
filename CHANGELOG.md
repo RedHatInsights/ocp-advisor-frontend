@@ -1,3 +1,10 @@
+## [1.0.15](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.0.14...v1.0.15) (2022-03-21)
+
+
+### Bug Fixes
+
+* **AffectedClustersTable:** rename reset filters button ([#186](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/186)) ([c5111cc](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/c5111ccd68e56b4f2297384f77e57e81af374772))
+
 ## [1.0.14](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.0.13...v1.0.14) (2022-03-21)
 
 
