@@ -41,6 +41,7 @@ import {
   NoMatchingClusters,
   NoRecsForClusters,
 } from '../MessageState/EmptyStates';
+import isEqual from 'lodash/isEqual';
 
 const ClustersListTable = ({
   query: { isError, isUninitialized, isFetching, isSuccess, data, refetch },
@@ -152,11 +153,16 @@ const ClustersListTable = ({
   ];
 
   const activeFiltersConfig = {
+    showDeleteButton: true,
     deleteTitle: intl.formatMessage(messages.resetFilters),
     filters: buildFilterChips(filters, CLUSTER_FILTER_CATEGORIES),
     onDelete: (_event, itemsToRemove, isAll) => {
       if (isAll) {
-        updateFilters(CLUSTERS_LIST_INITIAL_STATE);
+        if (isEqual(filters, CLUSTERS_LIST_INITIAL_STATE)) {
+          refetch();
+        } else {
+          updateFilters(CLUSTERS_LIST_INITIAL_STATE);
+        }
       } else {
         itemsToRemove.map((item) => {
           const newFilter = {
