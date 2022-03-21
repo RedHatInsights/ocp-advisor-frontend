@@ -245,6 +245,7 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
             ? undefined
             : {
                 filters: chips,
+                deleteTitle: intl.formatMessage(messages.resetFilters),
                 onDelete: onChipDelete,
               }
         }
