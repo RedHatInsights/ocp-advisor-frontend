@@ -333,7 +333,7 @@ describe('non-empty successful affected clusters table', () => {
 
   it('no chips are displayed by default', () => {
     cy.get(CHIP_GROUP).should('not.exist');
-    cy.get('button').contains('Clear filters').should('not.exist');
+    cy.get('button').contains('Reset filters').should('not.exist');
   });
 
   // outer loop required to clean up filter bar
@@ -345,7 +345,7 @@ describe('non-empty successful affected clusters table', () => {
         .find(CHIP_GROUP)
         .should('contain', 'Name')
         .and('contain', el);
-      cy.get('button').contains('Clear filters').should('exist');
+      cy.get('button').contains('Reset filters').should('exist');
       // check matched clusters
       cy.wrap(filterData(el)).then((data) => {
         if (data.length === 0) {
@@ -362,9 +362,9 @@ describe('non-empty successful affected clusters table', () => {
     });
   });
 
-  it('can clear filters', () => {
+  it('can Reset filters', () => {
     cy.get(TABLE).find('#name-filter').type('custom');
-    cy.get(TOOLBAR).find('button').contains('Clear filters').click();
+    cy.get(TOOLBAR).find('button').contains('Reset filters').click();
     cy.get(TOOLBAR).find(CHIP_GROUP).should('not.exist');
     checkRowCounts(Math.min(DEFAULT_ROW_COUNT, filterData().length));
   });
