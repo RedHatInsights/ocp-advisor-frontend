@@ -1,6 +1,6 @@
 {
   "name": "ocp-advisor-frontend",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "private": false,
   "scripts": {
     "build": "NODE_ENV=production webpack --config config/prod.webpack.config.js",
