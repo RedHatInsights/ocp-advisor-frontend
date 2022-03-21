@@ -19,7 +19,7 @@ import {
   PaginationVariant,
 } from '@patternfly/react-core/dist/js/components/Pagination';
 import { Stack } from '@patternfly/react-core/dist/js/layouts/Stack';
-import { isEqual } from 'lodash';
+import isEqual from 'lodash/isEqual';
 import {
   Tooltip,
   TooltipPosition,
