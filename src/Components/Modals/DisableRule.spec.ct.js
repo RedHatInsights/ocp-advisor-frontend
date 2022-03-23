@@ -31,6 +31,10 @@ describe('modal without hosts', () => {
         </Intl>
       </MemoryRouter>
     );
+
+    cy.intercept('POST', '/api/insights-results-aggregator/v2/ack', {
+      statusCode: 200,
+    }).as('ackRequest');
   });
 
   it('exits', () => {
@@ -51,14 +55,16 @@ describe('modal without hosts', () => {
   it('justification note is fillable', () => {
     cy.get(TEXT_INPUT).type('query');
     cy.get(SAVE_BUTTON).click();
-
-    // TODO intercept query and check justification text
+    cy.wait('@ackRequest').then((xhr) =>
+      expect(xhr.request.body.justification).to.eq('query')
+    );
   });
 
   it('justification note can be empty', () => {
     cy.get(SAVE_BUTTON).click();
-
-    // TODO intercept query and check justification text is empty string
+    cy.wait('@ackRequest').then(
+      (xhr) => expect(xhr.request.body.justification).to.be.empty
+    );
   });
 });
 
@@ -70,13 +76,25 @@ describe('modal with 1 host', () => {
           <Provider store={getStore()}>
             <DisableRule
               isModalOpen={true}
-              rule={{ rule_id: 'abc', disabled: false }}
-              host={'uuid'} // TODO use fixture with an UUID
+              rule={{ rule_id: 'foo|BAR', disabled: false }}
+              host={'7795cbcd-0353-4e59-b920-fc1c39a27014'}
             />
           </Provider>
         </Intl>
       </MemoryRouter>
     );
+
+    cy.intercept('POST', '/api/insights-results-aggregator/v2/ack', {
+      statusCode: 200,
+    }).as('ackRequest');
+
+    cy.intercept(
+      'PUT',
+      '/api/insights-results-aggregator/v1/clusters/**/rules/**/error_key/**/disable',
+      {
+        statusCode: 200,
+      }
+    ).as('disableRequest');
   });
 
   it('exits', () => {
@@ -86,7 +104,7 @@ describe('modal with 1 host', () => {
 
   it('triggers only 1 disable call', () => {
     cy.get(SAVE_BUTTON).click();
-    // TODO check that no request is send
+    cy.wait('@disableRequest');
 
     // TODO check page is reloaded afterwards
   });
@@ -94,8 +112,9 @@ describe('modal with 1 host', () => {
   it('removing checkbox triggers ack', () => {
     cy.get(CHECKBOX).click().should('not.be.checked');
     cy.get(SAVE_BUTTON).click();
-
-    // TODO intercept query and check ack is send
+    cy.wait('@ackRequest').then((xhr) =>
+      expect(xhr.request.body.rule_id).to.eq('foo|BAR')
+    );
   });
 });
 
@@ -107,13 +126,32 @@ describe('modal with multiple hosts', () => {
           <Provider store={getStore()}>
             <DisableRule
               isModalOpen={true}
-              rule={{ rule_id: 'abc', disabled: false }}
-              hosts={['1', '2']} // TODO use fixture with an UUID
+              rule={{ rule_id: 'foo|BAR', disabled: false }}
+              hosts={[
+                {
+                  id: '084ac7a7-1c7d-49ff-b56e-f94881da242d',
+                },
+                {
+                  id: '7795cbcd-0353-4e59-b920-fc1c39a27014',
+                },
+              ]}
             />
           </Provider>
         </Intl>
       </MemoryRouter>
     );
+
+    cy.intercept('POST', '/api/insights-results-aggregator/v2/ack', {
+      statusCode: 200,
+    }).as('ackRequest');
+
+    cy.intercept(
+      'PUT',
+      '/api/insights-results-aggregator/v1/clusters/**/rules/**/error_key/**/disable',
+      {
+        statusCode: 200,
+      }
+    ).as('disableRequest');
   });
 
   it('exits', () => {
@@ -123,7 +161,14 @@ describe('modal with multiple hosts', () => {
 
   it('triggers multiple disable call', () => {
     cy.get(SAVE_BUTTON).click();
-    // TODO check that no request is send
+    cy.wait('@disableRequest').then(
+      (xhr) =>
+        expect(
+          /084ac7a7-1c7d-49ff-b56e-f94881da242d|7795cbcd-0353-4e59-b920-fc1c39a27014/.test(
+            xhr.request.url
+          )
+        ).to.be.true
+    );
 
     // TODO check page is reloaded afterwards
   });
@@ -131,7 +176,8 @@ describe('modal with multiple hosts', () => {
   it('removing checkbox triggers ack', () => {
     cy.get(CHECKBOX).click().should('not.be.checked');
     cy.get(SAVE_BUTTON).click();
-
-    // TODO intercept query and check ack is send
+    cy.wait('@ackRequest').then((xhr) =>
+      expect(xhr.request.body.rule_id).to.eq('foo|BAR')
+    );
   });
 });
