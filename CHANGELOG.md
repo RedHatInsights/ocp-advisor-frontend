@@ -1,3 +1,10 @@
+## [1.0.17](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.0.16...v1.0.17) (2022-03-24)
+
+
+### Bug Fixes
+
+* **tables:** revert the time-based refresh feature ([5961ef7](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/5961ef7c2cade9593ec446ea09b0af0eeba595a5))
+
 ## [1.0.16](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.0.15...v1.0.16) (2022-03-23)
 
 
