@@ -19,6 +19,7 @@ import {
   PaginationVariant,
 } from '@patternfly/react-core/dist/js/components/Pagination';
 import { Stack } from '@patternfly/react-core/dist/js/layouts/Stack';
+import isEqual from 'lodash/isEqual';
 import {
   Tooltip,
   TooltipPosition,
@@ -110,8 +111,6 @@ const RecsListTable = ({ query }) => {
     }
     setFilterBuilding(false);
   }, []);
-
-  useEffect(() => setInterval(() => refetch(), 20000), []);
 
   // constructs array of rows (from the initial data) checking currently applied filters
   const buildFilteredRows = (allRows, filters) => {
@@ -419,11 +418,16 @@ const RecsListTable = ({ query }) => {
   };
 
   const activeFiltersConfig = {
+    showDeleteButton: true,
     deleteTitle: intl.formatMessage(messages.resetFilters),
     filters: buildFilterChips(),
     onDelete: (_event, itemsToRemove, isAll) => {
       if (isAll) {
-        updateFilters(RECS_LIST_INITIAL_STATE);
+        if (isEqual(filters, RECS_LIST_INITIAL_STATE)) {
+          refetch();
+        } else {
+          updateFilters(RECS_LIST_INITIAL_STATE);
+        }
       } else {
         itemsToRemove.map((item) => {
           const newFilter = {
