@@ -1,3 +1,32 @@
+## [1.0.17](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.0.16...v1.0.17) (2022-03-24)
+
+
+### Bug Fixes
+
+* **tables:** revert the time-based refresh feature ([5961ef7](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/5961ef7c2cade9593ec446ea09b0af0eeba595a5))
+
+## [1.0.16](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.0.15...v1.0.16) (2022-03-23)
+
+
+### Bug Fixes
+
+* **disable modal:** bug with multiple selections ([#187](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/187)) ([659af06](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/659af06c5501da659b7da3b83b6475ba64ef7d61))
+
+## [1.0.15](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.0.14...v1.0.15) (2022-03-21)
+
+
+### Bug Fixes
+
+* **AffectedClustersTable:** rename reset filters button ([#186](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/186)) ([c5111cc](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/c5111ccd68e56b4f2297384f77e57e81af374772))
+
+## [1.0.14](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.0.13...v1.0.14) (2022-03-21)
+
+
+### Bug Fixes
+
+* **ClusterListTable:** Updated the reset filters behavior ([#184](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/184)) ([e184d33](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/e184d334daf1d7a6043d5f3a371438e8e5163eef))
+* **RecsListTable:** Reset filters button behavior update ([#183](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/183)) ([2287020](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/2287020bc17cc5bb69980fa06f0f6cbf1c166955))
+
 ## [1.0.13](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.0.12...v1.0.13) (2022-03-15)
 
 

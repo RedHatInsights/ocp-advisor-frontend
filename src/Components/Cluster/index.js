@@ -22,6 +22,7 @@ export default routerParams(({ match }) => {
       const subnav = `${match.params.clusterId} - ${intl.formatMessage(
         messages.clusters
       )}`;
+      // FIXME: https://consoledot.pages.redhat.com/insights-chrome/dev/api.html#_using_updatedocumenttitle_function
       document.title = intl.formatMessage(messages.documentTitle, { subnav });
     }
   }, [match.params.clusterId]);

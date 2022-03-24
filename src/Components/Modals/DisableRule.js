@@ -24,9 +24,8 @@ const DisableRule = ({
 }) => {
   const intl = useIntl();
   const [justification, setJustificaton] = useState('');
-  const [singleSystem, setSingleSystem] = useState(
-    host !== undefined || hosts.length > 0
-  );
+  const [singleHost, setSingleHost] = useState(!!host);
+  const [multipleHosts, setMultipleHosts] = useState(hosts.length > 0);
   const [setAck] = useSetAckMutation();
   const dispatch = useDispatch();
   const notify = (data) => dispatch(addNotification(data));
@@ -60,49 +59,46 @@ const DisableRule = ({
   };
 
   const disableRule = async () => {
-    if (!rule.disabled && hosts.length === 0) {
-      try {
-        if (singleSystem) {
-          // disable the rec for this single cluster
-          await disableRuleForCluster({
-            uuid: host,
-            recId: rule.rule_id,
-            justification,
-          });
-          notify({
-            variant: 'success',
-            timeout: true,
-            dismissable: true,
-            title: intl.formatMessage(
-              messages.recSuccessfullyDisabledForCluster
-            ),
-          });
-        } else {
-          // disable the whole rec
-          await setAck({
-            rule_id: rule.rule_id,
-            justification,
-          }).unwrap();
-          notify({
-            variant: 'success',
-            timeout: true,
-            dismissable: true,
-            title: intl.formatMessage(messages.recSuccessfullyDisabled),
-          });
-        }
-        setJustificaton('');
-        afterFn && afterFn();
-      } catch (error) {
+    try {
+      if (singleHost) {
+        // disable the rec for this single cluster
+        await disableRuleForCluster({
+          uuid: host,
+          recId: rule.rule_id,
+          justification,
+        });
         notify({
-          variant: 'danger',
+          variant: 'success',
+          timeout: true,
           dismissable: true,
-          title: intl.formatMessage(messages.error),
-          description: `${error}`,
+          title: intl.formatMessage(messages.recSuccessfullyDisabledForCluster),
+        });
+      } else if (multipleHosts) {
+        bulkHostActions();
+      } else {
+        // disable the whole rec
+        await setAck({
+          rule_id: rule.rule_id,
+          justification,
+        }).unwrap();
+        notify({
+          variant: 'success',
+          timeout: true,
+          dismissable: true,
+          title: intl.formatMessage(messages.recSuccessfullyDisabled),
         });
       }
-    } else {
-      bulkHostActions();
+      setJustificaton('');
+      afterFn && afterFn();
+    } catch (error) {
+      notify({
+        variant: 'danger',
+        dismissable: true,
+        title: intl.formatMessage(messages.error),
+        description: `${error}`,
+      });
     }
+
     handleModalToggle(false);
   };
 
@@ -144,9 +140,11 @@ const DisableRule = ({
         {(host || hosts.length > 0) && (
           <FormGroup fieldId="disable-rule-one-system">
             <Checkbox
-              isChecked={singleSystem}
+              isChecked={singleHost || multipleHosts}
               onChange={() => {
-                setSingleSystem(!singleSystem);
+                host
+                  ? setSingleHost(!singleHost)
+                  : setMultipleHosts(!multipleHosts);
               }}
               label={
                 host

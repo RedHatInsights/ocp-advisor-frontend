@@ -126,6 +126,7 @@ describe('successful non-empty recommendations list table', () => {
                 isUninitialized: false,
                 isSuccess: true,
                 data: data,
+                refetch: cy.stub(),
               }}
             />
           </Provider>
