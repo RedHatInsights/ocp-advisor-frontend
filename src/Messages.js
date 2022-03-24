@@ -189,6 +189,12 @@ export default defineMessages({
     description: 'Filter action, reset all filter chips',
     defaultMessage: 'Reset filters',
   },
+  clusterDetailsRedirect: {
+    id: 'clusterDetailsRedirect',
+    description:
+      'Dropdown on the single cluster page, redirects user to the OCM',
+    defaultMessage: 'View cluster details',
+  },
   noMatchingRecsTitle: {
     id: 'noMatchingRecommendationsTitle',
     defaultMessage: 'No matching recommendations found',
