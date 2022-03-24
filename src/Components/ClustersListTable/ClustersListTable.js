@@ -106,8 +106,6 @@ const ClustersListTable = ({
     );
   };
 
-  useEffect(() => setInterval(() => refetch(), 20000), []);
-
   const removeFilterParam = (param) => {
     const { [param]: omitted, ...newFilters } = { ...filters, offset: 0 };
     updateFilters({
