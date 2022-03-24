@@ -13,7 +13,7 @@ import messages from '../../Messages';
 import { OneLineLoader } from '../../Utilities/Loaders';
 
 export const ClusterHeader = ({ clusterId, clusterData }) => {
-  let location = window.location;
+  const location = window.location;
   const [isOpen, setIsOpen] = useState(false);
   const intl = useIntl();
   // subscribe to the cluster data query
@@ -34,7 +34,7 @@ export const ClusterHeader = ({ clusterId, clusterData }) => {
   const redirectOCM = (clusterId) => {
     location.replace(
       location.origin +
-        (location.pathname.includes('beta') ? `/beta` : null) +
+        (location.pathname.includes('beta') ? `/beta` : '') +
         `/openshift/details/${clusterId}`
     );
   };
@@ -47,7 +47,7 @@ export const ClusterHeader = ({ clusterId, clusterData }) => {
 
   return (
     <Grid id="cluster-header" md={12} hasGutter>
-      <GridItem span={11}>
+      <GridItem span={8}>
         {isUninitializedCluster || isFetchingCluster ? (
           <Skeleton size="sm" />
         ) : (
@@ -61,7 +61,7 @@ export const ClusterHeader = ({ clusterId, clusterData }) => {
           </Title>
         )}
       </GridItem>
-      <GridItem span={1}>
+      <GridItem span={4} id="cluster-header-dropdown">
         <Dropdown
           position="right"
           onSelect={dropDownSelect}
