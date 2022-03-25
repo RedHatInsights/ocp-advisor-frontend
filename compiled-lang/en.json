@@ -18,6 +18,7 @@
   "disableRuleSingleCluster": "Disable only for this cluster",
   "disabled": "Disabled",
   "documentTitle": "{subnav} - OCP Advisor | Red Hat Insights",
+  "dropDownActionSingleCluster": "Action",
   "enable": "Enable",
   "enableRule": "Enable recommendation",
   "enableRuleForClusters": "Enable this recommendation for all clusters",

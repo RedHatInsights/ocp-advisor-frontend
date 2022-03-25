@@ -23,16 +23,8 @@ export const ClusterHeader = ({ clusterId, clusterData }) => {
     data: cluster,
   } = clusterData;
 
-  const dropDownToggle = (isOpen) => {
-    setIsOpen(isOpen);
-  };
-
-  const dropDownSelect = () => {
-    setIsOpen(!isOpen);
-  };
-
   const redirectOCM = (clusterId) => {
-    location.replace(
+    location.assign(
       location.origin +
         (location.pathname.includes('beta') ? `/beta` : '') +
         `/openshift/details/${clusterId}`
@@ -64,12 +56,15 @@ export const ClusterHeader = ({ clusterId, clusterData }) => {
       <GridItem span={4} id="cluster-header-dropdown">
         <Dropdown
           position="right"
-          onSelect={dropDownSelect}
+          onSelect={() => setIsOpen(!isOpen)}
           autoFocus={false}
           isOpen={isOpen}
           toggle={
-            <DropdownToggle id="toggle-id-2" onToggle={dropDownToggle}>
-              Action
+            <DropdownToggle
+              id="toggle-id-2"
+              onToggle={(isOpen) => setIsOpen(isOpen)}
+            >
+              {intl.formatMessage(messages.dropDownActionSingleCluster)}
             </DropdownToggle>
           }
           dropdownItems={dropDownItems}

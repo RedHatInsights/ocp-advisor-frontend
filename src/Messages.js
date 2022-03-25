@@ -437,6 +437,11 @@ export default defineMessages({
       'Explaining the action of disabling a recommendation for a single cluster',
     defaultMessage: 'Disable only for this cluster',
   },
+  dropDownActionSingleCluster: {
+    id: 'dropDownActionSingleCluster',
+    description: 'Default text for the dropdown on the single cluster page',
+    defaultMessage: 'Action',
+  },
   disableRuleBody: {
     id: 'disableRuleBody',
     description: 'Explaining the action of disabling a recommendation',
