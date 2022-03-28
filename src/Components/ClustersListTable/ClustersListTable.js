@@ -219,7 +219,6 @@ const ClustersListTable = ({
   const onSort = (_e, index, direction) => {
     updateFilters({ ...filters, sortIndex: index, sortDirection: direction });
   };
-  console.log('RENDER!', filters);
 
   return (
     <>
