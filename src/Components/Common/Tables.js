@@ -168,6 +168,7 @@ export const buildFilterChips = (filters, categories) => {
   const localFilters = cloneDeep(filters);
   delete localFilters.sortIndex;
   delete localFilters.sortDirection;
+  delete localFilters.sort;
   delete localFilters.offset;
   delete localFilters.limit;
   localFilters?.hits &&
@@ -226,6 +227,7 @@ export const updateSearchParams = (filters = {}, columnMapping) => {
     'sort',
     translateSortValue(filters.sortIndex, columnMapping, filters.sortDirection)
   );
+  console.log(filters.sortIndex, columnMapping, filters.sortDirection);
   // check the rest of filters
   Object.entries(filters).forEach(([key, value]) => {
     return (
@@ -233,6 +235,7 @@ export const updateSearchParams = (filters = {}, columnMapping) => {
       key !== 'sortDirection' &&
       key !== 'sort' &&
       value !== '' &&
+      !(Array.isArray(value) && value.length === 0) &&
       url.searchParams.set(key, value)
     );
   });

@@ -25,6 +25,7 @@ import {
 } from '../../Services/Filters';
 import {
   CLUSTERS_LIST_COLUMNS,
+  CLUSTERS_LIST_COLUMNS_KEYS,
   CLUSTER_FILTER_CATEGORIES,
   CLUSTER_LAST_CHECKED_CELL,
   CLUSTER_NAME_CELL,
@@ -32,7 +33,10 @@ import {
 import {
   buildFilterChips,
   mapClustersToRows,
+  paramParser,
   passFiltersCluster,
+  translateSortParams,
+  updateSearchParams,
 } from '../Common/Tables';
 import Loading from '../Loading/Loading';
 import messages from '../../Messages';
@@ -42,6 +46,7 @@ import {
   NoRecsForClusters,
 } from '../MessageState/EmptyStates';
 import isEqual from 'lodash/isEqual';
+import { useLocation } from 'react-router-dom';
 
 const ClustersListTable = ({
   query: { isError, isUninitialized, isFetching, isSuccess, data, refetch },
@@ -57,22 +62,55 @@ const ClustersListTable = ({
 
   const [filteredRows, setFilteredRows] = useState([]);
   const [displayedRows, setDisplayedRows] = useState([]);
+  // helps to distinguish the state when the API data received but not yet filtered
+  const [rowsFiltered, setRowsFiltered] = useState(false);
+  const [filterBuilding, setFilterBuilding] = useState(true);
+  const { search } = useLocation();
+  const loadingState = isUninitialized || isFetching || !rowsFiltered;
+  const errorState = isError;
+  const successState = isSuccess;
 
   useEffect(() => {
     setDisplayedRows(
       buildDisplayedRows(filteredRows, filters.sortIndex, filters.sortDirection)
     );
-  }, [
-    filteredRows,
-    filters.sortIndex,
-    filters.sortDirection,
-    filters.limit,
-    filters.offset,
-  ]);
+  }, [filteredRows, filters]);
 
   useEffect(() => {
     setFilteredRows(buildFilteredRows(clusters, filters));
+    if (isSuccess && !rowsFiltered) {
+      setRowsFiltered(true);
+    }
   }, [data, filters.hits, filters.text]);
+
+  useEffect(() => {
+    if (search && filterBuilding) {
+      const paramsObject = paramParser(search);
+
+      if (paramsObject.sort) {
+        const sortObj = translateSortParams(paramsObject.sort);
+        paramsObject.sortIndex = CLUSTERS_LIST_COLUMNS_KEYS.indexOf(
+          sortObj.name
+        );
+        paramsObject.sortDirection = sortObj.direction;
+      }
+      paramsObject.offset &&
+        (paramsObject.offset = Number(paramsObject.offset[0]));
+      paramsObject.limit &&
+        (paramsObject.limit = Number(paramsObject.limit[0]));
+      paramsObject.impacting &&
+        !Array.isArray(paramsObject.impacting) &&
+        (paramsObject.impacting = [`${paramsObject.impacting}`]);
+      updateFilters({ ...filters, ...paramsObject });
+    }
+    setFilterBuilding(false);
+  }, []);
+
+  useEffect(() => {
+    if (!filterBuilding) {
+      updateSearchParams(filters, CLUSTERS_LIST_COLUMNS_KEYS);
+    }
+  }, [filters, filterBuilding]);
 
   const buildFilteredRows = (allRows, filters) =>
     mapClustersToRows(
@@ -181,10 +219,11 @@ const ClustersListTable = ({
   const onSort = (_e, index, direction) => {
     updateFilters({ ...filters, sortIndex: index, sortDirection: direction });
   };
+  console.log('RENDER!', filters);
 
   return (
     <>
-      {isUninitialized || isFetching ? (
+      {loadingState ? (
         <Bullseye>
           <Spinner />
         </Bullseye>
@@ -210,15 +249,15 @@ const ClustersListTable = ({
             filterConfig={{ items: filterConfigItems }}
             activeFiltersConfig={activeFiltersConfig}
           />
-          {(isUninitialized || isFetching) && <Loading />}
-          {isError && (
+          {loadingState && <Loading />}
+          {errorState && (
             <Card ouiaId="error-state">
               <CardBody>
                 <ErrorState />
               </CardBody>
             </Card>
           )}
-          {!(isUninitialized || isFetching) && isSuccess && (
+          {!loadingState && successState && (
             <React.Fragment>
               <Table
                 aria-label="Table of clusters"
