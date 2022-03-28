@@ -56,6 +56,10 @@ Any push to the following branches will trigger a build in [ocp-advisor-frontend
 | prod-beta                    | prod-beta                     | production beta   | https://console.redhat.com/beta 
 | prod-stable                  | prod-stable                   | production stable | https://console.redhat.com
 
+### Deployment workflow
+
+To be finally deployed in production, all the features have to pass the following environments (the order is preserved): stage beta, production beta, and production stable. Integration tests are run against stage beta and production stable environments. Repository releases are automatically created once the stage beta (master branch) is updated.
+
 ### Travis
 
 - ocp-advisor-frontend uses Travis to deploy the webpack build to another Github repo defined in `.travis.yml`

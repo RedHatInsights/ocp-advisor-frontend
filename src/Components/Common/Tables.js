@@ -227,7 +227,6 @@ export const updateSearchParams = (filters = {}, columnMapping) => {
     'sort',
     translateSortValue(filters.sortIndex, columnMapping, filters.sortDirection)
   );
-  console.log(filters.sortIndex, columnMapping, filters.sortDirection);
   // check the rest of filters
   Object.entries(filters).forEach(([key, value]) => {
     return (

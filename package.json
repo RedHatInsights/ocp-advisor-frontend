@@ -1,6 +1,6 @@
 {
   "name": "ocp-advisor-frontend",
-  "version": "1.0.17",
+  "version": "1.2.0",
   "private": false,
   "scripts": {
     "build": "NODE_ENV=production webpack --config config/prod.webpack.config.js",
@@ -33,7 +33,7 @@
     "@redhat-cloud-services/frontend-components-translations": "3.2.4",
     "@redhat-cloud-services/frontend-components-utilities": "3.2.10",
     "@redhat-cloud-services/rule-components": "3.2.5",
-    "@reduxjs/toolkit": "1.6.0",
+    "@reduxjs/toolkit": "1.8.0",
     "axios": "^0.26.1",
     "babel-plugin-formatjs": "^10.3.18",
     "classnames": "2.3.1",
