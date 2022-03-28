@@ -247,6 +247,7 @@ export const CLUSTERS_LIST_COLUMNS = [
 export const CLUSTER_NAME_CELL = 0;
 export const CLUSTER_LAST_CHECKED_CELL = 6;
 export const RECS_LIST_COLUMNS_KEYS = [
+  '', // reserved for expand button
   'description',
   'publish_date',
   'tags',
