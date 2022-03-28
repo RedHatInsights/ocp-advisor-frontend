@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.1.0...v1.2.0) (2022-03-28)
+
+
+### Features
+
+* **Single cluster page:** View in clusters button ([#192](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/192)) ([2b73580](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/2b735804bb44f91fdad36a937e02dc1d90c63ea1))
+
 # [1.1.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.0.16...v1.1.0) (2022-03-28)
 
 
