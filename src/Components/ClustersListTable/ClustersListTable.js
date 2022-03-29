@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
+import isEqual from 'lodash/isEqual';
+import { useLocation } from 'react-router-dom';
 
 import {
   SortByDirection,
@@ -45,8 +47,6 @@ import {
   NoMatchingClusters,
   NoRecsForClusters,
 } from '../MessageState/EmptyStates';
-import isEqual from 'lodash/isEqual';
-import { useLocation } from 'react-router-dom';
 
 const ClustersListTable = ({
   query: { isError, isUninitialized, isFetching, isSuccess, data, refetch },
@@ -74,7 +74,13 @@ const ClustersListTable = ({
     setDisplayedRows(
       buildDisplayedRows(filteredRows, filters.sortIndex, filters.sortDirection)
     );
-  }, [filteredRows, filters]);
+  }, [
+    filteredRows,
+    filters.sortIndex,
+    filters.sortDirection,
+    filters.limit,
+    filters.offset,
+  ]);
 
   useEffect(() => {
     setFilteredRows(buildFilteredRows(clusters, filters));
