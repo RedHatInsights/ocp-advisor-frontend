@@ -9,6 +9,7 @@ import getStore from '../../Store';
 import ClusterRules from './ClusterRules';
 import '@patternfly/patternfly/patternfly.scss';
 import data from '../../../cypress/fixtures/ClusterRules/data.json';
+import data_first_query_parameter from '../../../cypress/fixtures/api/insights-results-aggregator/v1/clusters/41c30565-b4c9-49f2-a4ce-3277ad22b258/report.json';
 import {
   TOTAL_RISK,
   CATEGORIES,
@@ -395,41 +396,69 @@ describe('cluster rules table testing the first query parameter', () => {
     // the flag tells not to fetch external federated modules
     window.CYPRESS_RUN = true;
 
-    cy.fixture(
-      'api/insights-results-aggregator/v1/clusters/41c30565-b4c9-49f2-a4ce-3277ad22b258/report.json'
-    ).then((reports) => {
-      mount(
-        <IntlProvider locale="en">
-          <Provider store={getStore()}>
-            <MemoryRouter
-              initialEntries={[
-                '/clusters/41c30565-b4c9-49f2-a4ce-3277ad22b258?first=external.rules.rule_n_one|ERROR_KEY_N2',
-              ]}
-              initialIndex={0}
-            >
-              <Route path="/clusters/:clusterId">
-                <ClusterRules
-                  cluster={{
-                    isError: false,
-                    isFetching: false,
-                    isUninitialized: false,
-                    isSuccess: true,
-                    data: { report: { data: reports } },
-                  }}
-                />
-              </Route>
-            </MemoryRouter>
-          </Provider>
-        </IntlProvider>
-      );
-    });
+    mount(
+      <IntlProvider locale="en">
+        <Provider store={getStore()}>
+          <MemoryRouter
+            initialEntries={[
+              '/clusters/41c30565-b4c9-49f2-a4ce-3277ad22b258?first=external.rules.rule_n_one|ERROR_KEY_N2',
+            ]}
+            initialIndex={0}
+          >
+            <Route path="/clusters/:clusterId">
+              <ClusterRules
+                cluster={{
+                  isError: false,
+                  isFetching: false,
+                  isUninitialized: false,
+                  isSuccess: true,
+                  data: { report: { data: data_first_query_parameter } },
+                }}
+              />
+            </Route>
+          </MemoryRouter>
+        </Provider>
+      </IntlProvider>
+    );
   });
 
-  it('Sorts the table correctly when the first query parameter is passed', () => {
+  it('show the rule from the "first" search parameter', () => {
     cy.get('div[id=cluster-recs-list-table]')
       .find('td[data-label=Description]')
       .children()
       .eq(0)
       .should('have.text', 'testing the first query parameter ');
   });
+
+  // all tables must preserve original ordering
+  _.zip(['description', 'created_at', 'total_risk'], TABLE_HEADERS).forEach(
+    ([category, label]) => {
+      SORTING_ORDERS.forEach((order) => {
+        it(`can still sort ${order} by ${label}`, () => {
+          const col = `td[data-label="${label}"]`;
+          const header = `th[data-label="${label}"]`;
+          cy.get(col).should('have.length', RULES_ENABLED);
+
+          if (order === 'ascending') {
+            cy.get(header).find('button').click();
+          } else {
+            cy.get(header).find('button').dblclick();
+          }
+          let sortedDescriptions = _.map(
+            _.orderBy(
+              data_first_query_parameter,
+              [category],
+              [order === 'descending' ? 'desc' : 'asc']
+            ),
+            'description'
+          );
+          cy.get(`td[data-label="Description"]`)
+            .then(($els) => {
+              return _.map(Cypress.$.makeArray($els), 'innerText');
+            })
+            .should('deep.equal', sortedDescriptions);
+        });
+      });
+    }
+  );
 });
