@@ -310,3 +310,12 @@ export const LIKELIHOOD_LABEL_LOWER = {
     intlSettings
   ),
 };
+export const CLUSTERS_LIST_COLUMNS_KEYS = [
+  'name',
+  'recommendations',
+  'critical',
+  'important',
+  'moderate',
+  'low',
+  'last_seen',
+];
