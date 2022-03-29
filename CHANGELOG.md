@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.0...v1.3.1) (2022-03-29)
+
+
+### Bug Fixes
+
+* **Cluster reports table:** fix inability to sort if param first passed ([ad7e58c](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/ad7e58c4e8b19fcb616b68a3933b47992d611b86))
+
 # [1.3.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.2.0...v1.3.0) (2022-03-29)
 
 
