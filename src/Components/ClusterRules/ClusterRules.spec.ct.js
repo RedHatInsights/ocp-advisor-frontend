@@ -140,7 +140,15 @@ describe('cluster rules table', () => {
             initialIndex={0}
           >
             <Route path="/clusters/:clusterId">
-              <ClusterRules reports={data} />
+              <ClusterRules
+                cluster={{
+                  isError: false,
+                  isFetching: false,
+                  isUninitialized: false,
+                  isSuccess: true,
+                  data: { report: { data } },
+                }}
+              />
             </Route>
           </MemoryRouter>
         </Provider>
@@ -345,7 +353,15 @@ describe('empty cluster rules table', () => {
             initialIndex={0}
           >
             <Route path="/clusters/:clusterId">
-              <ClusterRules reports={[]} />
+              <ClusterRules
+                cluster={{
+                  isError: false,
+                  isFetching: false,
+                  isUninitialized: false,
+                  isSuccess: true,
+                  data: { report: { data: [] } },
+                }}
+              />
             </Route>
           </MemoryRouter>
         </Provider>
@@ -392,7 +408,15 @@ describe('cluster rules table testing the first query parameter', () => {
               initialIndex={0}
             >
               <Route path="/clusters/:clusterId">
-                <ClusterRules reports={reports} />
+                <ClusterRules
+                  cluster={{
+                    isError: false,
+                    isFetching: false,
+                    isUninitialized: false,
+                    isSuccess: true,
+                    data: { report: { data: reports } },
+                  }}
+                />
               </Route>
             </MemoryRouter>
           </Provider>

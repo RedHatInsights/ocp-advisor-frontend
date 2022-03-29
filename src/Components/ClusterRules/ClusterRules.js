@@ -22,6 +22,10 @@ import {
   Tooltip,
   TooltipPosition,
 } from '@patternfly/react-core/dist/js/components/Tooltip';
+import InfoCircleIcon from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
+import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
+import { global_danger_color_100 as globalDangerColor100 } from '@patternfly/react-tokens/dist/js/global_danger_color_100';
+import { global_info_color_100 as globalInfoColor100 } from '@patternfly/react-tokens/dist/js/global_info_color_100.js';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
 
 import messages from '../../Messages';
@@ -47,13 +51,17 @@ import {
   updateClusterRulesFilters,
 } from '../../Services/Filters';
 import { getErrorKey, getPluginName } from '../../Utilities/Rule';
+import Loading from '../Loading/Loading';
 
-const ClusterRules = ({ reports }) => {
+const ClusterRules = ({ cluster }) => {
   const intl = useIntl();
   const dispatch = useDispatch();
   const updateFilters = (filters) =>
     dispatch(updateClusterRulesFilters(filters));
   const filters = useSelector(({ filters }) => filters.clusterRulesState);
+  const { isError, isUninitialized, isFetching, isSuccess, data, error } =
+    cluster;
+  const reports = data?.report?.data || [];
 
   const [filteredRows, setFilteredRows] = useState([]);
   const [displayedRows, setDisplayedRows] = useState([]);
@@ -62,6 +70,11 @@ const ClusterRules = ({ reports }) => {
   const [firstRule, setFirstRule] = useState(''); // show a particular rule first
   const results = filteredRows.length;
   const { search } = useLocation();
+  // helps to distinguish the state when the API data received but not yet filtered
+  const [rowsFiltered, setRowsFiltered] = useState(false);
+  const loadingState = isUninitialized || isFetching || !rowsFiltered;
+  const errorState = isError;
+  const successState = isSuccess;
 
   useEffect(() => {
     setDisplayedRows(
@@ -77,13 +90,16 @@ const ClusterRules = ({ reports }) => {
 
   useEffect(() => {
     setFilteredRows(buildFilteredRows(reports, filters));
+    if (isSuccess && !rowsFiltered) {
+      setRowsFiltered(true);
+    }
   }, [reports, filters]);
 
   useEffect(() => {
     if (search) {
       const paramsObject = paramParser(search);
       if (paramsObject.sort) {
-        const sortObj = translateSortParams(paramsObject.sort[0]);
+        const sortObj = translateSortParams(paramsObject.sort);
         paramsObject.sortIndex = CLUSTER_RULES_COLUMNS_KEYS.indexOf(
           sortObj.name
         );
@@ -181,11 +197,11 @@ const ClusterRules = ({ reports }) => {
 
   const buildDisplayedRows = (rows, index, direction) => {
     let sortingRows = [...rows];
-    if (index >= 0) {
+    if (index >= 0 && !firstRule) {
       const d = direction === SortByDirection.asc ? 1 : -1;
       sortingRows = [...rows].sort((firstItem, secondItem) => {
-        const fst = firstItem[0].rule[CLUSTER_RULES_COLUMNS_KEYS[index - 1]];
-        const snd = secondItem[0].rule[CLUSTER_RULES_COLUMNS_KEYS[index - 1]];
+        const fst = firstItem[0].rule[CLUSTER_RULES_COLUMNS_KEYS[index]];
+        const snd = secondItem[0].rule[CLUSTER_RULES_COLUMNS_KEYS[index]];
         return fst > snd ? d : snd > fst ? -d : 0;
       });
     } else if (firstRule) {
@@ -379,7 +395,7 @@ const ClusterRules = ({ reports }) => {
         expandAll={{ isAllExpanded, onClick: collapseAll }}
         filterConfig={{
           items: filterConfigItems,
-          isDisabled: reports.length === 0,
+          isDisabled: loadingState || errorState || reports.length === 0,
         }}
         pagination={
           <React.Fragment>
@@ -389,59 +405,98 @@ const ClusterRules = ({ reports }) => {
           </React.Fragment>
         }
         activeFiltersConfig={
-          reports.length === 0 ? undefined : activeFiltersConfig
+          loadingState || errorState || reports.length === 0
+            ? undefined
+            : activeFiltersConfig
         }
       />
-      {reports.length > 0 ? (
+      {loadingState && !errorState && !successState && (
+        <Loading id="loading-skeleton" />
+      )}
+      {errorState &&
+        !successState &&
+        (error?.status === 404 ? (
+          <MessageState
+            title={intl.formatMessage(messages.noRecsFoundError)}
+            text={
+              <React.Fragment>
+                {intl.formatMessage(messages.noRecsFoundErrorDesc)}
+                <a href="https://docs.openshift.com/container-platform/latest/support/getting-support.html">
+                  {' '}
+                  OpenShift documentation.
+                </a>
+              </React.Fragment>
+            }
+            icon={InfoCircleIcon}
+            iconStyle={{ color: globalInfoColor100.value }}
+            variant="large"
+          />
+        ) : (
+          <MessageState
+            title={intl.formatMessage(messages.noRecsError)}
+            text={intl.formatMessage(messages.noRecsErrorDesc)}
+            icon={ExclamationCircleIcon}
+            iconStyle={{ color: globalDangerColor100.value }}
+          />
+        ))}
+      {!loadingState && !errorState && successState && (
         <React.Fragment>
-          <Table
-            aria-label={'Cluster recommendations table'}
-            ouiaId="recommendations"
-            onCollapse={handleOnCollapse}
-            rows={displayedRows}
-            cells={CLUSTER_RULES_COLUMNS}
-            sortBy={{
-              index: filters.sortIndex,
-              direction: filters.sortDirection,
-            }}
-            onSort={onSort}
-            variant={TableVariant.compact}
-            isStickyHeader
-          >
-            <TableHeader />
-            <TableBody />
-          </Table>
-          {results === 0 && (
-            <Card ouiaId="empty-state">
+          {reports.length > 0 ? (
+            <React.Fragment>
+              <Table
+                aria-label={'Cluster recommendations table'}
+                ouiaId="recommendations"
+                onCollapse={handleOnCollapse}
+                rows={displayedRows}
+                cells={CLUSTER_RULES_COLUMNS}
+                sortBy={{
+                  index: filters.sortIndex,
+                  direction: filters.sortDirection,
+                }}
+                onSort={onSort}
+                variant={TableVariant.compact}
+                isStickyHeader
+              >
+                <TableHeader />
+                <TableBody />
+              </Table>
+              {results === 0 && (
+                <Card ouiaId="empty-state">
+                  <CardBody>
+                    <NoMatchingRecs />
+                  </CardBody>
+                </Card>
+              )}
+            </React.Fragment>
+          ) : (
+            // ? Welcome to Insights feature for new clusters with disabled Insights?
+            <Card ouiaId="no-recommendations">
               <CardBody>
-                <NoMatchingRecs />
+                <MessageState
+                  icon={CheckIcon}
+                  iconClass="ins-c-insights__check"
+                  title={intl.formatMessage(messages.noRecommendations)}
+                  text={intl.formatMessage(messages.noRecommendationsDesc)}
+                />
               </CardBody>
             </Card>
           )}
         </React.Fragment>
-      ) : (
-        // ? Welcome to Insights feature for novice clusters with disabled Insights?
-        <Card ouiaId="no-recommendations">
-          <CardBody>
-            <MessageState
-              icon={CheckIcon}
-              iconClass="ins-c-insights__check"
-              title={intl.formatMessage(messages.noRecommendations)}
-              text={intl.formatMessage(messages.noRecommendationsDesc)}
-            />
-          </CardBody>
-        </Card>
       )}
     </div>
   );
 };
 
 ClusterRules.propTypes = {
-  reports: PropTypes.array.isRequired,
-};
-
-ClusterRules.defaultProps = {
-  reports: [],
+  cluster: PropTypes.shape({
+    isError: PropTypes.bool.isRequired,
+    isUninitialized: PropTypes.bool.isRequired,
+    isFetching: PropTypes.bool.isRequired,
+    isSuccess: PropTypes.bool.isRequired,
+    data: PropTypes.array,
+    refetch: PropTypes.func,
+    error: PropTypes.object,
+  }),
 };
 
 export default ClusterRules;
