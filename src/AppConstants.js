@@ -247,6 +247,7 @@ export const CLUSTERS_LIST_COLUMNS = [
 export const CLUSTER_NAME_CELL = 0;
 export const CLUSTER_LAST_CHECKED_CELL = 6;
 export const RECS_LIST_COLUMNS_KEYS = [
+  '', // reserved for expand button
   'description',
   'publish_date',
   'tags',
@@ -267,6 +268,7 @@ export const AFFECTED_CLUSTERS_COLUMNS = [
 ];
 export const DEBOUNCE_DELAY = 600;
 export const CLUSTER_RULES_COLUMNS_KEYS = [
+  '', // reserved for expand button
   'description',
   'created_at',
   'total_risk',
@@ -309,3 +311,12 @@ export const LIKELIHOOD_LABEL_LOWER = {
     intlSettings
   ),
 };
+export const CLUSTERS_LIST_COLUMNS_KEYS = [
+  'name',
+  'recommendations',
+  'critical',
+  'important',
+  'moderate',
+  'low',
+  'last_seen',
+];

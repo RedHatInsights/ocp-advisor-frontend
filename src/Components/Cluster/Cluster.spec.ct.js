@@ -93,8 +93,8 @@ describe('cluster page', () => {
     cy.get(BREADCRUMBS).should('have.length', 1);
     // renders cluster header
     cy.get(CLUSTER_HEADER).should('have.length', 1);
-    // does not render table component
-    cy.get(RULES_TABLE).should('have.length', 0);
+    // renders table component
+    cy.get(RULES_TABLE).should('have.length', 1);
     cy.get('#loading-skeleton').should('have.length', 1);
   });
 
@@ -105,6 +105,7 @@ describe('cluster page', () => {
         ...props.cluster,
         isError: true,
         isSuccess: false,
+        isFetching: false,
         data: undefined,
       },
     };
@@ -121,8 +122,8 @@ describe('cluster page', () => {
     cy.get(BREADCRUMBS).should('have.length', 1);
     // renders cluster header
     cy.get(CLUSTER_HEADER).should('have.length', 1);
-    // does not render table component
-    cy.get(RULES_TABLE).should('have.length', 0);
+    // renders table component
+    cy.get(RULES_TABLE).should('have.length', 1);
     cy.get('.pf-c-empty-state').should('have.length', 1);
   });
 

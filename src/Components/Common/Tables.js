@@ -168,6 +168,7 @@ export const buildFilterChips = (filters, categories) => {
   const localFilters = cloneDeep(filters);
   delete localFilters.sortIndex;
   delete localFilters.sortDirection;
+  delete localFilters.sort;
   delete localFilters.offset;
   delete localFilters.limit;
   localFilters?.hits &&
@@ -182,7 +183,7 @@ export const paramParser = (search) => {
   return Array.from(searchParams).reduce(
     (acc, [key, value]) => ({
       ...acc,
-      [key]: ['text', 'first'].includes(key)
+      [key]: ['text', 'first', 'rule_status', 'sort'].includes(key)
         ? value // just copy the full value
         : value === 'true' || value === 'false'
         ? JSON.parse(value) // parse boolean
@@ -198,6 +199,13 @@ export const translateSortParams = (value) => ({
   direction: value.startsWith('-') ? 'desc' : 'asc',
 });
 
+export const translateSortValue = (index, indexMapping, direction) => {
+  if (!['desc', 'asc'].includes(direction)) {
+    console.error('Invalid sort parameters (is not asc nor desc)');
+  }
+  return `${direction === 'asc' ? '' : '-'}${indexMapping[index]}`;
+};
+
 export const debounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
   useEffect(() => {
@@ -210,4 +218,25 @@ export const debounce = (value, delay) => {
   }, [delay, value]);
 
   return debouncedValue;
+};
+
+export const updateSearchParams = (filters = {}, columnMapping) => {
+  const url = new URL(window.location.origin + window.location.pathname);
+  // separately check the sort param
+  url.searchParams.set(
+    'sort',
+    translateSortValue(filters.sortIndex, columnMapping, filters.sortDirection)
+  );
+  // check the rest of filters
+  Object.entries(filters).forEach(([key, value]) => {
+    return (
+      key !== 'sortIndex' &&
+      key !== 'sortDirection' &&
+      key !== 'sort' &&
+      value !== '' &&
+      !(Array.isArray(value) && value.length === 0) &&
+      url.searchParams.set(key, value)
+    );
+  });
+  window.history.replaceState(null, null, url.href);
 };

@@ -50,6 +50,7 @@ import {
   passFilters,
   paramParser,
   translateSortParams,
+  updateSearchParams,
 } from '../Common/Tables';
 import DisableRule from '../Modals/DisableRule';
 import { Delete } from '../../Utilities/Api';
@@ -72,8 +73,13 @@ const RecsListTable = ({ query }) => {
   const notify = (data) => dispatch(addNotification(data));
   const { search } = useLocation();
   const [filterBuilding, setFilterBuilding] = useState(true);
+  // helps to distinguish the state when the API data received but not yet filtered
+  const [rowsFiltered, setRowsFiltered] = useState(false);
   const updateFilters = (filters) => dispatch(updateRecsListFilters(filters));
   const searchText = filters?.text || '';
+  const loadingState = isUninitialized || isFetching || !rowsFiltered;
+  const errorState = isError || (isSuccess && recs.length === 0);
+  const successState = isSuccess && recs.length > 0;
 
   useEffect(() => {
     setDisplayedRows(
@@ -89,6 +95,9 @@ const RecsListTable = ({ query }) => {
 
   useEffect(() => {
     setFilteredRows(buildFilteredRows(recs, filters));
+    if (isSuccess && !rowsFiltered) {
+      setRowsFiltered(true);
+    }
   }, [data, filters]);
 
   useEffect(() => {
@@ -96,7 +105,7 @@ const RecsListTable = ({ query }) => {
       const paramsObject = paramParser(search);
 
       if (paramsObject.sort) {
-        const sortObj = translateSortParams(paramsObject.sort[0]);
+        const sortObj = translateSortParams(paramsObject.sort);
         paramsObject.sortIndex = RECS_LIST_COLUMNS_KEYS.indexOf(sortObj.name);
         paramsObject.sortDirection = sortObj.direction;
       }
@@ -111,6 +120,12 @@ const RecsListTable = ({ query }) => {
     }
     setFilterBuilding(false);
   }, []);
+
+  useEffect(() => {
+    if (!filterBuilding) {
+      updateSearchParams(filters, RECS_LIST_COLUMNS_KEYS);
+    }
+  }, [filters, filterBuilding]);
 
   // constructs array of rows (from the initial data) checking currently applied filters
   const buildFilteredRows = (allRows, filters) => {
@@ -219,8 +234,8 @@ const RecsListTable = ({ query }) => {
   const buildDisplayedRows = (rows, index, direction) => {
     const sortingRows = [...rows].sort((firstItem, secondItem) => {
       const d = direction === SortByDirection.asc ? 1 : -1;
-      const fst = firstItem[0].rule[RECS_LIST_COLUMNS_KEYS[index - 1]];
-      const snd = secondItem[0].rule[RECS_LIST_COLUMNS_KEYS[index - 1]];
+      const fst = firstItem[0].rule[RECS_LIST_COLUMNS_KEYS[index]];
+      const snd = secondItem[0].rule[RECS_LIST_COLUMNS_KEYS[index]];
       if (index === 3) {
         return extractCategories(fst)[0].localeCompare(
           extractCategories(snd)[0]
@@ -556,18 +571,23 @@ const RecsListTable = ({ query }) => {
           isCompact: true,
           ouiaId: 'pager',
         }}
-        filterConfig={{ items: filterConfigItems }}
-        activeFiltersConfig={activeFiltersConfig}
+        filterConfig={{
+          items: filterConfigItems,
+          isDisabled: loadingState || errorState,
+        }}
+        activeFiltersConfig={
+          loadingState || errorState ? undefined : activeFiltersConfig
+        }
       />
-      {(isUninitialized || isFetching) && <Loading />}
-      {(isError || (isSuccess && recs.length === 0)) && (
+      {loadingState && <Loading />}
+      {errorState && (
         <Card id="error-state-message" ouiaId="error-state">
           <CardBody>
             <ErrorState />
           </CardBody>
         </Card>
       )}
-      {!(isUninitialized || isFetching) && isSuccess && recs.length > 0 && (
+      {!loadingState && !errorState && successState && (
         <React.Fragment>
           <Table
             aria-label="Table of recommendations"
