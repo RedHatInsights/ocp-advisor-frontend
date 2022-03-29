@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.2.0...v1.3.0) (2022-03-29)
+
+
+### Features
+
+* **Clusters list table:** filters edition modifies search params ([#196](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/196)) ([8536160](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/85361607bcb4cffa0c1c9b65de315f64c855fc92))
+
 # [1.2.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.1.0...v1.2.0) (2022-03-28)
 
 
