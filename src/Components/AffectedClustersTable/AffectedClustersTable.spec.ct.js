@@ -504,6 +504,13 @@ describe('non-empty successful affected clusters table', () => {
       cy.wait('@disableRequest');
       cy.wait('@disableFeedbackRequest');
       // TODO check page is reloaded afterwards
+
+      // can check the number of request for disable because all occur before @disableFeedbackRequest
+      cy.get('@disableRequest.all')
+        .its('length')
+        .should('equal', data['enabled'].length);
+      // cannot check the number of request because we miss a waiting condition
+      // cy.get('@disableFeedbackRequest.all').its('length').should('equal', data['enabled'].length);
     });
 
     it('modal cancel does not trigger anything', () => {
@@ -521,8 +528,7 @@ describe('non-empty successful affected clusters table', () => {
 
       cy.get(MODAL).find('button').contains('Cancel').click();
 
-      // TODO check that request is send with the expect amount of clusters
-      // TODO check page is reloaded afterwards
+      // TODO check that request is not send
     });
 
     it('modal for cluster disabling', () => {
@@ -539,7 +545,7 @@ describe('non-empty successful affected clusters table', () => {
       cy.get(MODAL).find(CHECKBOX).should('be.checked');
 
       cy.get(MODAL).find('button[data-ouia-component-id="confirm"]').click();
-      // Should catch at least one PUT and at least one POST requests after clusters rule disable
+      // Should catch at one PUT and at one POST requests after clusters rule disable
       cy.wait('@disableRequest');
       cy.wait('@disableFeedbackRequest');
       // TODO check page is reloaded afterwards
