@@ -437,6 +437,11 @@ describe('non-empty successful affected clusters table', () => {
         });
     });
   });
+  it('sorting table using last seen by default', () => {
+    cy.get(TABLE)
+      .find('th[data-key=2]')
+      .should('have.class', 'pf-c-table__sort pf-m-selected');
+  });
 
   // TODO remove: the test is not stable for changes in data
   it('sorting the last seen column', () => {
