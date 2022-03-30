@@ -203,12 +203,16 @@ describe('successful non-empty recommendations list table', () => {
 
   // TODO make sorting tests data independent
   it('sort the data by Name', () => {
-    cy.sortByCol(0);
+    cy.sortByCol(0).then(() => {
+      expect(window.location.search).to.contain('sort=description');
+    });
     cy.getAllRows()
       .eq(0)
       .find('td[data-label=Name]')
       .should('contain', '1Lorem');
-    cy.sortByCol(0);
+    cy.sortByCol(0).then(() => {
+      expect(window.location.search).to.contain('sort=-description');
+    });
     cy.getAllRows()
       .eq(0)
       .find('td[data-label=Name]')
@@ -219,12 +223,16 @@ describe('successful non-empty recommendations list table', () => {
   });
 
   it('sort the data by Modified', () => {
-    cy.sortByCol(1);
+    cy.sortByCol(1).then(() => {
+      expect(window.location.search).to.contain('sort=publish_date');
+    });
     cy.getAllRows()
       .eq(0)
       .find('td[data-label=Name]')
       .should('contain', '1Lorem');
-    cy.sortByCol(1);
+    cy.sortByCol(1).then(() => {
+      expect(window.location.search).to.contain('sort=-publish_date');
+    });
     cy.getAllRows()
       .eq(0)
       .find('td[data-label=Name]')
@@ -236,12 +244,16 @@ describe('successful non-empty recommendations list table', () => {
 
   //had to add \\ \\ to the Total risk, otherwise jQuery engine would throw an error
   it('sort the data by Total Risk', () => {
-    cy.sortByCol(3);
+    cy.sortByCol(3).then(() => {
+      expect(window.location.search).to.contain('sort=total_risk');
+    });
     cy.getAllRows()
       .eq(0)
       .find('td[data-label="Total risk"]')
       .should('contain', 'Moderate');
-    cy.sortByCol(3);
+    cy.sortByCol(3).then(() => {
+      expect(window.location.search).to.contain('sort=-total_risk');
+    });
     cy.getAllRows()
       .eq(0)
       .find('td[data-label="Total risk"]')
@@ -249,12 +261,18 @@ describe('successful non-empty recommendations list table', () => {
   });
 
   it('sort the data by Clusters', () => {
-    cy.sortByCol(4);
+    cy.sortByCol(4).then(() => {
+      expect(window.location.search).to.contain('sort=impacted_clusters_count');
+    });
     cy.getAllRows()
       .eq(0)
       .find('td[data-label="Clusters"]')
       .should('contain', '1');
-    cy.sortByCol(4);
+    cy.sortByCol(4).then(() => {
+      expect(window.location.search).to.contain(
+        'sort=-impacted_clusters_count'
+      );
+    });
     cy.getAllRows()
       .eq(0)
       .find('td[data-label="Clusters"]')
@@ -262,7 +280,9 @@ describe('successful non-empty recommendations list table', () => {
   });
 
   it('include disabled rules', () => {
-    cy.removeStatusFilter();
+    cy.removeStatusFilter().then(() => {
+      expect(window.location.search).to.not.contain('rule_status');
+    });
     cy.getAllRows()
       .should('have.length', 5)
       .find('td[data-label="Name"]')
@@ -314,11 +334,14 @@ describe('successful non-empty recommendations list table', () => {
       .eq(0)
       .find('td[data-label="Total risk"]')
       .contains('Critical');
+    expect(window.location.search).to.contain('sort=-total_risk');
   });
 
   // all tables must preserve original ordering
   it('can sort by category', () => {
-    cy.sortByCol(2);
+    cy.sortByCol(2).then(() => {
+      expect(window.location.search).to.contain('sort=tags');
+    });
     cy.getAllRows()
       .eq(0)
       .find('td[data-label=Name]')
@@ -327,7 +350,9 @@ describe('successful non-empty recommendations list table', () => {
       .eq(0)
       .find('td[data-label=Category]')
       .should('contain', 'Performance');
-    cy.sortByCol(2);
+    cy.sortByCol(2).then(() => {
+      expect(window.location.search).to.contain('sort=-tags');
+    });
     cy.getAllRows()
       .eq(0)
       .find('td[data-label=Category]')
@@ -341,29 +366,58 @@ describe('successful non-empty recommendations list table', () => {
       cy.wrap(element);
       element[0].click();
     });
-    cy.get('.pf-c-select__menu').find('label > input').eq(1).check();
+    cy.get('.pf-c-select__menu')
+      .find('label > input')
+      .eq(1)
+      .check()
+      .then(() => {
+        expect(window.location.search).to.contain('impacting=true%2Cfalse');
+      });
     cy.get('.pf-c-chip-group__list-item').contains('1 or more');
 
     cy.get(RECS_LIST_TABLE).find('button[class=pf-c-dropdown__toggle]').click();
     cy.get(FILTERS_DROPDOWN).contains('Status').click();
     cy.get(FILTER_TOGGLE).click({ force: true });
-    cy.get('button[class=pf-c-select__menu-item]').contains('All').click();
+    cy.get('button[class=pf-c-select__menu-item]')
+      .contains('All')
+      .click()
+      .then(() => {
+        expect(window.location.search).to.contain('rule_status=all');
+      });
     cy.get('.pf-c-chip-group__list-item').contains('1 or more');
   });
 
   it('clears text input after Name filter chip removal', () => {
-    cy.get(TOOLBAR_FILTER).find('.pf-c-form-control').type('cc');
+    cy.get(TOOLBAR_FILTER)
+      .find('.pf-c-form-control')
+      .type('cc')
+      .then(() => {
+        expect(window.location.search).to.contain('text=cc');
+      });
     // remove the chip
-    getChipGroup('Name').find('button').click();
+    getChipGroup('Name')
+      .find('button')
+      .click()
+      .then(() => {
+        expect(window.location.search).to.not.contain('text=');
+      });
     cy.get(TOOLBAR_FILTER).find('.pf-c-form-control').should('be.empty');
   });
 
   it('clears text input after resetting all filters', () => {
     cy.get(TOOLBAR_FILTER).find('.pf-c-form-control').type('cc');
     // reset all filters
-    cy.get(TOOLBAR).find('button').contains('Reset filters').click();
+    cy.get(TOOLBAR)
+      .find('button')
+      .contains('Reset filters')
+      .click()
+      .then(() => {
+        expect(window.location.search).to.not.contain('text=');
+      });
     cy.get(TOOLBAR_FILTER).find('.pf-c-form-control').should('be.empty');
   });
+
+  // TODO: test search parameters with likelihood, impact, category filters
 });
 
 describe('empty recommendations list table', () => {

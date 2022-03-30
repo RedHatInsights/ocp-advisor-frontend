@@ -78,4 +78,15 @@ describe('cluster page header', () => {
     // check uuid text
     cy.get(UUID_FIELD).should('have.text', 'foobar');
   });
+
+  it('action redirect button works', () => {
+    mount(
+      <Intl>
+        <ClusterHeader {...props} />
+      </Intl>
+    );
+    cy.get('.pf-c-dropdown__toggle').click();
+    cy.get('a[class=pf-c-dropdown__menu-item]').click();
+    cy.url().should('include', 'openshift/details/' + props.clusterId);
+  });
 });
