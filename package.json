@@ -25,11 +25,11 @@
     "report:combined": "npx nyc report --reporter lcov --reporter text --report-dir coverage"
   },
   "dependencies": {
-    "@patternfly/react-core": "^4.198.5",
+    "@patternfly/react-core": "^4.198.19",
     "@patternfly/react-table": "^4.51.0",
     "@redhat-cloud-services/frontend-components": "3.7.6",
     "@redhat-cloud-services/frontend-components-charts": "^3.2.2",
-    "@redhat-cloud-services/frontend-components-notifications": "3.2.4",
+    "@redhat-cloud-services/frontend-components-notifications": "3.2.5",
     "@redhat-cloud-services/frontend-components-translations": "3.2.4",
     "@redhat-cloud-services/frontend-components-utilities": "3.2.10",
     "@redhat-cloud-services/rule-components": "3.2.5",
@@ -42,7 +42,7 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-intl": "5.24.6",
-    "react-markdown": "^8.0.0",
+    "react-markdown": "^8.0.1",
     "react-redux": "7.2.6",
     "react-router-dom": "5.2.0",
     "redux": "4.1.2",
