@@ -1,3 +1,10 @@
+## [1.3.2](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.1...v1.3.2) (2022-03-30)
+
+
+### Bug Fixes
+
+* **Affected clusters table:** set default sorting by last seen ([#202](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/202)) ([1b04ece](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/1b04ecee460bc6c9b81d0a59059ed7f9f995c051))
+
 ## [1.3.1](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.0...v1.3.1) (2022-03-29)
 
 
