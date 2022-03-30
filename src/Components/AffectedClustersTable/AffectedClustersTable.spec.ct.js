@@ -437,6 +437,11 @@ describe('non-empty successful affected clusters table', () => {
         });
     });
   });
+  it('sorting table using last seen by default', () => {
+    cy.get(TABLE)
+      .find('th[data-key=2]')
+      .should('have.class', 'pf-c-table__sort pf-m-selected');
+  });
 
   // TODO remove: the test is not stable for changes in data
   it('sorting the last seen column', () => {
@@ -444,7 +449,7 @@ describe('non-empty successful affected clusters table', () => {
       .find('td[data-key=1]')
       .children()
       .eq(0)
-      .should('have.text', '694d3942-9cb7-42b8-aad2-1f28cc7f0a3b');
+      .should('have.text', 'dd2ef343-9131-46f5-8962-290fdfdf2199');
   });
 
   // TODO remove: the test is not stable for changes in data
