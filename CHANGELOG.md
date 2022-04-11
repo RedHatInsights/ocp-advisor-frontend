@@ -1,3 +1,10 @@
+## [1.3.4](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.3...v1.3.4) (2022-04-11)
+
+
+### Bug Fixes
+
+* **Recommendations list table:** set OUIA test-safe attribute ([#204](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/204)) ([b49dc20](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/b49dc20da2834e5fa71b6ca2d25e8b5c1d12fedc))
+
 ## [1.3.3](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.2...v1.3.3) (2022-04-11)
 
 
