@@ -1,3 +1,10 @@
+## [1.3.5](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.4...v1.3.5) (2022-04-11)
+
+
+### Bug Fixes
+
+* **Recommendations list table:** replace data-ouia-page-safe attribute with data-ouia-safe ([6684bc8](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/6684bc82089e6745ee746d8afd7e450ce9d53e5d))
+
 ## [1.3.4](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.3...v1.3.4) (2022-04-11)
 
 
