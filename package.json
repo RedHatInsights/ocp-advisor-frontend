@@ -29,7 +29,7 @@
     "@patternfly/react-table": "^4.51.0",
     "@redhat-cloud-services/frontend-components": "3.7.6",
     "@redhat-cloud-services/frontend-components-charts": "^3.2.2",
-    "@redhat-cloud-services/frontend-components-notifications": "3.2.4",
+    "@redhat-cloud-services/frontend-components-notifications": "3.2.5",
     "@redhat-cloud-services/frontend-components-translations": "3.2.4",
     "@redhat-cloud-services/frontend-components-utilities": "3.2.10",
     "@redhat-cloud-services/rule-components": "3.2.5",
@@ -50,7 +50,7 @@
   },
   "devDependencies": {
     "@babel/core": "7.17.5",
-    "@babel/plugin-proposal-object-rest-spread": "7.14.7",
+    "@babel/plugin-proposal-object-rest-spread": "7.17.3",
     "@babel/plugin-transform-runtime": "7.17.0",
     "@babel/preset-env": "7.16.11",
     "@babel/preset-react": "7.16.7",
