@@ -19,7 +19,7 @@ import MessageState from './Components/MessageState/MessageState';
 import messages from './Messages';
 import getStore from './Store';
 
-const App = ({ useLogger }) => {
+const App = ({ useLogger, basename }) => {
   const intl = useIntl();
   const history = useHistory();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -34,12 +34,16 @@ const App = ({ useLogger }) => {
       setIsLoading(false);
     });
     insights.chrome.identifyApp('ocp-advisor');
-    const unregister = insights.chrome.on('APP_NAVIGATION', (event) =>
-      history.push(`/${event.navId}`)
-    );
+    const unregister = insights.chrome.on('APP_NAVIGATION', (event) => {
+      const targetUrl = event.domEvent?.href
+        ?.replace(basename, '/')
+        .replace(/^\/\//, '/');
+      if (typeof targetUrl === 'string') {
+        history.push(targetUrl);
+      }
+    });
     return () => unregister();
   }, []);
-
   return (
     <ErrorBoundary>
       {isLoading ? (
@@ -67,6 +71,7 @@ const App = ({ useLogger }) => {
 
 App.propTypes = {
   useLogger: PropTypes.bool,
+  basename: PropTypes.string.isRequired,
 };
 
 App.defaultProps = {
