@@ -547,7 +547,7 @@ const RecsListTable = ({ query }) => {
   };
 
   return (
-    <div id="recs-list-table" data-ouia-page-safe={testSafe}>
+    <div id="recs-list-table" data-ouia-safe={testSafe}>
       {disableRuleOpen && (
         <DisableRule
           handleModalToggle={setDisableRuleOpen}
