@@ -76,8 +76,7 @@ const RecsListTable = ({ query }) => {
   // helps to distinguish the state when the API data received but not yet filtered
   const [rowsFiltered, setRowsFiltered] = useState(false);
   // helps to distinguish if the component safe to test
-  const [testSafe, setTestSafe] = useState(false);
-  // using useRef hook to add flag to the table component
+  const testSafe = rowsFiltered && !(isFetching || isUninitialized);
   const updateFilters = (filters) => dispatch(updateRecsListFilters(filters));
   const searchText = filters?.text || '';
   const loadingState = isUninitialized || isFetching || !rowsFiltered;
@@ -88,8 +87,9 @@ const RecsListTable = ({ query }) => {
     setDisplayedRows(
       buildDisplayedRows(filteredRows, filters.sortIndex, filters.sortDirection)
     );
-
-    setTestSafe(true);
+    if (isSuccess && !rowsFiltered) {
+      setRowsFiltered(true);
+    }
   }, [
     filteredRows,
     filters.limit,
@@ -100,10 +100,6 @@ const RecsListTable = ({ query }) => {
 
   useEffect(() => {
     setFilteredRows(buildFilteredRows(recs, filters));
-    if (isSuccess && !rowsFiltered) {
-      setRowsFiltered(true);
-    }
-    setTestSafe(false);
   }, [data, filters]);
 
   useEffect(() => {
@@ -132,8 +128,10 @@ const RecsListTable = ({ query }) => {
       updateSearchParams(filters, RECS_LIST_COLUMNS_KEYS);
     }
   }, [filters, filterBuilding]);
+
   // constructs array of rows (from the initial data) checking currently applied filters
   const buildFilteredRows = (allRows, filters) => {
+    setRowsFiltered(false);
     return allRows
       .filter((rule) => passFilters(rule, filters))
       .map((value, key) => [
@@ -549,7 +547,7 @@ const RecsListTable = ({ query }) => {
   };
 
   return (
-    <div id="recs-list-table" data-ouia-safe-TEST={testSafe}>
+    <div id="recs-list-table" data-ouia-page-safe={testSafe}>
       {disableRuleOpen && (
         <DisableRule
           handleModalToggle={setDisableRuleOpen}
