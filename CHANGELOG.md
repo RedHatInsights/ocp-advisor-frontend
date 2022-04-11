@@ -1,3 +1,10 @@
+## [1.3.3](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.2...v1.3.3) (2022-04-11)
+
+
+### Bug Fixes
+
+* **Navigation:** use application basename to react to APP_NAVIGATION event ([#205](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/205)) ([22b8091](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/22b80918799066717ed25ec6c652ec5b4b57cf53))
+
 ## [1.3.2](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.1...v1.3.2) (2022-03-30)
 
 
