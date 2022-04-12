@@ -367,8 +367,14 @@ const RecsListTable = ({ query }) => {
     },
   ];
 
-  const onSort = (_e, index, direction) =>
-    updateFilters({ ...filters, sortIndex: index, sortDirection: direction });
+  const onSort = (_e, index, direction) => {
+    setRowsFiltered(false);
+    return updateFilters({
+      ...filters,
+      sortIndex: index,
+      sortDirection: direction,
+    });
+  };
 
   const pruneFilters = (localFilters, filterCategories) => {
     const prunedFilters = Object.entries(localFilters);
@@ -563,12 +569,14 @@ const RecsListTable = ({ query }) => {
           page: filters.offset / filters.limit + 1,
           perPage: Number(filters.limit),
           onSetPage(_event, page) {
+            setRowsFiltered(false);
             updateFilters({
               ...filters,
               offset: filters.limit * (page - 1),
             });
           },
           onPerPageSelect(_event, perPage) {
+            setRowsFiltered(false);
             updateFilters({ ...filters, limit: perPage, offset: 0 });
           },
           isCompact: true,
@@ -629,6 +637,7 @@ const RecsListTable = ({ query }) => {
             onSort={onSort}
             actionResolver={actionResolver}
             isStickyHeader
+            ouiaSafe={testSafe}
           >
             <TableHeader />
             <TableBody />
