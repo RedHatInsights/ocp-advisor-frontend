@@ -43,7 +43,7 @@ import {
 } from '../../Services/Filters';
 import RuleLabels from '../Labels/RuleLabels';
 import { strong } from '../../Utilities/intlHelper';
-import Loading from '../Loading/Loading';
+import { List } from 'react-content-loader';
 import { ErrorState, NoMatchingRecs } from '../MessageState/EmptyStates';
 import RuleDetails from '../Recommendation/RuleDetails';
 import {
@@ -367,8 +367,14 @@ const RecsListTable = ({ query }) => {
     },
   ];
 
-  const onSort = (_e, index, direction) =>
-    updateFilters({ ...filters, sortIndex: index, sortDirection: direction });
+  const onSort = (_e, index, direction) => {
+    setRowsFiltered(false);
+    return updateFilters({
+      ...filters,
+      sortIndex: index,
+      sortDirection: direction,
+    });
+  };
 
   const pruneFilters = (localFilters, filterCategories) => {
     const prunedFilters = Object.entries(localFilters);
@@ -524,7 +530,7 @@ const RecsListTable = ({ query }) => {
   };
 
   const actionResolver = (rowData, { rowIndex }) => {
-    const rule = displayedRows[rowIndex].rule
+    const rule = displayedRows?.[rowIndex]?.rule
       ? displayedRows[rowIndex].rule
       : null;
     if (rowIndex % 2 !== 0 || !rule) {
@@ -563,12 +569,14 @@ const RecsListTable = ({ query }) => {
           page: filters.offset / filters.limit + 1,
           perPage: Number(filters.limit),
           onSetPage(_event, page) {
+            setRowsFiltered(false);
             updateFilters({
               ...filters,
               offset: filters.limit * (page - 1),
             });
           },
           onPerPageSelect(_event, perPage) {
+            setRowsFiltered(false);
             updateFilters({ ...filters, limit: perPage, offset: 0 });
           },
           isCompact: true,
@@ -578,11 +586,8 @@ const RecsListTable = ({ query }) => {
           items: filterConfigItems,
           isDisabled: loadingState || errorState,
         }}
-        activeFiltersConfig={
-          loadingState || errorState ? undefined : activeFiltersConfig
-        }
+        activeFiltersConfig={errorState ? undefined : activeFiltersConfig}
       />
-      {loadingState && <Loading />}
       {errorState && (
         <Card id="error-state-message" ouiaId="error-state">
           <CardBody>
@@ -590,14 +595,40 @@ const RecsListTable = ({ query }) => {
           </CardBody>
         </Card>
       )}
-      {!loadingState && !errorState && successState && (
+      {(loadingState || successState) && (
         <React.Fragment>
           <Table
             aria-label="Table of recommendations"
             ouiaId="recommendations"
             variant={TableVariant.compact}
             cells={RECS_LIST_COLUMNS}
-            rows={displayedRows}
+            rows={
+              loadingState
+                ? [
+                    {
+                      fullWidth: true,
+                      cells: [
+                        {
+                          props: { colSpan: 5 },
+                          title: <List key="loading-cell" />,
+                        },
+                      ],
+                    },
+                  ]
+                : recs.length > 0 && filteredRows.length === 0
+                ? [
+                    {
+                      fullWidth: true,
+                      cells: [
+                        {
+                          props: { colSpan: 5 },
+                          title: <NoMatchingRecs ouiaId="empty-state" />,
+                        },
+                      ],
+                    },
+                  ]
+                : displayedRows
+            }
             onCollapse={handleOnCollapse}
             sortBy={{
               index: filters.sortIndex,
@@ -606,17 +637,11 @@ const RecsListTable = ({ query }) => {
             onSort={onSort}
             actionResolver={actionResolver}
             isStickyHeader
+            ouiaSafe={testSafe}
           >
             <TableHeader />
             <TableBody />
           </Table>
-          {recs.length > 0 && filteredRows.length === 0 && (
-            <Card ouiaId="empty-state">
-              <CardBody>
-                <NoMatchingRecs />
-              </CardBody>
-            </Card>
-          )}
         </React.Fragment>
       )}
       <Pagination
