@@ -7,13 +7,16 @@ import { getBaseName } from '@redhat-cloud-services/frontend-components-utilitie
 import App from './App';
 import { Intl } from './Utilities/intlHelper';
 
-const AppEntry = ({ useLogger }) => (
-  <Intl>
-    <Router basename={getBaseName(window.location.pathname, 3)}>
-      <App useLogger={useLogger} />
-    </Router>
-  </Intl>
-);
+const AppEntry = ({ useLogger }) => {
+  const basename = getBaseName(window.location.pathname, 3);
+  return (
+    <Intl>
+      <Router basename={basename}>
+        <App useLogger={useLogger} basename={basename.replace('/beta/', '/')} />
+      </Router>
+    </Intl>
+  );
+};
 
 AppEntry.propTypes = {
   useLogger: PropTypes.bool,

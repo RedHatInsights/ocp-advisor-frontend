@@ -6,11 +6,17 @@ const PAGINATION = 'div[data-ouia-component-type="PF4/Pagination"]';
 const PAGINATION_MENU =
   'div[data-ouia-component-type="PF4/PaginationOptionsMenu"]';
 const DROPDOWN = '[data-ouia-component-type="PF4/Dropdown"]';
+const MODAL = '[data-ouia-component-type="PF4/ModalContent"]';
+const CHECKBOX = '[data-ouia-component-type="PF4/Checkbox"]';
+const TEXT_INPUT = '[data-ouia-component-type="PF4/TextInput"]';
 const DROPDOWN_TOGGLE = '[data-ouia-component-type="PF4/DropdownToggle"]';
 const DROPDOWN_ITEM = '[data-ouia-component-type="PF4/DropdownItem"]';
 const TOOLBAR_FILTER = '.ins-c-primary-toolbar__filter';
 
+const ouiaId = (id) => `[data-ouia-component-id="${id}"]`;
+
 export {
+  ouiaId,
   TOOLBAR,
   CHIP_GROUP,
   CHIP,
@@ -18,6 +24,9 @@ export {
   PAGINATION,
   PAGINATION_MENU,
   DROPDOWN,
+  MODAL,
+  CHECKBOX,
+  TEXT_INPUT,
   DROPDOWN_TOGGLE,
   DROPDOWN_ITEM,
   TOOLBAR_FILTER,
