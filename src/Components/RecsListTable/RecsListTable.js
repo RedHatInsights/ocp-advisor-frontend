@@ -43,7 +43,7 @@ import {
 } from '../../Services/Filters';
 import RuleLabels from '../Labels/RuleLabels';
 import { strong } from '../../Utilities/intlHelper';
-import Loading from '../Loading/Loading';
+import { List } from 'react-content-loader';
 import { ErrorState, NoMatchingRecs } from '../MessageState/EmptyStates';
 import RuleDetails from '../Recommendation/RuleDetails';
 import {
@@ -524,7 +524,7 @@ const RecsListTable = ({ query }) => {
   };
 
   const actionResolver = (rowData, { rowIndex }) => {
-    const rule = displayedRows[rowIndex].rule
+    const rule = displayedRows?.[rowIndex]?.rule
       ? displayedRows[rowIndex].rule
       : null;
     if (rowIndex % 2 !== 0 || !rule) {
@@ -578,11 +578,8 @@ const RecsListTable = ({ query }) => {
           items: filterConfigItems,
           isDisabled: loadingState || errorState,
         }}
-        activeFiltersConfig={
-          loadingState || errorState ? undefined : activeFiltersConfig
-        }
+        activeFiltersConfig={errorState ? undefined : activeFiltersConfig}
       />
-      {loadingState && <Loading />}
       {errorState && (
         <Card id="error-state-message" ouiaId="error-state">
           <CardBody>
@@ -590,14 +587,40 @@ const RecsListTable = ({ query }) => {
           </CardBody>
         </Card>
       )}
-      {!loadingState && !errorState && successState && (
+      {(loadingState || successState) && (
         <React.Fragment>
           <Table
             aria-label="Table of recommendations"
             ouiaId="recommendations"
             variant={TableVariant.compact}
             cells={RECS_LIST_COLUMNS}
-            rows={displayedRows}
+            rows={
+              loadingState
+                ? [
+                    {
+                      fullWidth: true,
+                      cells: [
+                        {
+                          props: { colSpan: 5 },
+                          title: <List key="loading-cell" />,
+                        },
+                      ],
+                    },
+                  ]
+                : recs.length > 0 && filteredRows.length === 0
+                ? [
+                    {
+                      fullWidth: true,
+                      cells: [
+                        {
+                          props: { colSpan: 5 },
+                          title: <NoMatchingRecs ouiaId="empty-state" />,
+                        },
+                      ],
+                    },
+                  ]
+                : displayedRows
+            }
             onCollapse={handleOnCollapse}
             sortBy={{
               index: filters.sortIndex,
@@ -610,13 +633,6 @@ const RecsListTable = ({ query }) => {
             <TableHeader />
             <TableBody />
           </Table>
-          {recs.length > 0 && filteredRows.length === 0 && (
-            <Card ouiaId="empty-state">
-              <CardBody>
-                <NoMatchingRecs />
-              </CardBody>
-            </Card>
-          )}
         </React.Fragment>
       )}
       <Pagination
