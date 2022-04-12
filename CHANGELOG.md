@@ -1,3 +1,10 @@
+## [1.3.6](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.5...v1.3.6) (2022-04-12)
+
+
+### Bug Fixes
+
+* **disable modal:** bug with multiple selections ([6f8acc6](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/6f8acc617bc3e3fb0033979a9bcc3cea7f9d0a8c))
+
 ## [1.3.5](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.4...v1.3.5) (2022-04-11)
 
 
