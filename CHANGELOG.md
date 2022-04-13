@@ -1,3 +1,38 @@
+## [1.3.6](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.5...v1.3.6) (2022-04-12)
+
+
+### Bug Fixes
+
+* **disable modal:** bug with multiple selections ([6f8acc6](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/6f8acc617bc3e3fb0033979a9bcc3cea7f9d0a8c))
+
+## [1.3.5](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.4...v1.3.5) (2022-04-11)
+
+
+### Bug Fixes
+
+* **Recommendations list table:** replace data-ouia-page-safe attribute with data-ouia-safe ([6684bc8](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/6684bc82089e6745ee746d8afd7e450ce9d53e5d))
+
+## [1.3.4](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.3...v1.3.4) (2022-04-11)
+
+
+### Bug Fixes
+
+* **Recommendations list table:** set OUIA test-safe attribute ([#204](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/204)) ([b49dc20](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/b49dc20da2834e5fa71b6ca2d25e8b5c1d12fedc))
+
+## [1.3.3](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.2...v1.3.3) (2022-04-11)
+
+
+### Bug Fixes
+
+* **Navigation:** use application basename to react to APP_NAVIGATION event ([#205](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/205)) ([22b8091](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/22b80918799066717ed25ec6c652ec5b4b57cf53))
+
+## [1.3.2](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.1...v1.3.2) (2022-03-30)
+
+
+### Bug Fixes
+
+* **Affected clusters table:** set default sorting by last seen ([#202](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/202)) ([1b04ece](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/1b04ecee460bc6c9b81d0a59059ed7f9f995c051))
+
 ## [1.3.1](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.0...v1.3.1) (2022-03-29)
 
 
