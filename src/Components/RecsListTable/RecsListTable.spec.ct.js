@@ -41,7 +41,10 @@ Cypress.Commands.add('clickOnRowKebab', (name) => {
   cy.contains(ROW, name).find('.pf-c-dropdown__toggle').click();
 });
 Cypress.Commands.add('getColumns', () => {
-  cy.get(RECS_LIST_TABLE).find('table > thead > tr > th');
+  /* patternfly/react-table-4.71.16, for some reason, renders extra empty `th` container;
+       thus, it is necessary to look at the additional `scope` attr to distinguish between visible columns
+  */
+  cy.get(RECS_LIST_TABLE).find('table > thead > tr > th[scope="col"]');
 });
 Cypress.Commands.add('sortByCol', (colIndex) => {
   cy.getColumns()
