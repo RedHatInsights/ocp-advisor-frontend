@@ -58,7 +58,7 @@
     "@cypress/react": "^5.12.4",
     "@cypress/webpack-dev-server": "^1.8.2",
     "@formatjs/cli": "4.8.2",
-    "@patternfly/patternfly": "^4.164.2",
+    "@patternfly/patternfly": "^4.185.1",
     "@redhat-cloud-services/eslint-config-redhat-cloud-services": "1.2.1",
     "@redhat-cloud-services/frontend-components-config": "^4.2.7",
     "@semantic-release/changelog": "^6.0.1",
