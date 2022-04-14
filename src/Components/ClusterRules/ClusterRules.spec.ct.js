@@ -159,7 +159,10 @@ describe('cluster rules table', () => {
 
   it('renders ClusterRules', () => {
     cy.get('div[id=cluster-recs-list-table]').should('have.length', 1);
-    cy.get('table th')
+    /* patternfly/react-table-4.71.16, for some reason, renders extra empty `th` container;
+       thus, it is necessary to look at the additional `scope` attr to distinguish between visible columns
+    */
+    cy.get('table th[scope="col"]')
       .then(($els) => {
         return _.map(Cypress.$.makeArray($els), 'innerText');
       })
