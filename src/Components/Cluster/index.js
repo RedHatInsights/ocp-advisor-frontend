@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
-import routerParams from '@redhat-cloud-services/frontend-components-utilities/RouterParams';
+import { useRouteMatch } from 'react-router-dom';
 import { useIntl } from 'react-intl';
 
 import { useGetClusterByIdQuery } from '../../Services/SmartProxy';
 import messages from '../../Messages';
 import { Cluster } from './Cluster';
 
-export default routerParams(({ match }) => {
+const ClusterWrapper = () => {
   const intl = useIntl();
+  const match = useRouteMatch();
   const cluster = useGetClusterByIdQuery({
     id: match.params.clusterId,
     includeDisabled: false,
@@ -27,4 +28,6 @@ export default routerParams(({ match }) => {
     }
   }, [match.params.clusterId]);
   return <Cluster cluster={cluster} match={match} />;
-});
+};
+
+export default ClusterWrapper;
