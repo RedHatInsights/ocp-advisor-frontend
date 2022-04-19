@@ -38,15 +38,7 @@ import {
 
 import Breadcrumbs from '../Breadcrumbs';
 import RuleLabels from '../Labels/RuleLabels';
-import {
-  FILTER_CATEGORIES,
-  IMPACT_LABEL,
-  IMPACT_LABEL_LOWER,
-  LIKELIHOOD_LABEL,
-  LIKELIHOOD_LABEL_LOWER,
-  RULE_CATEGORIES,
-  TOTAL_RISK_LABEL_LOWER,
-} from '../../AppConstants';
+import { FILTER_CATEGORIES, RULE_CATEGORIES } from '../../AppConstants';
 import messages from '../../Messages';
 import Loading from '../Loading/Loading';
 import { adjustOCPRule } from '../../Utilities/Rule';
@@ -58,7 +50,7 @@ import DisableRule from '../Modals/DisableRule';
 import ViewHostAcks from '../Modals/ViewHostAcks';
 import { OneLineLoader } from '../../Utilities/Loaders';
 import { enableRuleForCluster } from '../../Services/Acks';
-import { formatMessages, strong } from '../../Utilities/intlHelper';
+import { formatMessages, mapContentToValues } from '../../Utilities/intlHelper';
 
 const Recommendation = ({ rule, ack, clusters, match }) => {
   const intl = useIntl();
@@ -151,31 +143,8 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
   };
 
   const messagesValues = useMemo(
-    () =>
-      content
-        ? {
-            viewAffectedClusters: {
-              clusters: content.impacted_clusters_count,
-            },
-            impactLevel: { level: IMPACT_LABEL[content.impact?.impact] },
-            impactDescription: {
-              level: IMPACT_LABEL_LOWER[content.impact?.impact],
-            },
-            rulesDetailsTotalRiskBody: {
-              risk:
-                TOTAL_RISK_LABEL_LOWER[content.total_risk] ||
-                intl.formatMessage(messages.undefined),
-              strong: (str) => strong(str),
-            },
-            likelihoodLevel: {
-              level: LIKELIHOOD_LABEL[content.likelihood],
-            },
-            likelihoodDescription: {
-              level: LIKELIHOOD_LABEL_LOWER[content.likelihood],
-            },
-          }
-        : {},
-    [content]
+    () => (content ? mapContentToValues(intl, content) : {}),
+    [intl, content]
   );
 
   return (

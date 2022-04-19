@@ -42,10 +42,13 @@ import {
   updateRecsListFilters,
 } from '../../Services/Filters';
 import RuleLabels from '../Labels/RuleLabels';
-import { strong } from '../../Utilities/intlHelper';
+import {
+  formatMessages,
+  mapContentToValues,
+  strong,
+} from '../../Utilities/intlHelper';
 import { List } from 'react-content-loader';
 import { ErrorState, NoMatchingRecs } from '../MessageState/EmptyStates';
-import RuleDetails from '../Recommendation/RuleDetails';
 import {
   passFilters,
   paramParser,
@@ -56,6 +59,12 @@ import DisableRule from '../Modals/DisableRule';
 import { Delete } from '../../Utilities/Api';
 import { BASE_URL } from '../../Services/SmartProxy';
 import CategoryLabel, { extractCategories } from '../Labels/CategoryLabel';
+import {
+  AdvisorProduct,
+  RuleDetails,
+  RuleDetailsMessagesKeys,
+} from '@redhat-cloud-services/frontend-components-advisor-components';
+import { adjustOCPRule } from '../../Utilities/Rule';
 
 const RecsListTable = ({ query }) => {
   const intl = useIntl();
@@ -219,10 +228,13 @@ const RecsListTable = ({ query }) => {
                 <section className="pf-m-light pf-l-page__main-section pf-c-page__main-section">
                   <Stack hasGutter>
                     <RuleDetails
-                      rule={{
-                        ...value,
-                        impact: { impact: value.impact },
-                      }}
+                      messages={formatMessages(
+                        intl,
+                        RuleDetailsMessagesKeys,
+                        mapContentToValues(intl, adjustOCPRule(value))
+                      )}
+                      product={AdvisorProduct.ocp}
+                      rule={adjustOCPRule(value)}
                       isDetailsPage={false}
                     />
                   </Stack>
