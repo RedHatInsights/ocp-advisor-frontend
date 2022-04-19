@@ -193,7 +193,7 @@ const RecsListTable = ({ query }) => {
                         risk:
                           TOTAL_RISK_LABEL_LOWER[value.total_risk] ||
                           intl.formatMessage(messages.undefined),
-                        strong: (str) => strong(str),
+                        strong,
                       }
                     )}
                   >
@@ -236,6 +236,8 @@ const RecsListTable = ({ query }) => {
                       product={AdvisorProduct.ocp}
                       rule={adjustOCPRule(value)}
                       isDetailsPage={false}
+                      showViewAffected
+                      linkComponent={Link}
                     />
                   </Stack>
                 </section>
