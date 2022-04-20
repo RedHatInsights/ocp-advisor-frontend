@@ -420,6 +420,21 @@ describe('successful non-empty recommendations list table', () => {
     cy.get(TOOLBAR_FILTER).find('.pf-c-form-control').should('be.empty');
   });
 
+  it('rule content is rendered', () => {
+    // expand all rules
+    cy.get('.pf-c-toolbar__expand-all-icon > svg').click();
+    cy.get(RECS_LIST_TABLE)
+      .find('.pf-c-table__expandable-row.pf-m-expanded')
+      .each((el) => {
+        // contains description
+        cy.wrap(el).contains(
+          'Sed ut perspiciatis unde omnis iste natus error.'
+        );
+        // contain total risk label
+        cy.wrap(el).find('.ins-c-rule-details__stack');
+      });
+  });
+
   // TODO: test search parameters with likelihood, impact, category filters
 });
 
