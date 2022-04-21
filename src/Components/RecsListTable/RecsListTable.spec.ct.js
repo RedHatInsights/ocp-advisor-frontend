@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 
 import { RecsListTable } from './RecsListTable';
 import getStore from '../../Store';
-import data from '../../../cypress/fixtures/RecsListTable/data.json';
+import data from '../../../cypress/fixtures/api/insights-results-aggregator/v2/rule/report.json';
 import { Intl } from '../../Utilities/intlHelper';
 import '@patternfly/patternfly/patternfly.scss';
 import { TOOLBAR, TOOLBAR_FILTER } from '../../../cypress/utils/components';

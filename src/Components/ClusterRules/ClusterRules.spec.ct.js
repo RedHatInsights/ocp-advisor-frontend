@@ -8,7 +8,7 @@ import _ from 'lodash';
 import getStore from '../../Store';
 import ClusterRules from './ClusterRules';
 import '@patternfly/patternfly/patternfly.scss';
-import data from '../../../cypress/fixtures/ClusterRules/data.json';
+import singleClusterPageReport from '../../../cypress/fixtures/api/insights-results-aggregator/v2/cluster/dcb95bbf-8673-4f3a-a63c-12d4a530aa6f/reports/report-disabled-false.json';
 import data_first_query_parameter from '../../../cypress/fixtures/api/insights-results-aggregator/v1/clusters/41c30565-b4c9-49f2-a4ce-3277ad22b258/report.json';
 import {
   TOTAL_RISK,
@@ -18,6 +18,8 @@ import {
 import { applyFilters } from '../../../cypress/utils/filters';
 import { cumulativeCombinations } from '../../../cypress/utils/combine';
 import { CHIP_GROUP, CHIP, ROWS } from '../../../cypress/views/filterableTable';
+
+let data = singleClusterPageReport.report.data;
 
 const EXPANDABLES = '[class="pf-c-table__expandable-row pf-m-expanded"]';
 const TABLE_HEADERS = ['Description', 'Modified', 'Total risk'];
