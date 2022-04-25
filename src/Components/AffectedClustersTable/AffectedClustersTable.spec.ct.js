@@ -13,12 +13,10 @@ import {
   TOOLBAR,
   ROW,
   PAGINATION,
-  PAGINATION_MENU,
   CHIP_GROUP,
   DROPDOWN,
   MODAL,
   CHECKBOX,
-  DROPDOWN_TOGGLE,
   TBODY,
 } from '../../../cypress/utils/components';
 import {
