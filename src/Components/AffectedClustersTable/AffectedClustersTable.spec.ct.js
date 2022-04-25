@@ -19,18 +19,25 @@ import {
   MODAL,
   CHECKBOX,
   DROPDOWN_TOGGLE,
-  DROPDOWN_ITEM,
+  TBODY,
 } from '../../../cypress/utils/components';
 import {
   DEFAULT_ROW_COUNT,
   PAGINATION_VALUES,
 } from '../../../cypress/utils/defaults';
 import { SORTING_ORDERS } from '../../../cypress/utils/globals';
+import {
+  checkTableHeaders,
+  checkPaginationTotal,
+  checkRowCounts,
+  checkPaginationValues,
+  changePagination,
+} from '../../../cypress/utils/table';
 import rule from '../../../cypress/fixtures/api/insights-results-aggregator/v2/rule/external.rules.rule|ERROR_KEY/report.json';
 
 // selectors
 const TABLE = 'div[id=affected-list-table]';
-const BULK_SELECT = '[data-ouia-component-id="clusters-selector"]';
+const BULK_SELECT = 'clusters-selector';
 const SEARCH_ITEMS = ['ff', 'CUSTOM', 'Foobar', 'Not existing cluster'];
 const TABLE_HEADERS = ['Name', 'Last seen'];
 
@@ -38,13 +45,6 @@ function filterData(text = '') {
   return _.filter(data['enabled'], (it) =>
     (it?.cluster_name || it.cluster).toLowerCase().includes(text.toLowerCase())
   );
-}
-
-function checkRowCounts(n) {
-  return cy
-    .get('table tbody[role=rowgroup]')
-    .find(ROW)
-    .should('have.length', n);
 }
 
 // FIXME improve syntax
@@ -122,268 +122,383 @@ describe('non-empty successful affected clusters table', () => {
     cy.get(TABLE).within(() => {
       cy.get(TOOLBAR).should('have.length', 1);
       cy.get('table').should('have.length', 1);
-      cy.get('div[data-ouia-component-type="RHI/TableToolbar"]').should(
-        'have.length',
-        1
-      );
+      cy.ouiaType('RHI/TableToolbar').should('have.length', 1);
     });
   });
 
-  it('shows first twenty clusters', () => {
-    checkRowCounts(DEFAULT_ROW_COUNT);
+  it('renders table header', () => {
+    checkTableHeaders(TABLE_HEADERS);
   });
 
-  it(`pagination default is set to ${DEFAULT_ROW_COUNT}`, () => {
-    cy.get('.pf-c-options-menu__toggle-text')
-      .find('b')
-      .eq(0)
-      .should('have.text', '1 - 20');
-  });
-
-  it('bulk disabling is disabled by default', () => {
-    cy.get(TOOLBAR)
-      .find('.pf-m-spacer-sm')
-      .find(DROPDOWN)
-      .within((el) => {
-        cy.wrap(el).click();
-        cy.get('button')
-          .contains('Disable recommendation for selected clusters')
-          .should('have.class', 'pf-m-disabled');
-      });
-    cy.get(BULK_SELECT).find('input').should('not.be.checked');
-  });
-
-  it('bulk selector checkbox can be clicked', () => {
-    cy.get(BULK_SELECT).find('input').click().should('be.checked');
-    // contains right text
-    cy.get(BULK_SELECT)
-      .find('label.pf-c-dropdown__toggle-check')
-      .contains(`${data['enabled'].length} selected`);
-    // checks all rows
-    cy.get(TABLE)
-      .find('tbody[role=rowgroup]')
-      .find(ROW)
-      .each((row) => {
-        cy.wrap(row).find('td').first().find('input').should('be.checked');
-      });
-    // bulk disabling button is enabled
-    cy.get(TOOLBAR)
-      .find('.pf-m-spacer-sm')
-      .find(DROPDOWN)
-      .within((el) => {
-        cy.wrap(el).click();
-        cy.get('button')
-          .contains('Disable recommendation for selected clusters')
-          .should('not.have.class', 'pf-m-disabled');
-      });
-  });
-
-  it('bulk selector checkbox is unselected when a row is unselected', () => {
-    cy.get(BULK_SELECT).find('input').click().should('be.checked');
-    // removing one row unselects it
-    cy.get(TABLE)
-      .find('tbody[role=rowgroup]')
-      .find(ROW)
-      .first()
-      .find('td')
-      .first()
-      .find('input')
-      .click();
-    cy.get(BULK_SELECT).find('input').should('not.be.checked');
-    cy.get(BULK_SELECT)
-      .find('label.pf-c-dropdown__toggle-check')
-      .contains(`${data['enabled'].length - 1} selected`);
-    // bulk disabling button is still enabled
-    cy.get(TOOLBAR)
-      .find('.pf-m-spacer-sm')
-      .find(DROPDOWN)
-      .within((el) => {
-        cy.wrap(el).click();
-        cy.get('button')
-          .contains('Disable recommendation for selected clusters')
-          .should('not.have.class', 'pf-m-disabled');
-      });
-  });
-
-  it('bulk selector checkbox unchecking removes all checks from rows', () => {
-    cy.get(BULK_SELECT).find('input').click().should('be.checked');
-
-    cy.get(BULK_SELECT).find('input').click();
-    cy.get(BULK_SELECT)
-      .find('label.pf-c-dropdown__toggle-check')
-      .contains('selected')
-      .should('not.exist');
-    cy.get(TABLE)
-      .find('tbody[role=rowgroup]')
-      .find(ROW)
-      .each((row) => {
-        cy.wrap(row).find('td').first().find('input').should('not.be.checked');
-      });
-  });
-
-  it('bulk selector is updated when checking one row', () => {
-    cy.get(BULK_SELECT).find('input').should('not.be.checked');
-
-    // selecting from rows display the correct text
-    cy.get(TABLE)
-      .find('tbody[role=rowgroup]')
-      .find(ROW)
-      .first()
-      .find('td')
-      .first()
-      .find('input')
-      .click();
-
-    cy.get(BULK_SELECT).find('input').should('not.be.checked');
-
-    cy.get(BULK_SELECT)
-      .find('label.pf-c-dropdown__toggle-check')
-      .contains(`1 selected`);
-  });
-
-  it('bulk selector has buttons to select none or all', () => {
-    cy.get(BULK_SELECT).find('button').click();
-    cy.get(BULK_SELECT)
-      .find('ul li')
-      .should(($lis) => {
-        expect($lis).to.have.length(2);
-        expect($lis.eq(0)).to.contain('0');
-        expect($lis.eq(1)).to.contain(`${data['enabled'].length}`);
-      });
-  });
-
-  it('bulk selector button can select all', () => {
-    cy.get(BULK_SELECT).find('button').click();
-    cy.get(BULK_SELECT).find('ul li').contains('all').click();
-
-    cy.get(BULK_SELECT).find('input').should('be.checked');
-    // contains right text
-    cy.get(BULK_SELECT)
-      .find('label.pf-c-dropdown__toggle-check')
-      .contains(`${data['enabled'].length} selected`);
-    // checks all rows
-    cy.get(TABLE)
-      .find('tbody[role=rowgroup]')
-      .find(ROW)
-      .each((row) => {
-        cy.wrap(row).find('td').first().find('input').should('be.checked');
-      });
-    // bulk disabling button is enabled
-    cy.get(TOOLBAR)
-      .find('.pf-m-spacer-sm')
-      .find(DROPDOWN)
-      .within((el) => {
-        cy.wrap(el).click();
-        cy.get('button')
-          .contains('Disable recommendation for selected clusters')
-          .should('not.have.class', 'pf-m-disabled');
-      });
-  });
-
-  it('bulk selector button can select none', () => {
-    cy.get(BULK_SELECT).find('input').click();
-    cy.get(BULK_SELECT).find('button').click();
-    cy.get(BULK_SELECT).find('ul li').contains('none').click();
-
-    cy.get(BULK_SELECT).find('input').should('not.be.checked');
-    // checks all rows
-    cy.get(TABLE)
-      .find('tbody[role=rowgroup]')
-      .find(ROW)
-      .each((row) => {
-        cy.wrap(row).find('td').first().find('input').should('not.be.checked');
-      });
-    // bulk disabling button is enabled
-    cy.get(TOOLBAR)
-      .find('.pf-m-spacer-sm')
-      .find(DROPDOWN)
-      .within((el) => {
-        cy.wrap(el).click();
-        cy.get('button')
-          .contains('Disable recommendation for selected clusters')
-          .should('have.class', 'pf-m-disabled');
-      });
-  });
-
-  it('pagination defaults are expected ones', () => {
-    cy.get(TOOLBAR).find(PAGINATION_MENU).find(DROPDOWN_TOGGLE).click();
-    cy.get(TOOLBAR)
-      .find(PAGINATION_MENU)
-      .find('ul[class=pf-c-options-menu__menu]')
-      .find('li')
-      .each(($el, index) => {
-        cy.wrap($el).should(
-          'have.text',
-          `${PAGINATION_VALUES[index]} per page`
-        );
-      });
-  });
-
-  it('can change page limit', () => {
-    // FIXME: best way to make the loop
-    cy.wrap(PAGINATION_VALUES).each((el) => {
-      cy.get(TOOLBAR).find(PAGINATION_MENU).find(DROPDOWN_TOGGLE).click();
-      cy.get(TOOLBAR)
-        .find(PAGINATION_MENU)
-        .find('ul[class=pf-c-options-menu__menu]')
-        .find(DROPDOWN_ITEM)
-        .contains(`${el}`)
-        .click();
-      checkRowCounts(Math.min(el, filterData().length));
-    });
-  });
-
-  it('no chips are displayed by default', () => {
-    cy.get(CHIP_GROUP).should('not.exist');
-    cy.get('button').contains('Reset filters').should('not.exist');
-  });
-
-  // outer loop required to clean up filter bar
-  SEARCH_ITEMS.forEach((el) => {
-    it(`can add name filter (${el})`, () => {
-      cy.get(TABLE).find('#name-filter').type(el);
-      // renders filter chips
-      cy.get(TOOLBAR)
-        .find(CHIP_GROUP)
-        .should('contain', 'Name')
-        .and('contain', el);
-      cy.get('button').contains('Reset filters').should('exist');
-      // check matched clusters
-      cy.wrap(filterData(el)).then((data) => {
-        if (data.length === 0) {
-          cy.get('table .pf-c-empty-state')
-            .should('contain', 'No matching clusters found')
-            .and(
-              'contain',
-              'To continue, edit your filter settings and search again.'
-            );
-        } else {
-          checkRowCounts(Math.min(DEFAULT_ROW_COUNT, data.length));
-        }
-      });
-    });
-  });
-
-  it('can Reset filters', () => {
-    cy.get(TABLE).find('#name-filter').type('custom');
-    cy.get(TOOLBAR).find('button').contains('Reset filters').click();
-    cy.get(TOOLBAR).find(CHIP_GROUP).should('not.exist');
-    checkRowCounts(Math.min(DEFAULT_ROW_COUNT, filterData().length));
-  });
-
+  // TODO do not hardcode values
   it('display name is rendered instead of cluster uuid', () => {
-    cy.get('table tbody[role=rowgroup]')
+    cy.get(TABLE)
+      .find(TBODY)
       .find(ROW)
       .contains('custom cluster name 2')
       .should('have.attr', 'href')
       .and('contain', '/clusters/f7331e9a-2f59-484d-af52-338d56165df5');
   });
 
-  it('renders table header', () => {
-    cy.get(TABLE).find('th').children().eq(0).should('have.text', 'Name');
-    cy.get(TABLE).find('th').children().eq(1).should('have.text', 'Last seen');
+  describe('defaults', () => {
+    it(`shows ${DEFAULT_ROW_COUNT} clusters only`, () => {
+      checkRowCounts(TABLE, DEFAULT_ROW_COUNT);
+      // TODO check why expect fails
+      // expect(window.location.search).to.contain('limit=20');
+    });
+
+    it(`pagination is set to ${DEFAULT_ROW_COUNT}`, () => {
+      cy.get('.pf-c-options-menu__toggle-text')
+        .find('b')
+        .eq(0)
+        .should('have.text', '1 - 20');
+    });
+
+    it('bulk selection is disabled', () => {
+      cy.get(TOOLBAR)
+        .find('.pf-m-spacer-sm')
+        .find(DROPDOWN)
+        .within((el) => {
+          cy.wrap(el).click();
+          cy.get('button')
+            .contains('Disable recommendation for selected clusters')
+            .should('have.class', 'pf-m-disabled');
+        });
+      cy.ouiaId(BULK_SELECT).find('input').should('not.be.checked');
+    });
+
+    it('sorting using last seen', () => {
+      cy.get(TABLE)
+        .find('th[data-key=2]') // TODO use column name
+        .should('have.class', 'pf-c-table__sort pf-m-selected');
+    });
   });
 
+  describe('bulk selector', () => {
+    it('checkbox can be clicked', () => {
+      cy.ouiaId(BULK_SELECT).find('input').click().should('be.checked');
+      // contains right text
+      cy.ouiaId(BULK_SELECT)
+        .find('label.pf-c-dropdown__toggle-check')
+        .contains(`${data['enabled'].length} selected`);
+      // checks all rows
+      cy.get(TABLE)
+        .find(TBODY)
+        .find(ROW)
+        .each((row) => {
+          cy.wrap(row).find('td').first().find('input').should('be.checked');
+        });
+      // bulk disabling button is enabled
+      cy.get(TOOLBAR)
+        .find('.pf-m-spacer-sm')
+        .find(DROPDOWN)
+        .within((el) => {
+          cy.wrap(el).click();
+          cy.get('button')
+            .contains('Disable recommendation for selected clusters')
+            .should('not.have.class', 'pf-m-disabled');
+        });
+    });
+
+    it('checkbox is unselected when a row is unselected', () => {
+      cy.ouiaId(BULK_SELECT).find('input').click().should('be.checked');
+      // removing one row unselects it
+      cy.get(TABLE)
+        .find(TBODY)
+        .find(ROW)
+        .first()
+        .find('td')
+        .first()
+        .find('input')
+        .click();
+      cy.ouiaId(BULK_SELECT).find('input').should('not.be.checked');
+      cy.ouiaId(BULK_SELECT)
+        .find('label.pf-c-dropdown__toggle-check')
+        .contains(`${data['enabled'].length - 1} selected`);
+      // bulk disabling button is still enabled
+      cy.get(TOOLBAR)
+        .find('.pf-m-spacer-sm')
+        .find(DROPDOWN)
+        .within((el) => {
+          cy.wrap(el).click();
+          cy.get('button')
+            .contains('Disable recommendation for selected clusters')
+            .should('not.have.class', 'pf-m-disabled');
+        });
+    });
+
+    it('checkbox unchecking removes all checks from rows', () => {
+      cy.ouiaId(BULK_SELECT).find('input').click().should('be.checked');
+
+      cy.ouiaId(BULK_SELECT).find('input').click();
+      cy.ouiaId(BULK_SELECT)
+        .find('label.pf-c-dropdown__toggle-check')
+        .contains('selected')
+        .should('not.exist');
+      cy.get(TABLE)
+        .find(TBODY)
+        .find(ROW)
+        .each((row) => {
+          cy.wrap(row)
+            .find('td')
+            .first()
+            .find('input')
+            .should('not.be.checked');
+        });
+    });
+
+    it('is updated when checking one row', () => {
+      cy.ouiaId(BULK_SELECT).find('input').should('not.be.checked');
+
+      // selecting from rows display the correct text
+      cy.get(TABLE)
+        .find(TBODY)
+        .find(ROW)
+        .first()
+        .find('td')
+        .first()
+        .find('input')
+        .click();
+
+      cy.ouiaId(BULK_SELECT).find('input').should('not.be.checked');
+
+      cy.ouiaId(BULK_SELECT)
+        .find('label.pf-c-dropdown__toggle-check')
+        .contains(`1 selected`);
+    });
+
+    it('has buttons to select none or all', () => {
+      cy.ouiaId(BULK_SELECT).find('button').click();
+      cy.ouiaId(BULK_SELECT)
+        .find('ul li')
+        .should(($lis) => {
+          expect($lis).to.have.length(2);
+          expect($lis.eq(0)).to.contain('0');
+          expect($lis.eq(1)).to.contain(`${data['enabled'].length}`);
+        });
+    });
+
+    it('button can select all', () => {
+      cy.ouiaId(BULK_SELECT).find('button').click();
+      cy.ouiaId(BULK_SELECT).find('ul li').contains('all').click();
+
+      cy.ouiaId(BULK_SELECT).find('input').should('be.checked');
+      // contains right text
+      cy.ouiaId(BULK_SELECT)
+        .find('label.pf-c-dropdown__toggle-check')
+        .contains(`${data['enabled'].length} selected`);
+      // checks all rows
+      cy.get(TABLE)
+        .find(TBODY)
+        .find(ROW)
+        .each((row) => {
+          cy.wrap(row).find('td').first().find('input').should('be.checked');
+        });
+      // bulk disabling button is enabled
+      cy.get(TOOLBAR)
+        .find('.pf-m-spacer-sm')
+        .find(DROPDOWN)
+        .within((el) => {
+          cy.wrap(el).click();
+          cy.get('button')
+            .contains('Disable recommendation for selected clusters')
+            .should('not.have.class', 'pf-m-disabled');
+        });
+    });
+
+    it('button can select none', () => {
+      cy.ouiaId(BULK_SELECT).find('input').click();
+      cy.ouiaId(BULK_SELECT).find('button').click();
+      cy.ouiaId(BULK_SELECT).find('ul li').contains('none').click();
+
+      cy.ouiaId(BULK_SELECT).find('input').should('not.be.checked');
+      // checks all rows
+      cy.get(TABLE)
+        .find(TBODY)
+        .find(ROW)
+        .each((row) => {
+          cy.wrap(row)
+            .find('td')
+            .first()
+            .find('input')
+            .should('not.be.checked');
+        });
+      // bulk disabling button is enabled
+      cy.get(TOOLBAR)
+        .find('.pf-m-spacer-sm')
+        .find(DROPDOWN)
+        .within((el) => {
+          cy.wrap(el).click();
+          cy.get('button')
+            .contains('Disable recommendation for selected clusters')
+            .should('have.class', 'pf-m-disabled');
+        });
+    });
+  });
+
+  describe('pagination', () => {
+    it('shows correct total number of clusters', () => {
+      checkPaginationTotal(data['enabled'].length);
+    });
+
+    it('values are expected ones', () => {
+      checkPaginationValues(PAGINATION_VALUES);
+    });
+
+    it('can change limit', () => {
+      // FIXME: best way to make the loop
+      cy.wrap(PAGINATION_VALUES).each((el) => {
+        changePagination(el);
+        checkRowCounts(TABLE, Math.min(el, filterData().length));
+      });
+    });
+
+    // TODO check duplicated
+    it('can iterate over pages', () => {
+      cy.wrap(itemsPerPage()).each((el, index, list) => {
+        checkRowCounts(TABLE, el);
+        cy.get(TOOLBAR)
+          .find(PAGINATION)
+          .find('button[data-action="next"]')
+          .then(($button) => {
+            if (index === list.length - 1) {
+              cy.wrap($button).should('be.disabled');
+            } else {
+              cy.wrap($button).click();
+            }
+          });
+      });
+    });
+  });
+
+  describe('sorting', () => {
+    // TODO check duplicated
+    // TODO remove: the test is not stable for changes in data
+    it('sorting the last seen column', () => {
+      cy.get(TABLE)
+        .find('td[data-key=1]')
+        .children()
+        .eq(0)
+        .should('have.text', 'dd2ef343-9131-46f5-8962-290fdfdf2199');
+    });
+
+    // TODO check duplicated
+    // TODO remove: the test is not stable for changes in data
+    it('sorts N/A in last seen correctly', () => {
+      cy.get(TABLE);
+      cy.get('.pf-c-table__sort').eq(1).click();
+      cy.get(TABLE)
+        .find('td[data-key=1]')
+        .children()
+        .eq(0)
+        .should('have.text', 'foobar cluster');
+      cy.get('.pf-c-table__sort').eq(1).click();
+      cy.get(TABLE)
+        .find('td[data-key=1]')
+        .children()
+        .eq(0)
+        .should('have.text', 'dd2ef343-9131-46f5-8962-290fdfdf2199');
+    });
+
+    _.zip(['name', 'last_checked_at'], TABLE_HEADERS).forEach(
+      ([category, label]) => {
+        SORTING_ORDERS.forEach((order) => {
+          it(`${order} by ${label}`, () => {
+            const col = `td[data-label="${label}"]`;
+            const header = `th[data-label="${label}"]`;
+
+            cy.get(col).should(
+              'have.length',
+              Math.min(DEFAULT_ROW_COUNT, data['enabled'].length)
+            );
+            if (order === 'ascending') {
+              cy.get(header).find('button').click();
+            } else {
+              cy.get(header).find('button').dblclick();
+            }
+            // TODO should we check URL as in ClusterListTable?
+
+            // add property name to clusters
+            let sortedClusters = _.cloneDeep(data['enabled']);
+            sortedClusters.forEach(
+              (it) =>
+                (it['name'] = it['cluster_name']
+                  ? it['cluster_name']
+                  : it['cluster'])
+            );
+            // convert N/A timestamps as really old ones
+            sortedClusters.forEach((it) => {
+              if (it['last_checked_at'] === '') {
+                it['last_checked_at'] = '1970-01-01T01:00:00.001Z';
+              }
+            });
+
+            sortedClusters = _.map(
+              _.orderBy(
+                sortedClusters,
+                [category],
+                [order === 'ascending' ? 'asc' : 'desc']
+              ),
+              'name'
+            );
+            cy.get(`td[data-label="Name"]`)
+              .then(($els) => {
+                return _.map(Cypress.$.makeArray($els), 'innerText');
+              })
+              .should(
+                'deep.equal',
+                sortedClusters.slice(
+                  0,
+                  Math.min(DEFAULT_ROW_COUNT, sortedClusters.length)
+                )
+              );
+          });
+        });
+      }
+    );
+  });
+
+  describe('filtering', () => {
+    it('no chips are displayed by default', () => {
+      cy.get(CHIP_GROUP).should('not.exist');
+      cy.get('button').contains('Reset filters').should('not.exist');
+    });
+
+    // outer loop required to clean up filter bar
+    SEARCH_ITEMS.forEach((el) => {
+      it(`can add name filter (${el})`, () => {
+        cy.get(TABLE).find('#name-filter').type(el);
+        // renders filter chips
+        cy.get(TOOLBAR)
+          .find(CHIP_GROUP)
+          .should('contain', 'Name')
+          .and('contain', el);
+        cy.get('button').contains('Reset filters').should('exist');
+        // check matched clusters
+        cy.wrap(filterData(el)).then((data) => {
+          if (data.length === 0) {
+            cy.get('table .pf-c-empty-state')
+              .should('contain', 'No matching clusters found')
+              .and(
+                'contain',
+                'To continue, edit your filter settings and search again.'
+              );
+          } else {
+            checkRowCounts(TABLE, Math.min(DEFAULT_ROW_COUNT, data.length));
+          }
+        });
+      });
+    });
+
+    it('can Reset filters', () => {
+      cy.get(TABLE).find('#name-filter').type('custom');
+      cy.get(TOOLBAR).find('button').contains('Reset filters').click();
+      cy.get(TOOLBAR).find(CHIP_GROUP).should('not.exist');
+      checkRowCounts(TABLE, Math.min(DEFAULT_ROW_COUNT, filterData().length));
+    });
+  });
+
+  // TODO check duplicated
   it('can select/deselect all', () => {
     cy.get(TOOLBAR).within(() => {
       cy.get('input[data-ouia-component-id="clusters-selector"]').click();
@@ -397,6 +512,7 @@ describe('non-empty successful affected clusters table', () => {
     });
   });
 
+  // TODO check duplicated
   it('can disable selected clusters', () => {
     cy.get(TOOLBAR)
       .find('input[data-ouia-component-id="clusters-selector"]')
@@ -408,13 +524,16 @@ describe('non-empty successful affected clusters table', () => {
       .should('have.text', 'Disable recommendation for selected clusters');
   });
 
+  // TODO check duplicated
   it('can disable one cluster', () => {
-    cy.get('table tbody[role=rowgroup]')
+    cy.get(TABLE)
+      .find(TBODY)
       .find(ROW)
       .eq(0)
       .find('.pf-c-table__action button')
       .click();
-    cy.get('table tbody[role=rowgroup]')
+    cy.get(TABLE)
+      .find(TBODY)
       .find(ROW)
       .eq(0)
       .find('.pf-c-dropdown__menu button')
@@ -422,53 +541,6 @@ describe('non-empty successful affected clusters table', () => {
     cy.get('.pf-c-modal-box')
       .find('.pf-c-check label')
       .should('have.text', 'Disable only for this cluster');
-  });
-
-  it('can iterate over pages', () => {
-    cy.wrap(itemsPerPage()).each((el, index, list) => {
-      checkRowCounts(el);
-      cy.get(TOOLBAR)
-        .find(PAGINATION)
-        .find('button[data-action="next"]')
-        .then(($button) => {
-          if (index === list.length - 1) {
-            cy.wrap($button).should('be.disabled');
-          } else {
-            cy.wrap($button).click();
-          }
-        });
-    });
-  });
-  it('sorting table using last seen by default', () => {
-    cy.get(TABLE)
-      .find('th[data-key=2]')
-      .should('have.class', 'pf-c-table__sort pf-m-selected');
-  });
-
-  // TODO remove: the test is not stable for changes in data
-  it('sorting the last seen column', () => {
-    cy.get(TABLE)
-      .find('td[data-key=1]')
-      .children()
-      .eq(0)
-      .should('have.text', 'dd2ef343-9131-46f5-8962-290fdfdf2199');
-  });
-
-  // TODO remove: the test is not stable for changes in data
-  it('sorts N/A in last seen correctly', () => {
-    cy.get(TABLE);
-    cy.get('.pf-c-table__sort').eq(1).click();
-    cy.get(TABLE)
-      .find('td[data-key=1]')
-      .children()
-      .eq(0)
-      .should('have.text', 'foobar cluster');
-    cy.get('.pf-c-table__sort').eq(1).click();
-    cy.get(TABLE)
-      .find('td[data-key=1]')
-      .children()
-      .eq(0)
-      .should('have.text', 'dd2ef343-9131-46f5-8962-290fdfdf2199');
   });
 
   describe('modal for bulk disabling', () => {
@@ -490,7 +562,7 @@ describe('non-empty successful affected clusters table', () => {
     });
 
     it('modal for bulk disabling', () => {
-      cy.get(BULK_SELECT).find('input').click().should('be.checked');
+      cy.ouiaId(BULK_SELECT).find('input').click().should('be.checked');
 
       cy.get(TOOLBAR)
         .find('.pf-m-spacer-sm')
@@ -519,7 +591,7 @@ describe('non-empty successful affected clusters table', () => {
     });
 
     it('modal cancel does not trigger anything', () => {
-      cy.get(BULK_SELECT).find('input').click().should('be.checked');
+      cy.ouiaId(BULK_SELECT).find('input').click().should('be.checked');
 
       cy.get(TOOLBAR)
         .find('.pf-m-spacer-sm')
@@ -538,7 +610,7 @@ describe('non-empty successful affected clusters table', () => {
 
     it('modal for cluster disabling', () => {
       cy.get(TABLE)
-        .find('tbody[role=rowgroup]')
+        .find(TBODY)
         .find(ROW)
         .first()
         .find('td')
@@ -556,62 +628,6 @@ describe('non-empty successful affected clusters table', () => {
       // TODO check page is reloaded afterwards
     });
   });
-
-  _.zip(['name', 'last_checked_at'], TABLE_HEADERS).forEach(
-    ([category, label]) => {
-      SORTING_ORDERS.forEach((order) => {
-        it(`sort ${order} by ${label}`, () => {
-          const col = `td[data-label="${label}"]`;
-          const header = `th[data-label="${label}"]`;
-
-          cy.get(col).should(
-            'have.length',
-            Math.min(DEFAULT_ROW_COUNT, data['enabled'].length)
-          );
-          if (order === 'ascending') {
-            cy.get(header).find('button').click();
-          } else {
-            cy.get(header).find('button').dblclick();
-          }
-
-          // add property name to clusters
-          let sortedClusters = _.cloneDeep(data['enabled']);
-          sortedClusters.forEach(
-            (it) =>
-              (it['name'] = it['cluster_name']
-                ? it['cluster_name']
-                : it['cluster'])
-          );
-          // convert N/A timestamps as really old ones
-          sortedClusters.forEach((it) => {
-            if (it['last_checked_at'] === '') {
-              it['last_checked_at'] = '1970-01-01T01:00:00.001Z';
-            }
-          });
-
-          sortedClusters = _.map(
-            _.orderBy(
-              sortedClusters,
-              [category],
-              [order === 'ascending' ? 'asc' : 'desc']
-            ),
-            'name'
-          );
-          cy.get(`td[data-label="Name"]`)
-            .then(($els) => {
-              return _.map(Cypress.$.makeArray($els), 'innerText');
-            })
-            .should(
-              'deep.equal',
-              sortedClusters.slice(
-                0,
-                Math.min(DEFAULT_ROW_COUNT, sortedClusters.length)
-              )
-            );
-        });
-      });
-    }
-  );
 });
 
 describe('empty successful affected clusters table', () => {
@@ -647,11 +663,7 @@ describe('empty successful affected clusters table', () => {
   });
 
   it('renders table headers', () => {
-    cy.get('table th')
-      .then(($els) => {
-        return _.map(Cypress.$.makeArray($els), 'innerText');
-      })
-      .should('deep.equal', TABLE_HEADERS);
+    checkTableHeaders(TABLE_HEADERS);
   });
 });
 

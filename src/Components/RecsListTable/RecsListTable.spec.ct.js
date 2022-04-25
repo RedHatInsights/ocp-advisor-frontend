@@ -8,18 +8,21 @@ import getStore from '../../Store';
 import data from '../../../cypress/fixtures/RecsListTable/data.json';
 import { Intl } from '../../Utilities/intlHelper';
 import '@patternfly/patternfly/patternfly.scss';
-import { TOOLBAR, TOOLBAR_FILTER } from '../../../cypress/utils/components';
+import {
+  TOOLBAR,
+  TOOLBAR_FILTER,
+  CHIP,
+} from '../../../cypress/utils/components';
 // TODO make more use of ../../../cypress/utils/components
 
 // selectors
-const RECS_LIST_TABLE = 'div[id=recs-list-table]';
-const CHIP = 'div[class=pf-c-chip]';
+const TABLE = 'div[id=recs-list-table]';
 const ROW = 'tbody[role=rowgroup]'; // FIXME use ROW from components
 const FILTERS_DROPDOWN = 'ul[class=pf-c-dropdown__menu]';
 const FILTER_TOGGLE = 'span[class=pf-c-select__toggle-arrow]';
 
 // actions
-Cypress.Commands.add('getAllRows', () => cy.get(RECS_LIST_TABLE).find(ROW));
+Cypress.Commands.add('getAllRows', () => cy.get(TABLE).find(ROW));
 Cypress.Commands.add('removeStatusFilter', () => {
   cy.get(CHIP)
     .contains('Enabled')
@@ -44,7 +47,7 @@ Cypress.Commands.add('getColumns', () => {
   /* patternfly/react-table-4.71.16, for some reason, renders extra empty `th` container;
        thus, it is necessary to look at the additional `scope` attr to distinguish between visible columns
   */
-  cy.get(RECS_LIST_TABLE).find('table > thead > tr > th[scope="col"]');
+  cy.get(TABLE).find('table > thead > tr > th[scope="col"]');
 });
 Cypress.Commands.add('sortByCol', (colIndex) => {
   cy.getColumns()
@@ -59,6 +62,8 @@ before(() => {
   // the flag tells not to fetch external federated modules
   window.CYPRESS_RUN = true;
 });
+
+// TODO test data
 
 describe('pre-filled url search parameters', () => {
   beforeEach(() => {
@@ -139,26 +144,26 @@ describe('successful non-empty recommendations list table', () => {
   });
 
   it('renders table', () => {
-    cy.get(RECS_LIST_TABLE).should('have.length', 1);
+    // TODO use within as in AffectedClustersTable
+    cy.get(TABLE).should('have.length', 1);
   });
 
   it('renders Clusters impacted chip group', () => {
-    cy.get(RECS_LIST_TABLE).should('have.length', 1);
-    cy.get(RECS_LIST_TABLE)
+    cy.get(TABLE)
       .find('span[class=pf-c-chip-group__label]')
       .should('have.length', 2)
       .eq(0)
       .and('have.text', 'Clusters impacted');
-    cy.get(RECS_LIST_TABLE)
+    cy.get(TABLE)
       .find('span[class=pf-c-chip-group__label]')
       .eq(1)
       .and('have.text', 'Status');
-    cy.get(RECS_LIST_TABLE)
+    cy.get(TABLE)
       .find('li[class=pf-c-chip-group__list-item]')
       .should('have.length', 2)
       .eq(0)
       .and('have.text', '1 or more');
-    cy.get(RECS_LIST_TABLE)
+    cy.get(TABLE)
       .find('li[class=pf-c-chip-group__list-item]')
       .eq(1)
       .and('have.text', 'Enabled');
@@ -168,7 +173,7 @@ describe('successful non-empty recommendations list table', () => {
     const FILTERS_DROPDOWN = 'ul[class=pf-c-dropdown__menu]';
     const FILTER_ITEM = 'button[class=pf-c-dropdown__menu-item]';
 
-    cy.get(RECS_LIST_TABLE)
+    cy.get(TABLE)
       .should('have.length', 1)
       .find('button[class=pf-c-dropdown__toggle]')
       .should('have.length', 1)
@@ -189,241 +194,260 @@ describe('successful non-empty recommendations list table', () => {
       );
   });
 
+  // TODO do not hardcode data
   it('table has 4 recs', () => {
     cy.getAllRows().should('have.length', 4);
   });
 
+  // TODO do not hardcode data
   it('table has 7 recs including non-impacting', () => {
     cy.removeImpactingFilter();
     cy.getAllRows().should('have.length', 7);
   });
 
+  // TODO do not hardcode data
   it('should have 5 sortable columns', () => {
     cy.getColumns()
       .should('have.length', 5)
       .should('have.class', 'pf-c-table__sort');
   });
 
-  // TODO make sorting tests data independent
-  it('sort the data by Name', () => {
-    cy.sortByCol(0).then(() => {
-      expect(window.location.search).to.contain('sort=description');
-    });
-    cy.getAllRows()
-      .eq(0)
-      .find('td[data-label=Name]')
-      .should('contain', '1Lorem');
-    cy.sortByCol(0).then(() => {
-      expect(window.location.search).to.contain('sort=-description');
-    });
-    cy.getAllRows()
-      .eq(0)
-      .find('td[data-label=Name]')
-      .should(
-        'contain',
-        'Super atomic nuclear cluster on the brink of the world destruction'
-      );
-  });
-
-  it('sort the data by Modified', () => {
-    cy.sortByCol(1).then(() => {
-      expect(window.location.search).to.contain('sort=publish_date');
-    });
-    cy.getAllRows()
-      .eq(0)
-      .find('td[data-label=Name]')
-      .should('contain', '1Lorem');
-    cy.sortByCol(1).then(() => {
-      expect(window.location.search).to.contain('sort=-publish_date');
-    });
-    cy.getAllRows()
-      .eq(0)
-      .find('td[data-label=Name]')
-      .should(
-        'contain',
-        'Super atomic nuclear cluster on the brink of the world destruction'
-      );
-  });
-
-  //had to add \\ \\ to the Total risk, otherwise jQuery engine would throw an error
-  it('sort the data by Total Risk', () => {
-    cy.sortByCol(3).then(() => {
-      expect(window.location.search).to.contain('sort=total_risk');
-    });
-    cy.getAllRows()
-      .eq(0)
-      .find('td[data-label="Total risk"]')
-      .should('contain', 'Moderate');
-    cy.sortByCol(3).then(() => {
+  describe('defaults', () => {
+    it('default sort by total risk', () => {
+      // TODO do not use ROW but Table and th. See AffectedClustersTable
+      cy.get(ROW)
+        .children()
+        .eq(0)
+        .find('td[data-label="Total risk"]')
+        .contains('Critical'); // TODO do not use value hardcoded. Use class as in AffectedClustersTable
       expect(window.location.search).to.contain('sort=-total_risk');
     });
-    cy.getAllRows()
-      .eq(0)
-      .find('td[data-label="Total risk"]')
-      .should('contain', 'Critical');
   });
 
-  it('sort the data by Clusters', () => {
-    cy.sortByCol(4).then(() => {
-      expect(window.location.search).to.contain('sort=impacted_clusters_count');
+  describe('pagination', () => {});
+
+  describe('sorting', () => {
+    // TODO make sorting tests data independent
+    it('sort the data by Name', () => {
+      cy.sortByCol(0).then(() => {
+        expect(window.location.search).to.contain('sort=description');
+      });
+      cy.getAllRows()
+        .eq(0)
+        .find('td[data-label=Name]')
+        .should('contain', '1Lorem');
+      cy.sortByCol(0).then(() => {
+        expect(window.location.search).to.contain('sort=-description');
+      });
+      cy.getAllRows()
+        .eq(0)
+        .find('td[data-label=Name]')
+        .should(
+          'contain',
+          'Super atomic nuclear cluster on the brink of the world destruction'
+        );
+
+      // all tables must preserve original ordering
+      it('can sort by category', () => {
+        cy.sortByCol(2).then(() => {
+          expect(window.location.search).to.contain('sort=tags');
+        });
+        cy.getAllRows()
+          .eq(0)
+          .find('td[data-label=Name]')
+          .should('contain', '1Lorem');
+        cy.getAllRows()
+          .eq(0)
+          .find('td[data-label=Category]')
+          .should('contain', 'Performance');
+        cy.sortByCol(2).then(() => {
+          expect(window.location.search).to.contain('sort=-tags');
+        });
+        cy.getAllRows()
+          .eq(0)
+          .find('td[data-label=Category]')
+          .should('contain', 'Performance');
+      });
     });
-    cy.getAllRows()
-      .eq(0)
-      .find('td[data-label="Clusters"]')
-      .should('contain', '1');
-    cy.sortByCol(4).then(() => {
-      expect(window.location.search).to.contain(
-        'sort=-impacted_clusters_count'
+
+    it('sort the data by Modified', () => {
+      cy.sortByCol(1).then(() => {
+        expect(window.location.search).to.contain('sort=publish_date');
+      });
+      cy.getAllRows()
+        .eq(0)
+        .find('td[data-label=Name]')
+        .should('contain', '1Lorem');
+      cy.sortByCol(1).then(() => {
+        expect(window.location.search).to.contain('sort=-publish_date');
+      });
+      cy.getAllRows()
+        .eq(0)
+        .find('td[data-label=Name]')
+        .should(
+          'contain',
+          'Super atomic nuclear cluster on the brink of the world destruction'
+        );
+    });
+
+    //had to add \\ \\ to the Total risk, otherwise jQuery engine would throw an error
+    it('sort the data by Total Risk', () => {
+      cy.sortByCol(3).then(() => {
+        expect(window.location.search).to.contain('sort=total_risk');
+      });
+      cy.getAllRows()
+        .eq(0)
+        .find('td[data-label="Total risk"]')
+        .should('contain', 'Moderate');
+      cy.sortByCol(3).then(() => {
+        expect(window.location.search).to.contain('sort=-total_risk');
+      });
+      cy.getAllRows()
+        .eq(0)
+        .find('td[data-label="Total risk"]')
+        .should('contain', 'Critical');
+    });
+
+    it('sort the data by Clusters', () => {
+      cy.sortByCol(4).then(() => {
+        expect(window.location.search).to.contain(
+          'sort=impacted_clusters_count'
+        );
+      });
+      cy.getAllRows()
+        .eq(0)
+        .find('td[data-label="Clusters"]')
+        .should('contain', '1');
+      cy.sortByCol(4).then(() => {
+        expect(window.location.search).to.contain(
+          'sort=-impacted_clusters_count'
+        );
+      });
+      cy.getAllRows()
+        .eq(0)
+        .find('td[data-label="Clusters"]')
+        .should('contain', '2,003');
+    });
+  });
+
+  describe('filtering', () => {
+    it('include disabled rules', () => {
+      cy.removeStatusFilter().then(() => {
+        expect(window.location.search).to.not.contain('rule_status');
+      });
+      cy.getAllRows()
+        .should('have.length', 5)
+        .find('td[data-label="Name"]')
+        .contains('disabled rule with 2 impacted')
+        .should('have.length', 1);
+    });
+
+    it('the Impacted filters work correctly', () => {
+      cy.get(TABLE).find('button[class=pf-c-dropdown__toggle]').click();
+      cy.get(FILTERS_DROPDOWN).contains('Clusters impacted').click();
+      cy.get(FILTER_TOGGLE).then((element) => {
+        cy.wrap(element);
+        element[0].click();
+      });
+      cy.get('.pf-c-select__menu')
+        .find('label > input')
+        .eq(1)
+        .check()
+        .then(() => {
+          expect(window.location.search).to.contain('impacting=true%2Cfalse');
+        });
+      cy.get('.pf-c-chip-group__list-item').contains('1 or more');
+
+      cy.get(TABLE).find('button[class=pf-c-dropdown__toggle]').click();
+      cy.get(FILTERS_DROPDOWN).contains('Status').click();
+      cy.get(FILTER_TOGGLE).click({ force: true });
+      cy.get('button[class=pf-c-select__menu-item]')
+        .contains('All')
+        .click()
+        .then(() => {
+          expect(window.location.search).to.contain('rule_status=all');
+        });
+      cy.get('.pf-c-chip-group__list-item').contains('1 or more');
+    });
+
+    it('clears text input after Name filter chip removal', () => {
+      cy.get(TOOLBAR_FILTER)
+        .find('.pf-c-form-control')
+        .type('cc')
+        .then(() => {
+          expect(window.location.search).to.contain('text=cc');
+        });
+      // remove the chip
+      getChipGroup('Name')
+        .find('button')
+        .click()
+        .then(() => {
+          expect(window.location.search).to.not.contain('text=');
+        });
+      cy.get(TOOLBAR_FILTER).find('.pf-c-form-control').should('be.empty');
+    });
+
+    it('clears text input after resetting all filters', () => {
+      cy.get(TOOLBAR_FILTER).find('.pf-c-form-control').type('cc');
+      // reset all filters
+      cy.get(TOOLBAR)
+        .find('button')
+        .contains('Reset filters')
+        .click()
+        .then(() => {
+          expect(window.location.search).to.not.contain('text=');
+        });
+      cy.get(TOOLBAR_FILTER).find('.pf-c-form-control').should('be.empty');
+    });
+  });
+
+  describe('enabling/disabling', () => {
+    it('disabled rule has a label', () => {
+      cy.removeStatusFilter();
+      cy.getAllRows().should('have.length', 5);
+      cy.getRowByName('disabled rule with 2 impacted')
+        .children()
+        .eq(0)
+        .children()
+        .eq(1)
+        .find('span[class=pf-c-label__content]')
+        .should('have.text', 'Disabled');
+    });
+
+    // TODO make test data independent
+    // TODO check also non-enabled by default rules
+    it('each row has a kebab', () => {
+      cy.get(TABLE)
+        .find('tbody[role=rowgroup] .pf-c-dropdown__toggle')
+        .should('have.length', 4);
+    });
+
+    it('enabled rule has the disable action', () => {
+      cy.clickOnRowKebab(
+        'Super atomic nuclear cluster on the brink of the world destruction'
       );
+      cy.getRowByName(
+        'Super atomic nuclear cluster on the brink of the world destruction'
+      )
+        .find('.pf-c-dropdown__menu button')
+        .should('have.text', 'Disable recommendation');
     });
-    cy.getAllRows()
-      .eq(0)
-      .find('td[data-label="Clusters"]')
-      .should('contain', '2,003');
-  });
 
-  it('include disabled rules', () => {
-    cy.removeStatusFilter().then(() => {
-      expect(window.location.search).to.not.contain('rule_status');
+    // TODO make test data agnostic
+    it('disabled rule has the enable action', () => {
+      cy.removeStatusFilter();
+      cy.removeImpactingFilter();
+      cy.clickOnRowKebab('disabled rule with 2 impacted');
+      cy.getRowByName('disabled rule with 2 impacted')
+        .find('.pf-c-dropdown__menu button')
+        .should('have.text', 'Enable recommendation');
     });
-    cy.getAllRows()
-      .should('have.length', 5)
-      .find('td[data-label="Name"]')
-      .contains('disabled rule with 2 impacted')
-      .should('have.length', 1);
-  });
-
-  it('disabled rule has a label', () => {
-    cy.removeStatusFilter();
-    cy.getAllRows().should('have.length', 5);
-    cy.getRowByName('disabled rule with 2 impacted')
-      .children()
-      .eq(0)
-      .children()
-      .eq(1)
-      .find('span[class=pf-c-label__content]')
-      .should('have.text', 'Disabled');
-  });
-
-  it('each row has a kebab', () => {
-    cy.get(RECS_LIST_TABLE)
-      .find('tbody[role=rowgroup] .pf-c-dropdown__toggle')
-      .should('have.length', 4);
-  });
-
-  it('enabled rule has the disable action', () => {
-    cy.clickOnRowKebab(
-      'Super atomic nuclear cluster on the brink of the world destruction'
-    );
-    cy.getRowByName(
-      'Super atomic nuclear cluster on the brink of the world destruction'
-    )
-      .find('.pf-c-dropdown__menu button')
-      .should('have.text', 'Disable recommendation');
-  });
-
-  it('disabled rule has the enable action', () => {
-    cy.removeStatusFilter();
-    cy.removeImpactingFilter();
-    cy.clickOnRowKebab('disabled rule with 2 impacted');
-    cy.getRowByName('disabled rule with 2 impacted')
-      .find('.pf-c-dropdown__menu button')
-      .should('have.text', 'Enable recommendation');
-  });
-
-  it('default sort by total risk', () => {
-    cy.get(ROW)
-      .children()
-      .eq(0)
-      .find('td[data-label="Total risk"]')
-      .contains('Critical');
-    expect(window.location.search).to.contain('sort=-total_risk');
-  });
-
-  // all tables must preserve original ordering
-  it('can sort by category', () => {
-    cy.sortByCol(2).then(() => {
-      expect(window.location.search).to.contain('sort=tags');
-    });
-    cy.getAllRows()
-      .eq(0)
-      .find('td[data-label=Name]')
-      .should('contain', '1Lorem');
-    cy.getAllRows()
-      .eq(0)
-      .find('td[data-label=Category]')
-      .should('contain', 'Performance');
-    cy.sortByCol(2).then(() => {
-      expect(window.location.search).to.contain('sort=-tags');
-    });
-    cy.getAllRows()
-      .eq(0)
-      .find('td[data-label=Category]')
-      .should('contain', 'Performance');
-  });
-
-  it('the Impacted filters work correctly', () => {
-    cy.get(RECS_LIST_TABLE).find('button[class=pf-c-dropdown__toggle]').click();
-    cy.get(FILTERS_DROPDOWN).contains('Clusters impacted').click();
-    cy.get(FILTER_TOGGLE).then((element) => {
-      cy.wrap(element);
-      element[0].click();
-    });
-    cy.get('.pf-c-select__menu')
-      .find('label > input')
-      .eq(1)
-      .check()
-      .then(() => {
-        expect(window.location.search).to.contain('impacting=true%2Cfalse');
-      });
-    cy.get('.pf-c-chip-group__list-item').contains('1 or more');
-
-    cy.get(RECS_LIST_TABLE).find('button[class=pf-c-dropdown__toggle]').click();
-    cy.get(FILTERS_DROPDOWN).contains('Status').click();
-    cy.get(FILTER_TOGGLE).click({ force: true });
-    cy.get('button[class=pf-c-select__menu-item]')
-      .contains('All')
-      .click()
-      .then(() => {
-        expect(window.location.search).to.contain('rule_status=all');
-      });
-    cy.get('.pf-c-chip-group__list-item').contains('1 or more');
-  });
-
-  it('clears text input after Name filter chip removal', () => {
-    cy.get(TOOLBAR_FILTER)
-      .find('.pf-c-form-control')
-      .type('cc')
-      .then(() => {
-        expect(window.location.search).to.contain('text=cc');
-      });
-    // remove the chip
-    getChipGroup('Name')
-      .find('button')
-      .click()
-      .then(() => {
-        expect(window.location.search).to.not.contain('text=');
-      });
-    cy.get(TOOLBAR_FILTER).find('.pf-c-form-control').should('be.empty');
-  });
-
-  it('clears text input after resetting all filters', () => {
-    cy.get(TOOLBAR_FILTER).find('.pf-c-form-control').type('cc');
-    // reset all filters
-    cy.get(TOOLBAR)
-      .find('button')
-      .contains('Reset filters')
-      .click()
-      .then(() => {
-        expect(window.location.search).to.not.contain('text=');
-      });
-    cy.get(TOOLBAR_FILTER).find('.pf-c-form-control').should('be.empty');
   });
 
   it('rule content is rendered', () => {
     // expand all rules
     cy.get('.pf-c-toolbar__expand-all-icon > svg').click();
-    cy.get(RECS_LIST_TABLE)
+    cy.get(TABLE)
       .find('.pf-c-table__expandable-row.pf-m-expanded')
       .each((el) => {
         // contains description
@@ -521,7 +545,7 @@ describe('Recs list is requested with additional parameters №1', () => {
   });
 
   it('Adds first iteration of filters to the table', () => {
-    cy.get(RECS_LIST_TABLE)
+    cy.get(TABLE)
       .find('span[class=pf-c-chip-group__label]')
       .should('have.length', 5);
     getChipGroup('Total risk').contains('.pf-c-chip', 'Low');
@@ -559,7 +583,7 @@ describe('Recs list is requested with additional parameters №2', () => {
   });
 
   it('Adds second iteration of filters to the table', () => {
-    cy.get(RECS_LIST_TABLE)
+    cy.get(TABLE)
       .find('span[class=pf-c-chip-group__label]')
       .should('have.length', 5);
     getChipGroup('Total risk').contains('.pf-c-chip', 'Moderate');
