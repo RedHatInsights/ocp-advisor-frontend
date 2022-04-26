@@ -318,7 +318,6 @@ describe('cluster rules table', () => {
             filterData(data, filters),
             'description'
           ).sort();
-          // debugger;
           applyFilters(filters, filtersConf);
           if (sortedDescriptions.length === 0) {
             // TODO check empty table view
