@@ -7,7 +7,7 @@ import _ from 'lodash';
 import { Intl } from '../../Utilities/intlHelper';
 import getStore from '../../Store';
 import { ClustersListTable } from './ClustersListTable';
-import props from '../../../cypress/fixtures/api/insights-results-aggregator/v2/clusters/report.json';
+import props from '../../../cypress/fixtures/api/insights-results-aggregator/v2/clusters.json';
 import '@patternfly/patternfly/patternfly.scss';
 import {
   TOOLBAR,
