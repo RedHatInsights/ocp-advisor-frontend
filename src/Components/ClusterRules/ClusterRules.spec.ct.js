@@ -19,7 +19,7 @@ import { applyFilters } from '../../../cypress/utils/filters';
 import { cumulativeCombinations } from '../../../cypress/utils/combine';
 import { CHIP_GROUP, CHIP, ROWS } from '../../../cypress/views/filterableTable';
 
-let data = singleClusterPageReport.report.data;
+const data = singleClusterPageReport.report.data;
 
 const EXPANDABLES = '[class="pf-c-table__expandable-row pf-m-expanded"]';
 const TABLE_HEADERS = ['Description', 'Modified', 'Total risk'];
