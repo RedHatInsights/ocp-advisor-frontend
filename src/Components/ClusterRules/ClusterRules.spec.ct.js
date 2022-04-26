@@ -17,10 +17,12 @@ import {
 } from '../../../cypress/utils/globals';
 import { applyFilters } from '../../../cypress/utils/filters';
 import { cumulativeCombinations } from '../../../cypress/utils/combine';
+import { checkTableHeaders } from '../../../cypress/utils/table';
 import { CHIP_GROUP, CHIP, ROWS } from '../../../cypress/views/filterableTable';
 
 const data = singleClusterPageReport.report.data;
 
+const TABLE = 'div[id=cluster-recs-list-table]';
 const EXPANDABLES = '[class="pf-c-table__expandable-row pf-m-expanded"]';
 const TABLE_HEADERS = ['Description', 'Modified', 'Total risk'];
 
@@ -159,21 +161,33 @@ describe('cluster rules table', () => {
     );
   });
 
-  it('renders ClusterRules', () => {
-    cy.get('div[id=cluster-recs-list-table]').should('have.length', 1);
-    /* patternfly/react-table-4.71.16, for some reason, renders extra empty `th` container;
-       thus, it is necessary to look at the additional `scope` attr to distinguish between visible columns
-    */
-    cy.get('table th[scope="col"]')
-      .then(($els) => {
-        return _.map(Cypress.$.makeArray($els), 'innerText');
-      })
-      .should('deep.equal', TABLE_HEADERS);
+  it('renders table', () => {
+    cy.get(TABLE).should('have.length', 1);
   });
 
-  it('only first item expanded', () => {
-    cy.get('#expanded-content1').should('have.length', 1);
-    cy.get(EXPANDABLES).should('have.length', 1);
+  it('renders table header', () => {
+    checkTableHeaders(TABLE_HEADERS);
+  });
+
+  it('total risk is mapped', () => {
+    cy.get('td[data-label="Total risk"]').each((el) => {
+      cy.wrap(el).should((risk) => {
+        expect(risk.get(0).innerText).to.be.oneOf(TOTAL_RISK_VALUES);
+      });
+    });
+  });
+
+  describe('defaults', () => {
+    it('only first item expanded', () => {
+      cy.get('#expanded-content1').should('have.length', 1);
+      cy.get(EXPANDABLES).should('have.length', 1);
+    });
+    it('no chips are displayed by default', () => {
+      cy.get(CHIP_GROUP).should('not.exist');
+      cy.get('button').contains('Reset filters').should('not.exist');
+    });
+
+    // TODO check default sorting
   });
 
   it('expand all, collapse all', () => {
@@ -185,163 +199,159 @@ describe('cluster rules table', () => {
     cy.get(EXPANDABLES).should('have.length', 0);
   });
 
-  it('total risk is mapped', () => {
-    cy.get('td[data-label="Total risk"]').each((el) => {
-      cy.wrap(el).should((risk) => {
-        expect(risk.get(0).innerText).to.be.oneOf(TOTAL_RISK_VALUES);
-      });
+  describe('sorting', () => {
+    // all tables must preserve original ordering
+    _.zip(['description', 'created_at', 'total_risk'], TABLE_HEADERS).forEach(
+      ([category, label]) => {
+        SORTING_ORDERS.forEach((order) => {
+          it(`${order} by ${label}`, () => {
+            const col = `td[data-label="${label}"]`;
+            const header = `th[data-label="${label}"]`;
+            cy.get(col).should('have.length', RULES_ENABLED);
+
+            if (order === 'ascending') {
+              cy.get(header).find('button').click();
+            } else {
+              cy.get(header).find('button').dblclick();
+            }
+            let sortedDescriptions = _.map(
+              _.orderBy(
+                data,
+                [category],
+                [order === 'descending' ? 'desc' : 'asc']
+              ),
+              'description'
+            );
+            cy.get(`td[data-label="Description"]`)
+              .then(($els) => {
+                return _.map(Cypress.$.makeArray($els), 'innerText');
+              })
+              .should('deep.equal', sortedDescriptions);
+          });
+        });
+      }
+    );
+  });
+
+  describe('filtering', () => {
+    it('can clear filters', () => {
+      // apply some filters
+      applyFilters(filterCombos[0], filtersConf);
+      cy.get(CHIP_GROUP).should('exist');
+      // clear filters
+      cy.get('button').contains('Reset filters').click();
+      cy.get(CHIP_GROUP).should('not.exist');
+      cy.get('button').contains('Reset filters').should('not.exist');
+      // expandable rows are duplicated, so we get one label
+      cy.get('table')
+        .find(ROWS)
+        .find(`td[data-label="Description"]`)
+        .should('have.length', RULES_ENABLED);
     });
-  });
 
-  it('no chips are displayed by default', () => {
-    cy.get(CHIP_GROUP).should('not.exist');
-    cy.get('button').contains('Reset filters').should('not.exist');
-  });
+    it('chips can be cleared', () => {
+      applyFilters(filterCombos[0], filtersConf);
+      cy.get(CHIP_GROUP).should('exist');
+      cy.get('button').contains('Reset filters').click();
+      cy.get(CHIP_GROUP).should('not.exist');
+    });
 
-  // all tables must preserve original ordering
-  _.zip(['description', 'created_at', 'total_risk'], TABLE_HEADERS).forEach(
-    ([category, label]) => {
-      SORTING_ORDERS.forEach((order) => {
-        it(`sort ${order} by ${label}`, () => {
-          const col = `td[data-label="${label}"]`;
-          const header = `th[data-label="${label}"]`;
-          cy.get(col).should('have.length', RULES_ENABLED);
+    it('empty state is displayed when filters do not match any rule', () => {
+      applyFilters(
+        {
+          description: 'Not existing recommendation',
+        },
+        filtersConf
+      );
+      // TODO check empty table view
+      // TODO headers are displayed
+    });
 
-          if (order === 'ascending') {
-            cy.get(header).find('button').click();
-          } else {
-            cy.get(header).find('button').dblclick();
-          }
-          let sortedDescriptions = _.map(
-            _.orderBy(
-              data,
-              [category],
-              [order === 'descending' ? 'desc' : 'asc']
-            ),
-            'description'
-          );
-          cy.get(`td[data-label="Description"]`)
-            .then(($els) => {
-              return _.map(Cypress.$.makeArray($els), 'innerText');
-            })
-            .should('deep.equal', sortedDescriptions);
+    describe('single filter', () => {
+      Object.entries(filtersConf).forEach(([k, v]) => {
+        v.values.forEach((filterValues) => {
+          it(`${k}: ${filterValues}`, () => {
+            const filters = {};
+            filters[k] = filterValues;
+            const sortedDescriptions = _.map(
+              filterData(data, filters),
+              'description'
+            ).sort();
+            applyFilters(filters, filtersConf);
+            if (sortedDescriptions.length === 0) {
+              // TODO check empty table view
+              // TODO headers are displayed
+            } else {
+              cy.get(`td[data-label="Description"]`)
+                .then(($els) => {
+                  return _.map(Cypress.$.makeArray($els), 'innerText').sort();
+                })
+                .should('deep.equal', sortedDescriptions);
+            }
+            // validate chips
+            cy.get(CHIP_GROUP).should(
+              'have.length',
+              Object.keys(filters).length
+            );
+            // check chips
+            for (const [k, v] of Object.entries(filters)) {
+              let groupName = filtersConf[k].selectorText;
+              const nExpectedItems =
+                filtersConf[k].type === 'checkbox' ? v.length : 1;
+              cy.get(CHIP_GROUP)
+                .contains(groupName)
+                .parents(CHIP_GROUP)
+                .then((chipGroup) => {
+                  cy.wrap(chipGroup)
+                    .find(CHIP)
+                    .its('length')
+                    .should('be.eq', Math.min(3, nExpectedItems)); // limited to show 3
+                });
+            }
+            cy.get('button').contains('Reset filters').should('exist');
+          });
         });
       });
-    }
-  );
-
-  it('clear filters work', () => {
-    // apply some filters
-    applyFilters(filterCombos[0], filtersConf);
-    cy.get(CHIP_GROUP).should('exist');
-    // clear filters
-    cy.get('button').contains('Reset filters').click();
-    cy.get(CHIP_GROUP).should('not.exist');
-    cy.get('button').contains('Reset filters').should('not.exist');
-    // expandable rows are duplicated, so we get one label
-    cy.get('table')
-      .find(ROWS)
-      .find(`td[data-label="Description"]`)
-      .should('have.length', RULES_ENABLED);
-  });
-
-  it('chips can be cleared', () => {
-    applyFilters(filterCombos[0], filtersConf);
-    cy.get(CHIP_GROUP).should('exist');
-    cy.get('button').contains('Reset filters').click();
-    cy.get(CHIP_GROUP).should('not.exist');
-  });
-
-  it('empty state is displayed when filters do not match any rule', () => {
-    applyFilters(
-      {
-        description: 'Not existing recommendation',
-      },
-      filtersConf
-    );
-    // TODO check empty table view
-    // TODO headers are displayed
-  });
-
-  Object.entries(filtersConf).forEach(([k, v]) => {
-    v.values.forEach((filterValues) => {
-      it(`test filtering ${k} ${filterValues}`, () => {
-        const filters = {};
-        filters[k] = filterValues;
-        const sortedDescriptions = _.map(
-          filterData(data, filters),
-          'description'
-        ).sort();
-        applyFilters(filters, filtersConf);
-        if (sortedDescriptions.length === 0) {
-          // TODO check empty table view
-          // TODO headers are displayed
-        } else {
-          cy.get(`td[data-label="Description"]`)
-            .then(($els) => {
-              return _.map(Cypress.$.makeArray($els), 'innerText').sort();
-            })
-            .should('deep.equal', sortedDescriptions);
-        }
-        // validate chips
-        cy.get(CHIP_GROUP).should('have.length', Object.keys(filters).length);
-        // check chips
-        for (const [k, v] of Object.entries(filters)) {
-          let groupName = filtersConf[k].selectorText;
-          const nExpectedItems =
-            filtersConf[k].type === 'checkbox' ? v.length : 1;
-          cy.get(CHIP_GROUP)
-            .contains(groupName)
-            .parents(CHIP_GROUP)
-            .then((chipGroup) => {
-              cy.wrap(chipGroup)
-                .find(CHIP)
-                .its('length')
-                .should('be.eq', Math.min(3, nExpectedItems)); // limited to show 3
-            });
-        }
-        cy.get('button').contains('Reset filters').should('exist');
-      });
     });
-  });
-
-  filterCombos.forEach((filters) => {
-    it(`test sorting ${Object.keys(filters)}`, () => {
-      const sortedDescriptions = _.map(
-        filterData(data, filters),
-        'description'
-      ).sort();
-      // debugger;
-      applyFilters(filters, filtersConf);
-      if (sortedDescriptions.length === 0) {
-        // TODO check empty table view
-      } else {
-        cy.get(`td[data-label="Description"]`)
-          .then(($els) => {
-            return _.map(Cypress.$.makeArray($els), 'innerText').sort();
-          })
-          .should('deep.equal', sortedDescriptions);
-      }
-      // validate chips
-      cy.get(CHIP_GROUP).should('have.length', Object.keys(filters).length);
-      // check chips
-      for (const [k, v] of Object.entries(filters)) {
-        let groupName = filtersConf[k].selectorText;
-        // TODO remove this change CCXDEV-7192
-        groupName = groupName == 'Description' ? 'Name' : groupName;
-        const nExpectedItems =
-          filtersConf[k].type === 'checkbox' ? v.length : 1;
-        cy.get(CHIP_GROUP)
-          .contains(groupName)
-          .parents(CHIP_GROUP)
-          .then((chipGroup) => {
-            cy.wrap(chipGroup)
-              .find(CHIP)
-              .its('length')
-              .should('be.eq', Math.min(3, nExpectedItems)); // limited to show 3
-          });
-      }
-      cy.get('button').contains('Reset filters').should('exist');
+    describe('combined filters', () => {
+      filterCombos.forEach((filters) => {
+        it(`${Object.keys(filters)}`, () => {
+          const sortedDescriptions = _.map(
+            filterData(data, filters),
+            'description'
+          ).sort();
+          applyFilters(filters, filtersConf);
+          if (sortedDescriptions.length === 0) {
+            // TODO check empty table view
+          } else {
+            cy.get(`td[data-label="Description"]`)
+              .then(($els) => {
+                return _.map(Cypress.$.makeArray($els), 'innerText').sort();
+              })
+              .should('deep.equal', sortedDescriptions);
+          }
+          // validate chips
+          cy.get(CHIP_GROUP).should('have.length', Object.keys(filters).length);
+          // check chips
+          for (const [k, v] of Object.entries(filters)) {
+            let groupName = filtersConf[k].selectorText;
+            // TODO remove this change CCXDEV-7192
+            groupName = groupName == 'Description' ? 'Name' : groupName;
+            const nExpectedItems =
+              filtersConf[k].type === 'checkbox' ? v.length : 1;
+            cy.get(CHIP_GROUP)
+              .contains(groupName)
+              .parents(CHIP_GROUP)
+              .then((chipGroup) => {
+                cy.wrap(chipGroup)
+                  .find(CHIP)
+                  .its('length')
+                  .should('be.eq', Math.min(3, nExpectedItems)); // limited to show 3
+              });
+          }
+          cy.get('button').contains('Reset filters').should('exist');
+        });
+      });
     });
   });
 });
@@ -428,7 +438,7 @@ describe('cluster rules table testing the first query parameter', () => {
   });
 
   it('show the rule from the "first" search parameter', () => {
-    cy.get('div[id=cluster-recs-list-table]')
+    cy.get(TABLE)
       .find('td[data-label=Description]')
       .children()
       .eq(0)
