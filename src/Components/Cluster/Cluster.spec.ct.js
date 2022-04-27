@@ -7,7 +7,7 @@ import { Cluster } from './Cluster';
 import { Provider } from 'react-redux';
 import getStore from '../../Store';
 import '@patternfly/patternfly/patternfly.scss';
-import singleClusterPageReport from '../../../cypress/fixtures/Cluster/report.json';
+import singleClusterPageReport from '../../../cypress/fixtures/api/insights-results-aggregator/v2/cluster/dcb95bbf-8673-4f3a-a63c-12d4a530aa6f/reports-disabled-false.json';
 
 // selectors
 const CLUSTER_HEADER = '#cluster-header';

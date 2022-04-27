@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import _ from 'lodash';
 
 import { AffectedClustersTable } from './AffectedClustersTable';
-import data from '../../../cypress/fixtures/AffectedClustersTable/data.json';
+import clusterDetailData from '../../../cypress/fixtures/api/insights-results-aggregator/v2/rule/external.rules.rule|ERROR_KEY/clusters_detail.json';
 import { Intl } from '../../Utilities/intlHelper';
 import getStore from '../../Store';
 import '@patternfly/patternfly/patternfly.scss';
@@ -31,13 +31,15 @@ import {
   checkPaginationValues,
   changePagination,
 } from '../../../cypress/utils/table';
-import rule from '../../../cypress/fixtures/api/insights-results-aggregator/v2/rule/external.rules.rule|ERROR_KEY/report.json';
+import rule from '../../../cypress/fixtures/api/insights-results-aggregator/v2/rule/external.rules.rule|ERROR_KEY.json';
 
 // selectors
 const TABLE = 'div[id=affected-list-table]';
 const BULK_SELECT = 'clusters-selector';
 const SEARCH_ITEMS = ['ff', 'CUSTOM', 'Foobar', 'Not existing cluster'];
 const TABLE_HEADERS = ['Name', 'Last seen'];
+
+const data = clusterDetailData.data;
 
 function filterData(text = '') {
   return _.filter(data['enabled'], (it) =>
@@ -92,6 +94,7 @@ describe('test data', () => {
       .its('length')
       .should('be.gte', 1);
   });
+  // TODO check also `rule` data
 });
 
 describe('non-empty successful affected clusters table', () => {
@@ -430,6 +433,11 @@ describe('non-empty successful affected clusters table', () => {
                 it['last_checked_at'] = '1970-01-01T01:00:00.001Z';
               }
             });
+
+            if (category === 'name') {
+              // name sorting is case insentive
+              category = (it) => it.name.toLowerCase();
+            }
 
             sortedClusters = _.map(
               _.orderBy(
