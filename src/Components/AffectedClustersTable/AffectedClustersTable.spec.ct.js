@@ -26,11 +26,14 @@ import {
 import { SORTING_ORDERS } from '../../../cypress/utils/globals';
 import {
   checkTableHeaders,
-  checkPaginationTotal,
   checkRowCounts,
+} from '../../../cypress/utils/table';
+import {
+  itemsPerPage,
+  checkPaginationTotal,
   checkPaginationValues,
   changePagination,
-} from '../../../cypress/utils/table';
+} from '../../../cypress/utils/pagination';
 import rule from '../../../cypress/fixtures/api/insights-results-aggregator/v2/rule/external.rules.rule|ERROR_KEY.json';
 
 // selectors
@@ -45,20 +48,6 @@ function filterData(text = '') {
   return _.filter(data['enabled'], (it) =>
     (it?.cluster_name || it.cluster).toLowerCase().includes(text.toLowerCase())
   );
-}
-
-// FIXME improve syntax
-// FIXME move to utils module
-function itemsPerPage() {
-  let items = filterData().length;
-  const array = [];
-  while (items > 0) {
-    const remain = items - DEFAULT_ROW_COUNT;
-    let v = remain > 0 ? DEFAULT_ROW_COUNT : items;
-    array.push(v);
-    items = remain;
-  }
-  return array;
 }
 
 describe('test data', () => {
@@ -356,7 +345,7 @@ describe('non-empty successful affected clusters table', () => {
 
     // TODO check duplicated
     it('can iterate over pages', () => {
-      cy.wrap(itemsPerPage()).each((el, index, list) => {
+      cy.wrap(itemsPerPage(filterData().length)).each((el, index, list) => {
         checkRowCounts(TABLE, el);
         cy.get(TOOLBAR)
           .find(PAGINATION)
