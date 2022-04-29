@@ -2,7 +2,6 @@ import React from 'react';
 import { mount } from '@cypress/react';
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import _ from 'lodash';
 
 import { RecsListTable } from './RecsListTable';
 import getStore from '../../Store';
