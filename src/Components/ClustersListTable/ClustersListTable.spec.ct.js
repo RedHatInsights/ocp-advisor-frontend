@@ -54,7 +54,7 @@ let namedClustersDefaultSorting = _.orderBy(
   ['desc']
 );
 
-const TABLE = 'div[id=clusters-list-table]';
+const ROOT = 'div[id=clusters-list-table]';
 const TABLE_HEADERS = [
   'Name',
   'Recommendations',
@@ -149,7 +149,7 @@ describe('clusters list table', () => {
   });
 
   it('renders table', () => {
-    cy.get(TABLE).within(() => {
+    cy.get(ROOT).within(() => {
       cy.get(TOOLBAR).should('have.length', 1);
       cy.get('table').should('have.length', 1);
     });
@@ -165,7 +165,7 @@ describe('clusters list table', () => {
 
   describe('defaults', () => {
     it(`shows ${DEFAULT_ROW_COUNT} clusters only`, () => {
-      checkRowCounts(TABLE, DEFAULT_ROW_COUNT);
+      checkRowCounts(ROOT, DEFAULT_ROW_COUNT);
       expect(window.location.search).to.contain('limit=20'); // TODO do not hardcode value
     });
 
@@ -179,7 +179,7 @@ describe('clusters list table', () => {
     it('sorting using last seen', () => {
       // TODO create a function used also in other tests
       // columnSelected
-      cy.get(TABLE)
+      cy.get(ROOT)
         .find('th[data-key=6]') // TODO use column name
         .should('have.class', 'pf-c-table__sort pf-m-selected');
     });
@@ -216,12 +216,12 @@ describe('clusters list table', () => {
           // TODO should this be nested. Also the other check below?
           expect(window.location.search).to.contain(`limit=${el}`)
         );
-        checkRowCounts(TABLE, Math.min(el, data.length));
+        checkRowCounts(ROOT, Math.min(el, data.length));
       });
     });
     it('can iterate over pages', () => {
       cy.wrap(itemsPerPage(data.length)).each((el, index, list) => {
-        checkRowCounts(TABLE, el).then(() => {
+        checkRowCounts(ROOT, el).then(() => {
           // TODO why is this nested?
           expect(window.location.search).to.contain(
             `offset=${DEFAULT_ROW_COUNT * index}`
