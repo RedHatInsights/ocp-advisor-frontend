@@ -47,7 +47,7 @@ namedClusters.forEach((it) => {
 // default sorting
 let namedClustersDefaultSorting = _.orderBy(
   namedClusters,
-  ['last_checked_at'],
+  [(it) => it.last_checked_at || '1970-01-01T01:00:00.001Z'],
   ['desc']
 );
 
@@ -117,7 +117,7 @@ describe('data', () => {
       .should('be.gte', 1);
   });
   it('at least one entry does not have last seen', () => {
-    cy.wrap(_.filter(data, (it) => it.last_checked_at === ''))
+    cy.wrap(_.filter(data, (it) => it.last_checked_at === undefined))
       .its('length')
       .should('be.gte', 1);
   });
@@ -343,7 +343,10 @@ describe('clusters list table', () => {
             cy.get(header).find('button').dblclick();
           }
 
-          // TODO is N/A mapping needed as is AffectedClustersTable?
+          // map missing last_check_at to old times
+          if (category === 'last_checked_at') {
+            category = (it) => it.last_checked_at || '1970-01-01T01:00:00.001Z';
+          }
 
           // add property name to clusters
           let sortedNames = _.map(
@@ -408,7 +411,7 @@ describe('clusters list table', () => {
         .find('button')
         .click()
         .then(() => expect(window.location.search).to.contain(`limit=50`));
-      cy.getTotalClusters().should('have.text', 26);
+      cy.getTotalClusters().should('have.text', 24);
       // check all shown clusters have recommendations > 0
       cy.get('TBODY')
         .find('td[data-label=Recommendations]')

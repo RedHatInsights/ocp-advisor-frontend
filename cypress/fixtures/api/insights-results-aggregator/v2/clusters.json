@@ -108,9 +108,8 @@
     {
       "cluster_id": "99d8d133-e5fc-42f2-981d-d88932023e48",
       "cluster_name": "qjydd73t8 q0kx4ca95l",
-      "last_checked_at": "2020-06-07T13:13:26.063Z",
-      "total_hit_count": 20,
-      "hits_by_total_risk": { "1": 7, "2": 8, "3": 5, "4": 0 }
+      "total_hit_count": 0,
+      "hits_by_total_risk": { "1": 0, "2": 0, "3": 0, "4": 0 }
     },
     {
       "cluster_id": "a2f15021-ba2a-46a4-af1d-8966b681249d",
@@ -199,9 +198,8 @@
     {
       "cluster_id": "0abb45ac-3ade-49c7-a7d4-ec2af0ee21db",
       "cluster_name": "y7gz4faz1 k6rqb02yo",
-      "last_checked_at": "",
-      "total_hit_count": 13,
-      "hits_by_total_risk": { "1": 2, "2": 3, "3": 5, "4": 3 }
+      "total_hit_count": 0,
+      "hits_by_total_risk": { "1": 0, "2": 0, "3": 0, "4": 0 }
     }
   ],
   "meta": {
