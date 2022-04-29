@@ -46,6 +46,8 @@ let data = _.cloneDeep(clusterDetailData.data['enabled']);
 data.forEach(
   (it) => (it['name'] = it['cluster_name'] ? it['cluster_name'] : it['cluster'])
 );
+// default sorting
+data = _.orderBy(data, ['last_checked_at'], ['desc']);
 
 function filterData(text = '') {
   return _.filter(data, (it) =>
@@ -122,35 +124,28 @@ describe('non-empty successful affected clusters table', () => {
     checkTableHeaders(TABLE_HEADERS);
   });
 
-  // // TODO do not hardcode values
-  // it('display name is rendered instead of cluster uuid', () => {
-  //   cy.get(ROOT)
-  //     .find(TBODY)
-  //     .find(ROW)
-  //     .contains('custom cluster name 2')
-  //     .should('have.attr', 'href')
-  //     .and('contain', '/clusters/f7331e9a-2f59-484d-af52-338d56165df5');
-  // });
-  // it('rows show cluster names instead uuids when available', () => {
-  //   const names = _.map(namedClustersDefaultSorting, 'name');
-  //   cy.get(`td[data-label="Name"]`)
-  //     .then(($els) => {
-  //       return _.map(Cypress.$.makeArray($els), 'innerText');
-  //     })
-  //     .should(
-  //       'deep.equal',
-  //       names.slice(0, Math.min(DEFAULT_ROW_COUNT, names.length))
-  //     );
-  // });
+  it('rows show cluster names instead uuids when available', () => {
+    const names = _.map(data, 'name');
+    cy.get(`td[data-label="Name"]`)
+      .then(($els) => {
+        return _.map(Cypress.$.makeArray($els), 'innerText');
+      })
+      .should(
+        'deep.equal',
+        names.slice(0, Math.min(DEFAULT_ROW_COUNT, names.length))
+      );
+  });
 
-  // it('names of rows are links', () => {
-  //   cy.getFirstRow()
-  //     .find('td[data-label=Name]')
-  //     .find(
-  //       `a[href="/clusters/${namedClustersDefaultSorting[0]['cluster_id']}"]`
-  //     )
-  //     .should('have.text', namedClustersDefaultSorting[0]['name']);
-  // });
+  it('names of rows are links', () => {
+    cy.get(TBODY)
+      .children()
+      .each(($el, index) => {
+        cy.wrap($el)
+          .find('td[data-label=Name]')
+          .find(`a[href*="/clusters/${data[index]['cluster']}"]`)
+          .should('have.text', data[index]['name']);
+      });
+  });
 
   describe('defaults', () => {
     it(`shows ${DEFAULT_ROW_COUNT} clusters only`, () => {
