@@ -18,13 +18,13 @@ import { urlParamConvert } from '../../../cypress/utils/filters';
 // TODO make more use of ../../../cypress/utils/components
 
 // selectors
-const TABLE = 'div[id=recs-list-table]';
+const ROOT = 'div[id=recs-list-table]';
 const ROW = 'tbody[role=rowgroup]'; // FIXME use ROW from components
 const FILTERS_DROPDOWN = 'ul[class=pf-c-dropdown__menu]';
 const FILTER_TOGGLE = 'span[class=pf-c-select__toggle-arrow]';
 
 // actions
-Cypress.Commands.add('getAllRows', () => cy.get(TABLE).find(ROW));
+Cypress.Commands.add('getAllRows', () => cy.get(ROOT).find(ROW));
 Cypress.Commands.add('removeStatusFilter', () => {
   cy.get(CHIP)
     .contains('Enabled')
@@ -49,7 +49,7 @@ Cypress.Commands.add('getColumns', () => {
   /* patternfly/react-table-4.71.16, for some reason, renders extra empty `th` container;
        thus, it is necessary to look at the additional `scope` attr to distinguish between visible columns
   */
-  cy.get(TABLE).find('table > thead > tr > th[scope="col"]');
+  cy.get(ROOT).find('table > thead > tr > th[scope="col"]');
 });
 Cypress.Commands.add('sortByCol', (colIndex) => {
   cy.getColumns()
@@ -138,26 +138,28 @@ describe('successful non-empty recommendations list table', () => {
   });
 
   it('renders table', () => {
-    // TODO use within as in AffectedClustersTable
-    cy.get(TABLE).should('have.length', 1);
+    cy.get(ROOT).within(() => {
+      cy.get(TOOLBAR).should('have.length', 1);
+      cy.get('table').should('have.length', 1);
+    });
   });
 
   it('renders Clusters impacted chip group', () => {
-    cy.get(TABLE)
+    cy.get(ROOT)
       .find('span[class=pf-c-chip-group__label]')
       .should('have.length', 2)
       .eq(0)
       .and('have.text', 'Clusters impacted');
-    cy.get(TABLE)
+    cy.get(ROOT)
       .find('span[class=pf-c-chip-group__label]')
       .eq(1)
       .and('have.text', 'Status');
-    cy.get(TABLE)
+    cy.get(ROOT)
       .find('li[class=pf-c-chip-group__list-item]')
       .should('have.length', 2)
       .eq(0)
       .and('have.text', '1 or more');
-    cy.get(TABLE)
+    cy.get(ROOT)
       .find('li[class=pf-c-chip-group__list-item]')
       .eq(1)
       .and('have.text', 'Enabled');
@@ -167,7 +169,7 @@ describe('successful non-empty recommendations list table', () => {
     const FILTERS_DROPDOWN = 'ul[class=pf-c-dropdown__menu]';
     const FILTER_ITEM = 'button[class=pf-c-dropdown__menu-item]';
 
-    cy.get(TABLE)
+    cy.get(ROOT)
       .should('have.length', 1)
       .find('button[class=pf-c-dropdown__toggle]')
       .should('have.length', 1)
@@ -337,7 +339,7 @@ describe('successful non-empty recommendations list table', () => {
     });
 
     it('the Impacted filters work correctly', () => {
-      cy.get(TABLE).find('button[class=pf-c-dropdown__toggle]').click();
+      cy.get(ROOT).find('button[class=pf-c-dropdown__toggle]').click();
       cy.get(FILTERS_DROPDOWN).contains('Clusters impacted').click();
       cy.get(FILTER_TOGGLE).then((element) => {
         cy.wrap(element);
@@ -352,7 +354,7 @@ describe('successful non-empty recommendations list table', () => {
         });
       cy.get('.pf-c-chip-group__list-item').contains('1 or more');
 
-      cy.get(TABLE).find('button[class=pf-c-dropdown__toggle]').click();
+      cy.get(ROOT).find('button[class=pf-c-dropdown__toggle]').click();
       cy.get(FILTERS_DROPDOWN).contains('Status').click();
       cy.get(FILTER_TOGGLE).click({ force: true });
       cy.get('button[class=pf-c-select__menu-item]')
@@ -411,7 +413,7 @@ describe('successful non-empty recommendations list table', () => {
     // TODO make test data independent
     // TODO check also non-enabled by default rules
     it('each row has a kebab', () => {
-      cy.get(TABLE)
+      cy.get(ROOT)
         .find('tbody[role=rowgroup] .pf-c-dropdown__toggle')
         .should('have.length', 4);
     });
@@ -441,7 +443,7 @@ describe('successful non-empty recommendations list table', () => {
   it('rule content is rendered', () => {
     // expand all rules
     cy.get('.pf-c-toolbar__expand-all-icon > svg').click();
-    cy.get(TABLE)
+    cy.get(ROOT)
       .find('.pf-c-table__expandable-row.pf-m-expanded')
       .each((el) => {
         // contains description
@@ -539,7 +541,7 @@ describe('Recs list is requested with additional parameters №1', () => {
   });
 
   it('Adds first iteration of filters to the table', () => {
-    cy.get(TABLE)
+    cy.get(ROOT)
       .find('span[class=pf-c-chip-group__label]')
       .should('have.length', 5);
     getChipGroup('Total risk').contains('.pf-c-chip', 'Low');
@@ -577,7 +579,7 @@ describe('Recs list is requested with additional parameters №2', () => {
   });
 
   it('Adds second iteration of filters to the table', () => {
-    cy.get(TABLE)
+    cy.get(ROOT)
       .find('span[class=pf-c-chip-group__label]')
       .should('have.length', 5);
     getChipGroup('Total risk').contains('.pf-c-chip', 'Moderate');
