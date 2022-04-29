@@ -8,7 +8,6 @@ import { AffectedClustersTable } from './AffectedClustersTable';
 import clusterDetailData from '../../../cypress/fixtures/api/insights-results-aggregator/v2/rule/external.rules.rule|ERROR_KEY/clusters_detail.json';
 import { Intl } from '../../Utilities/intlHelper';
 import getStore from '../../Store';
-import '@patternfly/patternfly/patternfly.scss';
 import {
   TOOLBAR,
   ROW,

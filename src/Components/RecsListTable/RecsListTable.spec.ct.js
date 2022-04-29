@@ -7,7 +7,6 @@ import { RecsListTable } from './RecsListTable';
 import getStore from '../../Store';
 import data from '../../../cypress/fixtures/api/insights-results-aggregator/v2/rule.json';
 import { Intl } from '../../Utilities/intlHelper';
-import '@patternfly/patternfly/patternfly.scss';
 import {
   TOOLBAR,
   TOOLBAR_FILTER,
