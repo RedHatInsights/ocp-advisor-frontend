@@ -103,7 +103,6 @@ describe('pre-filled url search parameters', () => {
       } else {
         value.split(',').forEach((it) => {
           const [group, item] = urlParamConvert(key, it);
-          console.log('--', item);
           getChipGroup(group).contains('.pf-c-chip', item);
         });
       }
