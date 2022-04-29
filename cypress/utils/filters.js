@@ -1,3 +1,11 @@
+/*
+Utilities related to URL parameters passed for table filtering
+*/
+
+import _ from 'lodash';
+
+import { FILTER_CATEGORIES } from '../../src/AppConstants';
+
 const FILTERS_DROPDOWN = 'ul[class=pf-c-dropdown__menu]';
 const FILTER_TOGGLE = 'span[class=pf-c-select__toggle-arrow]';
 
@@ -41,4 +49,15 @@ function applyFilters(filters, filtersConf) {
   }
 }
 
-export { applyFilters };
+function urlParamConvert(key, value) {
+  const filterCategory = _.find(
+    _.values(FILTER_CATEGORIES),
+    (it) => it.urlParam === key
+  );
+  const title = _.capitalize(filterCategory.title);
+  const label = _.find(filterCategory.values, (it) => it.value === value).label
+    .props.children;
+  return [title, label];
+}
+
+export { applyFilters, urlParamConvert };

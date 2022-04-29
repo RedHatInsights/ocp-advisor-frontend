@@ -12,7 +12,9 @@ import {
   TOOLBAR,
   TOOLBAR_FILTER,
   CHIP,
+  CHIP_GROUP,
 } from '../../../cypress/utils/components';
+import { urlParamConvert } from '../../../cypress/utils/filters';
 // TODO make more use of ../../../cypress/utils/components
 
 // selectors
@@ -65,13 +67,14 @@ before(() => {
 
 // TODO test data
 
+const urlParams =
+  'text=123|FOO_BAR&total_risk=4,3&impact=1,2&likelihood=1&category=1,2&rule_status=disabled&impacting=false';
+
 describe('pre-filled url search parameters', () => {
   beforeEach(() => {
     mount(
       <MemoryRouter
-        initialEntries={[
-          '/recommendations?text=123|FOO_BAR&total_risk=4,3&impact=1,2&likelihood=1&category=1,2&rule_status=disabled&impacting=false',
-        ]}
+        initialEntries={[`/recommendations?${urlParams}`]}
         initialIndex={0}
       >
         <Intl>
@@ -91,33 +94,24 @@ describe('pre-filled url search parameters', () => {
     );
   });
 
-  // TODO: use Messages.js to match labels and names
-  it('recognizes text parameter', () => {
-    // text input contains the value
-    getChipGroup('Name').contains('.pf-c-chip', '123|FOO_BAR');
-    // text filter chip is present
-    cy.get('.pf-m-fill > .pf-c-form-control').should(
-      'have.value',
-      '123|FOO_BAR'
+  it('recognizes all parameters', () => {
+    const urlSearchParameters = new URLSearchParams(urlParams);
+    for (const [key, value] of urlSearchParameters) {
+      if (key == 'text') {
+        getChipGroup('Name').contains('.pf-c-chip', value);
+        cy.get('.pf-m-fill > .pf-c-form-control').should('have.value', value);
+      } else {
+        value.split(',').forEach((it) => {
+          const [group, item] = urlParamConvert(key, it);
+          getChipGroup(group).contains('.pf-c-chip', item);
+        });
+      }
+    }
+    // do not get more chips than expected
+    cy.get(CHIP_GROUP).should(
+      'have.length',
+      Array.from(urlSearchParameters).length
     );
-  });
-
-  it('recognizes multiselect parameters', () => {
-    getChipGroup('Total risk').contains('.pf-c-chip', 'Critical');
-    getChipGroup('Impact').contains('.pf-c-chip', 'Low');
-    getChipGroup('Total risk').contains('.pf-c-chip', 'Important');
-    getChipGroup('Impact').contains('.pf-c-chip', 'Medium');
-    getChipGroup('Likelihood').contains('.pf-c-chip', 'Low');
-    getChipGroup('Category').contains('.pf-c-chip', 'Service Availability');
-    getChipGroup('Category').contains('.pf-c-chip', 'Performance');
-  });
-
-  it('recognizes rule status parameter', () => {
-    getChipGroup('Status').contains('.pf-c-chip', 'Disabled');
-  });
-
-  it('recognizes impacting parameter ', () => {
-    getChipGroup('Clusters impacted').contains('.pf-c-chip', 'None');
   });
 });
 
