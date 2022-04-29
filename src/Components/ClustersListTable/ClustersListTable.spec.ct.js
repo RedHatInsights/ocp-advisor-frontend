@@ -177,14 +177,14 @@ describe('clusters list table', () => {
   describe('defaults', () => {
     it(`shows ${DEFAULT_ROW_COUNT} clusters only`, () => {
       checkRowCounts(TABLE, DEFAULT_ROW_COUNT);
-      expect(window.location.search).to.contain('limit=20');
+      expect(window.location.search).to.contain('limit=20'); // TODO do not hardcode value
     });
 
     it(`pagination is set to ${DEFAULT_ROW_COUNT}`, () => {
       cy.get('.pf-c-options-menu__toggle-text')
         .find('b')
         .eq(0)
-        .should('have.text', '1 - 20');
+        .should('have.text', '1 - 20'); // TODO do not hardcode value
     });
 
     it('sorting using last seen', () => {

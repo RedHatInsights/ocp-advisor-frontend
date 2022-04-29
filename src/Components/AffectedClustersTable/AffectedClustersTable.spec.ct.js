@@ -89,6 +89,7 @@ describe('test data', () => {
       expect(arr).to.include('not existing cluster');
     });
   });
+  // TODO is this possible?
   it('has at least one entry with N/A time', () => {
     cy.wrap(_.filter(data['enabled'], (it) => it['last_checked_at'] === ''))
       .its('length')
