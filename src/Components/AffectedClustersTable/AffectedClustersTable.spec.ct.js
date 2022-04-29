@@ -26,12 +26,14 @@ import {
 import { SORTING_ORDERS } from '../../../cypress/utils/globals';
 import {
   checkTableHeaders,
-  checkPaginationTotal,
   checkRowCounts,
+} from '../../../cypress/utils/table';
+import {
+  itemsPerPage,
+  checkPaginationTotal,
   checkPaginationValues,
   changePagination,
-} from '../../../cypress/utils/table';
-import { itemsPerPage } from '../../../cypress/utils/pagination';
+} from '../../../cypress/utils/pagination';
 import rule from '../../../cypress/fixtures/api/insights-results-aggregator/v2/rule/external.rules.rule|ERROR_KEY.json';
 
 // selectors

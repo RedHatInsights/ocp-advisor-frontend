@@ -23,12 +23,14 @@ import {
 import { SORTING_ORDERS } from '../../../cypress/utils/globals';
 import {
   checkTableHeaders,
-  checkPaginationTotal,
   checkRowCounts,
+} from '../../../cypress/utils/table';
+import {
+  itemsPerPage,
+  checkPaginationTotal,
   checkPaginationValues,
   changePagination,
-} from '../../../cypress/utils/table';
-import { itemsPerPage } from '../../../cypress/utils/pagination';
+} from '../../../cypress/utils/pagination';
 
 const data = props['data'];
 // add property name to clusters

@@ -1,4 +1,10 @@
 import { DEFAULT_ROW_COUNT } from './defaults';
+import {
+  TOOLBAR,
+  PAGINATION_MENU,
+  DROPDOWN_TOGGLE,
+  DROPDOWN_ITEM,
+} from './components';
 
 // FIXME improve syntax
 function itemsPerPage(totalLength, pageSize = DEFAULT_ROW_COUNT) {
@@ -13,4 +19,39 @@ function itemsPerPage(totalLength, pageSize = DEFAULT_ROW_COUNT) {
   return array;
 }
 
-export { itemsPerPage };
+function checkPaginationTotal(n) {
+  return cy
+    .get('.pf-c-options-menu__toggle-text')
+    .find('b')
+    .eq(1)
+    .should('have.text', n);
+}
+
+function checkPaginationValues(expectedValues) {
+  cy.get(TOOLBAR).find(PAGINATION_MENU).find(DROPDOWN_TOGGLE).click();
+  cy.get(TOOLBAR)
+    .find(PAGINATION_MENU)
+    .find('ul[class=pf-c-options-menu__menu]')
+    .find('li')
+    .each(($el, index) => {
+      cy.wrap($el).should('have.text', `${expectedValues[index]} per page`);
+    });
+}
+
+function changePagination(textInItem) {
+  cy.get(TOOLBAR).find(PAGINATION_MENU).find(DROPDOWN_TOGGLE).click();
+  return cy
+    .get(TOOLBAR)
+    .find(PAGINATION_MENU)
+    .find('ul[class=pf-c-options-menu__menu]')
+    .find(DROPDOWN_ITEM)
+    .contains(`${textInItem}`)
+    .click();
+}
+
+export {
+  itemsPerPage,
+  checkPaginationTotal,
+  checkPaginationValues,
+  changePagination,
+};
