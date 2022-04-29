@@ -13,6 +13,7 @@ import {
   TOOLBAR,
   TOOLBAR_FILTER,
   CHIP,
+  CHIP_GROUP,
 } from '../../../cypress/utils/components';
 import { urlParamConvert } from '../../../cypress/utils/filters';
 // TODO make more use of ../../../cypress/utils/components
@@ -108,6 +109,11 @@ describe('pre-filled url search parameters', () => {
         });
       }
     }
+    // do not get more chips than expected
+    cy.get(CHIP_GROUP).should(
+      'have.length',
+      Array.from(urlSearchParameters).length
+    );
   });
 });
 
