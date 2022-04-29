@@ -65,6 +65,11 @@ const TABLE_HEADERS = [
   'Last seen',
 ];
 
+// TODO move sw else? Also useful for other modules
+function columnName2UrlParam(name) {
+  return name.toLowerCase().replace(/ /g, '_');
+}
+
 // TODO: test pre-filled search parameters filtration
 
 describe('data', () => {
