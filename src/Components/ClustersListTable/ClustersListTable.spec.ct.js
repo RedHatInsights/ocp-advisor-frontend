@@ -27,6 +27,7 @@ import {
   checkRowCounts,
   checkPaginationValues,
   changePagination,
+  columnName2UrlParam,
 } from '../../../cypress/utils/table';
 
 const data = props['data'];
@@ -253,58 +254,6 @@ describe('clusters list table', () => {
   });
 
   describe('sorting', () => {
-    // TODO check duplicated
-    // TODO do not use hardcoded values
-    it('can sort by columns', () => {
-      // check initial state
-      cy.getFirstRow()
-        .find('td[data-label=Name]')
-        .should('have.text', '947b8f15-cc44-47ca-9265-945085d4f3b8');
-      // click on the Name sorting button
-      cy.get('.pf-c-table__sort')
-        .eq(0)
-        .click()
-        .then(() => expect(window.location.search).to.contain(`sort=name`));
-      cy.getFirstRow()
-        .find('td[data-label=Name]')
-        .should('have.text', '1ghhxwjfoi 5b5hbyv07');
-      // click on the Recommendations sorting button
-      cy.get('.pf-c-table__sort')
-        .eq(1)
-        .click()
-        .then(() =>
-          expect(window.location.search).to.contain(`sort=recommendations`)
-        );
-      // the first cluster has 0 recommendations
-      cy.getFirstRow()
-        .find('td[data-label=Recommendations]')
-        .should('have.text', 0);
-    });
-
-    // TODO check duplicated
-    it('sorts N/A in last seen correctly', () => {
-      cy.get('.pf-c-table__sort')
-        .eq(6)
-        .click()
-        .then(() =>
-          expect(window.location.search).to.contain(`sort=last_seen`)
-        );
-      cy.getFirstRow().find('span').should('have.text', 'N/A');
-      cy.get('.pf-c-table__sort').eq(6).click();
-      cy.get(PAGINATION)
-        .eq(0)
-        .find('.pf-c-options-menu__toggle-button')
-        .click();
-      cy.get(PAGINATION)
-        .eq(0)
-        .find('.pf-c-options-menu')
-        .find('li')
-        .eq(2)
-        .find('button')
-        .click();
-      cy.getLastRow().find('span').should('have.text', 'N/A');
-    });
-
     _.zip(
       [
         'name',
@@ -331,16 +280,19 @@ describe('clusters list table', () => {
               .find('button')
               .click()
               .then(() =>
-                // TODO is needed to have it nested?
-                // TODO why only on ascending?
                 expect(window.location.search).to.contain(
-                  `sort=${order === 'descending' ? '-' : ''}${
-                    TABLE_HEADERS_SORT_KEYS[label]
-                  }`
+                  `sort=${columnName2UrlParam(label)}`
                 )
               );
           } else {
-            cy.get(header).find('button').dblclick();
+            cy.get(header)
+              .find('button')
+              .dblclick()
+              .then(() =>
+                expect(window.location.search).to.contain(
+                  `sort=-${columnName2UrlParam(label)}`
+                )
+              );
           }
 
           // map missing last_check_at to old times

@@ -55,10 +55,15 @@ function checkRowCounts(tableLocator, n) {
   return cy.get(tableLocator).find(TBODY).find(ROW).should('have.length', n);
 }
 
+function columnName2UrlParam(name) {
+  return name.toLowerCase().replace(/ /g, '_');
+}
+
 export {
   checkTableHeaders,
   checkPaginationTotal,
   checkPaginationValues,
   changePagination,
   checkRowCounts,
+  columnName2UrlParam,
 };
