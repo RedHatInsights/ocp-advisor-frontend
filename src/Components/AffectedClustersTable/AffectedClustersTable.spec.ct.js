@@ -166,11 +166,11 @@ describe('non-empty successful affected clusters table', () => {
 
   describe('bulk selector', () => {
     it('checkbox can be clicked', () => {
-      cy.ouiaId(BULK_SELECT).find('input').click().should('be.checked');
+      cy.ouiaId(BULK_SELECT, 'input').click().should('be.checked');
       // contains right text
-      cy.ouiaId(BULK_SELECT)
-        .find('label.pf-c-dropdown__toggle-check')
-        .contains(`${data['enabled'].length} selected`);
+      cy.get('#toggle-checkbox-text').contains(
+        `${filterData().length} selected`
+      );
       // checks all rows
       cy.get(ROOT)
         .find(TBODY)
@@ -186,8 +186,11 @@ describe('non-empty successful affected clusters table', () => {
           cy.wrap(el).click();
           cy.get('button')
             .contains('Disable recommendation for selected clusters')
-            .should('not.have.class', 'pf-m-disabled');
+            .should('not.have.class', 'pf-m-disabled')
+            .click();
         });
+      // modal is opened
+      cy.get(MODAL).should('have.length', 1);
     });
 
     it('checkbox is unselected when a row is unselected', () => {
@@ -343,7 +346,6 @@ describe('non-empty successful affected clusters table', () => {
       });
     });
 
-    // TODO check duplicated
     it('can iterate over pages', () => {
       cy.wrap(itemsPerPage(filterData().length)).each((el, index, list) => {
         checkRowCounts(ROOT, el);
@@ -507,19 +509,6 @@ describe('non-empty successful affected clusters table', () => {
     });
   });
 
-  // TODO check duplicated
-  it('can disable selected clusters', () => {
-    cy.get(TOOLBAR)
-      .find('input[data-ouia-component-id="clusters-selector"]')
-      .click();
-    cy.get(TOOLBAR).find('button[aria-label=Actions]').click();
-    cy.get('.pf-c-dropdown__menu').find('li').find('button').click();
-    cy.get('.pf-c-modal-box')
-      .find('.pf-c-check label')
-      .should('have.text', 'Disable recommendation for selected clusters');
-  });
-
-  // TODO check duplicated
   it('can disable one cluster', () => {
     cy.get(ROOT)
       .find(TBODY)
@@ -533,9 +522,7 @@ describe('non-empty successful affected clusters table', () => {
       .eq(0)
       .find('.pf-c-dropdown__menu button')
       .click();
-    cy.get('.pf-c-modal-box')
-      .find('.pf-c-check label')
-      .should('have.text', 'Disable only for this cluster');
+    cy.get(MODAL).should('have.length', 1);
   });
 
   describe('modal for bulk disabling', () => {
@@ -613,6 +600,10 @@ describe('non-empty successful affected clusters table', () => {
         .click()
         .contains('Disable')
         .click();
+
+      cy.get(MODAL)
+        .find('.pf-c-check label')
+        .should('have.text', 'Disable only for this cluster');
 
       cy.get(MODAL).find(CHECKBOX).should('be.checked');
 
