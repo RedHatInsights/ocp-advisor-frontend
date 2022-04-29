@@ -37,7 +37,7 @@ import {
 import rule from '../../../cypress/fixtures/api/insights-results-aggregator/v2/rule/external.rules.rule|ERROR_KEY.json';
 
 // selectors
-const TABLE = 'div[id=affected-list-table]';
+const ROOT = 'div[id=affected-list-table]';
 const BULK_SELECT = 'clusters-selector';
 const SEARCH_ITEMS = ['ff', 'CUSTOM', 'Foobar', 'Not existing cluster'];
 const TABLE_HEADERS = ['Name', 'Last seen'];
@@ -110,7 +110,7 @@ describe('non-empty successful affected clusters table', () => {
   });
 
   it('renders table', () => {
-    cy.get(TABLE).within(() => {
+    cy.get(ROOT).within(() => {
       cy.get(TOOLBAR).should('have.length', 1);
       cy.get('table').should('have.length', 1);
       cy.ouiaType('RHI/TableToolbar').should('have.length', 1);
@@ -123,7 +123,7 @@ describe('non-empty successful affected clusters table', () => {
 
   // TODO do not hardcode values
   it('display name is rendered instead of cluster uuid', () => {
-    cy.get(TABLE)
+    cy.get(ROOT)
       .find(TBODY)
       .find(ROW)
       .contains('custom cluster name 2')
@@ -133,7 +133,7 @@ describe('non-empty successful affected clusters table', () => {
 
   describe('defaults', () => {
     it(`shows ${DEFAULT_ROW_COUNT} clusters only`, () => {
-      checkRowCounts(TABLE, DEFAULT_ROW_COUNT);
+      checkRowCounts(ROOT, DEFAULT_ROW_COUNT);
       // TODO check why expect fails
       // expect(window.location.search).to.contain('limit=20');
     });
@@ -159,7 +159,7 @@ describe('non-empty successful affected clusters table', () => {
     });
 
     it('sorting using last seen', () => {
-      cy.get(TABLE)
+      cy.get(ROOT)
         .find('th[data-key=2]') // TODO use column name
         .should('have.class', 'pf-c-table__sort pf-m-selected');
     });
@@ -173,7 +173,7 @@ describe('non-empty successful affected clusters table', () => {
         .find('label.pf-c-dropdown__toggle-check')
         .contains(`${data['enabled'].length} selected`);
       // checks all rows
-      cy.get(TABLE)
+      cy.get(ROOT)
         .find(TBODY)
         .find(ROW)
         .each((row) => {
@@ -194,7 +194,7 @@ describe('non-empty successful affected clusters table', () => {
     it('checkbox is unselected when a row is unselected', () => {
       cy.ouiaId(BULK_SELECT).find('input').click().should('be.checked');
       // removing one row unselects it
-      cy.get(TABLE)
+      cy.get(ROOT)
         .find(TBODY)
         .find(ROW)
         .first()
@@ -226,7 +226,7 @@ describe('non-empty successful affected clusters table', () => {
         .find('label.pf-c-dropdown__toggle-check')
         .contains('selected')
         .should('not.exist');
-      cy.get(TABLE)
+      cy.get(ROOT)
         .find(TBODY)
         .find(ROW)
         .each((row) => {
@@ -242,7 +242,7 @@ describe('non-empty successful affected clusters table', () => {
       cy.ouiaId(BULK_SELECT).find('input').should('not.be.checked');
 
       // selecting from rows display the correct text
-      cy.get(TABLE)
+      cy.get(ROOT)
         .find(TBODY)
         .find(ROW)
         .first()
@@ -279,7 +279,7 @@ describe('non-empty successful affected clusters table', () => {
         .find('label.pf-c-dropdown__toggle-check')
         .contains(`${data['enabled'].length} selected`);
       // checks all rows
-      cy.get(TABLE)
+      cy.get(ROOT)
         .find(TBODY)
         .find(ROW)
         .each((row) => {
@@ -304,7 +304,7 @@ describe('non-empty successful affected clusters table', () => {
 
       cy.ouiaId(BULK_SELECT).find('input').should('not.be.checked');
       // checks all rows
-      cy.get(TABLE)
+      cy.get(ROOT)
         .find(TBODY)
         .find(ROW)
         .each((row) => {
@@ -340,14 +340,14 @@ describe('non-empty successful affected clusters table', () => {
       // FIXME: best way to make the loop
       cy.wrap(PAGINATION_VALUES).each((el) => {
         changePagination(el);
-        checkRowCounts(TABLE, Math.min(el, filterData().length));
+        checkRowCounts(ROOT, Math.min(el, filterData().length));
       });
     });
 
     // TODO check duplicated
     it('can iterate over pages', () => {
       cy.wrap(itemsPerPage(filterData().length)).each((el, index, list) => {
-        checkRowCounts(TABLE, el);
+        checkRowCounts(ROOT, el);
         cy.get(TOOLBAR)
           .find(PAGINATION)
           .find('button[data-action="next"]')
@@ -366,7 +366,7 @@ describe('non-empty successful affected clusters table', () => {
     // TODO check duplicated
     // TODO remove: the test is not stable for changes in data
     it('sorting the last seen column', () => {
-      cy.get(TABLE)
+      cy.get(ROOT)
         .find('td[data-key=1]')
         .children()
         .eq(0)
@@ -376,15 +376,15 @@ describe('non-empty successful affected clusters table', () => {
     // TODO check duplicated
     // TODO remove: the test is not stable for changes in data
     it('sorts N/A in last seen correctly', () => {
-      cy.get(TABLE);
+      cy.get(ROOT);
       cy.get('.pf-c-table__sort').eq(1).click();
-      cy.get(TABLE)
+      cy.get(ROOT)
         .find('td[data-key=1]')
         .children()
         .eq(0)
         .should('have.text', 'foobar cluster');
       cy.get('.pf-c-table__sort').eq(1).click();
-      cy.get(TABLE)
+      cy.get(ROOT)
         .find('td[data-key=1]')
         .children()
         .eq(0)
@@ -463,7 +463,7 @@ describe('non-empty successful affected clusters table', () => {
     // outer loop required to clean up filter bar
     SEARCH_ITEMS.forEach((el) => {
       it(`can add name filter (${el})`, () => {
-        cy.get(TABLE).find('#name-filter').type(el);
+        cy.get(ROOT).find('#name-filter').type(el);
         // renders filter chips
         cy.get(TOOLBAR)
           .find(CHIP_GROUP)
@@ -480,17 +480,17 @@ describe('non-empty successful affected clusters table', () => {
                 'To continue, edit your filter settings and search again.'
               );
           } else {
-            checkRowCounts(TABLE, Math.min(DEFAULT_ROW_COUNT, data.length));
+            checkRowCounts(ROOT, Math.min(DEFAULT_ROW_COUNT, data.length));
           }
         });
       });
     });
 
     it('can Reset filters', () => {
-      cy.get(TABLE).find('#name-filter').type('custom');
+      cy.get(ROOT).find('#name-filter').type('custom');
       cy.get(TOOLBAR).find('button').contains('Reset filters').click();
       cy.get(TOOLBAR).find(CHIP_GROUP).should('not.exist');
-      checkRowCounts(TABLE, Math.min(DEFAULT_ROW_COUNT, filterData().length));
+      checkRowCounts(ROOT, Math.min(DEFAULT_ROW_COUNT, filterData().length));
     });
   });
 
@@ -522,13 +522,13 @@ describe('non-empty successful affected clusters table', () => {
 
   // TODO check duplicated
   it('can disable one cluster', () => {
-    cy.get(TABLE)
+    cy.get(ROOT)
       .find(TBODY)
       .find(ROW)
       .eq(0)
       .find('.pf-c-table__action button')
       .click();
-    cy.get(TABLE)
+    cy.get(ROOT)
       .find(TBODY)
       .find(ROW)
       .eq(0)
@@ -605,7 +605,7 @@ describe('non-empty successful affected clusters table', () => {
     });
 
     it('modal for cluster disabling', () => {
-      cy.get(TABLE)
+      cy.get(ROOT)
         .find(TBODY)
         .find(ROW)
         .first()
@@ -648,7 +648,7 @@ describe('empty successful affected clusters table', () => {
   });
 
   it('cannot add filters to empty table', () => {
-    cy.get(TABLE).find('#name-filter').type('foobar');
+    cy.get(ROOT).find('#name-filter').type('foobar');
     cy.get(TOOLBAR).find(CHIP_GROUP).should('not.exist');
   });
 
@@ -685,7 +685,7 @@ describe('empty failed affected clusters table', () => {
   });
 
   it('cannot add filters to empty table', () => {
-    cy.get(TABLE).find('#name-filter').type('foobar');
+    cy.get(ROOT).find('#name-filter').type('foobar');
     cy.get(TOOLBAR).find(CHIP_GROUP).should('not.exist');
   });
 
@@ -696,7 +696,7 @@ describe('empty failed affected clusters table', () => {
   });
 
   it('renders table header', () => {
-    cy.get(TABLE).find('th').children().eq(0).should('have.text', 'Name');
-    cy.get(TABLE).find('th').children().eq(1).should('have.text', 'Last seen');
+    cy.get(ROOT).find('th').children().eq(0).should('have.text', 'Name');
+    cy.get(ROOT).find('th').children().eq(1).should('have.text', 'Last seen');
   });
 });

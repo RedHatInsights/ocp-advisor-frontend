@@ -18,11 +18,16 @@ import {
 import { applyFilters } from '../../../cypress/utils/filters';
 import { cumulativeCombinations } from '../../../cypress/utils/combine';
 import { checkTableHeaders } from '../../../cypress/utils/table';
-import { CHIP_GROUP, CHIP, ROWS } from '../../../cypress/views/filterableTable';
+import {
+  CHIP_GROUP,
+  CHIP,
+  ROW,
+  TOOLBAR,
+} from '../../../cypress/utils/components';
 
 const data = singleClusterPageReport.report.data;
 
-const TABLE = 'div[id=cluster-recs-list-table]';
+const ROOT = 'div[id=cluster-recs-list-table]';
 const EXPANDABLES = '[class="pf-c-table__expandable-row pf-m-expanded"]';
 const TABLE_HEADERS = ['Description', 'Modified', 'Total risk'];
 
@@ -162,7 +167,10 @@ describe('cluster rules table', () => {
   });
 
   it('renders table', () => {
-    cy.get(TABLE).should('have.length', 1);
+    cy.get(ROOT).within(() => {
+      cy.get(TOOLBAR).should('have.length', 1);
+      cy.get('table').should('have.length', 1);
+    });
   });
 
   it('renders table header', () => {
@@ -244,7 +252,7 @@ describe('cluster rules table', () => {
       cy.get('button').contains('Reset filters').should('not.exist');
       // expandable rows are duplicated, so we get one label
       cy.get('table')
-        .find(ROWS)
+        .find(ROW)
         .find(`td[data-label="Description"]`)
         .should('have.length', RULES_ENABLED);
     });
@@ -438,7 +446,7 @@ describe('cluster rules table testing the first query parameter', () => {
   });
 
   it('show the rule from the "first" search parameter', () => {
-    cy.get(TABLE)
+    cy.get(ROOT)
       .find('td[data-label=Description]')
       .children()
       .eq(0)
