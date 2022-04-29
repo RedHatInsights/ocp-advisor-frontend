@@ -326,6 +326,7 @@ describe('non-empty successful affected clusters table', () => {
             .contains('Disable recommendation for selected clusters')
             .should('have.class', 'pf-m-disabled');
         });
+      cy.get('#toggle-checkbox-text').should('not.exist');
     });
   });
 
@@ -364,34 +365,6 @@ describe('non-empty successful affected clusters table', () => {
   });
 
   describe('sorting', () => {
-    // TODO check duplicated
-    // TODO remove: the test is not stable for changes in data
-    it('sorting the last seen column', () => {
-      cy.get(ROOT)
-        .find('td[data-key=1]')
-        .children()
-        .eq(0)
-        .should('have.text', 'dd2ef343-9131-46f5-8962-290fdfdf2199');
-    });
-
-    // TODO check duplicated
-    // TODO remove: the test is not stable for changes in data
-    it('sorts N/A in last seen correctly', () => {
-      cy.get(ROOT);
-      cy.get('.pf-c-table__sort').eq(1).click();
-      cy.get(ROOT)
-        .find('td[data-key=1]')
-        .children()
-        .eq(0)
-        .should('have.text', 'foobar cluster');
-      cy.get('.pf-c-table__sort').eq(1).click();
-      cy.get(ROOT)
-        .find('td[data-key=1]')
-        .children()
-        .eq(0)
-        .should('have.text', 'dd2ef343-9131-46f5-8962-290fdfdf2199');
-    });
-
     _.zip(['name', 'last_checked_at'], TABLE_HEADERS).forEach(
       ([category, label]) => {
         SORTING_ORDERS.forEach((order) => {
@@ -492,20 +465,6 @@ describe('non-empty successful affected clusters table', () => {
       cy.get(TOOLBAR).find('button').contains('Reset filters').click();
       cy.get(TOOLBAR).find(CHIP_GROUP).should('not.exist');
       checkRowCounts(ROOT, Math.min(DEFAULT_ROW_COUNT, filterData().length));
-    });
-  });
-
-  // TODO check duplicated
-  it('can select/deselect all', () => {
-    cy.get(TOOLBAR).within(() => {
-      cy.get('input[data-ouia-component-id="clusters-selector"]').click();
-      cy.get('#toggle-checkbox-text').should(
-        'have.text',
-        `${filterData().length} selected`
-      );
-      cy.get('.pf-c-dropdown__toggle').find('button').click();
-      cy.get('ul[class=pf-c-dropdown__menu]').find('li').eq(1).click();
-      cy.get('#toggle-checkbox-text').should('not.exist');
     });
   });
 
