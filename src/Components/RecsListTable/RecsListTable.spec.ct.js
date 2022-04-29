@@ -2,17 +2,31 @@ import React from 'react';
 import { mount } from '@cypress/react';
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
+import _ from 'lodash';
 
 import { RecsListTable } from './RecsListTable';
 import getStore from '../../Store';
-import data from '../../../cypress/fixtures/api/insights-results-aggregator/v2/rule.json';
+import ruleResponse from '../../../cypress/fixtures/api/insights-results-aggregator/v2/rule.json';
 import { Intl } from '../../Utilities/intlHelper';
 import '@patternfly/patternfly/patternfly.scss';
 import {
   TOOLBAR,
   TOOLBAR_FILTER,
   CHIP,
+  PAGINATION,
+  TBODY,
 } from '../../../cypress/utils/components';
+import {
+  DEFAULT_ROW_COUNT,
+  PAGINATION_VALUES,
+} from '../../../cypress/utils/defaults';
+import {
+  checkPaginationTotal,
+  checkPaginationValues,
+  changePagination,
+  checkRowCounts,
+} from '../../../cypress/utils/table';
+import { TOTAL_RISK, CATEGORIES } from '../../../cypress/utils/globals';
 // TODO make more use of ../../../cypress/utils/components
 
 // selectors
@@ -20,6 +34,76 @@ const TABLE = 'div[id=recs-list-table]';
 const ROW = 'tbody[role=rowgroup]'; // FIXME use ROW from components
 const FILTERS_DROPDOWN = 'ul[class=pf-c-dropdown__menu]';
 const FILTER_TOGGLE = 'span[class=pf-c-select__toggle-arrow]';
+const DEFAULT_FILTERS = {
+  impacting: true,
+  rule_status: 'enabled',
+};
+
+const data = ruleResponse.recommendations;
+
+function filterData(filters) {
+  let filteredData = data;
+  for (const [key, value] of Object.entries(filters)) {
+    if (key === 'description') {
+      filteredData = _.filter(filteredData, (it) =>
+        it.description.toLowerCase().includes(value.toLowerCase())
+      );
+    } else if (key === 'risk') {
+      const riskNumbers = _.map(value, (it) => TOTAL_RISK[it]);
+      filteredData = _.filter(filteredData, (it) =>
+        riskNumbers.includes(it.total_risk)
+      );
+    } else if (key === 'category') {
+      const tags = _.flatMap(value, (it) => CATEGORIES[it]);
+      filteredData = _.filter(
+        filteredData,
+        (it) => _.intersection(tags, it.tags).length > 0
+      );
+    } else if (key === 'rule_status' && value !== 'all') {
+      const allowDisabled = value === 'disabled';
+      filteredData = _.filter(
+        filteredData,
+        (it) => it.disabled === allowDisabled
+      );
+    } else if (key === 'impacting') {
+      // TODO if value is true,false skip
+      if (value) {
+        filteredData = _.filter(
+          filteredData,
+          (it) => it.impacted_clusters_count > 0
+        );
+      } else {
+        filteredData = _.filter(
+          filteredData,
+          (it) => it.impacted_clusters_count === 0
+        );
+      }
+    }
+    // if length is already 0, exit
+    if (filteredData.length === 0) {
+      break;
+    }
+  }
+  return filteredData;
+}
+
+const DEFAULT_DISPLAYED_SIZE = Math.min(
+  filterData(DEFAULT_FILTERS).length,
+  DEFAULT_ROW_COUNT
+);
+
+// TODO use the one in utils once 236 is merged
+function itemsPerPage(data) {
+  let items = data.length;
+  const array = [];
+  while (items > 0) {
+    const remain = items - DEFAULT_ROW_COUNT;
+    let v = remain > 0 ? DEFAULT_ROW_COUNT : items;
+    array.push(v);
+    items = remain;
+  }
+  return array;
+}
 
 // actions
 Cypress.Commands.add('getAllRows', () => cy.get(TABLE).find(ROW));
@@ -82,7 +166,7 @@ describe('pre-filled url search parameters', () => {
                 isFetching: false,
                 isUninitialized: false,
                 isSuccess: true,
-                data: data,
+                data: ruleResponse,
               }}
             />
           </Provider>
@@ -133,7 +217,7 @@ describe('successful non-empty recommendations list table', () => {
                 isFetching: false,
                 isUninitialized: false,
                 isSuccess: true,
-                data: data,
+                data: ruleResponse,
                 refetch: cy.stub(),
               }}
             />
@@ -213,18 +297,98 @@ describe('successful non-empty recommendations list table', () => {
   });
 
   describe('defaults', () => {
+    // TODO enhance tests See ClustersListTable
+
+    it(`shows maximum ${DEFAULT_ROW_COUNT} recommendations`, () => {
+      // TODO get a function like checkRowCounts with expandable rows
+      cy.get('table')
+        .find('[data-ouia-component-type="PF4/TableRow"]') // TODO use ROW from components module
+        .find(`td[data-label="Name"]`)
+        .should('have.length', DEFAULT_DISPLAYED_SIZE);
+      expect(window.location.search).to.contain('limit=20'); // TODO do not hardcode value
+    });
+
     it('default sort by total risk', () => {
+      const column = 'Total risk';
       // TODO do not use ROW but Table and th. See AffectedClustersTable
       cy.get(ROW)
         .children()
         .eq(0)
-        .find('td[data-label="Total risk"]')
+        .find(`td[data-label="${column}"]`)
         .contains('Critical'); // TODO do not use value hardcoded. Use class as in AffectedClustersTable
+      // TODO use columnName2UrlParam once !238 is merged
+      // expect(window.location.search).to.contain(`sort=-${columnName2UrlParam(column)}`);
       expect(window.location.search).to.contain('sort=-total_risk');
+    });
+
+    it(`pagination is set to ${DEFAULT_ROW_COUNT}`, () => {
+      cy.get('.pf-c-options-menu__toggle-text')
+        .find('b')
+        .eq(0)
+        .should('have.text', `1 - ${DEFAULT_DISPLAYED_SIZE}`); // TODO do not hardcode value
+    });
+
+    it('reset filters button is displayed', () => {
+      cy.get('button').contains('Reset filters').should('exist');
     });
   });
 
-  describe('pagination', () => {});
+  describe('pagination', () => {
+    it('shows correct total number of recommendations', () => {
+      checkPaginationTotal(filterData(DEFAULT_FILTERS).length);
+    });
+
+    it('values are expected ones', () => {
+      checkPaginationValues(PAGINATION_VALUES);
+    });
+
+    it('can change page limit', () => {
+      // FIXME: best way to make the loop
+      cy.wrap(PAGINATION_VALUES).each((el) => {
+        changePagination(el).then(() =>
+          // TODO should this be nested. Also the other check below?
+          expect(window.location.search).to.contain(`limit=${el}`)
+        );
+        // TODO have a checkRowCounts function that works with expandadable tables
+        cy.get('table')
+          .find('[data-ouia-component-type="PF4/TableRow"]') // TODO use ROW from components module
+          .find(`td[data-label="Name"]`)
+          .should(
+            'have.length',
+            Math.min(el, filterData(DEFAULT_FILTERS).length)
+          );
+      });
+    });
+    it('can iterate over pages', () => {
+      cy.wrap(itemsPerPage(filterData(DEFAULT_FILTERS))).each(
+        (el, index, list) => {
+          // TODO replace function to check row counts
+          cy.get('table')
+            .find('[data-ouia-component-type="PF4/TableRow"]') // TODO use ROW from components module
+            .find(`td[data-label="Name"]`)
+            .should(
+              'have.length',
+              Math.min(el, filterData(DEFAULT_FILTERS).length)
+            )
+            .then(() => {
+              expect(window.location.search).to.contain(
+                `offset=${DEFAULT_ROW_COUNT * index}`
+              );
+            });
+          cy.get(TOOLBAR)
+            .find(PAGINATION)
+            .find('button[data-action="next"]')
+            .then(($button) => {
+              if (index === list.length - 1) {
+                cy.wrap($button).should('be.disabled');
+              } else {
+                cy.wrap($button).click();
+              }
+            });
+        }
+      );
+    });
+  });
 
   describe('sorting', () => {
     // TODO make sorting tests data independent
@@ -535,7 +699,7 @@ describe('Recs list is requested with additional parameters №1', () => {
                 isFetching: false,
                 isUninitialized: false,
                 isSuccess: true,
-                data: data,
+                data: ruleResponse,
               }}
             />
           </Provider>
@@ -573,7 +737,7 @@ describe('Recs list is requested with additional parameters №2', () => {
                 isFetching: false,
                 isUninitialized: false,
                 isSuccess: true,
-                data: data,
+                data: ruleResponse,
               }}
             />
           </Provider>
