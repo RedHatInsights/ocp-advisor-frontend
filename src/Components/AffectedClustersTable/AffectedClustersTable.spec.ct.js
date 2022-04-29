@@ -432,12 +432,6 @@ describe('non-empty successful affected clusters table', () => {
 
             // add property name to clusters
             let sortedClusters = _.cloneDeep(data);
-            sortedClusters.forEach(
-              (it) =>
-                (it['name'] = it['cluster_name']
-                  ? it['cluster_name']
-                  : it['cluster'])
-            );
             // convert N/A timestamps as really old ones
             sortedClusters.forEach((it) => {
               if (it['last_checked_at'] === '') {
@@ -446,7 +440,7 @@ describe('non-empty successful affected clusters table', () => {
             });
 
             if (category === 'name') {
-              // name sorting is case insentive
+              // name sorting is case insensitive
               category = (it) => it.name.toLowerCase();
             }
 
