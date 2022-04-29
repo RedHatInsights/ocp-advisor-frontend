@@ -62,18 +62,6 @@ const TABLE_HEADERS = [
   'Low',
   'Last seen',
 ];
-// TODO check if there is a simple conversion for this
-// lowercase and replace spaces with _
-// whould that make sense?
-const TABLE_HEADERS_SORT_KEYS = {
-  Name: 'name',
-  Recommendations: 'recommendations',
-  Critical: 'critical',
-  Important: 'important',
-  Moderate: 'moderate',
-  Low: 'low',
-  'Last seen': 'last_seen',
-};
 
 // FIXME improve syntax
 // FIXME move to utils module
