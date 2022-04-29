@@ -23,12 +23,14 @@ import {
 import { SORTING_ORDERS } from '../../../cypress/utils/globals';
 import {
   checkTableHeaders,
-  checkPaginationTotal,
   checkRowCounts,
+} from '../../../cypress/utils/table';
+import {
+  itemsPerPage,
+  checkPaginationTotal,
   checkPaginationValues,
   changePagination,
-  columnName2UrlParam,
-} from '../../../cypress/utils/table';
+} from '../../../cypress/utils/pagination';
 
 const data = props['data'];
 // add property name to clusters
@@ -62,20 +64,6 @@ const TABLE_HEADERS = [
   'Low',
   'Last seen',
 ];
-
-// FIXME improve syntax
-// FIXME move to utils module
-function itemsPerPage() {
-  let items = data.length;
-  const array = [];
-  while (items > 0) {
-    const remain = items - DEFAULT_ROW_COUNT;
-    let v = remain > 0 ? DEFAULT_ROW_COUNT : items;
-    array.push(v);
-    items = remain;
-  }
-  return array;
-}
 
 // TODO: test pre-filled search parameters filtration
 
@@ -220,7 +208,7 @@ describe('clusters list table', () => {
       });
     });
     it('can iterate over pages', () => {
-      cy.wrap(itemsPerPage()).each((el, index, list) => {
+      cy.wrap(itemsPerPage(data.length)).each((el, index, list) => {
         checkRowCounts(TABLE, el).then(() => {
           // TODO why is this nested?
           expect(window.location.search).to.contain(
