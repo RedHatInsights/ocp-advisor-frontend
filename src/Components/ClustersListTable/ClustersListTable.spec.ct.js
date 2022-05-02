@@ -31,6 +31,7 @@ import {
   changePagination,
 } from '../../../cypress/utils/pagination';
 
+// TODO check if we can rid this of this data and use namedClustersInstead
 const data = props['data'];
 // add property name to clusters
 let namedClusters = _.cloneDeep(data);
@@ -487,12 +488,16 @@ describe('clusters list table', () => {
   });
 
   it('names of rows are links', () => {
-    cy.getFirstRow()
-      .find('td[data-label=Name]')
-      .find(
-        `a[href="/clusters/${namedClustersDefaultSorting[0]['cluster_id']}"]`
-      )
-      .should('have.text', namedClustersDefaultSorting[0]['name']);
+    cy.get(TBODY)
+      .children()
+      .each(($el, index) => {
+        cy.wrap($el)
+          .find('td[data-label=Name]')
+          .find(
+            `a[href="/clusters/${namedClustersDefaultSorting[index]['cluster_id']}"]`
+          )
+          .should('have.text', namedClustersDefaultSorting[index]['name']);
+      });
   });
 
   // TODO avoid hardcoded values

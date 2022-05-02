@@ -41,24 +41,29 @@ const BULK_SELECT = 'clusters-selector';
 const SEARCH_ITEMS = ['ff', 'CUSTOM', 'Foobar', 'Not existing cluster'];
 const TABLE_HEADERS = ['Name', 'Last seen'];
 
-const data = clusterDetailData.data;
+let data = _.cloneDeep(clusterDetailData.data['enabled']);
+data.forEach(
+  (it) => (it['name'] = it['cluster_name'] ? it['cluster_name'] : it['cluster'])
+);
+// default sorting
+data = _.orderBy(data, ['last_checked_at'], ['desc']);
 
 function filterData(text = '') {
-  return _.filter(data['enabled'], (it) =>
-    (it?.cluster_name || it.cluster).toLowerCase().includes(text.toLowerCase())
+  return _.filter(data, (it) =>
+    it.name.toLowerCase().includes(text.toLowerCase())
   );
 }
 
 describe('test data', () => {
   it('has enabled clusters', () => {
-    cy.wrap(data['enabled']).its('length').should('be.gte', 1);
+    cy.wrap(data).its('length').should('be.gte', 1);
   });
   it('has more enabled clusters than default rows', () => {
-    cy.wrap(data['enabled']).its('length').should('be.gt', DEFAULT_ROW_COUNT);
+    cy.wrap(data).its('length').should('be.gt', DEFAULT_ROW_COUNT);
   });
   it('has less data than 51', () => {
     // 50 is the value [2] in pagination
-    cy.wrap(data['enabled']).its('length').should('be.lte', 50);
+    cy.wrap(data).its('length').should('be.lte', 50);
   });
   it('has more than one enabled clusters with "custom" in name', () => {
     cy.wrap(filterData('custom')).its('length').should('be.gt', 1);
@@ -79,11 +84,10 @@ describe('test data', () => {
   });
   // TODO last_check_at cannot be empty. Update/remove the test and update the data file
   it('has at least one entry with N/A time', () => {
-    cy.wrap(_.filter(data['enabled'], (it) => it['last_checked_at'] === ''))
+    cy.wrap(_.filter(data, (it) => it['last_checked_at'] === ''))
       .its('length')
       .should('be.gte', 1);
   });
-  // TODO check also `rule` data
 });
 
 describe('non-empty successful affected clusters table', () => {
@@ -98,7 +102,7 @@ describe('non-empty successful affected clusters table', () => {
                 isFetching: false,
                 isUninitialized: false,
                 isSuccess: true,
-                data: data,
+                data: clusterDetailData.data,
               }}
               rule={rule.content}
             />
@@ -120,14 +124,27 @@ describe('non-empty successful affected clusters table', () => {
     checkTableHeaders(TABLE_HEADERS);
   });
 
-  // TODO do not hardcode values
-  it('display name is rendered instead of cluster uuid', () => {
-    cy.get(ROOT)
-      .find(TBODY)
-      .find(ROW)
-      .contains('custom cluster name 2')
-      .should('have.attr', 'href')
-      .and('contain', '/clusters/f7331e9a-2f59-484d-af52-338d56165df5');
+  it('rows show cluster names instead uuids when available', () => {
+    const names = _.map(data, 'name');
+    cy.get(`td[data-label="Name"]`)
+      .then(($els) => {
+        return _.map(Cypress.$.makeArray($els), 'innerText');
+      })
+      .should(
+        'deep.equal',
+        names.slice(0, Math.min(DEFAULT_ROW_COUNT, names.length))
+      );
+  });
+
+  it('names of rows are links', () => {
+    cy.get(TBODY)
+      .children()
+      .each(($el, index) => {
+        cy.wrap($el)
+          .find('td[data-label=Name]')
+          .find(`a[href*="/clusters/${data[index]['cluster']}"]`)
+          .should('have.text', data[index]['name']);
+      });
   });
 
   describe('defaults', () => {
@@ -207,7 +224,7 @@ describe('non-empty successful affected clusters table', () => {
       cy.ouiaId(BULK_SELECT).find('input').should('not.be.checked');
       cy.ouiaId(BULK_SELECT)
         .find('label.pf-c-dropdown__toggle-check')
-        .contains(`${data['enabled'].length - 1} selected`);
+        .contains(`${data.length - 1} selected`);
       // bulk disabling button is still enabled
       cy.get(TOOLBAR)
         .find('.pf-m-spacer-sm')
@@ -267,7 +284,7 @@ describe('non-empty successful affected clusters table', () => {
         .should(($lis) => {
           expect($lis).to.have.length(2);
           expect($lis.eq(0)).to.contain('0');
-          expect($lis.eq(1)).to.contain(`${data['enabled'].length}`);
+          expect($lis.eq(1)).to.contain(`${data.length}`);
         });
     });
 
@@ -279,7 +296,7 @@ describe('non-empty successful affected clusters table', () => {
       // contains right text
       cy.ouiaId(BULK_SELECT)
         .find('label.pf-c-dropdown__toggle-check')
-        .contains(`${data['enabled'].length} selected`);
+        .contains(`${data.length} selected`);
       // checks all rows
       cy.get(ROOT)
         .find(TBODY)
@@ -332,7 +349,7 @@ describe('non-empty successful affected clusters table', () => {
 
   describe('pagination', () => {
     it('shows correct total number of clusters', () => {
-      checkPaginationTotal(data['enabled'].length);
+      checkPaginationTotal(data.length);
     });
 
     it('values are expected ones', () => {
@@ -374,7 +391,7 @@ describe('non-empty successful affected clusters table', () => {
 
             cy.get(col).should(
               'have.length',
-              Math.min(DEFAULT_ROW_COUNT, data['enabled'].length)
+              Math.min(DEFAULT_ROW_COUNT, data.length)
             );
             if (order === 'ascending') {
               cy.get(header).find('button').click();
@@ -384,13 +401,7 @@ describe('non-empty successful affected clusters table', () => {
             // TODO should we check URL as in ClusterListTable?
 
             // add property name to clusters
-            let sortedClusters = _.cloneDeep(data['enabled']);
-            sortedClusters.forEach(
-              (it) =>
-                (it['name'] = it['cluster_name']
-                  ? it['cluster_name']
-                  : it['cluster'])
-            );
+            let sortedClusters = _.cloneDeep(data);
             // convert N/A timestamps as really old ones
             sortedClusters.forEach((it) => {
               if (it['last_checked_at'] === '') {
@@ -399,7 +410,7 @@ describe('non-empty successful affected clusters table', () => {
             });
 
             if (category === 'name') {
-              // name sorting is case insentive
+              // name sorting is case insensitive
               category = (it) => it.name.toLowerCase();
             }
 
@@ -524,11 +535,9 @@ describe('non-empty successful affected clusters table', () => {
       // TODO check page is reloaded afterwards
 
       // can check the number of request for disable because all occur before @disableFeedbackRequest
-      cy.get('@disableRequest.all')
-        .its('length')
-        .should('equal', data['enabled'].length);
+      cy.get('@disableRequest.all').its('length').should('equal', data.length);
       // cannot check the number of request because we miss a waiting condition
-      // cy.get('@disableFeedbackRequest.all').its('length').should('equal', data['enabled'].length);
+      // cy.get('@disableFeedbackRequest.all').its('length').should('equal', data.length);
     });
 
     it('modal cancel does not trigger anything', () => {
