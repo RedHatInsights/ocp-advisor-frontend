@@ -341,7 +341,6 @@ describe('successful non-empty recommendations list table', () => {
       // FIXME: best way to make the loop
       cy.wrap(PAGINATION_VALUES).each((el) => {
         changePagination(el).then(() =>
-          // TODO should this be nested. Also the other check below?
           expect(window.location.search).to.contain(`limit=${el}`)
         );
         // TODO have a checkRowCounts function that works with expandadable tables
