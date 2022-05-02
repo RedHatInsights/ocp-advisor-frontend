@@ -219,7 +219,7 @@ describe('cluster rules table', () => {
             if (order === 'ascending') {
               cy.get(header).find('button').click();
             } else {
-              cy.get(header).find('button').dblclick();
+              cy.get(header).find('button').click().click();
             }
             let sortedDescriptions = _.map(
               _.orderBy(
@@ -464,7 +464,7 @@ describe('cluster rules table testing the first query parameter', () => {
           if (order === 'ascending') {
             cy.get(header).find('button').click();
           } else {
-            cy.get(header).find('button').dblclick();
+            cy.get(header).find('button').click().click();
           }
           let sortedDescriptions = _.map(
             _.orderBy(
