@@ -6,7 +6,6 @@ import { Provider } from 'react-redux';
 import DisableRule from './DisableRule';
 import { Intl } from '../../Utilities/intlHelper';
 import getStore from '../../Store';
-import '@patternfly/patternfly/patternfly.scss';
 import {
   ouiaId,
   CHECKBOX,
