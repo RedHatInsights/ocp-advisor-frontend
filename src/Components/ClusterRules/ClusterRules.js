@@ -228,6 +228,7 @@ const ClusterRules = ({ cluster }) => {
 
   const onSort = (_e, index, direction) => {
     setFirstRule('');
+    setExpandFirst(false);
     return updateFilters({
       ...filters,
       sortIndex: index,
