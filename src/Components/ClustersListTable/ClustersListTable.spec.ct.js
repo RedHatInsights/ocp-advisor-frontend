@@ -50,7 +50,7 @@ namedClusters.forEach((it) => {
 // default sorting
 let namedClustersDefaultSorting = _.orderBy(
   namedClusters,
-  ['last_checked_at'],
+  [(it) => it.last_checked_at || '1970-01-01T01:00:00.001Z'],
   ['desc']
 );
 
@@ -64,18 +64,11 @@ const TABLE_HEADERS = [
   'Low',
   'Last seen',
 ];
-// TODO check if there is a simple conversion for this
-// lowercase and replace spaces with _
-// whould that make sense?
-const TABLE_HEADERS_SORT_KEYS = {
-  Name: 'name',
-  Recommendations: 'recommendations',
-  Critical: 'critical',
-  Important: 'important',
-  Moderate: 'moderate',
-  Low: 'low',
-  'Last seen': 'last_seen',
-};
+
+// TODO move sw else? Also useful for other modules
+function columnName2UrlParam(name) {
+  return name.toLowerCase().replace(/ /g, '_');
+}
 
 // TODO: test pre-filled search parameters filtration
 
@@ -106,7 +99,7 @@ describe('data', () => {
       .should('be.gte', 1);
   });
   it('at least one entry does not have last seen', () => {
-    cy.wrap(_.filter(data, (it) => it.last_checked_at === ''))
+    cy.wrap(_.filter(data, (it) => it.last_checked_at === undefined))
       .its('length')
       .should('be.gte', 1);
   });
@@ -242,58 +235,6 @@ describe('clusters list table', () => {
   });
 
   describe('sorting', () => {
-    // TODO check duplicated
-    // TODO do not use hardcoded values
-    it('can sort by columns', () => {
-      // check initial state
-      cy.getFirstRow()
-        .find('td[data-label=Name]')
-        .should('have.text', '947b8f15-cc44-47ca-9265-945085d4f3b8');
-      // click on the Name sorting button
-      cy.get('.pf-c-table__sort')
-        .eq(0)
-        .click()
-        .then(() => expect(window.location.search).to.contain(`sort=name`));
-      cy.getFirstRow()
-        .find('td[data-label=Name]')
-        .should('have.text', '1ghhxwjfoi 5b5hbyv07');
-      // click on the Recommendations sorting button
-      cy.get('.pf-c-table__sort')
-        .eq(1)
-        .click()
-        .then(() =>
-          expect(window.location.search).to.contain(`sort=recommendations`)
-        );
-      // the first cluster has 0 recommendations
-      cy.getFirstRow()
-        .find('td[data-label=Recommendations]')
-        .should('have.text', 0);
-    });
-
-    // TODO check duplicated
-    it('sorts N/A in last seen correctly', () => {
-      cy.get('.pf-c-table__sort')
-        .eq(6)
-        .click()
-        .then(() =>
-          expect(window.location.search).to.contain(`sort=last_seen`)
-        );
-      cy.getFirstRow().find('span').should('have.text', 'N/A');
-      cy.get('.pf-c-table__sort').eq(6).click();
-      cy.get(PAGINATION)
-        .eq(0)
-        .find('.pf-c-options-menu__toggle-button')
-        .click();
-      cy.get(PAGINATION)
-        .eq(0)
-        .find('.pf-c-options-menu')
-        .find('li')
-        .eq(2)
-        .find('button')
-        .click();
-      cy.getLastRow().find('span').should('have.text', 'N/A');
-    });
-
     _.zip(
       [
         'name',
@@ -320,19 +261,25 @@ describe('clusters list table', () => {
               .find('button')
               .click()
               .then(() =>
-                // TODO is needed to have it nested?
-                // TODO why only on ascending?
                 expect(window.location.search).to.contain(
-                  `sort=${order === 'descending' ? '-' : ''}${
-                    TABLE_HEADERS_SORT_KEYS[label]
-                  }`
+                  `sort=${columnName2UrlParam(label)}`
                 )
               );
           } else {
-            cy.get(header).find('button').dblclick();
+            cy.get(header)
+              .find('button')
+              .dblclick()
+              .then(() =>
+                expect(window.location.search).to.contain(
+                  `sort=-${columnName2UrlParam(label)}`
+                )
+              );
           }
 
-          // TODO is N/A mapping needed as is AffectedClustersTable?
+          // map missing last_check_at to old times
+          if (category === 'last_checked_at') {
+            category = (it) => it.last_checked_at || '1970-01-01T01:00:00.001Z';
+          }
 
           // add property name to clusters
           let sortedNames = _.map(
@@ -397,7 +344,7 @@ describe('clusters list table', () => {
         .find('button')
         .click()
         .then(() => expect(window.location.search).to.contain(`limit=50`));
-      cy.getTotalClusters().should('have.text', 26);
+      cy.getTotalClusters().should('have.text', 24);
       // check all shown clusters have recommendations > 0
       cy.get('TBODY')
         .find('td[data-label=Recommendations]')
