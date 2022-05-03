@@ -186,9 +186,9 @@ describe('cluster rules table', () => {
   });
 
   describe('defaults', () => {
-    it('only first item expanded', () => {
+    it('no expanded rows', () => {
       cy.get('#expanded-content1').should('have.length', 1);
-      cy.get(EXPANDABLES).should('have.length', 1);
+      cy.get(EXPANDABLES).should('have.length', 0);
     });
     it('no chips are displayed by default', () => {
       cy.get(CHIP_GROUP).should('not.exist');

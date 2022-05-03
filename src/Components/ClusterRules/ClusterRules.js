@@ -62,16 +62,15 @@ const ClusterRules = ({ cluster }) => {
   const { isError, isUninitialized, isFetching, isSuccess, data, error } =
     cluster;
   const reports = data?.report?.data || [];
-
   const [filteredRows, setFilteredRows] = useState([]);
   const [displayedRows, setDisplayedRows] = useState([]);
   const [isAllExpanded, setIsAllExpanded] = useState(false);
-  const [expandFirst, setExpandFirst] = useState(true);
   const [firstRule, setFirstRule] = useState(''); // show a particular rule first
   const results = filteredRows.length;
   const { search } = useLocation();
   // helps to distinguish the state when the API data received but not yet filtered
   const [rowsFiltered, setRowsFiltered] = useState(false);
+  const [recordExpanded, setRecordExpanded] = useState([]);
   const loadingState = isUninitialized || isFetching || !rowsFiltered;
   const errorState = isError;
   const successState = isSuccess;
@@ -116,6 +115,9 @@ const ClusterRules = ({ cluster }) => {
   const handleOnCollapse = (_e, rowId, isOpen) => {
     const collapseRows = [...displayedRows];
     collapseRows[rowId] = { ...collapseRows[rowId], isOpen };
+    if (!recordExpanded.includes(collapseRows[rowId].rule.rule_id)) {
+      setRecordExpanded([...recordExpanded, collapseRows[rowId].rule.rule_id]);
+    }
     setDisplayedRows(collapseRows);
   };
 
@@ -125,7 +127,11 @@ const ClusterRules = ({ cluster }) => {
       .map((value, key) => [
         {
           rule: value,
-          isOpen: isAllExpanded,
+          isOpen: isAllExpanded
+            ? true
+            : value?.rule_id === recordExpanded.includes(value?.rule_id)
+            ? true
+            : false,
           cells: [
             {
               title: (
@@ -218,7 +224,7 @@ const ClusterRules = ({ cluster }) => {
     }
     return sortingRows.flatMap((row, index) => {
       const updatedRow = [...row];
-      if (expandFirst && index === 0) {
+      if (recordExpanded.includes(row[0].rule.rule_id)) {
         row[0].isOpen = true;
       }
       row[1].parent = index * 2;
@@ -243,7 +249,6 @@ const ClusterRules = ({ cluster }) => {
 
   // TODO: update URL when filters changed
   const addFilterParam = (param, values) => {
-    setExpandFirst(false);
     setFirstRule('');
     return values.length > 0
       ? updateFilters({ ...filters, offset: 0, ...{ [param]: values } })
