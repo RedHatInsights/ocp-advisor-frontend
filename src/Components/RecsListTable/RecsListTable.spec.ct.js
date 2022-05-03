@@ -15,7 +15,7 @@ import {
   CHIP_GROUP,
   PAGINATION,
 } from '../../../cypress/utils/components';
-import { urlParamConvert } from '../../../cypress/utils/filters';
+import { hasChip, urlParamConvert } from '../../../cypress/utils/filters';
 import {
   DEFAULT_ROW_COUNT,
   PAGINATION_VALUES,
@@ -24,8 +24,13 @@ import {
   checkPaginationTotal,
   checkPaginationValues,
   changePagination,
+  itemsPerPage,
 } from '../../../cypress/utils/pagination';
 import { TOTAL_RISK, CATEGORIES } from '../../../cypress/utils/globals';
+import {
+  checkRowCounts,
+  columnName2UrlParam,
+} from '../../../cypress/utils/table';
 // TODO make more use of ../../../cypress/utils/components
 
 // selectors
@@ -35,7 +40,7 @@ const FILTERS_DROPDOWN = 'ul[class=pf-c-dropdown__menu]';
 const FILTER_TOGGLE = 'span[class=pf-c-select__toggle-arrow]';
 // TODO refer to https://github.com/RedHatInsights/ocp-advisor-frontend/blob/master/src/Services/Filters.js#L13
 const DEFAULT_FILTERS = {
-  impacting: true,
+  impacting: 'true',
   rule_status: 'enabled',
 };
 
@@ -67,7 +72,7 @@ function filterData(filters) {
       );
     } else if (key === 'impacting') {
       // TODO if value is true,false skip
-      if (value) {
+      if (value === 'true') {
         filteredData = _.filter(
           filteredData,
           (it) => it.impacted_clusters_count > 0
@@ -91,19 +96,6 @@ const DEFAULT_DISPLAYED_SIZE = Math.min(
   filterData(DEFAULT_FILTERS).length,
   DEFAULT_ROW_COUNT
 );
-
-// TODO use the one in utils once 236 is merged
-function itemsPerPage(data) {
-  let items = data.length;
-  const array = [];
-  while (items > 0) {
-    const remain = items - DEFAULT_ROW_COUNT;
-    let v = remain > 0 ? DEFAULT_ROW_COUNT : items;
-    array.push(v);
-    items = remain;
-  }
-  return array;
-}
 
 // actions
 Cypress.Commands.add('getAllRows', () => cy.get(ROOT).find(ROW));
@@ -180,12 +172,12 @@ describe('pre-filled url search parameters', () => {
     const urlSearchParameters = new URLSearchParams(urlParams);
     for (const [key, value] of urlSearchParameters) {
       if (key == 'text') {
-        getChipGroup('Name').contains('.pf-c-chip', value);
+        hasChip('Name', value);
         cy.get('.pf-m-fill > .pf-c-form-control').should('have.value', value);
       } else {
         value.split(',').forEach((it) => {
           const [group, item] = urlParamConvert(key, it);
-          getChipGroup(group).contains('.pf-c-chip', item);
+          hasChip(group, item);
         });
       }
     }
@@ -274,13 +266,13 @@ describe('successful non-empty recommendations list table', () => {
 
   // TODO do not hardcode data
   it('table has 4 recs', () => {
-    cy.getAllRows().should('have.length', 4);
+    checkRowCounts(ROOT, 4);
   });
 
   // TODO do not hardcode data
   it('table has 7 recs including non-impacting', () => {
     cy.removeImpactingFilter();
-    cy.getAllRows().should('have.length', 7);
+    checkRowCounts(ROOT, 7);
   });
 
   // TODO do not hardcode data
@@ -294,32 +286,38 @@ describe('successful non-empty recommendations list table', () => {
     // TODO enhance tests See ClustersListTable
 
     it(`shows maximum ${DEFAULT_ROW_COUNT} recommendations`, () => {
-      // TODO get a function like checkRowCounts with expandable rows
-      cy.get('table')
-        .find('[data-ouia-component-type="PF4/TableRow"]') // TODO use ROW from components module
-        .find(`td[data-label="Name"]`)
-        .should('have.length', DEFAULT_DISPLAYED_SIZE);
-      expect(window.location.search).to.contain('limit=20'); // TODO do not hardcode value
-    });
-
-    it('default sort by total risk', () => {
-      const column = 'Total risk';
-      // TODO do not use ROW but Table and th. See AffectedClustersTable
-      cy.get(ROW)
-        .children()
-        .eq(0)
-        .find(`td[data-label="${column}"]`)
-        .contains('Critical'); // TODO do not use value hardcoded. Use class as in AffectedClustersTable
-      // TODO use columnName2UrlParam once !238 is merged
-      // expect(window.location.search).to.contain(`sort=-${columnName2UrlParam(column)}`);
-      expect(window.location.search).to.contain('sort=-total_risk');
+      checkRowCounts(ROOT, DEFAULT_DISPLAYED_SIZE);
+      expect(window.location.search).to.contain(`limit=${DEFAULT_ROW_COUNT}`);
     });
 
     it(`pagination is set to ${DEFAULT_ROW_COUNT}`, () => {
       cy.get('.pf-c-options-menu__toggle-text')
         .find('b')
         .eq(0)
-        .should('have.text', `1 - ${DEFAULT_DISPLAYED_SIZE}`); // TODO do not hardcode value
+        .should('have.text', `1 - ${DEFAULT_DISPLAYED_SIZE}`);
+    });
+
+    it('sort by total risk', () => {
+      const column = 'Total risk';
+      cy.get(ROOT)
+        .find(`th[data-label="${column}"]`)
+        .should('have.class', 'pf-c-table__sort pf-m-selected');
+      expect(window.location.search).to.contain(
+        `sort=-${columnName2UrlParam(column)}`
+      );
+    });
+
+    it('applies filters', () => {
+      for (const [key, value] of Object.entries(DEFAULT_FILTERS)) {
+        const [group, item] = urlParamConvert(key, value);
+        hasChip(group, item);
+        expect(window.location.search).to.contain(`${key}=${value}`);
+      }
+      // do not get more chips than expected
+      cy.get(CHIP_GROUP).should(
+        'have.length',
+        Object.keys(DEFAULT_FILTERS).length
+      );
     });
 
     it('reset filters button is displayed', () => {
@@ -342,32 +340,20 @@ describe('successful non-empty recommendations list table', () => {
         changePagination(el).then(() =>
           expect(window.location.search).to.contain(`limit=${el}`)
         );
-        // TODO have a checkRowCounts function that works with expandadable tables
-        cy.get('table')
-          .find('[data-ouia-component-type="PF4/TableRow"]') // TODO use ROW from components module
-          .find(`td[data-label="Name"]`)
-          .should(
-            'have.length',
-            Math.min(el, filterData(DEFAULT_FILTERS).length)
-          );
+        checkRowCounts(ROOT, Math.min(el, filterData(DEFAULT_FILTERS).length));
       });
     });
     it('can iterate over pages', () => {
-      cy.wrap(itemsPerPage(filterData(DEFAULT_FILTERS))).each(
+      cy.wrap(itemsPerPage(filterData(DEFAULT_FILTERS).length)).each(
         (el, index, list) => {
-          // TODO replace function to check row counts
-          cy.get('table')
-            .find('[data-ouia-component-type="PF4/TableRow"]') // TODO use ROW from components module
-            .find(`td[data-label="Name"]`)
-            .should(
-              'have.length',
-              Math.min(el, filterData(DEFAULT_FILTERS).length)
-            )
-            .then(() => {
-              expect(window.location.search).to.contain(
-                `offset=${DEFAULT_ROW_COUNT * index}`
-              );
-            });
+          checkRowCounts(
+            ROOT,
+            Math.min(el, filterData(DEFAULT_FILTERS).length)
+          ).then(() => {
+            expect(window.location.search).to.contain(
+              `offset=${DEFAULT_ROW_COUNT * index}`
+            );
+          });
           cy.get(TOOLBAR)
             .find(PAGINATION)
             .find('button[data-action="next"]')
@@ -492,11 +478,12 @@ describe('successful non-empty recommendations list table', () => {
       cy.removeStatusFilter().then(() => {
         expect(window.location.search).to.not.contain('rule_status');
       });
-      cy.getAllRows()
-        .should('have.length', 5)
+      // TODO Verify that rule is in data as disabled
+      checkRowCounts(ROOT, 5)
         .find('td[data-label="Name"]')
         .contains('disabled rule with 2 impacted')
         .should('have.length', 1);
+      // TODO make test data agnostic as long as one disabled rule is present
     });
 
     it('the Impacted filters work correctly', () => {
@@ -535,7 +522,7 @@ describe('successful non-empty recommendations list table', () => {
           expect(window.location.search).to.contain('text=cc');
         });
       // remove the chip
-      getChipGroup('Name')
+      cy.contains(CHIP_GROUP, 'Name')
         .find('button')
         .click()
         .then(() => {
@@ -561,7 +548,7 @@ describe('successful non-empty recommendations list table', () => {
   describe('enabling/disabling', () => {
     it('disabled rule has a label', () => {
       cy.removeStatusFilter();
-      cy.getAllRows().should('have.length', 5);
+      checkRowCounts(ROOT, 5);
       cy.getRowByName('disabled rule with 2 impacted')
         .children()
         .eq(0)

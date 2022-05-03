@@ -14,8 +14,17 @@ function checkTableHeaders(expectedHeaders) {
     .should('deep.equal', expectedHeaders);
 }
 
+// TODO function to get all rows
+
+// TODO fucntion to get rowgroup
+
+// TODO remove tableLocator and simply use 'table'
 function checkRowCounts(tableLocator, n) {
   return cy.get(tableLocator).find(TBODY).find(ROW).should('have.length', n);
 }
 
-export { checkTableHeaders, checkRowCounts };
+function columnName2UrlParam(name) {
+  return name.toLowerCase().replace(/ /g, '_');
+}
+
+export { checkTableHeaders, checkRowCounts, columnName2UrlParam };

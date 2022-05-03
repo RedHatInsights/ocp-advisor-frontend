@@ -6,14 +6,14 @@
     {
       "cluster": "685de527-ad9e-426c-a83f-07d797dd28e8",
       "cluster_name": "foobar cluster",
-      "last_checked_at": ""
+      "last_checked_at": "2022-05-22T08:32:37.690Z"
     },
     { "cluster": "4bc920df-7935-4882-a946-e1e735439620", "cluster_name": "","last_checked_at": "2020-02-22T08:32:37.690Z" },
     { "cluster": "41c30565-b4c9-49f2-a4ce-3277ad22b258", "cluster_name": "","last_checked_at": "2020-02-22T08:32:37.690Z" },
     {
       "cluster": "6810f59e-c37c-420a-ae52-c23ccaccffc9",
       "cluster_name": "custom cluster name 1",
-      "last_checked_at": ""
+      "last_checked_at": "2021-04-02T08:32:37.690Z"
     },
     { "cluster": "5d5892d3-1f74-4ccf-22af-548dfc9767bb", "cluster_name": "","last_checked_at": "2021-04-08T20:35:32.798Z" },
     { "cluster": "444cf4e5-a983-4894-9852-cb8b441b7006", "cluster_name": "","last_checked_at": "2021-04-08T20:35:32.798Z" },
@@ -22,7 +22,7 @@
     {
       "cluster": "f7331e9a-2f59-484d-af52-338d56165df5",
       "cluster_name": "custom cluster name 2",
-      "last_checked_at": ""
+      "last_checked_at": "2020-11-07T08:32:37.690Z"
     },
     { "cluster": "56f646b2-cf9f-46b2-9553-0e399465b966", "cluster_name": "Cluster C","last_checked_at": "2021-04-08T20:35:32.798Z" },
     { "cluster": "e508506a-6cac-4925-9582-fdc0338e1020", "cluster_name": "Cluster C","last_checked_at": "2021-04-08T20:35:32.798Z" },
@@ -33,9 +33,9 @@
     { "cluster": "96c55abf-db62-4e99-b01a-9331a757097f", "cluster_name": "","last_checked_at": "2021-01-11T16:00:00Z" },
     { "cluster": "dd2ef343-9131-46f5-8962-290fdfdf2199", "cluster_name": "","last_checked_at": "2021-10-17T15:00:00Z" },
     { "cluster": "90f9a6ea-f79a-4d8d-a889-f0fb151aca5e", "cluster_name": "","last_checked_at": "2021-04-08T20:35:32.798Z" },
-    { "cluster": "ff41a4ee-aa2c-43a2-ac65-d5956252416d", "cluster_name": "","last_checked_at": "" },
-    { "cluster": "020cc0a1-6f1a-45fa-9780-3f4e74590902", "cluster_name": "","last_checked_at": "" },
-    { "cluster": "75400997-78fe-404e-a900-1c630bc3501d", "cluster_name": "","last_checked_at": "" }
+    { "cluster": "ff41a4ee-aa2c-43a2-ac65-d5956252416d", "cluster_name": "","last_checked_at": "2020-02-22T08:32:37.690Z" },
+    { "cluster": "020cc0a1-6f1a-45fa-9780-3f4e74590902", "cluster_name": "","last_checked_at": "2020-02-22T08:32:37.690Z" },
+    { "cluster": "75400997-78fe-404e-a900-1c630bc3501d", "cluster_name": "","last_checked_at": "2020-02-22T08:32:37.690Z" }
     ],
     "disabled": [
       {

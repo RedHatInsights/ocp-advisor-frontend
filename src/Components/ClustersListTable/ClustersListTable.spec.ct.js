@@ -23,6 +23,7 @@ import { SORTING_ORDERS } from '../../../cypress/utils/globals';
 import {
   checkTableHeaders,
   checkRowCounts,
+  columnName2UrlParam,
 } from '../../../cypress/utils/table';
 import {
   itemsPerPage,
@@ -64,11 +65,6 @@ const TABLE_HEADERS = [
   'Low',
   'Last seen',
 ];
-
-// TODO move sw else? Also useful for other modules
-function columnName2UrlParam(name) {
-  return name.toLowerCase().replace(/ /g, '_');
-}
 
 const DEFAULT_DISPLAYED_SIZE = Math.min(
   namedClusters.length,
@@ -158,9 +154,9 @@ describe('clusters list table', () => {
   });
 
   describe('defaults', () => {
-    it(`shows ${DEFAULT_DISPLAYED_SIZE} clusters only`, () => {
+    it(`shows maximum ${DEFAULT_ROW_COUNT} clusters`, () => {
       checkRowCounts(ROOT, DEFAULT_DISPLAYED_SIZE);
-      expect(window.location.search).to.contain(`limit=${DEFAULT_ROW_COUNT}`);
+      expect(window.location.search).to.contain('limit=${DEFAULT_ROW_COUNT}');
     });
 
     it(`pagination is set to ${DEFAULT_ROW_COUNT}`, () => {
@@ -170,11 +166,12 @@ describe('clusters list table', () => {
         .should('have.text', `1 - ${DEFAULT_DISPLAYED_SIZE}`);
     });
 
-    it.only('sorting using last seen', () => {
+    it('sorting using last seen', () => {
       // TODO create a function used also in other tests
       cy.get(ROOT)
         .find('th[data-label="Last seen"]')
         .should('have.class', 'pf-c-table__sort pf-m-selected');
+      // TODO check window.location as in  RecsListTable (if applicable)
     });
 
     it('applies total risk "All clusters" filter', () => {
