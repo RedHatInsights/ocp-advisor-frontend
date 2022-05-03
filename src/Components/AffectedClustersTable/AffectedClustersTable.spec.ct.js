@@ -176,7 +176,7 @@ describe('non-empty successful affected clusters table', () => {
 
     it('sorting using last seen', () => {
       cy.get(ROOT)
-        .find('th[data-key=2]') // TODO use column name
+        .find('th[data-key=2]') // TODO use column name with data-label
         .should('have.class', 'pf-c-table__sort pf-m-selected');
     });
   });

@@ -287,14 +287,11 @@ describe('successful non-empty recommendations list table', () => {
       expect(window.location.search).to.contain('limit=20'); // TODO do not hardcode value
     });
 
-    it('default sort by total risk', () => {
+    it.only('default sort by total risk', () => {
       const column = 'Total risk';
-      // TODO do not use ROW but Table and th. See AffectedClustersTable
-      cy.get(ROW)
-        .children()
-        .eq(0)
-        .find(`td[data-label="${column}"]`)
-        .contains('Critical'); // TODO do not use value hardcoded. Use class as in AffectedClustersTable
+      cy.get(ROOT)
+        .find(`th[data-label="${column}"]`)
+        .should('have.class', 'pf-c-table__sort pf-m-selected');
       // TODO use columnName2UrlParam once !238 is merged
       // expect(window.location.search).to.contain(`sort=-${columnName2UrlParam(column)}`);
       expect(window.location.search).to.contain('sort=-total_risk');
