@@ -114,11 +114,7 @@ describe('data', () => {
 
 describe('clusters list table', () => {
   // TODO remove those commands and convert to functions or utilities
-  Cypress.Commands.add('getTotalClusters', () =>
-    cy.get('.pf-c-options-menu__toggle-text').find('b').eq(1)
-  );
   Cypress.Commands.add('getFirstRow', () => cy.get(TBODY).children().eq(0));
-  Cypress.Commands.add('getLastRow', () => cy.get(TBODY).children().eq(28));
 
   beforeEach(() => {
     mount(
@@ -307,13 +303,13 @@ describe('clusters list table', () => {
     });
   });
 
-  describe('filtering', () => {
+  describe.only('filtering', () => {
     // TODO improve filtering tests
     // TODO check that empty table is displayed with appropriate filters
 
     it('can filter out only hitting clusters', () => {
       // initially there are 29 clusters
-      cy.getTotalClusters().should('have.text', 29);
+      checkPaginationTotal(29); // TODO do not hardcode value
       // open filter toolbar
       cy.get('.ins-c-primary-toolbar__filter button').click();
       //change the filter toolbar item
@@ -344,7 +340,7 @@ describe('clusters list table', () => {
         .find('button')
         .click()
         .then(() => expect(window.location.search).to.contain(`limit=50`));
-      cy.getTotalClusters().should('have.text', 24);
+      checkPaginationTotal(24); // TODO do not hardcode value
       // check all shown clusters have recommendations > 0
       cy.get('TBODY')
         .find('td[data-label=Recommendations]')
