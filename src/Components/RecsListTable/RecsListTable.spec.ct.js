@@ -263,13 +263,13 @@ describe('successful non-empty recommendations list table', () => {
 
   // TODO do not hardcode data
   it('table has 4 recs', () => {
-    cy.getAllRows().should('have.length', 4);
+    checkRowCounts(ROOT, 4);
   });
 
   // TODO do not hardcode data
   it('table has 7 recs including non-impacting', () => {
     cy.removeImpactingFilter();
-    cy.getAllRows().should('have.length', 7);
+    checkRowCounts(ROOT, 7);
   });
 
   // TODO do not hardcode data
@@ -465,11 +465,12 @@ describe('successful non-empty recommendations list table', () => {
       cy.removeStatusFilter().then(() => {
         expect(window.location.search).to.not.contain('rule_status');
       });
-      cy.getAllRows()
-        .should('have.length', 5)
+      // TODO Verify that rule is in data as disabled
+      checkRowCounts(ROOT, 5)
         .find('td[data-label="Name"]')
         .contains('disabled rule with 2 impacted')
         .should('have.length', 1);
+      // TODO make test data agnostic as long as one disabled rule is present
     });
 
     it('the Impacted filters work correctly', () => {
@@ -534,7 +535,7 @@ describe('successful non-empty recommendations list table', () => {
   describe('enabling/disabling', () => {
     it('disabled rule has a label', () => {
       cy.removeStatusFilter();
-      cy.getAllRows().should('have.length', 5);
+      checkRowCounts(ROOT, 5);
       cy.getRowByName('disabled rule with 2 impacted')
         .children()
         .eq(0)
