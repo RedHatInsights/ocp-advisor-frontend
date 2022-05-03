@@ -24,6 +24,7 @@ import {
   checkPaginationTotal,
   checkPaginationValues,
   changePagination,
+  itemsPerPage,
 } from '../../../cypress/utils/pagination';
 import { TOTAL_RISK, CATEGORIES } from '../../../cypress/utils/globals';
 // TODO make more use of ../../../cypress/utils/components
@@ -91,19 +92,6 @@ const DEFAULT_DISPLAYED_SIZE = Math.min(
   filterData(DEFAULT_FILTERS).length,
   DEFAULT_ROW_COUNT
 );
-
-// TODO use the one in utils once 236 is merged
-function itemsPerPage(data) {
-  let items = data.length;
-  const array = [];
-  while (items > 0) {
-    const remain = items - DEFAULT_ROW_COUNT;
-    let v = remain > 0 ? DEFAULT_ROW_COUNT : items;
-    array.push(v);
-    items = remain;
-  }
-  return array;
-}
 
 // actions
 Cypress.Commands.add('getAllRows', () => cy.get(ROOT).find(ROW));
@@ -353,7 +341,7 @@ describe('successful non-empty recommendations list table', () => {
       });
     });
     it('can iterate over pages', () => {
-      cy.wrap(itemsPerPage(filterData(DEFAULT_FILTERS))).each(
+      cy.wrap(itemsPerPage(filterData(DEFAULT_FILTERS).length)).each(
         (el, index, list) => {
           // TODO replace function to check row counts
           cy.get('table')
