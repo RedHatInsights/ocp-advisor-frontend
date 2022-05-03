@@ -127,11 +127,9 @@ const ClusterRules = ({ cluster }) => {
       .map((value, key) => [
         {
           rule: value,
-          isOpen: isAllExpanded
-            ? true
-            : value?.rule_id === recordExpanded.includes(value?.rule_id)
-            ? true
-            : false,
+          isOpen:
+            isAllExpanded ||
+            value?.rule_id === recordExpanded.includes(value?.rule_id),
           cells: [
             {
               title: (
@@ -224,6 +222,7 @@ const ClusterRules = ({ cluster }) => {
     }
     return sortingRows.flatMap((row, index) => {
       const updatedRow = [...row];
+      console.log(row);
       if (recordExpanded.includes(row[0].rule.rule_id)) {
         row[0].isOpen = true;
       }
@@ -384,6 +383,9 @@ const ClusterRules = ({ cluster }) => {
   //Used in the PrimaryToolbar
   const collapseAll = (_e, isOpen) => {
     setIsAllExpanded(isOpen);
+    if (!isAllExpanded) {
+      setRecordExpanded([]);
+    }
     setDisplayedRows(
       displayedRows.map((row) => {
         return {

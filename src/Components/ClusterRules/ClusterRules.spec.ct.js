@@ -207,7 +207,7 @@ describe('cluster rules table', () => {
     cy.get(EXPANDABLES).should('have.length', 0);
   });
 
-  it.only('expand one row then sort', () => {
+  it('expand one row then sort', () => {
     cy.get(ROOT).find('#expandable-toggle0').click();
     cy.get(ROOT)
       .find('th[data-label=Description]')
