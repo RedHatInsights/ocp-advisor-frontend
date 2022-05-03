@@ -156,7 +156,7 @@ describe('clusters list table', () => {
   describe('defaults', () => {
     it(`shows maximum ${DEFAULT_ROW_COUNT} clusters`, () => {
       checkRowCounts(ROOT, DEFAULT_DISPLAYED_SIZE);
-      expect(window.location.search).to.contain('limit=${DEFAULT_ROW_COUNT}');
+      expect(window.location.search).to.contain(`limit=${DEFAULT_ROW_COUNT}`);
     });
 
     it(`pagination is set to ${DEFAULT_ROW_COUNT}`, () => {
