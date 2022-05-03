@@ -6,6 +6,8 @@ import _ from 'lodash';
 
 import { FILTER_CATEGORIES } from '../../src/AppConstants';
 
+import { CHIP_GROUP, CHIP } from './components';
+
 const FILTERS_DROPDOWN = 'ul[class=pf-c-dropdown__menu]';
 const FILTER_TOGGLE = 'span[class=pf-c-select__toggle-arrow]';
 
@@ -60,4 +62,8 @@ function urlParamConvert(key, value) {
   return [title, label];
 }
 
-export { applyFilters, urlParamConvert };
+function hasChip(name, value) {
+  cy.contains(CHIP_GROUP, name).parent().contains(CHIP, value);
+}
+
+export { applyFilters, urlParamConvert, hasChip };

@@ -23,6 +23,7 @@ import { SORTING_ORDERS } from '../../../cypress/utils/globals';
 import {
   checkTableHeaders,
   checkRowCounts,
+  columnName2UrlParam,
 } from '../../../cypress/utils/table';
 import {
   itemsPerPage,
@@ -64,11 +65,6 @@ const TABLE_HEADERS = [
   'Low',
   'Last seen',
 ];
-
-// TODO move sw else? Also useful for other modules
-function columnName2UrlParam(name) {
-  return name.toLowerCase().replace(/ /g, '_');
-}
 
 // TODO: test pre-filled search parameters filtration
 
@@ -157,7 +153,7 @@ describe('clusters list table', () => {
   });
 
   describe('defaults', () => {
-    it(`shows ${DEFAULT_ROW_COUNT} clusters only`, () => {
+    it(`shows maximum ${DEFAULT_ROW_COUNT} clusters`, () => {
       checkRowCounts(ROOT, DEFAULT_ROW_COUNT);
       expect(window.location.search).to.contain('limit=20'); // TODO do not hardcode value
     });
@@ -175,6 +171,7 @@ describe('clusters list table', () => {
       cy.get(ROOT)
         .find('th[data-key=6]') // TODO use column name
         .should('have.class', 'pf-c-table__sort pf-m-selected');
+      // TODO check window.location as in  RecsListTable (if applicable)
     });
 
     it('applies total risk "All clusters" filter', () => {
