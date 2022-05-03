@@ -82,12 +82,6 @@ describe('test data', () => {
       expect(arr).to.include('not existing cluster');
     });
   });
-  // TODO last_check_at cannot be empty. Update/remove the test and update the data file
-  it('has at least one entry with N/A time', () => {
-    cy.wrap(_.filter(data, (it) => it['last_checked_at'] === ''))
-      .its('length')
-      .should('be.gte', 1);
-  });
 });
 
 describe('non-empty successful affected clusters table', () => {
