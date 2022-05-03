@@ -287,10 +287,10 @@ describe('successful non-empty recommendations list table', () => {
 
     it(`shows maximum ${DEFAULT_ROW_COUNT} recommendations`, () => {
       checkRowCounts(ROOT, DEFAULT_DISPLAYED_SIZE);
-      expect(window.location.search).to.contain('limit=20'); // TODO do not hardcode value
+      expect(window.location.search).to.contain(`limit=${DEFAULT_ROW_COUNT}`);
     });
 
-    it.only('default sort by total risk', () => {
+    it('default sort by total risk', () => {
       const column = 'Total risk';
       cy.get(ROOT)
         .find(`th[data-label="${column}"]`)
@@ -304,7 +304,7 @@ describe('successful non-empty recommendations list table', () => {
       cy.get('.pf-c-options-menu__toggle-text')
         .find('b')
         .eq(0)
-        .should('have.text', `1 - ${DEFAULT_DISPLAYED_SIZE}`); // TODO do not hardcode value
+        .should('have.text', `1 - ${DEFAULT_DISPLAYED_SIZE}`);
     });
 
     it('reset filters button is displayed', () => {
@@ -501,7 +501,7 @@ describe('successful non-empty recommendations list table', () => {
       cy.get('.pf-c-chip-group__list-item').contains('1 or more');
     });
 
-    it.only('clears text input after Name filter chip removal', () => {
+    it('clears text input after Name filter chip removal', () => {
       cy.get(TOOLBAR_FILTER)
         .find('.pf-c-form-control')
         .type('cc')
