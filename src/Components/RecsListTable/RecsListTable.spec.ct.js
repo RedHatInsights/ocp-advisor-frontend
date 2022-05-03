@@ -15,7 +15,7 @@ import {
   CHIP_GROUP,
   PAGINATION,
 } from '../../../cypress/utils/components';
-import { urlParamConvert } from '../../../cypress/utils/filters';
+import { hasChip, urlParamConvert } from '../../../cypress/utils/filters';
 import {
   DEFAULT_ROW_COUNT,
   PAGINATION_VALUES,
@@ -169,12 +169,12 @@ describe('pre-filled url search parameters', () => {
     const urlSearchParameters = new URLSearchParams(urlParams);
     for (const [key, value] of urlSearchParameters) {
       if (key == 'text') {
-        getChipGroup('Name').contains('.pf-c-chip', value);
+        hasChip('Name', value);
         cy.get('.pf-m-fill > .pf-c-form-control').should('have.value', value);
       } else {
         value.split(',').forEach((it) => {
           const [group, item] = urlParamConvert(key, it);
-          getChipGroup(group).contains('.pf-c-chip', item);
+          hasChip(group, item);
         });
       }
     }
@@ -501,7 +501,7 @@ describe('successful non-empty recommendations list table', () => {
       cy.get('.pf-c-chip-group__list-item').contains('1 or more');
     });
 
-    it('clears text input after Name filter chip removal', () => {
+    it.only('clears text input after Name filter chip removal', () => {
       cy.get(TOOLBAR_FILTER)
         .find('.pf-c-form-control')
         .type('cc')
@@ -509,7 +509,7 @@ describe('successful non-empty recommendations list table', () => {
           expect(window.location.search).to.contain('text=cc');
         });
       // remove the chip
-      getChipGroup('Name')
+      cy.contains(CHIP_GROUP, 'Name')
         .find('button')
         .click()
         .then(() => {
