@@ -70,6 +70,11 @@ function columnName2UrlParam(name) {
   return name.toLowerCase().replace(/ /g, '_');
 }
 
+const DEFAULT_DISPLAYED_SIZE = Math.min(
+  namedClusters.length,
+  DEFAULT_ROW_COUNT
+);
+
 // TODO: test pre-filled search parameters filtration
 
 describe('data', () => {
@@ -88,7 +93,7 @@ describe('data', () => {
     cy.wrap(data[0]['cluster_name']).should('not.be.empty');
   });
   it('first page items contains at least one cluster without name', () => {
-    const itemsInFirstPage = Math.min(DEFAULT_ROW_COUNT, data.length);
+    const itemsInFirstPage = DEFAULT_DISPLAYED_SIZE;
     cy.wrap(_.filter(data.slice(0, itemsInFirstPage), (it) => it.cluster_name))
       .its('length')
       .should('be.lt', itemsInFirstPage);
@@ -153,16 +158,16 @@ describe('clusters list table', () => {
   });
 
   describe('defaults', () => {
-    it(`shows ${DEFAULT_ROW_COUNT} clusters only`, () => {
-      checkRowCounts(ROOT, DEFAULT_ROW_COUNT);
-      expect(window.location.search).to.contain('limit=20'); // TODO do not hardcode value
+    it(`shows ${DEFAULT_DISPLAYED_SIZE} clusters only`, () => {
+      checkRowCounts(ROOT, DEFAULT_DISPLAYED_SIZE);
+      expect(window.location.search).to.contain(`limit=${DEFAULT_ROW_COUNT}`);
     });
 
     it(`pagination is set to ${DEFAULT_ROW_COUNT}`, () => {
       cy.get('.pf-c-options-menu__toggle-text')
         .find('b')
         .eq(0)
-        .should('have.text', '1 - 20'); // TODO do not hardcode value
+        .should('have.text', `1 - ${DEFAULT_DISPLAYED_SIZE}`);
     });
 
     it('sorting using last seen', () => {
@@ -248,10 +253,7 @@ describe('clusters list table', () => {
           const col = `td[data-label="${label}"]`;
           const header = `th[data-label="${label}"]`;
 
-          cy.get(col).should(
-            'have.length',
-            Math.min(DEFAULT_ROW_COUNT, namedClusters.length)
-          );
+          cy.get(col).should('have.length', DEFAULT_DISPLAYED_SIZE);
           if (order === 'ascending') {
             cy.get(header)
               .find('button')
@@ -303,7 +305,7 @@ describe('clusters list table', () => {
     });
   });
 
-  describe.only('filtering', () => {
+  describe('filtering', () => {
     // TODO improve filtering tests
     // TODO check that empty table is displayed with appropriate filters
 
@@ -477,10 +479,7 @@ describe('clusters list table', () => {
       .then(($els) => {
         return _.map(Cypress.$.makeArray($els), 'innerText');
       })
-      .should(
-        'deep.equal',
-        names.slice(0, Math.min(DEFAULT_ROW_COUNT, names.length))
-      );
+      .should('deep.equal', names.slice(0, DEFAULT_DISPLAYED_SIZE));
   });
 
   it('names of rows are links', () => {
