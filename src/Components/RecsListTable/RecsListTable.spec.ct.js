@@ -40,7 +40,7 @@ const FILTERS_DROPDOWN = 'ul[class=pf-c-dropdown__menu]';
 const FILTER_TOGGLE = 'span[class=pf-c-select__toggle-arrow]';
 // TODO refer to https://github.com/RedHatInsights/ocp-advisor-frontend/blob/master/src/Services/Filters.js#L13
 const DEFAULT_FILTERS = {
-  impacting: true,
+  impacting: 'true',
   rule_status: 'enabled',
 };
 
@@ -72,7 +72,7 @@ function filterData(filters) {
       );
     } else if (key === 'impacting') {
       // TODO if value is true,false skip
-      if (value) {
+      if (value === 'true') {
         filteredData = _.filter(
           filteredData,
           (it) => it.impacted_clusters_count > 0
@@ -290,7 +290,14 @@ describe('successful non-empty recommendations list table', () => {
       expect(window.location.search).to.contain(`limit=${DEFAULT_ROW_COUNT}`);
     });
 
-    it('default sort by total risk', () => {
+    it(`pagination is set to ${DEFAULT_ROW_COUNT}`, () => {
+      cy.get('.pf-c-options-menu__toggle-text')
+        .find('b')
+        .eq(0)
+        .should('have.text', `1 - ${DEFAULT_DISPLAYED_SIZE}`);
+    });
+
+    it('sort by total risk', () => {
       const column = 'Total risk';
       cy.get(ROOT)
         .find(`th[data-label="${column}"]`)
@@ -300,11 +307,17 @@ describe('successful non-empty recommendations list table', () => {
       );
     });
 
-    it(`pagination is set to ${DEFAULT_ROW_COUNT}`, () => {
-      cy.get('.pf-c-options-menu__toggle-text')
-        .find('b')
-        .eq(0)
-        .should('have.text', `1 - ${DEFAULT_DISPLAYED_SIZE}`);
+    it('applies filters', () => {
+      for (const [key, value] of Object.entries(DEFAULT_FILTERS)) {
+        const [group, item] = urlParamConvert(key, value);
+        hasChip(group, item);
+        expect(window.location.search).to.contain(`${key}=${value}`);
+      }
+      // do not get more chips than expected
+      cy.get(CHIP_GROUP).should(
+        'have.length',
+        Object.keys(DEFAULT_FILTERS).length
+      );
     });
 
     it('reset filters button is displayed', () => {
