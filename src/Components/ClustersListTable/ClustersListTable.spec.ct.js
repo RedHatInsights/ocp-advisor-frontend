@@ -23,6 +23,7 @@ import { SORTING_ORDERS } from '../../../cypress/utils/globals';
 import {
   checkTableHeaders,
   checkRowCounts,
+  columnName2UrlParam,
 } from '../../../cypress/utils/table';
 import {
   itemsPerPage,
@@ -64,11 +65,6 @@ const TABLE_HEADERS = [
   'Low',
   'Last seen',
 ];
-
-// TODO move sw else? Also useful for other modules
-function columnName2UrlParam(name) {
-  return name.toLowerCase().replace(/ /g, '_');
-}
 
 // TODO: test pre-filled search parameters filtration
 

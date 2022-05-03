@@ -23,4 +23,8 @@ function checkRowCounts(tableLocator, n) {
   return cy.get(tableLocator).find(TBODY).find(ROW).should('have.length', n);
 }
 
-export { checkTableHeaders, checkRowCounts };
+function columnName2UrlParam(name) {
+  return name.toLowerCase().replace(/ /g, '_');
+}
+
+export { checkTableHeaders, checkRowCounts, columnName2UrlParam };

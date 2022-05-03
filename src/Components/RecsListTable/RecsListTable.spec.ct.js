@@ -27,7 +27,10 @@ import {
   itemsPerPage,
 } from '../../../cypress/utils/pagination';
 import { TOTAL_RISK, CATEGORIES } from '../../../cypress/utils/globals';
-import { checkRowCounts } from '../../../cypress/utils/table';
+import {
+  checkRowCounts,
+  columnName2UrlParam,
+} from '../../../cypress/utils/table';
 // TODO make more use of ../../../cypress/utils/components
 
 // selectors
@@ -292,9 +295,9 @@ describe('successful non-empty recommendations list table', () => {
       cy.get(ROOT)
         .find(`th[data-label="${column}"]`)
         .should('have.class', 'pf-c-table__sort pf-m-selected');
-      // TODO use columnName2UrlParam once !238 is merged
-      // expect(window.location.search).to.contain(`sort=-${columnName2UrlParam(column)}`);
-      expect(window.location.search).to.contain('sort=-total_risk');
+      expect(window.location.search).to.contain(
+        `sort=-${columnName2UrlParam(column)}`
+      );
     });
 
     it(`pagination is set to ${DEFAULT_ROW_COUNT}`, () => {
