@@ -27,6 +27,7 @@ import {
   itemsPerPage,
 } from '../../../cypress/utils/pagination';
 import { TOTAL_RISK, CATEGORIES } from '../../../cypress/utils/globals';
+import { checkRowCounts } from '../../../cypress/utils/table';
 // TODO make more use of ../../../cypress/utils/components
 
 // selectors
@@ -282,11 +283,7 @@ describe('successful non-empty recommendations list table', () => {
     // TODO enhance tests See ClustersListTable
 
     it(`shows maximum ${DEFAULT_ROW_COUNT} recommendations`, () => {
-      // TODO get a function like checkRowCounts with expandable rows
-      cy.get('table')
-        .find('[data-ouia-component-type="PF4/TableRow"]') // TODO use ROW from components module
-        .find(`td[data-label="Name"]`)
-        .should('have.length', DEFAULT_DISPLAYED_SIZE);
+      checkRowCounts(ROOT, DEFAULT_DISPLAYED_SIZE);
       expect(window.location.search).to.contain('limit=20'); // TODO do not hardcode value
     });
 
@@ -330,32 +327,20 @@ describe('successful non-empty recommendations list table', () => {
         changePagination(el).then(() =>
           expect(window.location.search).to.contain(`limit=${el}`)
         );
-        // TODO have a checkRowCounts function that works with expandadable tables
-        cy.get('table')
-          .find('[data-ouia-component-type="PF4/TableRow"]') // TODO use ROW from components module
-          .find(`td[data-label="Name"]`)
-          .should(
-            'have.length',
-            Math.min(el, filterData(DEFAULT_FILTERS).length)
-          );
+        checkRowCounts(ROOT, Math.min(el, filterData(DEFAULT_FILTERS).length));
       });
     });
     it('can iterate over pages', () => {
       cy.wrap(itemsPerPage(filterData(DEFAULT_FILTERS).length)).each(
         (el, index, list) => {
-          // TODO replace function to check row counts
-          cy.get('table')
-            .find('[data-ouia-component-type="PF4/TableRow"]') // TODO use ROW from components module
-            .find(`td[data-label="Name"]`)
-            .should(
-              'have.length',
-              Math.min(el, filterData(DEFAULT_FILTERS).length)
-            )
-            .then(() => {
-              expect(window.location.search).to.contain(
-                `offset=${DEFAULT_ROW_COUNT * index}`
-              );
-            });
+          checkRowCounts(
+            ROOT,
+            Math.min(el, filterData(DEFAULT_FILTERS).length)
+          ).then(() => {
+            expect(window.location.search).to.contain(
+              `offset=${DEFAULT_ROW_COUNT * index}`
+            );
+          });
           cy.get(TOOLBAR)
             .find(PAGINATION)
             .find('button[data-action="next"]')

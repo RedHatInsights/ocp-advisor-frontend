@@ -14,6 +14,7 @@ function checkTableHeaders(expectedHeaders) {
     .should('deep.equal', expectedHeaders);
 }
 
+// TODO remove tableLocator and simply use 'table'
 function checkRowCounts(tableLocator, n) {
   return cy.get(tableLocator).find(TBODY).find(ROW).should('have.length', n);
 }
