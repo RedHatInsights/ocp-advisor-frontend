@@ -170,11 +170,10 @@ describe('clusters list table', () => {
         .should('have.text', `1 - ${DEFAULT_DISPLAYED_SIZE}`);
     });
 
-    it('sorting using last seen', () => {
+    it.only('sorting using last seen', () => {
       // TODO create a function used also in other tests
-      // columnSelected
       cy.get(ROOT)
-        .find('th[data-key=6]') // TODO use column name
+        .find('th[data-label="Last seen"]')
         .should('have.class', 'pf-c-table__sort pf-m-selected');
     });
 
