@@ -143,7 +143,7 @@ describe('non-empty successful affected clusters table', () => {
 
   describe('defaults', () => {
     it(`shows ${DEFAULT_ROW_COUNT} clusters only`, () => {
-      checkRowCounts(ROOT, DEFAULT_ROW_COUNT);
+      checkRowCounts(DEFAULT_ROW_COUNT);
       // TODO check why expect fails
       // expect(window.location.search).to.contain('limit=20');
     });
@@ -354,13 +354,13 @@ describe('non-empty successful affected clusters table', () => {
       // FIXME: best way to make the loop
       cy.wrap(PAGINATION_VALUES).each((el) => {
         changePagination(el);
-        checkRowCounts(ROOT, Math.min(el, filterData().length));
+        checkRowCounts(Math.min(el, filterData().length));
       });
     });
 
     it('can iterate over pages', () => {
       cy.wrap(itemsPerPage(filterData().length)).each((el, index, list) => {
-        checkRowCounts(ROOT, el);
+        checkRowCounts(el);
         cy.get(TOOLBAR)
           .find(PAGINATION)
           .find('button[data-action="next"]')
@@ -459,7 +459,7 @@ describe('non-empty successful affected clusters table', () => {
                 'To continue, edit your filter settings and search again.'
               );
           } else {
-            checkRowCounts(ROOT, Math.min(DEFAULT_ROW_COUNT, data.length));
+            checkRowCounts(Math.min(DEFAULT_ROW_COUNT, data.length));
           }
         });
       });
@@ -469,7 +469,7 @@ describe('non-empty successful affected clusters table', () => {
       cy.get(ROOT).find('#name-filter').type('custom');
       cy.get(TOOLBAR).find('button').contains('Reset filters').click();
       cy.get(TOOLBAR).find(CHIP_GROUP).should('not.exist');
-      checkRowCounts(ROOT, Math.min(DEFAULT_ROW_COUNT, filterData().length));
+      checkRowCounts(Math.min(DEFAULT_ROW_COUNT, filterData().length));
     });
   });
 

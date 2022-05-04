@@ -63,6 +63,7 @@ describe('cluster page', () => {
     // renders table component
     cy.get(RULES_TABLE).should('have.length', 1);
     // test how many rows were rendered
+    // TODO use checkRowCounts (currently not working, probably related to federated modules)
     cy.getAllRows().should(
       'have.length',
       singleClusterPageReport.report.data.length

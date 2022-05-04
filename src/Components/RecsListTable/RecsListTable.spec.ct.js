@@ -266,13 +266,13 @@ describe('successful non-empty recommendations list table', () => {
 
   // TODO do not hardcode data
   it('table has 4 recs', () => {
-    checkRowCounts(ROOT, 4);
+    checkRowCounts(4);
   });
 
   // TODO do not hardcode data
   it('table has 7 recs including non-impacting', () => {
     cy.removeImpactingFilter();
-    checkRowCounts(ROOT, 7);
+    checkRowCounts(7);
   });
 
   // TODO do not hardcode data
@@ -286,7 +286,7 @@ describe('successful non-empty recommendations list table', () => {
     // TODO enhance tests See ClustersListTable
 
     it(`shows maximum ${DEFAULT_ROW_COUNT} recommendations`, () => {
-      checkRowCounts(ROOT, DEFAULT_DISPLAYED_SIZE);
+      checkRowCounts(DEFAULT_DISPLAYED_SIZE);
       expect(window.location.search).to.contain(`limit=${DEFAULT_ROW_COUNT}`);
     });
 
@@ -340,20 +340,19 @@ describe('successful non-empty recommendations list table', () => {
         changePagination(el).then(() =>
           expect(window.location.search).to.contain(`limit=${el}`)
         );
-        checkRowCounts(ROOT, Math.min(el, filterData(DEFAULT_FILTERS).length));
+        checkRowCounts(Math.min(el, filterData(DEFAULT_FILTERS).length));
       });
     });
     it('can iterate over pages', () => {
       cy.wrap(itemsPerPage(filterData(DEFAULT_FILTERS).length)).each(
         (el, index, list) => {
-          checkRowCounts(
-            ROOT,
-            Math.min(el, filterData(DEFAULT_FILTERS).length)
-          ).then(() => {
-            expect(window.location.search).to.contain(
-              `offset=${DEFAULT_ROW_COUNT * index}`
-            );
-          });
+          checkRowCounts(Math.min(el, filterData(DEFAULT_FILTERS).length)).then(
+            () => {
+              expect(window.location.search).to.contain(
+                `offset=${DEFAULT_ROW_COUNT * index}`
+              );
+            }
+          );
           cy.get(TOOLBAR)
             .find(PAGINATION)
             .find('button[data-action="next"]')
@@ -479,7 +478,7 @@ describe('successful non-empty recommendations list table', () => {
         expect(window.location.search).to.not.contain('rule_status');
       });
       // TODO Verify that rule is in data as disabled
-      checkRowCounts(ROOT, 5)
+      checkRowCounts(5)
         .find('td[data-label="Name"]')
         .contains('disabled rule with 2 impacted')
         .should('have.length', 1);
@@ -548,7 +547,7 @@ describe('successful non-empty recommendations list table', () => {
   describe('enabling/disabling', () => {
     it('disabled rule has a label', () => {
       cy.removeStatusFilter();
-      checkRowCounts(ROOT, 5);
+      checkRowCounts(5);
       cy.getRowByName('disabled rule with 2 impacted')
         .children()
         .eq(0)
