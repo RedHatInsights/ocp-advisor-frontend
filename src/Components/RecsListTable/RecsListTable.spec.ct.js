@@ -265,26 +265,12 @@ describe('successful non-empty recommendations list table', () => {
   });
 
   // TODO do not hardcode data
-  it('table has 4 recs', () => {
-    checkRowCounts(ROOT, 4);
-  });
-
-  // TODO do not hardcode data
   it('table has 7 recs including non-impacting', () => {
     cy.removeImpactingFilter();
     checkRowCounts(ROOT, 7);
   });
 
-  // TODO do not hardcode data
-  it('should have 5 sortable columns', () => {
-    cy.getColumns()
-      .should('have.length', 5)
-      .should('have.class', 'pf-c-table__sort');
-  });
-
   describe('defaults', () => {
-    // TODO enhance tests See ClustersListTable
-
     it(`shows maximum ${DEFAULT_ROW_COUNT} recommendations`, () => {
       checkRowCounts(ROOT, DEFAULT_DISPLAYED_SIZE);
       expect(window.location.search).to.contain(`limit=${DEFAULT_ROW_COUNT}`);
