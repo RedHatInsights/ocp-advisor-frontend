@@ -7,6 +7,7 @@ import _ from 'lodash';
 
 import getStore from '../../Store';
 import ClusterRules from './ClusterRules';
+import { CLUSTER_RULES_COLUMNS } from '../../AppConstants';
 import singleClusterPageReport from '../../../cypress/fixtures/api/insights-results-aggregator/v2/cluster/dcb95bbf-8673-4f3a-a63c-12d4a530aa6f/reports-disabled-false.json';
 import data_first_query_parameter from '../../../cypress/fixtures/api/insights-results-aggregator/v1/clusters/41c30565-b4c9-49f2-a4ce-3277ad22b258/report.json';
 import {
@@ -28,7 +29,7 @@ const data = singleClusterPageReport.report.data;
 
 const ROOT = 'div[id=cluster-recs-list-table]';
 const EXPANDABLES = '[class="pf-c-table__expandable-row pf-m-expanded"]';
-const TABLE_HEADERS = ['Description', 'Modified', 'Total risk'];
+const TABLE_HEADERS = _.map(CLUSTER_RULES_COLUMNS, (it) => it.title);
 
 const RULES_ENABLED = _.filter(data, (it) => !it.disabled).length;
 
@@ -172,7 +173,7 @@ describe('cluster rules table', () => {
     });
   });
 
-  it('renders table header', () => {
+  it.only('renders table header', () => {
     checkTableHeaders(TABLE_HEADERS);
   });
 

@@ -25,6 +25,7 @@ import {
   checkRowCounts,
   columnName2UrlParam,
 } from '../../../cypress/utils/table';
+import { CLUSTERS_LIST_COLUMNS } from '../../AppConstants';
 import {
   itemsPerPage,
   checkPaginationTotal,
@@ -56,15 +57,7 @@ let namedClustersDefaultSorting = _.orderBy(
 );
 
 const ROOT = 'div[id=clusters-list-table]';
-const TABLE_HEADERS = [
-  'Name',
-  'Recommendations',
-  'Critical',
-  'Important',
-  'Moderate',
-  'Low',
-  'Last seen',
-];
+const TABLE_HEADERS = _.map(CLUSTERS_LIST_COLUMNS, (it) => it.title);
 
 const DEFAULT_DISPLAYED_SIZE = Math.min(
   namedClusters.length,

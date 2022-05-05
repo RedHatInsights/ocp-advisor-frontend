@@ -34,12 +34,13 @@ import {
   changePagination,
 } from '../../../cypress/utils/pagination';
 import rule from '../../../cypress/fixtures/api/insights-results-aggregator/v2/rule/external.rules.rule|ERROR_KEY.json';
+import { AFFECTED_CLUSTERS_COLUMNS } from '../../AppConstants';
 
 // selectors
 const ROOT = 'div[id=affected-list-table]';
 const BULK_SELECT = 'clusters-selector';
 const SEARCH_ITEMS = ['ff', 'CUSTOM', 'Foobar', 'Not existing cluster'];
-const TABLE_HEADERS = ['Name', 'Last seen'];
+const TABLE_HEADERS = _.map(AFFECTED_CLUSTERS_COLUMNS, (it) => it.title);
 
 let data = _.cloneDeep(clusterDetailData.data['enabled']);
 data.forEach(
