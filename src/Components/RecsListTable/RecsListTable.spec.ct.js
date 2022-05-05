@@ -27,9 +27,11 @@ import {
   itemsPerPage,
 } from '../../../cypress/utils/pagination';
 import { TOTAL_RISK, CATEGORIES } from '../../../cypress/utils/globals';
+import { RECS_LIST_COLUMNS } from '../../AppConstants';
 import {
   checkRowCounts,
   columnName2UrlParam,
+  checkTableHeaders,
 } from '../../../cypress/utils/table';
 // TODO make more use of ../../../cypress/utils/components
 
@@ -43,6 +45,7 @@ const DEFAULT_FILTERS = {
   impacting: 'true',
   rule_status: 'enabled',
 };
+const TABLE_HEADERS = _.map(RECS_LIST_COLUMNS, (it) => it.title);
 
 const data = ruleResponse.recommendations;
 
@@ -216,6 +219,10 @@ describe('successful non-empty recommendations list table', () => {
       cy.get(TOOLBAR).should('have.length', 1);
       cy.get('table').should('have.length', 1);
     });
+  });
+
+  it('renders table header', () => {
+    checkTableHeaders(TABLE_HEADERS);
   });
 
   it('renders Clusters impacted chip group', () => {
