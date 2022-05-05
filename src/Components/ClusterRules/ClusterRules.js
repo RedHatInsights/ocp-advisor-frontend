@@ -119,16 +119,18 @@ const ClusterRules = ({ cluster }) => {
   };
 
   const buildFilteredRows = (allRows, filters) => {
-    const expandedRows = displayedRows
-      .filter((ruleExpanded) => ruleExpanded?.isOpen === true)
-      .flatMap((object) => [object?.rule?.rule_id]);
+    const expandedRowsSet = new Set(
+      displayedRows
+        .filter((ruleExpanded) => ruleExpanded?.isOpen)
+        .map((object) => object?.rule?.rule_id)
+    );
 
     return allRows
       .filter((rule) => passFilters(rule, filters))
       .map((value, key) => [
         {
           rule: value,
-          isOpen: isAllExpanded || expandedRows?.includes(value?.rule_id),
+          isOpen: isAllExpanded || expandedRowsSet?.has(value?.rule_id),
           cells: [
             {
               title: (
