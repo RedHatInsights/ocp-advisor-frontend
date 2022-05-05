@@ -452,35 +452,32 @@ describe('cluster rules table testing the first query parameter', () => {
       .should('have.text', 'testing the first query parameter ');
   });
 
-  // all tables must preserve original ordering
-  _.zip(['description', 'created_at', 'total_risk'], TABLE_HEADERS).forEach(
-    ([category, label]) => {
-      SORTING_ORDERS.forEach((order) => {
-        it(`can still sort ${order} by ${label}`, () => {
-          const col = `td[data-label="${label}"]`;
-          const header = `th[data-label="${label}"]`;
-          cy.get(col).should('have.length', RULES_ENABLED);
+  SORTING_ORDERS.forEach((order) => {
+    it(`can still sort ${order}`, () => {
+      const label = 'Description';
+      const category = 'description';
+      const col = `td[data-label="${label}"]`;
+      const header = `th[data-label="${label}"]`;
+      cy.get(col).should('have.length', RULES_ENABLED);
 
-          if (order === 'ascending') {
-            cy.get(header).find('button').click();
-          } else {
-            cy.get(header).find('button').dblclick();
-          }
-          let sortedDescriptions = _.map(
-            _.orderBy(
-              data_first_query_parameter,
-              [category],
-              [order === 'descending' ? 'desc' : 'asc']
-            ),
-            'description'
-          );
-          cy.get(`td[data-label="Description"]`)
-            .then(($els) => {
-              return _.map(Cypress.$.makeArray($els), 'innerText');
-            })
-            .should('deep.equal', sortedDescriptions);
-        });
-      });
-    }
-  );
+      if (order === 'ascending') {
+        cy.get(header).find('button').click();
+      } else {
+        cy.get(header).find('button').dblclick();
+      }
+      let sortedDescriptions = _.map(
+        _.orderBy(
+          data_first_query_parameter,
+          [category],
+          [order === 'descending' ? 'desc' : 'asc']
+        ),
+        'description'
+      );
+      cy.get(`td[data-label="Description"]`)
+        .then(($els) => {
+          return _.map(Cypress.$.makeArray($els), 'innerText');
+        })
+        .should('deep.equal', sortedDescriptions);
+    });
+  });
 });
