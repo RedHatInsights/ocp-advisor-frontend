@@ -10,9 +10,4 @@ const CATEGORIES = {
 
 const SORTING_ORDERS = ['ascending', 'descending'];
 
-const partial =
-  (func, ...args) =>
-  (...rest) =>
-    func(...args, ...rest);
-
-export { TOTAL_RISK, CATEGORIES, SORTING_ORDERS, partial };
+export { TOTAL_RISK, CATEGORIES, SORTING_ORDERS };

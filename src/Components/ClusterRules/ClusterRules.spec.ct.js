@@ -13,7 +13,6 @@ import {
   TOTAL_RISK,
   CATEGORIES,
   SORTING_ORDERS,
-  partial,
 } from '../../../cypress/utils/globals';
 import { applyFilters, filter } from '../../../cypress/utils/filters';
 import { cumulativeCombinations } from '../../../cypress/utils/combine';
@@ -63,7 +62,7 @@ const filtersConf = {
   },
 };
 
-const filterData = partial(filter, filtersConf);
+const filterData = _.partial(filter, filtersConf);
 
 // TODO add more combinations of filters for testing
 const filterCombos = [
