@@ -186,9 +186,9 @@ describe('cluster rules table', () => {
   });
 
   describe('defaults', () => {
-    it('no expanded rows', () => {
+    it('only one row is expanded', () => {
       cy.get('#expanded-content1').should('have.length', 1);
-      cy.get(EXPANDABLES).should('have.length', 0);
+      cy.get(EXPANDABLES).should('have.length', 1);
     });
     it('no chips are displayed by default', () => {
       cy.get(CHIP_GROUP).should('not.exist');
@@ -208,13 +208,13 @@ describe('cluster rules table', () => {
   });
 
   it('expand one row then sort', () => {
-    cy.get(ROOT).find('#expandable-toggle0').click();
+    cy.get(ROOT).find('#expandable-toggle2').click();
     cy.get(ROOT)
       .find('th[data-label=Description]')
       .find('button')
       .click()
       .click();
-    cy.get('table').find('tr').find('td[id="expanded-content11"]');
+    cy.get(EXPANDABLES).should('have.length', 2);
   });
 
   describe('sorting', () => {
