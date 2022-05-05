@@ -66,4 +66,16 @@ function hasChip(name, value) {
   cy.contains(CHIP_GROUP, name).parent().contains(CHIP, value);
 }
 
-export { applyFilters, urlParamConvert, hasChip };
+function filter(conf, data, filters) {
+  let filteredData = data;
+  for (const [key, value] of Object.entries(filters)) {
+    filteredData = _.filter(filteredData, (it) => conf[key].f(it, value));
+    // if length is already 0, exit
+    if (filteredData.length === 0) {
+      break;
+    }
+  }
+  return filteredData;
+}
+
+export { applyFilters, urlParamConvert, hasChip, filter };

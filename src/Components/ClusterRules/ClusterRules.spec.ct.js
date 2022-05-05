@@ -13,8 +13,9 @@ import {
   TOTAL_RISK,
   CATEGORIES,
   SORTING_ORDERS,
+  partial,
 } from '../../../cypress/utils/globals';
-import { applyFilters } from '../../../cypress/utils/filters';
+import { applyFilters, filter } from '../../../cypress/utils/filters';
 import { cumulativeCombinations } from '../../../cypress/utils/combine';
 import { checkTableHeaders } from '../../../cypress/utils/table';
 import {
@@ -40,45 +41,29 @@ const filtersConf = {
     selectorText: 'Description',
     values: ['Lorem IPSUM', '1Lorem', 'Not existing recommendation'],
     type: 'input',
+    f: (it, value) =>
+      it.description.toLowerCase().includes(value.toLowerCase()),
   },
   risk: {
     selectorText: 'Total risk',
     values: Array.from(cumulativeCombinations(TOTAL_RISK_VALUES)),
     type: 'checkbox',
+    f: (it, value) =>
+      _.map(value, (x) => TOTAL_RISK[x]).includes(it.total_risk),
   },
   category: {
     selectorText: 'Category',
     values: Array.from(cumulativeCombinations(Object.keys(CATEGORIES))),
     type: 'checkbox',
+    f: (it, value) =>
+      _.intersection(
+        _.flatMap(value, (x) => CATEGORIES[x]),
+        it.tags
+      ).length > 0,
   },
 };
 
-function filterData(data, filters) {
-  let filteredData = data;
-  for (const [key, value] of Object.entries(filters)) {
-    if (key === 'description') {
-      filteredData = _.filter(filteredData, (it) =>
-        it.description.toLowerCase().includes(value.toLowerCase())
-      );
-    } else if (key === 'risk') {
-      const riskNumbers = _.map(value, (it) => TOTAL_RISK[it]);
-      filteredData = _.filter(filteredData, (it) =>
-        riskNumbers.includes(it.total_risk)
-      );
-    } else if (key === 'category') {
-      const tags = _.flatMap(value, (it) => CATEGORIES[it]);
-      filteredData = _.filter(
-        filteredData,
-        (it) => _.intersection(tags, it.tags).length > 0
-      );
-    }
-    // if length is already 0, exit
-    if (filteredData.length === 0) {
-      break;
-    }
-  }
-  return filteredData;
-}
+const filterData = partial(filter, filtersConf);
 
 // TODO add more combinations of filters for testing
 const filterCombos = [
