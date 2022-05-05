@@ -45,8 +45,6 @@ const DEFAULT_FILTERS = {
   impacting: 'true',
   rule_status: 'enabled',
 };
-// TODO use headers from AppConstants, see !258
-const TABLE_HEADERS = _.map(RECS_LIST_COLUMNS, (it) => it.title);
 
 const data = ruleResponse.recommendations;
 
@@ -397,7 +395,8 @@ describe('successful non-empty recommendations list table', () => {
           } else {
             cy.get(header)
               .find('button')
-              .dblclick()
+              .click()
+              .click() // TODO dblclick fails for unknown reason
               .then(() =>
                 expect(window.location.search).to.contain(
                   `sort=-${columnName2UrlParam(category)}`
