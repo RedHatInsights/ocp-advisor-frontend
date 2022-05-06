@@ -25,6 +25,7 @@ import {
   checkRowCounts,
   columnName2UrlParam,
 } from '../../../cypress/utils/table';
+import { CLUSTERS_LIST_COLUMNS } from '../../AppConstants';
 import {
   itemsPerPage,
   checkPaginationTotal,
@@ -56,15 +57,7 @@ let namedClustersDefaultSorting = _.orderBy(
 );
 
 const ROOT = 'div[id=clusters-list-table]';
-const TABLE_HEADERS = [
-  'Name',
-  'Recommendations',
-  'Critical',
-  'Important',
-  'Moderate',
-  'Low',
-  'Last seen',
-];
+const TABLE_HEADERS = _.map(CLUSTERS_LIST_COLUMNS, (it) => it.title);
 
 const DEFAULT_DISPLAYED_SIZE = Math.min(
   namedClusters.length,
@@ -155,7 +148,7 @@ describe('clusters list table', () => {
 
   describe('defaults', () => {
     it(`shows maximum ${DEFAULT_ROW_COUNT} clusters`, () => {
-      checkRowCounts(ROOT, DEFAULT_DISPLAYED_SIZE);
+      checkRowCounts(DEFAULT_DISPLAYED_SIZE);
       expect(window.location.search).to.contain(`limit=${DEFAULT_ROW_COUNT}`);
     });
 
@@ -206,12 +199,12 @@ describe('clusters list table', () => {
           // TODO should this be nested. Also the other check below?
           expect(window.location.search).to.contain(`limit=${el}`)
         );
-        checkRowCounts(ROOT, Math.min(el, data.length));
+        checkRowCounts(Math.min(el, data.length));
       });
     });
     it('can iterate over pages', () => {
       cy.wrap(itemsPerPage(data.length)).each((el, index, list) => {
-        checkRowCounts(ROOT, el).then(() => {
+        checkRowCounts(el).then(() => {
           // TODO why is this nested?
           expect(window.location.search).to.contain(
             `offset=${DEFAULT_ROW_COUNT * index}`
@@ -544,3 +537,5 @@ describe('cluster list Empty state rendering', () => {
       .should('have.text', 'Assisted Installer clusters');
   });
 });
+
+// TODO tests for URL parameters and chips as in RecsListTable

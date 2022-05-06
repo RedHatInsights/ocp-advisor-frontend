@@ -7,6 +7,7 @@ import _ from 'lodash';
 
 import getStore from '../../Store';
 import ClusterRules from './ClusterRules';
+import { CLUSTER_RULES_COLUMNS } from '../../AppConstants';
 import singleClusterPageReport from '../../../cypress/fixtures/api/insights-results-aggregator/v2/cluster/dcb95bbf-8673-4f3a-a63c-12d4a530aa6f/reports-disabled-false.json';
 import data_first_query_parameter from '../../../cypress/fixtures/api/insights-results-aggregator/v1/clusters/41c30565-b4c9-49f2-a4ce-3277ad22b258/report.json';
 import {
@@ -28,7 +29,7 @@ const data = singleClusterPageReport.report.data;
 
 const ROOT = 'div[id=cluster-recs-list-table]';
 const EXPANDABLES = '[class="pf-c-table__expandable-row pf-m-expanded"]';
-const TABLE_HEADERS = ['Description', 'Modified', 'Total risk'];
+const TABLE_HEADERS = _.map(CLUSTER_RULES_COLUMNS, (it) => it.title);
 
 const RULES_ENABLED = _.filter(data, (it) => !it.disabled).length;
 
@@ -452,35 +453,32 @@ describe('cluster rules table testing the first query parameter', () => {
       .should('have.text', 'testing the first query parameter ');
   });
 
-  // all tables must preserve original ordering
-  _.zip(['description', 'created_at', 'total_risk'], TABLE_HEADERS).forEach(
-    ([category, label]) => {
-      SORTING_ORDERS.forEach((order) => {
-        it(`can still sort ${order} by ${label}`, () => {
-          const col = `td[data-label="${label}"]`;
-          const header = `th[data-label="${label}"]`;
-          cy.get(col).should('have.length', RULES_ENABLED);
+  SORTING_ORDERS.forEach((order) => {
+    it(`can still sort ${order}`, () => {
+      const label = 'Description';
+      const category = 'description';
+      const col = `td[data-label="${label}"]`;
+      const header = `th[data-label="${label}"]`;
+      cy.get(col).should('have.length', RULES_ENABLED);
 
-          if (order === 'ascending') {
-            cy.get(header).find('button').click();
-          } else {
-            cy.get(header).find('button').dblclick();
-          }
-          let sortedDescriptions = _.map(
-            _.orderBy(
-              data_first_query_parameter,
-              [category],
-              [order === 'descending' ? 'desc' : 'asc']
-            ),
-            'description'
-          );
-          cy.get(`td[data-label="Description"]`)
-            .then(($els) => {
-              return _.map(Cypress.$.makeArray($els), 'innerText');
-            })
-            .should('deep.equal', sortedDescriptions);
-        });
-      });
-    }
-  );
+      if (order === 'ascending') {
+        cy.get(header).find('button').click();
+      } else {
+        cy.get(header).find('button').dblclick();
+      }
+      let sortedDescriptions = _.map(
+        _.orderBy(
+          data_first_query_parameter,
+          [category],
+          [order === 'descending' ? 'desc' : 'asc']
+        ),
+        'description'
+      );
+      cy.get(`td[data-label="Description"]`)
+        .then(($els) => {
+          return _.map(Cypress.$.makeArray($els), 'innerText');
+        })
+        .should('deep.equal', sortedDescriptions);
+    });
+  });
 });
