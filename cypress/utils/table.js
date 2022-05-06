@@ -18,9 +18,8 @@ function checkTableHeaders(expectedHeaders) {
 
 // TODO fucntion to get rowgroup
 
-// TODO remove tableLocator and simply use 'table'
-function checkRowCounts(tableLocator, n) {
-  return cy.get(tableLocator).find(TBODY).find(ROW).should('have.length', n);
+function checkRowCounts(n) {
+  return cy.get('table').find(TBODY).find(ROW).should('have.length', n);
 }
 
 function columnName2UrlParam(name) {

@@ -155,7 +155,7 @@ describe('clusters list table', () => {
 
   describe('defaults', () => {
     it(`shows maximum ${DEFAULT_ROW_COUNT} clusters`, () => {
-      checkRowCounts(ROOT, DEFAULT_DISPLAYED_SIZE);
+      checkRowCounts(DEFAULT_DISPLAYED_SIZE);
       expect(window.location.search).to.contain(`limit=${DEFAULT_ROW_COUNT}`);
     });
 
@@ -206,12 +206,12 @@ describe('clusters list table', () => {
           // TODO should this be nested. Also the other check below?
           expect(window.location.search).to.contain(`limit=${el}`)
         );
-        checkRowCounts(ROOT, Math.min(el, data.length));
+        checkRowCounts(Math.min(el, data.length));
       });
     });
     it('can iterate over pages', () => {
       cy.wrap(itemsPerPage(data.length)).each((el, index, list) => {
-        checkRowCounts(ROOT, el).then(() => {
+        checkRowCounts(el).then(() => {
           // TODO why is this nested?
           expect(window.location.search).to.contain(
             `offset=${DEFAULT_ROW_COUNT * index}`
