@@ -544,3 +544,5 @@ describe('cluster list Empty state rendering', () => {
       .should('have.text', 'Assisted Installer clusters');
   });
 });
+
+// TODO tests for URL parameters and chips as in RecsListTable
