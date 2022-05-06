@@ -131,8 +131,6 @@ Cypress.Commands.add('sortByCol', (colIndex) => {
     .find('span[class=pf-c-table__sort-indicator]')
     .click({ force: true });
 });
-const getChipGroup = (label) =>
-  cy.contains('.pf-c-chip-group__label', label).parent();
 
 before(() => {
   // the flag tells not to fetch external federated modules
@@ -141,51 +139,56 @@ before(() => {
 
 // TODO test data
 
-const urlParams =
-  'text=123|FOO_BAR&total_risk=4,3&impact=1,2&likelihood=1&category=1,2&rule_status=disabled&impacting=false';
+const urlParamsList = [
+  'text=123|FOO_BAR&total_risk=4,3&impact=1,2&likelihood=1&category=1,2&rule_status=disabled&impacting=false',
+  'total_risk=1&text=foo+bar&category=1&rule_status=disabled&impacting=false',
+  'total_risk=2&text=foo&category=2&rule_status=enabled&impacting=true',
+];
 
-describe('pre-filled url search parameters', () => {
-  beforeEach(() => {
-    mount(
-      <MemoryRouter
-        initialEntries={[`/recommendations?${urlParams}`]}
-        initialIndex={0}
-      >
-        <Intl>
-          <Provider store={getStore()}>
-            <RecsListTable
-              query={{
-                isError: false,
-                isFetching: false,
-                isUninitialized: false,
-                isSuccess: true,
-                data: ruleResponse,
-              }}
-            />
-          </Provider>
-        </Intl>
-      </MemoryRouter>
-    );
-  });
+urlParamsList.forEach((urlParams, index) => {
+  describe(`pre-filled url search parameters ${index}`, () => {
+    beforeEach(() => {
+      mount(
+        <MemoryRouter
+          initialEntries={[`/recommendations?${urlParams}`]}
+          initialIndex={0}
+        >
+          <Intl>
+            <Provider store={getStore()}>
+              <RecsListTable
+                query={{
+                  isError: false,
+                  isFetching: false,
+                  isUninitialized: false,
+                  isSuccess: true,
+                  data: ruleResponse,
+                }}
+              />
+            </Provider>
+          </Intl>
+        </MemoryRouter>
+      );
+    });
 
-  it('recognizes all parameters', () => {
-    const urlSearchParameters = new URLSearchParams(urlParams);
-    for (const [key, value] of urlSearchParameters) {
-      if (key == 'text') {
-        hasChip('Name', value);
-        cy.get('.pf-m-fill > .pf-c-form-control').should('have.value', value);
-      } else {
-        value.split(',').forEach((it) => {
-          const [group, item] = urlParamConvert(key, it);
-          hasChip(group, item);
-        });
+    it('recognizes all parameters', () => {
+      const urlSearchParameters = new URLSearchParams(urlParams);
+      for (const [key, value] of urlSearchParameters) {
+        if (key == 'text') {
+          hasChip('Name', value);
+          cy.get('.pf-m-fill > .pf-c-form-control').should('have.value', value);
+        } else {
+          value.split(',').forEach((it) => {
+            const [group, item] = urlParamConvert(key, it);
+            hasChip(group, item);
+          });
+        }
       }
-    }
-    // do not get more chips than expected
-    cy.get(CHIP_GROUP).should(
-      'have.length',
-      Array.from(urlSearchParameters).length
-    );
+      // do not get more chips than expected
+      cy.get(CHIP_GROUP).should(
+        'have.length',
+        Array.from(urlSearchParameters).length
+      );
+    });
   });
 });
 
@@ -658,81 +661,5 @@ describe('error recommendations list table', () => {
     cy.get('#error-state-message')
       .find('h4')
       .should('have.text', 'Something went wrong');
-  });
-});
-
-describe('Recs list is requested with additional parameters №1', () => {
-  before(() => {
-    mount(
-      <MemoryRouter
-        initialEntries={[
-          '/recommendations?total_risk=1&text=foo+bar&category=1&rule_status=disabled&impacting=false',
-        ]}
-        initialIndex={0}
-      >
-        <Intl>
-          <Provider store={getStore()}>
-            <RecsListTable
-              query={{
-                isError: false,
-                isFetching: false,
-                isUninitialized: false,
-                isSuccess: true,
-                data: ruleResponse,
-              }}
-            />
-          </Provider>
-        </Intl>
-      </MemoryRouter>
-    );
-  });
-
-  it('Adds first iteration of filters to the table', () => {
-    cy.get(ROOT)
-      .find('span[class=pf-c-chip-group__label]')
-      .should('have.length', 5);
-    getChipGroup('Total risk').contains('.pf-c-chip', 'Low');
-    getChipGroup('Name').contains('.pf-c-chip', 'foo bar');
-    getChipGroup('Category').contains('.pf-c-chip', 'Service Availability');
-    getChipGroup('Status').contains('.pf-c-chip', 'Disabled');
-    getChipGroup('Clusters impacted').contains('.pf-c-chip', 'None');
-  });
-});
-
-describe('Recs list is requested with additional parameters №2', () => {
-  before(() => {
-    mount(
-      <MemoryRouter
-        initialEntries={[
-          '/recommendations?total_risk=2&text=foo+bar&category=2&rule_status=enabled&impacting=true',
-        ]}
-        initialIndex={0}
-      >
-        <Intl>
-          <Provider store={getStore()}>
-            <RecsListTable
-              query={{
-                isError: false,
-                isFetching: false,
-                isUninitialized: false,
-                isSuccess: true,
-                data: ruleResponse,
-              }}
-            />
-          </Provider>
-        </Intl>
-      </MemoryRouter>
-    );
-  });
-
-  it('Adds second iteration of filters to the table', () => {
-    cy.get(ROOT)
-      .find('span[class=pf-c-chip-group__label]')
-      .should('have.length', 5);
-    getChipGroup('Total risk').contains('.pf-c-chip', 'Moderate');
-    getChipGroup('Name').contains('.pf-c-chip', 'foo bar');
-    getChipGroup('Category').contains('.pf-c-chip', 'Performance');
-    getChipGroup('Status').contains('.pf-c-chip', 'Enabled');
-    getChipGroup('Clusters impacted').contains('.pf-c-chip', '1 or more');
   });
 });
