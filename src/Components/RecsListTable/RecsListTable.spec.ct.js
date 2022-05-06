@@ -27,7 +27,6 @@ import {
   itemsPerPage,
 } from '../../../cypress/utils/pagination';
 import { TOTAL_RISK, CATEGORIES } from '../../../cypress/utils/globals';
-import { RECS_LIST_COLUMNS } from '../../AppConstants';
 import {
   checkRowCounts,
   columnName2UrlParam,
