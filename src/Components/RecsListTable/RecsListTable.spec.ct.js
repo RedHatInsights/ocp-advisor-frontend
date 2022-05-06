@@ -27,9 +27,11 @@ import {
   itemsPerPage,
 } from '../../../cypress/utils/pagination';
 import { TOTAL_RISK, CATEGORIES } from '../../../cypress/utils/globals';
+import { RECS_LIST_COLUMNS } from '../../AppConstants';
 import {
   checkRowCounts,
   columnName2UrlParam,
+  checkTableHeaders,
 } from '../../../cypress/utils/table';
 // TODO make more use of ../../../cypress/utils/components
 
@@ -43,6 +45,7 @@ const DEFAULT_FILTERS = {
   impacting: 'true',
   rule_status: 'enabled',
 };
+const TABLE_HEADERS = _.map(RECS_LIST_COLUMNS, (it) => it.title);
 
 const data = ruleResponse.recommendations;
 
@@ -221,6 +224,10 @@ describe('successful non-empty recommendations list table', () => {
     });
   });
 
+  it('renders table header', () => {
+    checkTableHeaders(TABLE_HEADERS);
+  });
+
   it('renders Clusters impacted chip group', () => {
     cy.get(ROOT)
       .find('span[class=pf-c-chip-group__label]')
@@ -268,21 +275,9 @@ describe('successful non-empty recommendations list table', () => {
   });
 
   // TODO do not hardcode data
-  it('table has 4 recs', () => {
-    checkRowCounts(4);
-  });
-
-  // TODO do not hardcode data
   it('table has 7 recs including non-impacting', () => {
     cy.removeImpactingFilter();
     checkRowCounts(7);
-  });
-
-  // TODO do not hardcode data
-  it('should have 5 sortable columns', () => {
-    cy.getColumns()
-      .should('have.length', 5)
-      .should('have.class', 'pf-c-table__sort');
   });
 
   describe('defaults', () => {
