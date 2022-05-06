@@ -16,8 +16,9 @@ const RecommendationWrapper = () => {
   const ack = useGetRecAcksQuery({ ruleId: useParams().recommendationId });
   if (rule.isSuccess && rule.data?.content?.description) {
     const subnav = `${rule.data.content.description} - Recommendations`;
-    // FIXME: https://consoledot.pages.redhat.com/insights-chrome/dev/api.html#_using_updatedocumenttitle_function
-    document.title = intl.formatMessage(messages.documentTitle, { subnav });
+    insights.chrome.updateDocumentTitle(
+      intl.formatMessage(messages.documentTitle, { subnav })
+    );
   }
   const clusters = useGetAffectedClustersQuery(useParams().recommendationId);
 

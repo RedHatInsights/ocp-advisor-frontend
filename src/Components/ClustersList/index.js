@@ -11,10 +11,11 @@ import ClustersListTable from '../ClustersListTable';
 
 const ClustersList = () => {
   const intl = useIntl();
-  // FIXME: https://consoledot.pages.redhat.com/insights-chrome/dev/api.html#_using_updatedocumenttitle_function
-  document.title = intl.formatMessage(messages.documentTitle, {
-    subnav: 'Clusters',
-  });
+  insights.chrome.updateDocumentTitle(
+    intl.formatMessage(messages.documentTitle, {
+      subnav: intl.formatMessage(messages.clusters),
+    })
+  );
 
   return (
     <React.Fragment>
