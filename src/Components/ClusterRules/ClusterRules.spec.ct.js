@@ -173,7 +173,7 @@ describe('cluster rules table', () => {
     });
   });
 
-  it.only('renders table header', () => {
+  it('renders table header', () => {
     checkTableHeaders(TABLE_HEADERS);
   });
 
