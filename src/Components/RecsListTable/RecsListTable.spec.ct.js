@@ -281,6 +281,8 @@ describe('successful non-empty recommendations list table', () => {
   });
 
   describe('defaults', () => {
+    // TODO enhance tests See ClustersListTable
+
     it(`shows maximum ${DEFAULT_ROW_COUNT} recommendations`, () => {
       checkRowCounts(DEFAULT_DISPLAYED_SIZE);
       expect(window.location.search).to.contain(`limit=${DEFAULT_ROW_COUNT}`);
