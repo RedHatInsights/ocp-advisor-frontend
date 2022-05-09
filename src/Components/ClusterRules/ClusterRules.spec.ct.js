@@ -63,6 +63,7 @@ const filtersConf = {
 };
 
 const filterData = (data, filters) => filter(filtersConf, data, filters);
+const filterApply = (filters) => applyFilters(filters, filtersConf);
 
 // TODO add more combinations of filters for testing
 const filterCombos = [
@@ -227,7 +228,7 @@ describe('cluster rules table', () => {
   describe('filtering', () => {
     it('can clear filters', () => {
       // apply some filters
-      applyFilters(filterCombos[0], filtersConf);
+      filterApply(filterCombos[0]);
       cy.get(CHIP_GROUP).should('exist');
       // clear filters
       cy.get('button').contains('Reset filters').click();
@@ -241,19 +242,16 @@ describe('cluster rules table', () => {
     });
 
     it('chips can be cleared', () => {
-      applyFilters(filterCombos[0], filtersConf);
+      filterApply(filterCombos[0]);
       cy.get(CHIP_GROUP).should('exist');
       cy.get('button').contains('Reset filters').click();
       cy.get(CHIP_GROUP).should('not.exist');
     });
 
     it('empty state is displayed when filters do not match any rule', () => {
-      applyFilters(
-        {
-          description: 'Not existing recommendation',
-        },
-        filtersConf
-      );
+      filterApply({
+        description: 'Not existing recommendation',
+      });
       // TODO check empty table view
       // TODO headers are displayed
     });
@@ -268,7 +266,7 @@ describe('cluster rules table', () => {
               filterData(data, filters),
               'description'
             ).sort();
-            applyFilters(filters, filtersConf);
+            filterApply(filters);
             if (sortedDescriptions.length === 0) {
               // TODO check empty table view
               // TODO headers are displayed
@@ -311,7 +309,7 @@ describe('cluster rules table', () => {
             filterData(data, filters),
             'description'
           ).sort();
-          applyFilters(filters, filtersConf);
+          filterApply(filters);
           if (sortedDescriptions.length === 0) {
             // TODO check empty table view
           } else {
