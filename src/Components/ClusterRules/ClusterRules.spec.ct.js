@@ -40,21 +40,21 @@ const filtersConf = {
     selectorText: 'Description',
     values: ['Lorem IPSUM', '1Lorem', 'Not existing recommendation'],
     type: 'input',
-    f: (it, value) =>
+    filterFunc: (it, value) =>
       it.description.toLowerCase().includes(value.toLowerCase()),
   },
   risk: {
     selectorText: 'Total risk',
     values: Array.from(cumulativeCombinations(TOTAL_RISK_VALUES)),
     type: 'checkbox',
-    f: (it, value) =>
+    filterFunc: (it, value) =>
       _.map(value, (x) => TOTAL_RISK[x]).includes(it.total_risk),
   },
   category: {
     selectorText: 'Category',
     values: Array.from(cumulativeCombinations(Object.keys(CATEGORIES))),
     type: 'checkbox',
-    f: (it, value) =>
+    filterFunc: (it, value) =>
       _.intersection(
         _.flatMap(value, (x) => CATEGORIES[x]),
         it.tags
