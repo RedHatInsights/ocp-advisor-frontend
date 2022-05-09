@@ -62,7 +62,7 @@ const filtersConf = {
   },
 };
 
-const filterData = _.partial(filter, filtersConf);
+const filterData = (data, filters) => filter(filtersConf, data, filters);
 
 // TODO add more combinations of filters for testing
 const filterCombos = [
