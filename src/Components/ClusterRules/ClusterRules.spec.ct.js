@@ -186,7 +186,7 @@ describe('cluster rules table', () => {
   });
 
   describe('defaults', () => {
-    it('only first item expanded', () => {
+    it('only one row is expanded', () => {
       cy.get('#expanded-content1').should('have.length', 1);
       cy.get(EXPANDABLES).should('have.length', 1);
     });
@@ -205,6 +205,16 @@ describe('cluster rules table', () => {
     cy.get(EXPANDABLES).should('have.length', RULES_ENABLED);
     cy.get(TOOLBAR).find('button').click();
     cy.get(EXPANDABLES).should('have.length', 0);
+  });
+
+  it('expand one row then sort', () => {
+    cy.get(ROOT).find('#expandable-toggle2').click();
+    cy.get(ROOT)
+      .find('th[data-label=Description]')
+      .find('button')
+      .click()
+      .click();
+    cy.get(EXPANDABLES).should('have.length', 2);
   });
 
   describe('sorting', () => {

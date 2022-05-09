@@ -62,7 +62,6 @@ const ClusterRules = ({ cluster }) => {
   const { isError, isUninitialized, isFetching, isSuccess, data, error } =
     cluster;
   const reports = data?.report?.data || [];
-
   const [filteredRows, setFilteredRows] = useState([]);
   const [displayedRows, setDisplayedRows] = useState([]);
   const [isAllExpanded, setIsAllExpanded] = useState(false);
@@ -119,13 +118,19 @@ const ClusterRules = ({ cluster }) => {
     setDisplayedRows(collapseRows);
   };
 
-  const buildFilteredRows = (allRows, filters) =>
-    allRows
+  const buildFilteredRows = (allRows, filters) => {
+    const expandedRowsSet = new Set(
+      displayedRows
+        .filter((ruleExpanded) => ruleExpanded?.isOpen)
+        .map((object) => object?.rule?.rule_id)
+    );
+
+    return allRows
       .filter((rule) => passFilters(rule, filters))
       .map((value, key) => [
         {
           rule: value,
-          isOpen: isAllExpanded,
+          isOpen: isAllExpanded || expandedRowsSet?.has(value?.rule_id),
           cells: [
             {
               title: (
@@ -194,6 +199,7 @@ const ClusterRules = ({ cluster }) => {
           ],
         },
       ]);
+  };
 
   const buildDisplayedRows = (rows, index, direction) => {
     let sortingRows = [...rows];
@@ -227,6 +233,7 @@ const ClusterRules = ({ cluster }) => {
   };
 
   const onSort = (_e, index, direction) => {
+    setExpandFirst(false);
     setFirstRule('');
     return updateFilters({
       ...filters,
