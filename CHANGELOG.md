@@ -1,3 +1,10 @@
+## [1.3.10](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.9...v1.3.10) (2022-05-09)
+
+
+### Bug Fixes
+
+* **ClusterRules:** Open rows memorization  ([#251](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/251)) ([83f754e](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/83f754e354cb9774e406f5e35a9e59d558e4dd07))
+
 ## [1.3.9](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.8...v1.3.9) (2022-04-27)
 
 ## [1.3.8](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.7...v1.3.8) (2022-04-20)
