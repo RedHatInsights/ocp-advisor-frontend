@@ -19,14 +19,13 @@ const ClusterWrapper = () => {
   }, [match.params.clusterId]);
 
   useEffect(() => {
-    if (match.params.clusterId) {
-      const subnav = `${match.params.clusterId} - ${intl.formatMessage(
-        messages.clusters
-      )}`;
-      // FIXME: https://consoledot.pages.redhat.com/insights-chrome/dev/api.html#_using_updatedocumenttitle_function
-      document.title = intl.formatMessage(messages.documentTitle, { subnav });
-    }
-  }, [match.params.clusterId]);
+    const subnav = `${
+      cluster?.data?.report?.meta?.cluster_name || match.params.clusterId
+    } - ${intl.formatMessage(messages.clusters)}`;
+    insights.chrome.updateDocumentTitle(
+      intl.formatMessage(messages.documentTitle, { subnav })
+    );
+  }, [cluster, match]);
   return <Cluster cluster={cluster} match={match} />;
 };
 
