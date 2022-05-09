@@ -69,30 +69,11 @@ const ClusterRules = ({ cluster }) => {
   const [firstRule, setFirstRule] = useState(''); // show a particular rule first
   const results = filteredRows.length;
   const { search } = useLocation();
-  // helps to distinguish the state when the API data received but not yet filtered
+  const [rowsUpdating, setRowsUpdating] = useState(true);
   const [rowsFiltered, setRowsFiltered] = useState(false);
-  const loadingState = isUninitialized || isFetching || !rowsFiltered;
+  const loadingState = isUninitialized || isFetching || rowsUpdating;
   const errorState = isError;
   const successState = isSuccess;
-
-  useEffect(() => {
-    setDisplayedRows(
-      buildDisplayedRows(filteredRows, filters.sortIndex, filters.sortDirection)
-    );
-  }, [
-    filteredRows,
-    filters.limit,
-    filters.offset,
-    filters.sortIndex,
-    filters.sortDirection,
-  ]);
-
-  useEffect(() => {
-    setFilteredRows(buildFilteredRows(reports, filters));
-    if (isSuccess && !rowsFiltered) {
-      setRowsFiltered(true);
-    }
-  }, [reports, filters]);
 
   useEffect(() => {
     if (search) {
@@ -111,6 +92,29 @@ const ClusterRules = ({ cluster }) => {
       updateFilters({ ...filters, ...paramsObject });
     }
   }, []);
+
+  useEffect(() => {
+    setFilteredRows(buildFilteredRows(reports, filters));
+  }, [reports, filters]);
+
+  useEffect(() => {
+    setDisplayedRows(
+      buildDisplayedRows(filteredRows, filters.sortIndex, filters.sortDirection)
+    );
+    setRowsFiltered(true);
+  }, [
+    filteredRows,
+    filters.limit,
+    filters.offset,
+    filters.sortIndex,
+    filters.sortDirection,
+  ]);
+
+  useEffect(() => {
+    if (rowsFiltered) {
+      setRowsUpdating(false);
+    }
+  }, [rowsFiltered]);
 
   const handleOnCollapse = (_e, rowId, isOpen) => {
     const collapseRows = [...displayedRows];
