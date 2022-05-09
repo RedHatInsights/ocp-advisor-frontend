@@ -1,3 +1,10 @@
+## [1.3.12](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.11...v1.3.12) (2022-05-09)
+
+
+### Bug Fixes
+
+* **Cluster rules table:** display table rows only when filerting is complete ([#261](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/261)) ([8016533](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/8016533d59b3fc334b88fb48720913ea9a51a10a))
+
 ## [1.3.11](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.10...v1.3.11) (2022-05-09)
 
 ## [1.3.10](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.9...v1.3.10) (2022-05-09)
