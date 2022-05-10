@@ -7,7 +7,7 @@ import _ from 'lodash';
 import { Intl } from '../../Utilities/intlHelper';
 import getStore from '../../Store';
 import { ClustersListTable } from './ClustersListTable';
-import props from '../../../cypress/fixtures/api/insights-results-aggregator/v2/clusters.json';
+import clusters from '../../../cypress/fixtures/api/insights-results-aggregator/v2/clusters.json';
 import {
   TOOLBAR,
   PAGINATION,
@@ -33,16 +33,14 @@ import {
   changePagination,
 } from '../../../cypress/utils/pagination';
 
-// TODO check if we can rid this of this data and use namedClustersInstead
-const data = props['data'];
 // add property name to clusters
-let namedClusters = _.cloneDeep(data);
-namedClusters.forEach(
+let data = _.cloneDeep(clusters['data']);
+data.forEach(
   (it) =>
     (it['name'] = it['cluster_name'] ? it['cluster_name'] : it['cluster_id'])
 );
 // fill possible missing values
-namedClusters.forEach((it) => {
+data.forEach((it) => {
   ['1', '2', '3', '4'].forEach((k) => {
     it['hits_by_total_risk'][k] = it['hits_by_total_risk'][k]
       ? it['hits_by_total_risk'][k]
@@ -51,7 +49,7 @@ namedClusters.forEach((it) => {
 });
 // default sorting
 let namedClustersDefaultSorting = _.orderBy(
-  namedClusters,
+  data,
   [(it) => it.last_checked_at || '1970-01-01T01:00:00.001Z'],
   ['desc']
 );
@@ -59,10 +57,7 @@ let namedClustersDefaultSorting = _.orderBy(
 const ROOT = 'div[id=clusters-list-table]';
 const TABLE_HEADERS = _.map(CLUSTERS_LIST_COLUMNS, (it) => it.title);
 
-const DEFAULT_DISPLAYED_SIZE = Math.min(
-  namedClusters.length,
-  DEFAULT_ROW_COUNT
-);
+const DEFAULT_DISPLAYED_SIZE = Math.min(data.length, DEFAULT_ROW_COUNT);
 
 // TODO: test pre-filled search parameters filtration
 
@@ -121,7 +116,7 @@ describe('clusters list table', () => {
                 isFetching: false,
                 isUninitialized: false,
                 isSuccess: true,
-                data: props,
+                data: clusters,
                 refetch: cy.stub(),
               }}
             />
@@ -272,7 +267,7 @@ describe('clusters list table', () => {
           let sortedNames = _.map(
             // all tables must preserve original ordering
             _.orderBy(
-              _.cloneDeep(namedClusters),
+              _.cloneDeep(data),
               [category],
               [order === 'ascending' ? 'asc' : 'desc']
             ),
