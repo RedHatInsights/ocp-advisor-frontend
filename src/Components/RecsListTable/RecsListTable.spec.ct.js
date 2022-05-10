@@ -33,6 +33,7 @@ import {
   columnName2UrlParam,
   checkTableHeaders,
 } from '../../../cypress/utils/table';
+import { SORTING_ORDERS } from '../../../cypress/utils/globals';
 // TODO make more use of ../../../cypress/utils/components
 
 // selectors
@@ -367,106 +368,61 @@ describe('successful non-empty recommendations list table', () => {
   });
 
   describe('sorting', () => {
-    // TODO make sorting tests data independent
-    it('sort the data by Name', () => {
-      cy.sortByCol(0).then(() => {
-        expect(window.location.search).to.contain('sort=description');
-      });
-      cy.getAllRows()
-        .eq(0)
-        .find('td[data-label=Name]')
-        .should('contain', '1Lorem');
-      cy.sortByCol(0).then(() => {
-        expect(window.location.search).to.contain('sort=-description');
-      });
-      cy.getAllRows()
-        .eq(0)
-        .find('td[data-label=Name]')
-        .should(
-          'contain',
-          'Super atomic nuclear cluster on the brink of the world destruction'
-        );
+    // TODO implement category sorting
+    _.zip(
+      ['description', 'publish_date', 'total_risk', 'impacted_clusters_count'],
+      ['Name', 'Modified', 'Total risk', 'Clusters'] // TODO use TABLE_HEADERS
+    ).forEach(([category, label]) => {
+      SORTING_ORDERS.forEach((order) => {
+        it(`${order} by ${label}`, () => {
+          const col = `td[data-label="${label}"]`;
+          const header = `th[data-label="${label}"]`;
 
-      // all tables must preserve original ordering
-      it('can sort by category', () => {
-        cy.sortByCol(2).then(() => {
-          expect(window.location.search).to.contain('sort=tags');
+          cy.get(col).should('have.length', DEFAULT_DISPLAYED_SIZE);
+          if (order === 'ascending') {
+            cy.get(header)
+              .find('button')
+              .click()
+              .then(() =>
+                expect(window.location.search).to.contain(
+                  `sort=${columnName2UrlParam(category)}`
+                )
+              );
+          } else {
+            cy.get(header)
+              .find('button')
+              .click()
+              .click() // TODO dblclick fails for unknown reason
+              .then(() =>
+                expect(window.location.search).to.contain(
+                  `sort=-${columnName2UrlParam(category)}`
+                )
+              );
+          }
+
+          // add property name to clusters
+          let sortedData = _.map(
+            // all tables must preserve original ordering
+            _.orderBy(
+              _.cloneDeep(filterData(DEFAULT_FILTERS)),
+              [category],
+              [order === 'ascending' ? 'asc' : 'desc']
+            ),
+            'description'
+          );
+          cy.get(`td[data-label="Name"]`)
+            .then(($els) => {
+              return _.map(Cypress.$.makeArray($els), 'innerText');
+            })
+            .should(
+              'deep.equal',
+              sortedData.slice(
+                0,
+                Math.min(DEFAULT_ROW_COUNT, sortedData.length)
+              )
+            );
         });
-        cy.getAllRows()
-          .eq(0)
-          .find('td[data-label=Name]')
-          .should('contain', '1Lorem');
-        cy.getAllRows()
-          .eq(0)
-          .find('td[data-label=Category]')
-          .should('contain', 'Performance');
-        cy.sortByCol(2).then(() => {
-          expect(window.location.search).to.contain('sort=-tags');
-        });
-        cy.getAllRows()
-          .eq(0)
-          .find('td[data-label=Category]')
-          .should('contain', 'Performance');
       });
-    });
-
-    it('sort the data by Modified', () => {
-      cy.sortByCol(1).then(() => {
-        expect(window.location.search).to.contain('sort=publish_date');
-      });
-      cy.getAllRows()
-        .eq(0)
-        .find('td[data-label=Name]')
-        .should('contain', '1Lorem');
-      cy.sortByCol(1).then(() => {
-        expect(window.location.search).to.contain('sort=-publish_date');
-      });
-      cy.getAllRows()
-        .eq(0)
-        .find('td[data-label=Name]')
-        .should(
-          'contain',
-          'Super atomic nuclear cluster on the brink of the world destruction'
-        );
-    });
-
-    //had to add \\ \\ to the Total risk, otherwise jQuery engine would throw an error
-    it('sort the data by Total Risk', () => {
-      cy.sortByCol(3).then(() => {
-        expect(window.location.search).to.contain('sort=total_risk');
-      });
-      cy.getAllRows()
-        .eq(0)
-        .find('td[data-label="Total risk"]')
-        .should('contain', 'Moderate');
-      cy.sortByCol(3).then(() => {
-        expect(window.location.search).to.contain('sort=-total_risk');
-      });
-      cy.getAllRows()
-        .eq(0)
-        .find('td[data-label="Total risk"]')
-        .should('contain', 'Critical');
-    });
-
-    it('sort the data by Clusters', () => {
-      cy.sortByCol(4).then(() => {
-        expect(window.location.search).to.contain(
-          'sort=impacted_clusters_count'
-        );
-      });
-      cy.getAllRows()
-        .eq(0)
-        .find('td[data-label="Clusters"]')
-        .should('contain', '1');
-      cy.sortByCol(4).then(() => {
-        expect(window.location.search).to.contain(
-          'sort=-impacted_clusters_count'
-        );
-      });
-      cy.getAllRows()
-        .eq(0)
-        .find('td[data-label="Clusters"]')
-        .should('contain', '2,003');
     });
   });
 
