@@ -193,8 +193,8 @@ describe('cluster rules table', () => {
   });
 
   it('expand one row then sort', () => {
-    cy.get(ROOT).find('#expandable-toggle2').click();
-    cy.get(ROOT)
+    cy.get('#expandable-toggle2').click();
+    cy.get('table')
       .find('th[data-label=Description]')
       .find('button')
       .click()
@@ -438,7 +438,7 @@ describe('cluster rules table testing the first query parameter', () => {
   });
 
   it('show the rule from the "first" search parameter', () => {
-    cy.get(ROOT)
+    cy.get('table')
       .find('td[data-label=Description]')
       .children()
       .eq(0)

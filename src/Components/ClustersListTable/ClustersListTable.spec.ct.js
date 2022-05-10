@@ -161,7 +161,7 @@ describe('clusters list table', () => {
 
     it('sorting using last seen', () => {
       // TODO create a function used also in other tests
-      cy.get(ROOT)
+      cy.get('table')
         .find('th[data-label="Last seen"]')
         .should('have.class', 'pf-c-table__sort pf-m-selected');
       // TODO check window.location as in  RecsListTable (if applicable)
