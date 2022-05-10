@@ -32,6 +32,7 @@ import {
   checkRowCounts,
   columnName2UrlParam,
   checkTableHeaders,
+  tableIsSortedBy,
 } from '../../../cypress/utils/table';
 import { SORTING_ORDERS } from '../../../cypress/utils/globals';
 // TODO make more use of ../../../cypress/utils/components
@@ -298,9 +299,7 @@ describe('successful non-empty recommendations list table', () => {
 
     it('sort by total risk', () => {
       const column = 'Total risk';
-      cy.get('table')
-        .find(`th[data-label="${column}"]`)
-        .should('have.class', 'pf-c-table__sort pf-m-selected');
+      tableIsSortedBy(column);
       expect(window.location.search).to.contain(
         `sort=-${columnName2UrlParam(column)}`
       );

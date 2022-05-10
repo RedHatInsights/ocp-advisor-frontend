@@ -26,4 +26,16 @@ function columnName2UrlParam(name) {
   return name.toLowerCase().replace(/ /g, '_');
 }
 
-export { checkTableHeaders, checkRowCounts, columnName2UrlParam };
+function tableIsSortedBy(columnTitle) {
+  return cy
+    .get('table')
+    .find(`th[data-label="${columnTitle}"]`)
+    .should('have.class', 'pf-c-table__sort pf-m-selected');
+}
+
+export {
+  checkTableHeaders,
+  checkRowCounts,
+  columnName2UrlParam,
+  tableIsSortedBy,
+};

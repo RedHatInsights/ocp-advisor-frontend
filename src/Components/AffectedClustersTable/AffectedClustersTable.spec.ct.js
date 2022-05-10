@@ -26,6 +26,7 @@ import { SORTING_ORDERS } from '../../../cypress/utils/globals';
 import {
   checkTableHeaders,
   checkRowCounts,
+  tableIsSortedBy,
 } from '../../../cypress/utils/table';
 import {
   itemsPerPage,
@@ -169,9 +170,7 @@ describe('non-empty successful affected clusters table', () => {
 
     it('sorting using last seen', () => {
       const column = 'Last seen';
-      cy.get('table')
-        .find(`th[data-label="${column}"]`)
-        .should('have.class', 'pf-c-table__sort pf-m-selected');
+      tableIsSortedBy(column);
     });
   });
 

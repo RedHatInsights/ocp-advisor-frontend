@@ -24,6 +24,7 @@ import {
   checkTableHeaders,
   checkRowCounts,
   columnName2UrlParam,
+  tableIsSortedBy,
 } from '../../../cypress/utils/table';
 import { CLUSTERS_LIST_COLUMNS } from '../../AppConstants';
 import {
@@ -155,10 +156,8 @@ describe('clusters list table', () => {
     });
 
     it('sorting using last seen', () => {
-      // TODO create a function used also in other tests
-      cy.get('table')
-        .find('th[data-label="Last seen"]')
-        .should('have.class', 'pf-c-table__sort pf-m-selected');
+      const column = 'Last seen';
+      tableIsSortedBy(column);
       // TODO check window.location as in  RecsListTable (if applicable)
     });
 
@@ -190,8 +189,8 @@ describe('clusters list table', () => {
     it('can change page limit', () => {
       // FIXME: best way to make the loop
       cy.wrap(PAGINATION_VALUES).each((el) => {
-        changePagination(el).then(() =>
-          expect(window.location.search).to.contain(`limit=${el}`)
+        changePagination(el).then(
+          () => expect(window.location.search).to.contain(`limit=${el}`)
           // TODO should check below be nested here as well?
         );
         checkRowCounts(Math.min(el, data.length));
