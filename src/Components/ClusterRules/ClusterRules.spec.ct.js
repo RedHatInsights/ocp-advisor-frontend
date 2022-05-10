@@ -179,8 +179,6 @@ describe('cluster rules table', () => {
       cy.get(CHIP_GROUP).should('not.exist');
       cy.get('button').contains('Reset filters').should('not.exist');
     });
-
-    // TODO check default sorting
   });
 
   it('expand all, collapse all', () => {
@@ -335,8 +333,6 @@ describe('cluster rules table', () => {
           // check chips
           for (const [k, v] of Object.entries(filters)) {
             let groupName = filtersConf[k].selectorText;
-            // TODO remove this change CCXDEV-7192
-            groupName = groupName == 'Description' ? 'Name' : groupName;
             const nExpectedItems =
               filtersConf[k].type === 'checkbox' ? v.length : 1;
             cy.get(CHIP_GROUP)

@@ -392,7 +392,6 @@ describe('non-empty successful affected clusters table', () => {
             } else {
               cy.get(header).find('button').dblclick();
             }
-            // TODO should we check URL as in ClusterListTable?
 
             // add property name to clusters
             let sortedClusters = _.cloneDeep(data);
