@@ -158,7 +158,9 @@ describe('clusters list table', () => {
     it('sorting using last seen', () => {
       const column = 'Last seen';
       tableIsSortedBy(column);
-      // TODO check window.location as in  RecsListTable (if applicable)
+      expect(window.location.search).to.contain(
+        `sort=-${columnName2UrlParam(column)}`
+      );
     });
 
     it('applies total risk "All clusters" filter', () => {
