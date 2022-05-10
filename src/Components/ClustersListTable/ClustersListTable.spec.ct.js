@@ -191,8 +191,8 @@ describe('clusters list table', () => {
       // FIXME: best way to make the loop
       cy.wrap(PAGINATION_VALUES).each((el) => {
         changePagination(el).then(() =>
-          // TODO should this be nested. Also the other check below?
           expect(window.location.search).to.contain(`limit=${el}`)
+          // TODO should check below be nested here as well?
         );
         checkRowCounts(Math.min(el, data.length));
       });
@@ -200,7 +200,6 @@ describe('clusters list table', () => {
     it('can iterate over pages', () => {
       cy.wrap(itemsPerPage(data.length)).each((el, index, list) => {
         checkRowCounts(el).then(() => {
-          // TODO why is this nested?
           expect(window.location.search).to.contain(
             `offset=${DEFAULT_ROW_COUNT * index}`
           );
