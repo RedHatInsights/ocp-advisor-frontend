@@ -145,8 +145,6 @@ describe('non-empty successful affected clusters table', () => {
   describe('defaults', () => {
     it(`shows ${DEFAULT_ROW_COUNT} clusters only`, () => {
       checkRowCounts(DEFAULT_ROW_COUNT);
-      // TODO check why expect fails
-      // expect(window.location.search).to.contain('limit=20');
     });
 
     it(`pagination is set to ${DEFAULT_ROW_COUNT}`, () => {
@@ -169,9 +167,10 @@ describe('non-empty successful affected clusters table', () => {
       cy.ouiaId(BULK_SELECT).find('input').should('not.be.checked');
     });
 
-    it('sorting using last seen', () => {
-      cy.get(ROOT)
-        .find('th[data-key=2]') // TODO use column name with data-label
+    it.only('sorting using last seen', () => {
+      const column = 'Last seen';
+      cy.get('table')
+        .find(`th[data-label="${column}"]`)
         .should('have.class', 'pf-c-table__sort pf-m-selected');
     });
   });
