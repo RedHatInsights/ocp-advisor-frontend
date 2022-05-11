@@ -254,13 +254,10 @@ const RecsListTable = ({ query }) => {
       const fst = firstItem[0].rule[RECS_LIST_COLUMNS_KEYS[index]];
       const snd = secondItem[0].rule[RECS_LIST_COLUMNS_KEYS[index]];
       if (index === 3) {
-        const x = extractCategories(fst)[0].localeCompare(
+        const categoryCompare = extractCategories(fst)[0].localeCompare(
           extractCategories(snd)[0]
         );
-        const y = extractCategories(snd)[0].localeCompare(
-          extractCategories(fst)[0]
-        );
-        return x > y ? d : y > x ? -d : 0;
+        return categoryCompare === 1 ? d : categoryCompare === -1 ? -d : 0;
       }
       return fst > snd ? d : snd > fst ? -d : 0;
     });
