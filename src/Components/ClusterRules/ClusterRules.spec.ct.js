@@ -15,7 +15,7 @@ import {
   CATEGORIES,
   SORTING_ORDERS,
 } from '../../../cypress/utils/globals';
-import { applyFilters } from '../../../cypress/utils/filters';
+import { applyFilters, filter } from '../../../cypress/utils/filters';
 import { cumulativeCombinations } from '../../../cypress/utils/combine';
 import { checkTableHeaders } from '../../../cypress/utils/table';
 import {
@@ -41,45 +41,30 @@ const filtersConf = {
     selectorText: 'Description',
     values: ['Lorem IPSUM', '1Lorem', 'Not existing recommendation'],
     type: 'input',
+    filterFunc: (it, value) =>
+      it.description.toLowerCase().includes(value.toLowerCase()),
   },
   risk: {
     selectorText: 'Total risk',
     values: Array.from(cumulativeCombinations(TOTAL_RISK_VALUES)),
     type: 'checkbox',
+    filterFunc: (it, value) =>
+      _.map(value, (x) => TOTAL_RISK[x]).includes(it.total_risk),
   },
   category: {
     selectorText: 'Category',
     values: Array.from(cumulativeCombinations(Object.keys(CATEGORIES))),
     type: 'checkbox',
+    filterFunc: (it, value) =>
+      _.intersection(
+        _.flatMap(value, (x) => CATEGORIES[x]),
+        it.tags
+      ).length > 0,
   },
 };
 
-function filterData(data, filters) {
-  let filteredData = data;
-  for (const [key, value] of Object.entries(filters)) {
-    if (key === 'description') {
-      filteredData = _.filter(filteredData, (it) =>
-        it.description.toLowerCase().includes(value.toLowerCase())
-      );
-    } else if (key === 'risk') {
-      const riskNumbers = _.map(value, (it) => TOTAL_RISK[it]);
-      filteredData = _.filter(filteredData, (it) =>
-        riskNumbers.includes(it.total_risk)
-      );
-    } else if (key === 'category') {
-      const tags = _.flatMap(value, (it) => CATEGORIES[it]);
-      filteredData = _.filter(
-        filteredData,
-        (it) => _.intersection(tags, it.tags).length > 0
-      );
-    }
-    // if length is already 0, exit
-    if (filteredData.length === 0) {
-      break;
-    }
-  }
-  return filteredData;
-}
+const filterData = (data, filters) => filter(filtersConf, data, filters);
+const filterApply = (filters) => applyFilters(filters, filtersConf);
 
 // TODO add more combinations of filters for testing
 const filterCombos = [
@@ -254,7 +239,7 @@ describe('cluster rules table', () => {
   describe('filtering', () => {
     it('can clear filters', () => {
       // apply some filters
-      applyFilters(filterCombos[0], filtersConf);
+      filterApply(filterCombos[0]);
       cy.get(CHIP_GROUP).should('exist');
       // clear filters
       cy.get('button').contains('Reset filters').click();
@@ -268,19 +253,16 @@ describe('cluster rules table', () => {
     });
 
     it('chips can be cleared', () => {
-      applyFilters(filterCombos[0], filtersConf);
+      filterApply(filterCombos[0]);
       cy.get(CHIP_GROUP).should('exist');
       cy.get('button').contains('Reset filters').click();
       cy.get(CHIP_GROUP).should('not.exist');
     });
 
     it('empty state is displayed when filters do not match any rule', () => {
-      applyFilters(
-        {
-          description: 'Not existing recommendation',
-        },
-        filtersConf
-      );
+      filterApply({
+        description: 'Not existing recommendation',
+      });
       // TODO check empty table view
       // TODO headers are displayed
     });
@@ -295,7 +277,7 @@ describe('cluster rules table', () => {
               filterData(data, filters),
               'description'
             ).sort();
-            applyFilters(filters, filtersConf);
+            filterApply(filters);
             if (sortedDescriptions.length === 0) {
               // TODO check empty table view
               // TODO headers are displayed
@@ -338,7 +320,7 @@ describe('cluster rules table', () => {
             filterData(data, filters),
             'description'
           ).sort();
-          applyFilters(filters, filtersConf);
+          filterApply(filters);
           if (sortedDescriptions.length === 0) {
             // TODO check empty table view
           } else {
