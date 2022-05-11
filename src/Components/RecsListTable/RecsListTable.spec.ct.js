@@ -468,6 +468,27 @@ describe('successful non-empty recommendations list table', () => {
         .find('td[data-label="Clusters"]')
         .should('contain', '2,003');
     });
+
+    it.only('sort the data by Category', () => {
+      cy.sortByCol(2).then(() => {
+        expect(window.location.search).to.contain(
+          'sort=tags&limit=20&offset=0&impacting=true&rule_status=enabled'
+        );
+      });
+      cy.getAllRows()
+        .eq(0)
+        .find('td[data-label="Category"]')
+        .should('contain', 'Performance');
+      cy.sortByCol(2).then(() => {
+        expect(window.location.search).to.contain(
+          'sort=-tags&limit=20&offset=0&impacting=true&rule_status=enabled'
+        );
+      });
+      cy.getAllRows()
+        .eq(0)
+        .find('td[data-label="Category"]')
+        .should('contain', 'Service Availability');
+    });
   });
 
   describe('filtering', () => {
