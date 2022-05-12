@@ -151,15 +151,7 @@ const RecsListTable = ({ query }) => {
             {
               title: (
                 <span key={key}>
-                  <Link
-                    key={key}
-                    // https://github.com/RedHatInsights/ocp-advisor-frontend/issues/29
-                    to={`/recommendations/${
-                      process.env.NODE_ENV === 'development'
-                        ? value.rule_id.replaceAll('.', '%2E')
-                        : value.rule_id
-                    }`}
-                  >
+                  <Link key={key} to={`/recommendations/${value.rule_id}`}>
                     {' '}
                     {value?.description || value?.rule_id}{' '}
                   </Link>
