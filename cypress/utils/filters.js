@@ -55,8 +55,16 @@ function applyFilters(filters, filtersConf) {
       });
       // close dropdown again
       cy.get(FILTER_TOGGLE).click({ force: true });
+    } else if (item.type == 'radio') {
+      cy.get(FILTER_TOGGLE).click({ force: true });
+      cy.get('ul[class=pf-c-select__menu]')
+        .find('label')
+        .contains(value)
+        .parent()
+        .find('input[type=radio]')
+        .check({ force: true });
     } else {
-      throw `${it.type} not recognized`;
+      throw `${item.type} not recognized`;
     }
   }
 }
