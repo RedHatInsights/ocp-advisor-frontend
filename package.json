@@ -25,7 +25,7 @@
     "report:combined": "npx nyc report --reporter lcov --reporter text --report-dir coverage"
   },
   "dependencies": {
-    "@patternfly/react-core": "^4.198.19",
+    "@patternfly/react-core": "^4.206.2",
     "@patternfly/react-table": "^4.71.16",
     "@redhat-cloud-services/frontend-components": "3.8.12",
     "@redhat-cloud-services/frontend-components-advisor-components": "^1.0.1",
