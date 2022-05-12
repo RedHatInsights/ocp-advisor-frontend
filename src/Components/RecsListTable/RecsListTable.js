@@ -254,10 +254,9 @@ const RecsListTable = ({ query }) => {
       const fst = firstItem[0].rule[RECS_LIST_COLUMNS_KEYS[index]];
       const snd = secondItem[0].rule[RECS_LIST_COLUMNS_KEYS[index]];
       if (index === 3) {
-        const categoryCompare = extractCategories(fst)[0].localeCompare(
-          extractCategories(snd)[0]
+        return (
+          d * extractCategories(fst)[0].localeCompare(extractCategories(snd)[0])
         );
-        return categoryCompare === 1 ? d : categoryCompare === -1 ? -d : 0;
       }
       return fst > snd ? d : snd > fst ? -d : 0;
     });

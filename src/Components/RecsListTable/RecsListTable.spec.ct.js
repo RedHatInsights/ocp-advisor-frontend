@@ -27,7 +27,7 @@ import {
   itemsPerPage,
 } from '../../../cypress/utils/pagination';
 import { TOTAL_RISK, CATEGORIES } from '../../../cypress/utils/globals';
-import { RECS_LIST_COLUMNS } from '../../AppConstants';
+import { RECS_LIST_COLUMNS, RULE_CATEGORIES } from '../../AppConstants';
 import {
   checkRowCounts,
   columnName2UrlParam,
@@ -368,10 +368,15 @@ describe('successful non-empty recommendations list table', () => {
   });
 
   describe('sorting', () => {
-    // TODO implement category sorting
     _.zip(
-      ['description', 'publish_date', 'total_risk', 'impacted_clusters_count'],
-      ['Name', 'Modified', 'Total risk', 'Clusters'] // TODO use TABLE_HEADERS
+      [
+        'description',
+        'publish_date',
+        'tags',
+        'total_risk',
+        'impacted_clusters_count',
+      ],
+      ['Name', 'Modified', 'Category', 'Total risk', 'Clusters'] // TODO use TABLE_HEADERS
     ).forEach(([category, label]) => {
       SORTING_ORDERS.forEach((order) => {
         it(`${order} by ${label}`, () => {
@@ -399,12 +404,17 @@ describe('successful non-empty recommendations list table', () => {
                 )
               );
           }
-
+          const filteringTags = filterData(DEFAULT_FILTERS).map((obj) => ({
+            ...obj,
+            tags: obj.tags.filter((string) =>
+              Object.keys(RULE_CATEGORIES).includes(string)
+            ),
+          }));
           // add property name to clusters
           let sortedData = _.map(
             // all tables must preserve original ordering
             _.orderBy(
-              _.cloneDeep(filterData(DEFAULT_FILTERS)),
+              _.cloneDeep(filteringTags),
               [category],
               [order === 'ascending' ? 'asc' : 'desc']
             ),
@@ -423,27 +433,6 @@ describe('successful non-empty recommendations list table', () => {
             );
         });
       });
-    });
-
-    it.only('sort the data by Category', () => {
-      cy.sortByCol(2).then(() => {
-        expect(window.location.search).to.contain(
-          'sort=tags&limit=20&offset=0&impacting=true&rule_status=enabled'
-        );
-      });
-      cy.getAllRows()
-        .eq(0)
-        .find('td[data-label="Category"]')
-        .should('contain', 'Performance');
-      cy.sortByCol(2).then(() => {
-        expect(window.location.search).to.contain(
-          'sort=-tags&limit=20&offset=0&impacting=true&rule_status=enabled'
-        );
-      });
-      cy.getAllRows()
-        .eq(0)
-        .find('td[data-label="Category"]')
-        .should('contain', 'Service Availability');
     });
   });
 
