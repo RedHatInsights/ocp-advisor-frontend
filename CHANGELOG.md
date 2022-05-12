@@ -1,3 +1,10 @@
+## [1.3.13](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.12...v1.3.13) (2022-05-12)
+
+
+### Bug Fixes
+
+* update FEC config library to disable dot rule ([#264](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/264)) ([24f92a1](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/24f92a1d656c26bd60bccb95dca187162670aeaf))
+
 ## [1.3.12](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.11...v1.3.12) (2022-05-09)
 
 
