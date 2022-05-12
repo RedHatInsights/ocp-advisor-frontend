@@ -15,11 +15,18 @@ import {
   CHIP_GROUP,
   PAGINATION,
 } from '../../../cypress/utils/components';
-import { hasChip, urlParamConvert } from '../../../cypress/utils/filters';
+import {
+  hasChip,
+  urlParamConvert,
+  filter,
+  applyFilters,
+  removeAllChips,
+} from '../../../cypress/utils/filters';
 import {
   DEFAULT_ROW_COUNT,
   PAGINATION_VALUES,
 } from '../../../cypress/utils/defaults';
+import { cumulativeCombinations } from '../../../cypress/utils/combine';
 import {
   checkPaginationTotal,
   checkPaginationValues,
@@ -39,67 +46,116 @@ import { SORTING_ORDERS } from '../../../cypress/utils/globals';
 // selectors
 const ROOT = 'div[id=recs-list-table]';
 const ROW = 'tbody[role=rowgroup]'; // FIXME use ROW from components
-const FILTERS_DROPDOWN = 'ul[class=pf-c-dropdown__menu]';
-const FILTER_TOGGLE = 'span[class=pf-c-select__toggle-arrow]';
 // TODO refer to https://github.com/RedHatInsights/ocp-advisor-frontend/blob/master/src/Services/Filters.js#L13
 const DEFAULT_FILTERS = {
-  impacting: 'true',
-  rule_status: 'enabled',
+  impacting: ['1 or more'],
+  status: 'Enabled',
 };
 const TABLE_HEADERS = _.map(RECS_LIST_COLUMNS, (it) => it.title);
 
 const data = ruleResponse.recommendations;
 
-function filterData(filters) {
-  let filteredData = data;
-  for (const [key, value] of Object.entries(filters)) {
-    if (key === 'description') {
-      filteredData = _.filter(filteredData, (it) =>
-        it.description.toLowerCase().includes(value.toLowerCase())
-      );
-    } else if (key === 'risk') {
-      const riskNumbers = _.map(value, (it) => TOTAL_RISK[it]);
-      filteredData = _.filter(filteredData, (it) =>
-        riskNumbers.includes(it.total_risk)
-      );
-    } else if (key === 'category') {
-      const tags = _.flatMap(value, (it) => CATEGORIES[it]);
-      filteredData = _.filter(
-        filteredData,
-        (it) => _.intersection(tags, it.tags).length > 0
-      );
-    } else if (key === 'rule_status' && value !== 'all') {
-      const allowDisabled = value === 'disabled';
-      filteredData = _.filter(
-        filteredData,
-        (it) => it.disabled === allowDisabled
-      );
-    } else if (key === 'impacting') {
-      // TODO if value is true,false skip
-      if (value === 'true') {
-        filteredData = _.filter(
-          filteredData,
-          (it) => it.impacted_clusters_count > 0
-        );
-      } else {
-        filteredData = _.filter(
-          filteredData,
-          (it) => it.impacted_clusters_count === 0
-        );
-      }
-    }
-    // if length is already 0, exit
-    if (filteredData.length === 0) {
-      break;
-    }
-  }
-  return filteredData;
-}
+const IMPACT = { Low: 1, Medium: 2, High: 3, Critical: 4 };
+const LIKELIHOOD = { Low: 1, Medium: 2, High: 3, Critical: 4 };
+const STATUS = ['All', 'Enabled', 'Disabled'];
+const IMPACTING = { '1 or more': 'true', None: 'false' };
+const CATEGORIES_MAP = {
+  'Service Availability': 1,
+  Security: 4,
+  'Fault Tolerance': 3,
+  Performance: 2,
+};
+
+const filtersConf = {
+  name: {
+    selectorText: 'Name',
+    values: ['lorem', '1lorem', 'Not existing recommendation'],
+    type: 'input',
+    filterFunc: (it, value) =>
+      it.description.toLowerCase().includes(value.toLowerCase()),
+    urlParam: 'text',
+    urlValue: (it) => it.replace(/ /g, '+'),
+  },
+  risk: {
+    selectorText: 'Total risk',
+    values: Array.from(cumulativeCombinations(Object.keys(TOTAL_RISK))),
+    type: 'checkbox',
+    filterFunc: (it, value) =>
+      _.map(value, (x) => TOTAL_RISK[x]).includes(it.total_risk),
+    urlParam: 'total_risk',
+    urlValue: (it) =>
+      encodeURIComponent(_.map(it, (x) => TOTAL_RISK[x]).join(',')),
+  },
+  impact: {
+    selectorText: 'Impact',
+    values: Array.from(cumulativeCombinations(Object.keys(IMPACT))),
+    type: 'checkbox',
+    filterFunc: (it, value) =>
+      _.map(value, (x) => IMPACT[x]).includes(it.impact),
+    urlParam: 'impact',
+    urlValue: (it) => encodeURIComponent(_.map(it, (x) => IMPACT[x]).join(',')),
+  },
+  likelihood: {
+    selectorText: 'Likelihood',
+    values: Array.from(cumulativeCombinations(Object.keys(LIKELIHOOD))),
+    type: 'checkbox',
+    filterFunc: (it, value) =>
+      _.map(value, (x) => LIKELIHOOD[x]).includes(it.likelihood),
+    urlParam: 'likelihood',
+    urlValue: (it) =>
+      encodeURIComponent(_.map(it, (x) => LIKELIHOOD[x]).join(',')),
+  },
+  category: {
+    selectorText: 'Category',
+    values: Array.from(cumulativeCombinations(Object.keys(CATEGORIES))),
+    type: 'checkbox',
+    filterFunc: (it, value) =>
+      _.intersection(
+        _.flatMap(value, (x) => CATEGORIES[x]),
+        it.tags
+      ).length > 0,
+    urlParam: 'category',
+    urlValue: (it) =>
+      encodeURIComponent(_.map(it, (x) => CATEGORIES_MAP[x]).join(',')),
+  },
+  status: {
+    selectorText: 'Status',
+    values: STATUS,
+    type: 'radio',
+    filterFunc: (it, value) => {
+      if (value === 'All') return true;
+      else return it.disabled === (value === 'Disabled');
+    },
+    urlParam: 'rule_status',
+    urlValue: (it) => it.toLowerCase(),
+  },
+  impacting: {
+    selectorText: 'Clusters impacted',
+    values: Array.from(cumulativeCombinations(Object.keys(IMPACTING))),
+    type: 'checkbox',
+    filterFunc: (it, value) => {
+      if (!value.includes('1 or more') && it.impacted_clusters_count > 0)
+        return false;
+      if (!value.includes('None') && it.impacted_clusters_count === 0)
+        return false;
+      return true;
+    },
+    urlParam: 'impacting',
+    urlValue: (it) =>
+      encodeURIComponent(_.map(it, (x) => IMPACTING[x]).join(',')),
+  },
+};
+
+const filterData = (filters = DEFAULT_FILTERS) =>
+  filter(filtersConf, data, filters);
+const filterApply = (filters) => applyFilters(filters, filtersConf);
 
 const DEFAULT_DISPLAYED_SIZE = Math.min(
   filterData(DEFAULT_FILTERS).length,
   DEFAULT_ROW_COUNT
 );
+
+const filterCombos = [{ impacting: ['1 or more'] }];
 
 // actions
 Cypress.Commands.add('getAllRows', () => cy.get(ROOT).find(ROW));
@@ -142,6 +198,31 @@ before(() => {
 });
 
 // TODO test data
+
+describe('data', () => {
+  it('has values', () => {
+    cy.wrap(data).its('length').should('be.gte', 1);
+  });
+  it('has values even with default filters', () => {
+    cy.wrap(filterData(DEFAULT_FILTERS)).its('length').should('be.gte', 1);
+  });
+  it('at least two recommendations match lorem for their descriptions', () => {
+    cy.wrap(filterData({ name: 'lorem' }))
+      .its('length')
+      .should('be.gt', 1);
+  });
+  it('only one recommendation matches 1Lorem in the description', () => {
+    cy.wrap(filterData({ name: '1lorem' }))
+      .its('length')
+      .should('be.eq', 1);
+  });
+  it('the first combo filter different recommendations hitting that the default and at least one', () => {
+    cy.wrap(filterData(filterCombos[0]))
+      .its('length')
+      .should('be.gte', 1)
+      .and('be.not.eq', filterData(DEFAULT_FILTERS).length);
+  });
+});
 
 const urlParamsList = [
   'text=123|FOO_BAR&total_risk=4,3&impact=1,2&likelihood=1&category=1,2&rule_status=disabled&impacting=false',
@@ -308,9 +389,13 @@ describe('successful non-empty recommendations list table', () => {
 
     it('applies filters', () => {
       for (const [key, value] of Object.entries(DEFAULT_FILTERS)) {
-        const [group, item] = urlParamConvert(key, value);
-        hasChip(group, item);
-        expect(window.location.search).to.contain(`${key}=${value}`);
+        // TODO fix v
+        // const [group, item] = urlParamConvert(key, value);
+        // hasChip(group, item);
+        const conf = filtersConf[key];
+        expect(window.location.search).to.contain(
+          `${conf.urlParam}=${conf.urlValue(value)}`
+        );
       }
       // do not get more chips than expected
       cy.get(CHIP_GROUP).should(
@@ -439,41 +524,186 @@ describe('successful non-empty recommendations list table', () => {
       // TODO make test data agnostic as long as one disabled rule is present
     });
 
-    it('the Impacted filters work correctly', () => {
-      cy.get(ROOT).find('button[class=pf-c-dropdown__toggle]').click();
-      cy.get(FILTERS_DROPDOWN).contains('Clusters impacted').click();
-      cy.get(FILTER_TOGGLE).then((element) => {
-        cy.wrap(element);
-        element[0].click();
-      });
-      cy.get('.pf-c-select__menu')
-        .find('label > input')
-        .eq(1)
-        .check()
-        .then(() => {
-          expect(window.location.search).to.contain('impacting=true%2Cfalse');
-        });
-      cy.get('.pf-c-chip-group__list-item').contains('1 or more');
+    it('can clear filters', () => {
+      removeAllChips();
+      // apply some filters
+      filterApply(filterCombos[0]);
+      cy.get(CHIP_GROUP).should(
+        'have.length',
+        Object.keys(filterCombos[0]).length
+      );
+      cy.get(CHIP_GROUP).should('exist');
+      // clear filters
+      cy.get('button').contains('Reset filters').click();
+      // check default filters
+      hasChip('Clusters impacted', '1 or more');
+      hasChip('Status', 'Enabled');
+      cy.get(CHIP_GROUP).should(
+        'have.length',
+        Object.keys(DEFAULT_FILTERS).length
+      );
+      cy.get('button').contains('Reset filters').should('exist');
+      checkRowCounts(DEFAULT_DISPLAYED_SIZE);
+    });
 
-      cy.get(ROOT).find('button[class=pf-c-dropdown__toggle]').click();
-      cy.get(FILTERS_DROPDOWN).contains('Status').click();
-      cy.get(FILTER_TOGGLE).click({ force: true });
-      cy.get('button[class=pf-c-select__menu-item]')
-        .contains('All')
-        .click()
-        .then(() => {
-          expect(window.location.search).to.contain('rule_status=all');
+    it('empty state is displayed when filters do not match any rule', () => {
+      removeAllChips();
+      filterApply({
+        name: 'Not existing recommendation',
+      });
+      // TODO check empty table view
+      // TODO headers are displayed
+    });
+
+    it('no filters show all recommendations', () => {
+      removeAllChips();
+      checkRowCounts(Math.min(DEFAULT_ROW_COUNT, data.length));
+      checkPaginationTotal(data.length);
+    });
+
+    describe('single filter', () => {
+      Object.entries(filtersConf).forEach(([k, v]) => {
+        v.values.forEach((filterValues) => {
+          it(`${k}: ${filterValues}`, () => {
+            const filters = {};
+            filters[k] = filterValues;
+            let sortedNames = _.map(
+              _.orderBy(
+                _.cloneDeep(filterData(filters)),
+                ['total_risk'],
+                ['desc']
+              ),
+              'description'
+            );
+            removeAllChips();
+            filterApply(filters);
+            if (sortedNames.length === 0) {
+              // TODO check empty table view
+              // TODO headers are displayed
+            } else {
+              cy.get(`td[data-label="Name"]`)
+                .then(($els) => {
+                  return _.map(
+                    _.map(Cypress.$.makeArray($els), 'innerText'),
+                    (it) => it.replace(' \nDisabled', '')
+                  );
+                })
+                .should(
+                  'deep.equal',
+                  sortedNames.slice(
+                    0,
+                    Math.min(DEFAULT_ROW_COUNT, sortedNames.length)
+                  )
+                );
+            }
+            // validate chips and url params
+            cy.get(CHIP_GROUP)
+              .should('have.length', Object.keys(filters).length)
+              .then(() => {
+                for (const [k, v] of Object.entries(filtersConf)) {
+                  if (k in filters) {
+                    const urlValue = v.urlValue(filters[k]);
+                    expect(window.location.search).to.contain(
+                      `${v.urlParam}=${urlValue}`
+                    );
+                  } else {
+                    expect(window.location.search).to.not.contain(
+                      `${v.urlParam}=`
+                    );
+                  }
+                }
+              });
+            // check chips
+            for (const [k, v] of Object.entries(filters)) {
+              let groupName = filtersConf[k].selectorText;
+              const nExpectedItems =
+                filtersConf[k].type === 'checkbox' ? v.length : 1;
+              cy.get(CHIP_GROUP)
+                .contains(groupName)
+                .parents(CHIP_GROUP)
+                .then((chipGroup) => {
+                  cy.wrap(chipGroup)
+                    .find(CHIP)
+                    .its('length')
+                    .should('be.eq', Math.min(3, nExpectedItems)); // limited to show 3
+                });
+            }
+            cy.get('button').contains('Reset filters').should('exist');
+          });
         });
-      cy.get('.pf-c-chip-group__list-item').contains('1 or more');
+      });
+    });
+
+    describe('combined filters', () => {
+      filterCombos.forEach((filters) => {
+        it(`${Object.keys(filters)}`, () => {
+          let sortedNames = _.map(
+            _.orderBy(
+              _.cloneDeep(filterData(filters)),
+              ['total_risk'],
+              ['desc']
+            ),
+            'description'
+          );
+          removeAllChips();
+          filterApply(filters);
+          if (sortedNames.length === 0) {
+            // TODO check empty table view
+          } else {
+            cy.get(`td[data-label="Name"]`)
+              .then(($els) => {
+                return _.map(
+                  _.map(Cypress.$.makeArray($els), 'innerText'),
+                  (it) => it.replace(' \nDisabled', '')
+                );
+              })
+              .should(
+                'deep.equal',
+                sortedNames.slice(
+                  0,
+                  Math.min(DEFAULT_ROW_COUNT, sortedNames.length)
+                )
+              );
+          }
+          // validate chips and url params
+          cy.get(CHIP_GROUP)
+            .should('have.length', Object.keys(filters).length)
+            .then(() => {
+              for (const [k, v] of Object.entries(filtersConf)) {
+                if (k in filters) {
+                  const urlValue = v.urlValue(filters[k]);
+                  expect(window.location.search).to.contain(
+                    `${v.urlParam}=${urlValue}`
+                  );
+                } else {
+                  expect(window.location.search).to.not.contain(
+                    `${v.urlParam}=`
+                  );
+                }
+              }
+            });
+          // check chips
+          for (const [k, v] of Object.entries(filters)) {
+            let groupName = filtersConf[k].selectorText;
+            const nExpectedItems =
+              filtersConf[k].type === 'checkbox' ? v.length : 1;
+            cy.get(CHIP_GROUP)
+              .contains(groupName)
+              .parents(CHIP_GROUP)
+              .then((chipGroup) => {
+                cy.wrap(chipGroup)
+                  .find(CHIP)
+                  .its('length')
+                  .should('be.eq', Math.min(3, nExpectedItems)); // limited to show 3
+              });
+          }
+          cy.get('button').contains('Reset filters').should('exist');
+        });
+      });
     });
 
     it('clears text input after Name filter chip removal', () => {
-      cy.get(TOOLBAR_FILTER)
-        .find('.pf-c-form-control')
-        .type('cc')
-        .then(() => {
-          expect(window.location.search).to.contain('text=cc');
-        });
+      filterApply({ name: 'cc' });
       // remove the chip
       cy.contains(CHIP_GROUP, 'Name')
         .find('button')
@@ -485,7 +715,7 @@ describe('successful non-empty recommendations list table', () => {
     });
 
     it('clears text input after resetting all filters', () => {
-      cy.get(TOOLBAR_FILTER).find('.pf-c-form-control').type('cc');
+      filterApply({ name: 'cc' });
       // reset all filters
       cy.get(TOOLBAR)
         .find('button')
