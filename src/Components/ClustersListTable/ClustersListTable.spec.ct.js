@@ -406,7 +406,7 @@ describe('clusters list table', () => {
             const filters = {};
             filters[k] = filterValues;
             let sortedNames = _.map(
-              _.cloneDeep(filterData(namedClustersDefaultSorting, filters)),
+              filterData(namedClustersDefaultSorting, filters),
               'name'
             );
             removeAllChips();
@@ -469,7 +469,7 @@ describe('clusters list table', () => {
       filterCombos.forEach((filters) => {
         it(`${Object.keys(filters)}`, () => {
           let sortedNames = _.map(
-            _.cloneDeep(filterData(namedClustersDefaultSorting, filters)),
+            filterData(namedClustersDefaultSorting, filters),
             'name'
           );
           removeAllChips();
