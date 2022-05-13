@@ -21,7 +21,7 @@
       "total_risk": 2,
       "impact": 2,
       "likelihood": 2,
-      "tags": ["openshift", "configuration", "service_availability"],
+      "tags": ["openshift", "configuration", "service_availability", "performance"],
       "disabled": false,
       "risk_of_change": 0,
       "impacted_clusters_count": 42
@@ -47,7 +47,7 @@
       "total_risk": 2,
       "impact": 1,
       "likelihood": 4,
-      "tags": ["service_availability", "vsphere", "disk"],
+      "tags": ["service_availability", "vsphere", "disk", "security"],
       "disabled": false,
       "risk_of_change": 0,
       "impacted_clusters_count": 0
