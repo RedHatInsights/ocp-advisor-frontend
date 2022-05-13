@@ -178,7 +178,7 @@ describe('data', () => {
     cy.wrap(filterData(namedClusters, filterCombos[0]))
       .its('length')
       .should('be.gte', 1)
-      .and('be.lt', filterData(namedClusters, {}).length);
+      .and('be.lt', filterData(namedClusters, {}).length); // TODO can use namedCluster.length directly unless data is optional
   });
 });
 
