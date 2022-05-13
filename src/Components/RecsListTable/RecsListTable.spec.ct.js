@@ -14,6 +14,7 @@ import {
   CHIP,
   CHIP_GROUP,
   PAGINATION,
+  TABLE,
 } from '../../../cypress/utils/components';
 import { hasChip, urlParamConvert } from '../../../cypress/utils/filters';
 import {
@@ -32,6 +33,7 @@ import {
   checkRowCounts,
   columnName2UrlParam,
   checkTableHeaders,
+  tableIsSortedBy,
 } from '../../../cypress/utils/table';
 import { SORTING_ORDERS } from '../../../cypress/utils/globals';
 // TODO make more use of ../../../cypress/utils/components
@@ -102,7 +104,7 @@ const DEFAULT_DISPLAYED_SIZE = Math.min(
 );
 
 // actions
-Cypress.Commands.add('getAllRows', () => cy.get(ROOT).find(ROW));
+Cypress.Commands.add('getAllRows', () => cy.get(TABLE).find(ROW));
 Cypress.Commands.add('removeStatusFilter', () => {
   cy.get(CHIP)
     .contains('Enabled')
@@ -127,7 +129,7 @@ Cypress.Commands.add('getColumns', () => {
   /* patternfly/react-table-4.71.16, for some reason, renders extra empty `th` container;
        thus, it is necessary to look at the additional `scope` attr to distinguish between visible columns
   */
-  cy.get(ROOT).find('table > thead > tr > th[scope="col"]');
+  cy.get(`${TABLE} > thead > tr > th[scope="col"]`);
 });
 Cypress.Commands.add('sortByCol', (colIndex) => {
   cy.getColumns()
@@ -221,7 +223,7 @@ describe('successful non-empty recommendations list table', () => {
   it('renders table', () => {
     cy.get(ROOT).within(() => {
       cy.get(TOOLBAR).should('have.length', 1);
-      cy.get('table').should('have.length', 1);
+      cy.get(TABLE).should('have.length', 1);
     });
   });
 
@@ -298,9 +300,7 @@ describe('successful non-empty recommendations list table', () => {
 
     it('sort by total risk', () => {
       const column = 'Total risk';
-      cy.get(ROOT)
-        .find(`th[data-label="${column}"]`)
-        .should('have.class', 'pf-c-table__sort pf-m-selected');
+      tableIsSortedBy(column);
       expect(window.location.search).to.contain(
         `sort=-${columnName2UrlParam(column)}`
       );
@@ -440,7 +440,7 @@ describe('successful non-empty recommendations list table', () => {
     });
 
     it('the Impacted filters work correctly', () => {
-      cy.get(ROOT).find('button[class=pf-c-dropdown__toggle]').click();
+      cy.get('button[class=pf-c-dropdown__toggle]').click();
       cy.get(FILTERS_DROPDOWN).contains('Clusters impacted').click();
       cy.get(FILTER_TOGGLE).then((element) => {
         cy.wrap(element);
@@ -455,7 +455,7 @@ describe('successful non-empty recommendations list table', () => {
         });
       cy.get('.pf-c-chip-group__list-item').contains('1 or more');
 
-      cy.get(ROOT).find('button[class=pf-c-dropdown__toggle]').click();
+      cy.get('button[class=pf-c-dropdown__toggle]').click();
       cy.get(FILTERS_DROPDOWN).contains('Status').click();
       cy.get(FILTER_TOGGLE).click({ force: true });
       cy.get('button[class=pf-c-select__menu-item]')
@@ -514,7 +514,7 @@ describe('successful non-empty recommendations list table', () => {
     // TODO make test data independent
     // TODO check also non-enabled by default rules
     it('each row has a kebab', () => {
-      cy.get(ROOT)
+      cy.get(TABLE)
         .find('tbody[role=rowgroup] .pf-c-dropdown__toggle')
         .should('have.length', 4);
     });
@@ -544,7 +544,7 @@ describe('successful non-empty recommendations list table', () => {
   it('rule content is rendered', () => {
     // expand all rules
     cy.get('.pf-c-toolbar__expand-all-icon > svg').click();
-    cy.get(ROOT)
+    cy.get(TABLE)
       .find('.pf-c-table__expandable-row.pf-m-expanded')
       .each((el) => {
         // contains description

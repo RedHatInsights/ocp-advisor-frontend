@@ -23,6 +23,7 @@ import {
   CHIP,
   ROW,
   TOOLBAR,
+  TABLE,
 } from '../../../cypress/utils/components';
 
 const data = singleClusterPageReport.report.data;
@@ -154,7 +155,7 @@ describe('cluster rules table', () => {
   it('renders table', () => {
     cy.get(ROOT).within(() => {
       cy.get(TOOLBAR).should('have.length', 1);
-      cy.get('table').should('have.length', 1);
+      cy.get(TABLE).should('have.length', 1);
     });
   });
 
@@ -179,8 +180,6 @@ describe('cluster rules table', () => {
       cy.get(CHIP_GROUP).should('not.exist');
       cy.get('button').contains('Reset filters').should('not.exist');
     });
-
-    // TODO check default sorting
   });
 
   it('expand all, collapse all', () => {
@@ -193,8 +192,8 @@ describe('cluster rules table', () => {
   });
 
   it('expand one row then sort', () => {
-    cy.get(ROOT).find('#expandable-toggle2').click();
-    cy.get(ROOT)
+    cy.get('#expandable-toggle2').click();
+    cy.get(TABLE)
       .find('th[data-label=Description]')
       .find('button')
       .click()
@@ -246,7 +245,7 @@ describe('cluster rules table', () => {
       cy.get(CHIP_GROUP).should('not.exist');
       cy.get('button').contains('Reset filters').should('not.exist');
       // expandable rows are duplicated, so we get one label
-      cy.get('table')
+      cy.get(TABLE)
         .find(ROW)
         .find(`td[data-label="Description"]`)
         .should('have.length', RULES_ENABLED);
@@ -335,8 +334,6 @@ describe('cluster rules table', () => {
           // check chips
           for (const [k, v] of Object.entries(filters)) {
             let groupName = filtersConf[k].selectorText;
-            // TODO remove this change CCXDEV-7192
-            groupName = groupName == 'Description' ? 'Name' : groupName;
             const nExpectedItems =
               filtersConf[k].type === 'checkbox' ? v.length : 1;
             cy.get(CHIP_GROUP)
@@ -400,7 +397,7 @@ describe('empty cluster rules table', () => {
   });
 
   it('does not render table', () => {
-    cy.get('table').should('not.exist');
+    cy.get(TABLE).should('not.exist');
   });
 });
 
@@ -438,7 +435,7 @@ describe('cluster rules table testing the first query parameter', () => {
   });
 
   it('show the rule from the "first" search parameter', () => {
-    cy.get(ROOT)
+    cy.get(TABLE)
       .find('td[data-label=Description]')
       .children()
       .eq(0)

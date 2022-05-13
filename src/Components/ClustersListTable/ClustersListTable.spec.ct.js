@@ -7,13 +7,14 @@ import _ from 'lodash';
 import { Intl } from '../../Utilities/intlHelper';
 import getStore from '../../Store';
 import { ClustersListTable } from './ClustersListTable';
-import props from '../../../cypress/fixtures/api/insights-results-aggregator/v2/clusters.json';
+import clusters from '../../../cypress/fixtures/api/insights-results-aggregator/v2/clusters.json';
 import {
   TOOLBAR,
   PAGINATION,
   CHIP_GROUP,
   TBODY,
   TOOLBAR_FILTER,
+  TABLE,
 } from '../../../cypress/utils/components';
 import {
   DEFAULT_ROW_COUNT,
@@ -24,6 +25,7 @@ import {
   checkTableHeaders,
   checkRowCounts,
   columnName2UrlParam,
+  tableIsSortedBy,
 } from '../../../cypress/utils/table';
 import { CLUSTERS_LIST_COLUMNS } from '../../AppConstants';
 import {
@@ -33,16 +35,14 @@ import {
   changePagination,
 } from '../../../cypress/utils/pagination';
 
-// TODO check if we can rid this of this data and use namedClustersInstead
-const data = props['data'];
 // add property name to clusters
-let namedClusters = _.cloneDeep(data);
-namedClusters.forEach(
+let data = _.cloneDeep(clusters['data']);
+data.forEach(
   (it) =>
     (it['name'] = it['cluster_name'] ? it['cluster_name'] : it['cluster_id'])
 );
 // fill possible missing values
-namedClusters.forEach((it) => {
+data.forEach((it) => {
   ['1', '2', '3', '4'].forEach((k) => {
     it['hits_by_total_risk'][k] = it['hits_by_total_risk'][k]
       ? it['hits_by_total_risk'][k]
@@ -51,7 +51,7 @@ namedClusters.forEach((it) => {
 });
 // default sorting
 let namedClustersDefaultSorting = _.orderBy(
-  namedClusters,
+  data,
   [(it) => it.last_checked_at || '1970-01-01T01:00:00.001Z'],
   ['desc']
 );
@@ -59,10 +59,7 @@ let namedClustersDefaultSorting = _.orderBy(
 const ROOT = 'div[id=clusters-list-table]';
 const TABLE_HEADERS = _.map(CLUSTERS_LIST_COLUMNS, (it) => it.title);
 
-const DEFAULT_DISPLAYED_SIZE = Math.min(
-  namedClusters.length,
-  DEFAULT_ROW_COUNT
-);
+const DEFAULT_DISPLAYED_SIZE = Math.min(data.length, DEFAULT_ROW_COUNT);
 
 // TODO: test pre-filled search parameters filtration
 
@@ -121,7 +118,7 @@ describe('clusters list table', () => {
                 isFetching: false,
                 isUninitialized: false,
                 isSuccess: true,
-                data: props,
+                data: clusters,
                 refetch: cy.stub(),
               }}
             />
@@ -134,7 +131,7 @@ describe('clusters list table', () => {
   it('renders table', () => {
     cy.get(ROOT).within(() => {
       cy.get(TOOLBAR).should('have.length', 1);
-      cy.get('table').should('have.length', 1);
+      cy.get(TABLE).should('have.length', 1);
     });
   });
 
@@ -160,11 +157,11 @@ describe('clusters list table', () => {
     });
 
     it('sorting using last seen', () => {
-      // TODO create a function used also in other tests
-      cy.get(ROOT)
-        .find('th[data-label="Last seen"]')
-        .should('have.class', 'pf-c-table__sort pf-m-selected');
-      // TODO check window.location as in  RecsListTable (if applicable)
+      const column = 'Last seen';
+      tableIsSortedBy(column);
+      expect(window.location.search).to.contain(
+        `sort=-${columnName2UrlParam(column)}`
+      );
     });
 
     it('applies total risk "All clusters" filter', () => {
@@ -195,9 +192,9 @@ describe('clusters list table', () => {
     it('can change page limit', () => {
       // FIXME: best way to make the loop
       cy.wrap(PAGINATION_VALUES).each((el) => {
-        changePagination(el).then(() =>
-          // TODO should this be nested. Also the other check below?
-          expect(window.location.search).to.contain(`limit=${el}`)
+        changePagination(el).then(
+          () => expect(window.location.search).to.contain(`limit=${el}`)
+          // TODO should check below be nested here as well?
         );
         checkRowCounts(Math.min(el, data.length));
       });
@@ -205,7 +202,6 @@ describe('clusters list table', () => {
     it('can iterate over pages', () => {
       cy.wrap(itemsPerPage(data.length)).each((el, index, list) => {
         checkRowCounts(el).then(() => {
-          // TODO why is this nested?
           expect(window.location.search).to.contain(
             `offset=${DEFAULT_ROW_COUNT * index}`
           );
@@ -272,7 +268,7 @@ describe('clusters list table', () => {
           let sortedNames = _.map(
             // all tables must preserve original ordering
             _.orderBy(
-              _.cloneDeep(namedClusters),
+              _.cloneDeep(data),
               [category],
               [order === 'ascending' ? 'asc' : 'desc']
             ),

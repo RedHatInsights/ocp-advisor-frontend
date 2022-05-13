@@ -17,6 +17,7 @@ import {
   MODAL,
   CHECKBOX,
   TBODY,
+  TABLE,
 } from '../../../cypress/utils/components';
 import {
   DEFAULT_ROW_COUNT,
@@ -26,6 +27,7 @@ import { SORTING_ORDERS } from '../../../cypress/utils/globals';
 import {
   checkTableHeaders,
   checkRowCounts,
+  tableIsSortedBy,
 } from '../../../cypress/utils/table';
 import {
   itemsPerPage,
@@ -110,7 +112,7 @@ describe('non-empty successful affected clusters table', () => {
   it('renders table', () => {
     cy.get(ROOT).within(() => {
       cy.get(TOOLBAR).should('have.length', 1);
-      cy.get('table').should('have.length', 1);
+      cy.get(TABLE).should('have.length', 1);
       cy.ouiaType('RHI/TableToolbar').should('have.length', 1);
     });
   });
@@ -145,8 +147,6 @@ describe('non-empty successful affected clusters table', () => {
   describe('defaults', () => {
     it(`shows ${DEFAULT_ROW_COUNT} clusters only`, () => {
       checkRowCounts(DEFAULT_ROW_COUNT);
-      // TODO check why expect fails
-      // expect(window.location.search).to.contain('limit=20');
     });
 
     it(`pagination is set to ${DEFAULT_ROW_COUNT}`, () => {
@@ -170,9 +170,7 @@ describe('non-empty successful affected clusters table', () => {
     });
 
     it('sorting using last seen', () => {
-      cy.get(ROOT)
-        .find('th[data-key=2]') // TODO use column name with data-label
-        .should('have.class', 'pf-c-table__sort pf-m-selected');
+      tableIsSortedBy('Last seen');
     });
   });
 
@@ -184,7 +182,7 @@ describe('non-empty successful affected clusters table', () => {
         `${filterData().length} selected`
       );
       // checks all rows
-      cy.get(ROOT)
+      cy.get(TABLE)
         .find(TBODY)
         .find(ROW)
         .each((row) => {
@@ -208,7 +206,7 @@ describe('non-empty successful affected clusters table', () => {
     it('checkbox is unselected when a row is unselected', () => {
       cy.ouiaId(BULK_SELECT).find('input').click().should('be.checked');
       // removing one row unselects it
-      cy.get(ROOT)
+      cy.get(TABLE)
         .find(TBODY)
         .find(ROW)
         .first()
@@ -240,7 +238,7 @@ describe('non-empty successful affected clusters table', () => {
         .find('label.pf-c-dropdown__toggle-check')
         .contains('selected')
         .should('not.exist');
-      cy.get(ROOT)
+      cy.get(TABLE)
         .find(TBODY)
         .find(ROW)
         .each((row) => {
@@ -256,7 +254,7 @@ describe('non-empty successful affected clusters table', () => {
       cy.ouiaId(BULK_SELECT).find('input').should('not.be.checked');
 
       // selecting from rows display the correct text
-      cy.get(ROOT)
+      cy.get(TABLE)
         .find(TBODY)
         .find(ROW)
         .first()
@@ -293,7 +291,7 @@ describe('non-empty successful affected clusters table', () => {
         .find('label.pf-c-dropdown__toggle-check')
         .contains(`${data.length} selected`);
       // checks all rows
-      cy.get(ROOT)
+      cy.get(TABLE)
         .find(TBODY)
         .find(ROW)
         .each((row) => {
@@ -318,7 +316,7 @@ describe('non-empty successful affected clusters table', () => {
 
       cy.ouiaId(BULK_SELECT).find('input').should('not.be.checked');
       // checks all rows
-      cy.get(ROOT)
+      cy.get(TABLE)
         .find(TBODY)
         .find(ROW)
         .each((row) => {
@@ -393,7 +391,6 @@ describe('non-empty successful affected clusters table', () => {
             } else {
               cy.get(header).find('button').dblclick();
             }
-            // TODO should we check URL as in ClusterListTable?
 
             // add property name to clusters
             let sortedClusters = _.cloneDeep(data);
@@ -443,7 +440,7 @@ describe('non-empty successful affected clusters table', () => {
     // outer loop required to clean up filter bar
     SEARCH_ITEMS.forEach((el) => {
       it(`can add name filter (${el})`, () => {
-        cy.get(ROOT).find('#name-filter').type(el);
+        cy.get('#name-filter').type(el);
         // renders filter chips
         cy.get(TOOLBAR)
           .find(CHIP_GROUP)
@@ -453,7 +450,7 @@ describe('non-empty successful affected clusters table', () => {
         // check matched clusters
         cy.wrap(filterData(el)).then((data) => {
           if (data.length === 0) {
-            cy.get('table .pf-c-empty-state')
+            cy.get(`${TABLE} .pf-c-empty-state`)
               .should('contain', 'No matching clusters found')
               .and(
                 'contain',
@@ -467,7 +464,7 @@ describe('non-empty successful affected clusters table', () => {
     });
 
     it('can Reset filters', () => {
-      cy.get(ROOT).find('#name-filter').type('custom');
+      cy.get('#name-filter').type('custom');
       cy.get(TOOLBAR).find('button').contains('Reset filters').click();
       cy.get(TOOLBAR).find(CHIP_GROUP).should('not.exist');
       checkRowCounts(Math.min(DEFAULT_ROW_COUNT, filterData().length));
@@ -475,13 +472,13 @@ describe('non-empty successful affected clusters table', () => {
   });
 
   it('can disable one cluster', () => {
-    cy.get(ROOT)
+    cy.get(TABLE)
       .find(TBODY)
       .find(ROW)
       .eq(0)
       .find('.pf-c-table__action button')
       .click();
-    cy.get(ROOT)
+    cy.get(TABLE)
       .find(TBODY)
       .find(ROW)
       .eq(0)
@@ -554,7 +551,7 @@ describe('non-empty successful affected clusters table', () => {
     });
 
     it('modal for cluster disabling', () => {
-      cy.get(ROOT)
+      cy.get(TABLE)
         .find(TBODY)
         .find(ROW)
         .first()
@@ -601,7 +598,7 @@ describe('empty successful affected clusters table', () => {
   });
 
   it('cannot add filters to empty table', () => {
-    cy.get(ROOT).find('#name-filter').type('foobar');
+    cy.get('#name-filter').type('foobar');
     cy.get(TOOLBAR).find(CHIP_GROUP).should('not.exist');
   });
 
@@ -638,7 +635,7 @@ describe('empty failed affected clusters table', () => {
   });
 
   it('cannot add filters to empty table', () => {
-    cy.get(ROOT).find('#name-filter').type('foobar');
+    cy.get('#name-filter').type('foobar');
     cy.get(TOOLBAR).find(CHIP_GROUP).should('not.exist');
   });
 
@@ -649,7 +646,7 @@ describe('empty failed affected clusters table', () => {
   });
 
   it('renders table header', () => {
-    cy.get(ROOT).find('th').children().eq(0).should('have.text', 'Name');
-    cy.get(ROOT).find('th').children().eq(1).should('have.text', 'Last seen');
+    cy.get(TABLE).find('th').children().eq(0).should('have.text', 'Name');
+    cy.get(TABLE).find('th').children().eq(1).should('have.text', 'Last seen');
   });
 });

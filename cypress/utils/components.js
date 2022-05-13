@@ -14,6 +14,7 @@ const DROPDOWN_TOGGLE = '[data-ouia-component-type="PF4/DropdownToggle"]';
 const DROPDOWN_ITEM = '[data-ouia-component-type="PF4/DropdownItem"]';
 const TBODY = 'tbody[role=rowgroup]';
 const TOOLBAR_FILTER = '.ins-c-primary-toolbar__filter';
+const TABLE = 'table';
 
 const ouiaId = (id) => `[data-ouia-component-id="${id}"]`;
 
@@ -33,4 +34,5 @@ export {
   DROPDOWN_ITEM,
   TBODY,
   TOOLBAR_FILTER,
+  TABLE,
 };
