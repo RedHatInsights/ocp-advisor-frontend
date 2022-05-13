@@ -247,7 +247,10 @@ const RecsListTable = ({ query }) => {
         },
       ]);
   };
-
+  /* the category sorting compares only the first element of the array.
+   Could be refactored later when we assign a priority numbers to each of the category
+   and sort them in the array based on the priority.
+*/
   const buildDisplayedRows = (rows, index, direction) => {
     const sortingRows = [...rows].sort((firstItem, secondItem) => {
       const d = direction === SortByDirection.asc ? 1 : -1;
