@@ -1,3 +1,10 @@
+## [1.3.14](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.13...v1.3.14) (2022-05-13)
+
+
+### Bug Fixes
+
+* **RecsListTable:** Fixing the category sorting ([#263](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/263)) ([41a5c09](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/41a5c09af34faa84f5af43763e99804f926751b1))
+
 ## [1.3.13](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.12...v1.3.13) (2022-05-12)
 
 
