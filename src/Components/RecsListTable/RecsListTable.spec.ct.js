@@ -376,7 +376,7 @@ describe('successful non-empty recommendations list table', () => {
         'total_risk',
         'impacted_clusters_count',
       ],
-      ['Name', 'Modified', 'Category', 'Total risk', 'Clusters'] // TODO use TABLE_HEADERS
+      TABLE_HEADERS
     ).forEach(([category, label]) => {
       SORTING_ORDERS.forEach((order) => {
         it(`${order} by ${label}`, () => {
@@ -404,18 +404,21 @@ describe('successful non-empty recommendations list table', () => {
                 )
               );
           }
-          const filteringTags = filterData(DEFAULT_FILTERS).map((obj) => ({
-            ...obj,
-            tags: obj.tags.filter((string) =>
-              Object.keys(RULE_CATEGORIES).includes(string)
-            ),
-          }));
+          let orderIteratee = category;
+          if (category === 'tags') {
+            orderIteratee = (it) =>
+              _.first(
+                it.tags.filter((string) =>
+                  Object.keys(RULE_CATEGORIES).includes(string)
+                )
+              );
+          }
           // add property name to clusters
           let sortedData = _.map(
             // all tables must preserve original ordering
             _.orderBy(
-              _.cloneDeep(filteringTags),
-              [category],
+              _.cloneDeep(filterData(DEFAULT_FILTERS)),
+              [orderIteratee],
               [order === 'ascending' ? 'asc' : 'desc']
             ),
             'description'
