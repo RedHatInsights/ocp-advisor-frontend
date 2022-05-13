@@ -14,6 +14,7 @@ import {
   CHIP,
   CHIP_GROUP,
   PAGINATION,
+  TABLE,
 } from '../../../cypress/utils/components';
 import { hasChip, urlParamConvert } from '../../../cypress/utils/filters';
 import {
@@ -103,7 +104,7 @@ const DEFAULT_DISPLAYED_SIZE = Math.min(
 );
 
 // actions
-Cypress.Commands.add('getAllRows', () => cy.get('table').find(ROW));
+Cypress.Commands.add('getAllRows', () => cy.get(TABLE).find(ROW));
 Cypress.Commands.add('removeStatusFilter', () => {
   cy.get(CHIP)
     .contains('Enabled')
@@ -128,7 +129,7 @@ Cypress.Commands.add('getColumns', () => {
   /* patternfly/react-table-4.71.16, for some reason, renders extra empty `th` container;
        thus, it is necessary to look at the additional `scope` attr to distinguish between visible columns
   */
-  cy.get('table > thead > tr > th[scope="col"]');
+  cy.get(`${TABLE} > thead > tr > th[scope="col"]`);
 });
 Cypress.Commands.add('sortByCol', (colIndex) => {
   cy.getColumns()
@@ -222,7 +223,7 @@ describe('successful non-empty recommendations list table', () => {
   it('renders table', () => {
     cy.get(ROOT).within(() => {
       cy.get(TOOLBAR).should('have.length', 1);
-      cy.get('table').should('have.length', 1);
+      cy.get(TABLE).should('have.length', 1);
     });
   });
 
@@ -513,7 +514,7 @@ describe('successful non-empty recommendations list table', () => {
     // TODO make test data independent
     // TODO check also non-enabled by default rules
     it('each row has a kebab', () => {
-      cy.get('table')
+      cy.get(TABLE)
         .find('tbody[role=rowgroup] .pf-c-dropdown__toggle')
         .should('have.length', 4);
     });
@@ -543,7 +544,7 @@ describe('successful non-empty recommendations list table', () => {
   it('rule content is rendered', () => {
     // expand all rules
     cy.get('.pf-c-toolbar__expand-all-icon > svg').click();
-    cy.get('table')
+    cy.get(TABLE)
       .find('.pf-c-table__expandable-row.pf-m-expanded')
       .each((el) => {
         // contains description

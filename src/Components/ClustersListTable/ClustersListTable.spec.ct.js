@@ -14,6 +14,7 @@ import {
   CHIP_GROUP,
   TBODY,
   TOOLBAR_FILTER,
+  TABLE,
 } from '../../../cypress/utils/components';
 import {
   DEFAULT_ROW_COUNT,
@@ -130,7 +131,7 @@ describe('clusters list table', () => {
   it('renders table', () => {
     cy.get(ROOT).within(() => {
       cy.get(TOOLBAR).should('have.length', 1);
-      cy.get('table').should('have.length', 1);
+      cy.get(TABLE).should('have.length', 1);
     });
   });
 

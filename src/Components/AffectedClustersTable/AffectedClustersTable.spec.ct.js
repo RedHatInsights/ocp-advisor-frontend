@@ -17,6 +17,7 @@ import {
   MODAL,
   CHECKBOX,
   TBODY,
+  TABLE,
 } from '../../../cypress/utils/components';
 import {
   DEFAULT_ROW_COUNT,
@@ -111,7 +112,7 @@ describe('non-empty successful affected clusters table', () => {
   it('renders table', () => {
     cy.get(ROOT).within(() => {
       cy.get(TOOLBAR).should('have.length', 1);
-      cy.get('table').should('have.length', 1);
+      cy.get(TABLE).should('have.length', 1);
       cy.ouiaType('RHI/TableToolbar').should('have.length', 1);
     });
   });
@@ -182,7 +183,7 @@ describe('non-empty successful affected clusters table', () => {
         `${filterData().length} selected`
       );
       // checks all rows
-      cy.get('table')
+      cy.get(TABLE)
         .find(TBODY)
         .find(ROW)
         .each((row) => {
@@ -206,7 +207,7 @@ describe('non-empty successful affected clusters table', () => {
     it('checkbox is unselected when a row is unselected', () => {
       cy.ouiaId(BULK_SELECT).find('input').click().should('be.checked');
       // removing one row unselects it
-      cy.get('table')
+      cy.get(TABLE)
         .find(TBODY)
         .find(ROW)
         .first()
@@ -238,7 +239,7 @@ describe('non-empty successful affected clusters table', () => {
         .find('label.pf-c-dropdown__toggle-check')
         .contains('selected')
         .should('not.exist');
-      cy.get('table')
+      cy.get(TABLE)
         .find(TBODY)
         .find(ROW)
         .each((row) => {
@@ -254,7 +255,7 @@ describe('non-empty successful affected clusters table', () => {
       cy.ouiaId(BULK_SELECT).find('input').should('not.be.checked');
 
       // selecting from rows display the correct text
-      cy.get('table')
+      cy.get(TABLE)
         .find(TBODY)
         .find(ROW)
         .first()
@@ -291,7 +292,7 @@ describe('non-empty successful affected clusters table', () => {
         .find('label.pf-c-dropdown__toggle-check')
         .contains(`${data.length} selected`);
       // checks all rows
-      cy.get('table')
+      cy.get(TABLE)
         .find(TBODY)
         .find(ROW)
         .each((row) => {
@@ -316,7 +317,7 @@ describe('non-empty successful affected clusters table', () => {
 
       cy.ouiaId(BULK_SELECT).find('input').should('not.be.checked');
       // checks all rows
-      cy.get('table')
+      cy.get(TABLE)
         .find(TBODY)
         .find(ROW)
         .each((row) => {
@@ -450,7 +451,7 @@ describe('non-empty successful affected clusters table', () => {
         // check matched clusters
         cy.wrap(filterData(el)).then((data) => {
           if (data.length === 0) {
-            cy.get('table .pf-c-empty-state')
+            cy.get(`${TABLE} .pf-c-empty-state`)
               .should('contain', 'No matching clusters found')
               .and(
                 'contain',
@@ -472,13 +473,13 @@ describe('non-empty successful affected clusters table', () => {
   });
 
   it('can disable one cluster', () => {
-    cy.get('table')
+    cy.get(TABLE)
       .find(TBODY)
       .find(ROW)
       .eq(0)
       .find('.pf-c-table__action button')
       .click();
-    cy.get('table')
+    cy.get(TABLE)
       .find(TBODY)
       .find(ROW)
       .eq(0)
@@ -551,7 +552,7 @@ describe('non-empty successful affected clusters table', () => {
     });
 
     it('modal for cluster disabling', () => {
-      cy.get('table')
+      cy.get(TABLE)
         .find(TBODY)
         .find(ROW)
         .first()
@@ -646,11 +647,7 @@ describe('empty failed affected clusters table', () => {
   });
 
   it('renders table header', () => {
-    cy.get('table').find('th').children().eq(0).should('have.text', 'Name');
-    cy.get('table')
-      .find('th')
-      .children()
-      .eq(1)
-      .should('have.text', 'Last seen');
+    cy.get(TABLE).find('th').children().eq(0).should('have.text', 'Name');
+    cy.get(TABLE).find('th').children().eq(1).should('have.text', 'Last seen');
   });
 });
