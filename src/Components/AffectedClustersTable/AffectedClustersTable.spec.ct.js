@@ -170,8 +170,7 @@ describe('non-empty successful affected clusters table', () => {
     });
 
     it('sorting using last seen', () => {
-      const column = 'Last seen';
-      tableIsSortedBy(column);
+      tableIsSortedBy('Last seen');
     });
   });
 
