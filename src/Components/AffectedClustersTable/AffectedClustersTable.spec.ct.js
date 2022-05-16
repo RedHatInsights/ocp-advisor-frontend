@@ -3,6 +3,7 @@ import { mount } from '@cypress/react';
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import _ from 'lodash';
+import { compare } from 'semver';
 
 import { AffectedClustersTable } from './AffectedClustersTable';
 import clusterDetailData from '../../../cypress/fixtures/api/insights-results-aggregator/v2/rule/external.rules.rule|ERROR_KEY/clusters_detail.json';
@@ -374,61 +375,76 @@ describe('non-empty successful affected clusters table', () => {
     });
   });
 
-  describe('sorting', () => {
-    _.zip(['name', 'last_checked_at'], TABLE_HEADERS).forEach(
-      ([category, label]) => {
-        SORTING_ORDERS.forEach((order) => {
-          it(`${order} by ${label}`, () => {
-            const col = `td[data-label="${label}"]`;
-            const header = `th[data-label="${label}"]`;
+  describe.only('sorting', () => {
+    _.zip(
+      ['name', 'cluster_version', 'last_checked_at'],
+      TABLE_HEADERS
+    ).forEach(([category, label]) => {
+      SORTING_ORDERS.forEach((order) => {
+        it(`${order} by ${label}`, () => {
+          const col = `td[data-label="${label}"]`;
+          const header = `th[data-label="${label}"]`;
 
-            cy.get(col).should(
-              'have.length',
-              Math.min(DEFAULT_ROW_COUNT, data.length)
-            );
-            if (order === 'ascending') {
-              cy.get(header).find('button').click();
-            } else {
-              cy.get(header).find('button').dblclick();
+          cy.get(col).should(
+            'have.length',
+            Math.min(DEFAULT_ROW_COUNT, data.length)
+          );
+          if (order === 'ascending') {
+            cy.get(header).find('button').click();
+          } else {
+            cy.get(header).find('button').dblclick();
+          }
+
+          // add property name to clusters
+          let sortedClusters = _.cloneDeep(
+            clusterDetailData.data['enabled'].map((it) => ({
+              ...it,
+              name: it['cluster_name'] ? it['cluster_name'] : it['cluster'],
+            }))
+          );
+          // convert N/A timestamps as really old ones
+          sortedClusters.forEach((it) => {
+            if (it['last_checked_at'] === '') {
+              it['last_checked_at'] = '1970-01-01T01:00:00.001Z';
             }
-
-            // add property name to clusters
-            let sortedClusters = _.cloneDeep(data);
-            // convert N/A timestamps as really old ones
-            sortedClusters.forEach((it) => {
-              if (it['last_checked_at'] === '') {
-                it['last_checked_at'] = '1970-01-01T01:00:00.001Z';
-              }
-            });
-
-            if (category === 'name') {
-              // name sorting is case insensitive
-              category = (it) => it.name.toLowerCase();
+            if (it.meta.cluster_version === '') {
+              it.meta.cluster_version = '0.0.0';
             }
-
-            sortedClusters = _.map(
-              _.orderBy(
-                sortedClusters,
-                [category],
-                [order === 'ascending' ? 'asc' : 'desc']
-              ),
-              'name'
-            );
-            cy.get(`td[data-label="Name"]`)
-              .then(($els) => {
-                return _.map(Cypress.$.makeArray($els), 'innerText');
-              })
-              .should(
-                'deep.equal',
-                sortedClusters.slice(
-                  0,
-                  Math.min(DEFAULT_ROW_COUNT, sortedClusters.length)
-                )
-              );
           });
+
+          if (category === 'name') {
+            // name sorting is case insensitive
+            category = (it) => it.name.toLowerCase();
+          }
+
+          sortedClusters = _.map(
+            category === 'cluster_version'
+              ? sortedClusters.sort(
+                  (a, b) =>
+                    (order === 'ascending' ? 1 : -1) *
+                    compare(a.meta.cluster_version, b.meta.cluster_version)
+                )
+              : _.orderBy(
+                  sortedClusters,
+                  [category],
+                  [order === 'ascending' ? 'asc' : 'desc']
+                ),
+            'name'
+          );
+          cy.get(`td[data-label="Name"]`)
+            .then(($els) => {
+              return _.map(Cypress.$.makeArray($els), 'innerText');
+            })
+            .should(
+              'deep.equal',
+              sortedClusters.slice(
+                0,
+                Math.min(DEFAULT_ROW_COUNT, sortedClusters.length)
+              )
+            );
         });
-      }
-    );
+      });
+    });
   });
 
   describe('filtering', () => {

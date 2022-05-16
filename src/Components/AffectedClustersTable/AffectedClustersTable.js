@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { compare, valid } from 'semver';
 
 import { conditionalFilterType } from '@redhat-cloud-services/frontend-components/ConditionalFilter/conditionalFilterConstants';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
@@ -129,15 +130,23 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
 
   // constructs array of rows (from the initial data) checking currently applied filters
   const buildFilteredRows = (allRows, filters) => {
-    const rows = allRows.map((r) => ({
-      id: r.cluster,
-      cells: [
-        '', // left intentionally because checkboxes create the 0th column
-        r.cluster_name || r.cluster,
-        r.meta.cluster_version,
-        r.last_checked_at,
-      ],
-    }));
+    const rows = allRows.map((r) => {
+      if (r.meta.cluster_version !== '' && !valid(r.meta.cluster_version)) {
+        console.error(
+          `Cluster version ${r.meta.cluster_version} has invalid format!`
+        );
+      }
+
+      return {
+        id: r.cluster,
+        cells: [
+          '',
+          r.cluster_name || r.cluster,
+          r.meta.cluster_version,
+          r.last_checked_at,
+        ],
+      };
+    });
     return rows
       .filter((row) => {
         return row?.cells[AFFECTED_CLUSTERS_NAME_CELL].toLowerCase().includes(
@@ -147,16 +156,21 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
       .sort((a, b) => {
         let fst, snd;
         const d = filters.sortDirection === 'asc' ? 1 : -1;
-        console.log(filters.sortIndex);
         switch (filters.sortIndex) {
           case AFFECTED_CLUSTERS_NAME_CELL:
-            if (filters.sortDirection === 'asc') {
-              return a?.cells[AFFECTED_CLUSTERS_NAME_CELL].localeCompare(
+            return (
+              d *
+              a?.cells[AFFECTED_CLUSTERS_NAME_CELL].localeCompare(
                 b?.cells[AFFECTED_CLUSTERS_NAME_CELL]
-              );
-            }
-            return b?.cells[AFFECTED_CLUSTERS_NAME_CELL].localeCompare(
-              a?.cells[AFFECTED_CLUSTERS_NAME_CELL]
+              )
+            );
+          case AFFECTED_CLUSTERS_VERSION_CELL:
+            return (
+              d *
+              compare(
+                a.cells[AFFECTED_CLUSTERS_VERSION_CELL] || '0.0.0',
+                b.cells[AFFECTED_CLUSTERS_VERSION_CELL] || '0.0.0'
+              )
             );
           case AFFECTED_CLUSTERS_LAST_SEEN_CELL:
             fst = new Date(a.cells[AFFECTED_CLUSTERS_LAST_SEEN_CELL] || 0);
