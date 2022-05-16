@@ -27,8 +27,9 @@ import {
 } from '../MessageState/EmptyStates';
 import {
   AFFECTED_CLUSTERS_COLUMNS,
-  AFFECTED_CLUSTERS_LAST_SEEN,
+  AFFECTED_CLUSTERS_LAST_SEEN_CELL,
   AFFECTED_CLUSTERS_NAME_CELL,
+  AFFECTED_CLUSTERS_VERSION_CELL,
 } from '../../AppConstants';
 import Loading from '../Loading/Loading';
 import { updateAffectedClustersFilters } from '../../Services/Filters';
@@ -130,8 +131,11 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
   const buildFilteredRows = (allRows, filters) => {
     const rows = allRows.map((r) => ({
       id: r.cluster,
-      cells: [r?.cluster_name || r.cluster],
-      last_checked_at: r?.last_checked_at,
+      cells: [
+        r.cluster_name || r.cluster,
+        r.meta.cluster_version,
+        r.last_checked_at,
+      ],
     }));
     return rows
       .filter((row) => {
@@ -140,15 +144,15 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
       .sort((a, b) => {
         let fst, snd;
         const d = filters.sortDirection === 'asc' ? 1 : -1;
-        switch (filters.sortIndex) {
+        switch (filters.sortIndex - 1) {
           case AFFECTED_CLUSTERS_NAME_CELL:
             if (filters.sortDirection === 'asc') {
               return a?.cells[0].localeCompare(b?.cells[0]);
             }
             return b?.cells[0].localeCompare(a?.cells[0]);
-          case AFFECTED_CLUSTERS_LAST_SEEN:
-            fst = new Date(a.last_checked_at || 0);
-            snd = new Date(b.last_checked_at || 0);
+          case AFFECTED_CLUSTERS_LAST_SEEN_CELL:
+            fst = new Date(a.cells[AFFECTED_CLUSTERS_LAST_SEEN_CELL] || 0);
+            snd = new Date(b.cells[AFFECTED_CLUSTERS_LAST_SEEN_CELL] || 0);
             return fst > snd ? d : snd > fst ? -d : 0;
         }
       });
@@ -162,14 +166,18 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
         cells: [
           <span key={r.id}>
             <Link to={`/clusters/${r.id}?first=${rule.rule_id}`}>
-              {r.cells[0]}
+              {r.cells[AFFECTED_CLUSTERS_NAME_CELL]}
             </Link>
           </span>,
           <span key={r.id}>
-            {r.last_checked_at ? (
+            {r.cells[AFFECTED_CLUSTERS_VERSION_CELL] ||
+              intl.formatMessage(messages.nA)}
+          </span>,
+          <span key={r.id}>
+            {r.cells[AFFECTED_CLUSTERS_LAST_SEEN_CELL] ? (
               <DateFormat
                 extraTitle={`${intl.formatMessage(messages.lastSeen)}: `}
-                date={r.last_checked_at}
+                date={r.cells[AFFECTED_CLUSTERS_LAST_SEEN_CELL]}
                 variant="relative"
               />
             ) : (
@@ -297,9 +305,8 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
         actions={[
           {
             title: 'Disable recommendation for cluster',
-            onClick: (event, rowIndex) => {
-              return handleModalToggle(true, filteredRows[rowIndex].id);
-            },
+            onClick: (event, rowIndex) =>
+              handleModalToggle(true, filteredRows[rowIndex].id),
           },
         ]}
       >

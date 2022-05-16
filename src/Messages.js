@@ -597,4 +597,9 @@ export default defineMessages({
     description: 'Thanking user for feedback',
     defaultMessage: 'Thank you for your feedback!',
   },
+  version: {
+    id: 'version',
+    description: 'Version label name',
+    defaultMessage: 'Version',
+  },
 });
