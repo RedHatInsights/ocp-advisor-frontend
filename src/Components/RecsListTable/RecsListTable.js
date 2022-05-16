@@ -42,10 +42,13 @@ import {
   updateRecsListFilters,
 } from '../../Services/Filters';
 import RuleLabels from '../Labels/RuleLabels';
-import { strong } from '../../Utilities/intlHelper';
+import {
+  formatMessages,
+  mapContentToValues,
+  strong,
+} from '../../Utilities/intlHelper';
 import { List } from 'react-content-loader';
 import { ErrorState, NoMatchingRecs } from '../MessageState/EmptyStates';
-import RuleDetails from '../Recommendation/RuleDetails';
 import {
   passFilters,
   paramParser,
@@ -56,6 +59,12 @@ import DisableRule from '../Modals/DisableRule';
 import { Delete } from '../../Utilities/Api';
 import { BASE_URL } from '../../Services/SmartProxy';
 import CategoryLabel, { extractCategories } from '../Labels/CategoryLabel';
+import {
+  AdvisorProduct,
+  RuleDetails,
+  RuleDetailsMessagesKeys,
+} from '@redhat-cloud-services/frontend-components-advisor-components';
+import { adjustOCPRule } from '../../Utilities/Rule';
 
 const RecsListTable = ({ query }) => {
   const intl = useIntl();
@@ -142,15 +151,7 @@ const RecsListTable = ({ query }) => {
             {
               title: (
                 <span key={key}>
-                  <Link
-                    key={key}
-                    // https://github.com/RedHatInsights/ocp-advisor-frontend/issues/29
-                    to={`/recommendations/${
-                      process.env.NODE_ENV === 'development'
-                        ? value.rule_id.replaceAll('.', '%2E')
-                        : value.rule_id
-                    }`}
-                  >
+                  <Link key={key} to={`/recommendations/${value.rule_id}`}>
                     {' '}
                     {value?.description || value?.rule_id}{' '}
                   </Link>
@@ -184,7 +185,7 @@ const RecsListTable = ({ query }) => {
                         risk:
                           TOTAL_RISK_LABEL_LOWER[value.total_risk] ||
                           intl.formatMessage(messages.undefined),
-                        strong: (str) => strong(str),
+                        strong,
                       }
                     )}
                   >
@@ -219,11 +220,16 @@ const RecsListTable = ({ query }) => {
                 <section className="pf-m-light pf-l-page__main-section pf-c-page__main-section">
                   <Stack hasGutter>
                     <RuleDetails
-                      rule={{
-                        ...value,
-                        impact: { impact: value.impact },
-                      }}
+                      messages={formatMessages(
+                        intl,
+                        RuleDetailsMessagesKeys,
+                        mapContentToValues(intl, adjustOCPRule(value))
+                      )}
+                      product={AdvisorProduct.ocp}
+                      rule={adjustOCPRule(value)}
                       isDetailsPage={false}
+                      showViewAffected
+                      linkComponent={Link}
                     />
                   </Stack>
                 </section>
@@ -233,15 +239,18 @@ const RecsListTable = ({ query }) => {
         },
       ]);
   };
-
+  /* the category sorting compares only the first element of the array.
+   Could be refactored later when we assign a priority numbers to each of the category
+   and sort them in the array based on the priority.
+*/
   const buildDisplayedRows = (rows, index, direction) => {
     const sortingRows = [...rows].sort((firstItem, secondItem) => {
       const d = direction === SortByDirection.asc ? 1 : -1;
       const fst = firstItem[0].rule[RECS_LIST_COLUMNS_KEYS[index]];
       const snd = secondItem[0].rule[RECS_LIST_COLUMNS_KEYS[index]];
       if (index === 3) {
-        return extractCategories(fst)[0].localeCompare(
-          extractCategories(snd)[0]
+        return (
+          d * extractCategories(fst)[0].localeCompare(extractCategories(snd)[0])
         );
       }
       return fst > snd ? d : snd > fst ? -d : 0;

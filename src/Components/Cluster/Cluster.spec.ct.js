@@ -1,21 +1,19 @@
 import React from 'react';
 import { mount } from '@cypress/react';
-import { MemoryRouter } from 'react-router';
+import { MemoryRouter } from 'react-router-dom';
 
 import { Intl } from '../../Utilities/intlHelper';
 import { Cluster } from './Cluster';
 import { Provider } from 'react-redux';
 import getStore from '../../Store';
-import '@patternfly/patternfly/patternfly.scss';
-import singleClusterPageReport from '../../../cypress/fixtures/Cluster/report.json';
+import singleClusterPageReport from '../../../cypress/fixtures/api/insights-results-aggregator/v2/cluster/dcb95bbf-8673-4f3a-a63c-12d4a530aa6f/reports-disabled-false.json';
+import { checkRowCounts } from '../../../cypress/utils/table';
 
 // selectors
 const CLUSTER_HEADER = '#cluster-header';
 const BREADCRUMBS = 'nav[class=pf-c-breadcrumb]';
 const RULES_TABLE = '#cluster-recs-list-table';
 const FILTER_CHIPS = 'li[class=pf-c-chip-group__list-item]';
-const ROW = 'tbody[role=rowgroup]';
-Cypress.Commands.add('getAllRows', () => cy.get(RULES_TABLE).find(ROW));
 let props;
 
 describe('cluster page', () => {
@@ -64,10 +62,7 @@ describe('cluster page', () => {
     // renders table component
     cy.get(RULES_TABLE).should('have.length', 1);
     // test how many rows were rendered
-    cy.getAllRows().should(
-      'have.length',
-      singleClusterPageReport.report.data.length
-    );
+    checkRowCounts(singleClusterPageReport.report.data.length);
   });
 
   it('cluster page in the loading state', () => {
@@ -143,7 +138,7 @@ describe('cluster page', () => {
     cy.get(FILTER_CHIPS).each(($el) =>
       expect($el.text()).to.be.oneOf(['foo bar', 'Low', 'Performance'])
     );
-    cy.getAllRows().should('have.length', 1);
+    checkRowCounts(0);
   });
 
   it('adds additional filters passed by the query parameters №2', () => {
@@ -166,7 +161,7 @@ describe('cluster page', () => {
         'Service Availability',
       ])
     );
-    cy.getAllRows().should('have.length', 1);
+    checkRowCounts(0);
   });
 });
 

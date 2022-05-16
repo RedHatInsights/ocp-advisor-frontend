@@ -1,6 +1,6 @@
 import './Recommendation.scss';
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
@@ -30,12 +30,16 @@ import { DropdownToggle } from '@patternfly/react-core/dist/js/components/Dropdo
 import { Flex } from '@patternfly/react-core/dist/js/layouts/Flex/Flex';
 import { FlexItem } from '@patternfly/react-core/dist/js/layouts/Flex/FlexItem';
 import { ErrorState } from '@redhat-cloud-services/frontend-components/ErrorState';
+import {
+  AdvisorProduct,
+  RuleDetails,
+  RuleDetailsMessagesKeys,
+} from '@redhat-cloud-services/frontend-components-advisor-components';
 
 import Breadcrumbs from '../Breadcrumbs';
 import RuleLabels from '../Labels/RuleLabels';
 import { FILTER_CATEGORIES, RULE_CATEGORIES } from '../../AppConstants';
 import messages from '../../Messages';
-import RuleDetails from './RuleDetails';
 import Loading from '../Loading/Loading';
 import { adjustOCPRule } from '../../Utilities/Rule';
 import MessageState from '../MessageState/MessageState';
@@ -46,6 +50,7 @@ import DisableRule from '../Modals/DisableRule';
 import ViewHostAcks from '../Modals/ViewHostAcks';
 import { OneLineLoader } from '../../Utilities/Loaders';
 import { enableRuleForCluster } from '../../Services/Acks';
+import { formatMessages, mapContentToValues } from '../../Utilities/intlHelper';
 
 const Recommendation = ({ rule, ack, clusters, match }) => {
   const intl = useIntl();
@@ -137,6 +142,11 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
     }
   };
 
+  const messagesValues = useMemo(
+    () => (content ? mapContentToValues(intl, content) : {}),
+    [intl, content]
+  );
+
   return (
     <React.Fragment>
       {viewSystemsModalOpen && (
@@ -175,9 +185,14 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
         <React.Fragment>
           <Main className="pf-m-light pf-u-pt-sm">
             <RuleDetails
-              isOpenShift
-              isDetailsPage
+              messages={formatMessages(
+                intl,
+                RuleDetailsMessagesKeys,
+                messagesValues
+              )}
+              product={AdvisorProduct.ocp}
               rule={content}
+              isDetailsPage
               header={
                 <React.Fragment>
                   <PageHeaderTitle
@@ -228,7 +243,7 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
                   </p>
                 </React.Fragment>
               }
-              onFeedbackChanged={async (rule, rating) =>
+              onVoteClick={async (rule, rating) =>
                 await Post(`${BASE_URL}/v2/rating`, {}, { rule, rating })
               }
             >

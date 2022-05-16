@@ -16,6 +16,8 @@
 // Import commands.js using ES2015 syntax:
 import './commands';
 import '@cypress/code-coverage/support';
+// enable PF4 CSS styling
+import '@patternfly/patternfly/patternfly.scss';
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')

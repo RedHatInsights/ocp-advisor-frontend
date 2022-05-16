@@ -1,7 +1,8 @@
 const TOOLBAR = 'div[id="ins-primary-data-toolbar"]';
 const CHIP_GROUP = 'div[data-ouia-component-type="PF4/ChipGroup"]';
 const CHIP = '[data-ouia-component-type="PF4/Chip"]';
-const ROW = '[data-ouia-component-type="PF4/TableRow"]';
+const ROW =
+  '[data-ouia-component-type="PF4/TableRow"]:not([class~="pf-c-table__expandable-row"])';
 const PAGINATION = 'div[data-ouia-component-type="PF4/Pagination"]';
 const PAGINATION_MENU =
   'div[data-ouia-component-type="PF4/PaginationOptionsMenu"]';
@@ -11,7 +12,9 @@ const CHECKBOX = '[data-ouia-component-type="PF4/Checkbox"]';
 const TEXT_INPUT = '[data-ouia-component-type="PF4/TextInput"]';
 const DROPDOWN_TOGGLE = '[data-ouia-component-type="PF4/DropdownToggle"]';
 const DROPDOWN_ITEM = '[data-ouia-component-type="PF4/DropdownItem"]';
+const TBODY = 'tbody[role=rowgroup]';
 const TOOLBAR_FILTER = '.ins-c-primary-toolbar__filter';
+const TABLE = 'table';
 
 const ouiaId = (id) => `[data-ouia-component-id="${id}"]`;
 
@@ -29,5 +32,7 @@ export {
   TEXT_INPUT,
   DROPDOWN_TOGGLE,
   DROPDOWN_ITEM,
+  TBODY,
   TOOLBAR_FILTER,
+  TABLE,
 };

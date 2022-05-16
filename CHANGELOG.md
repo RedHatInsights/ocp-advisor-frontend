@@ -1,3 +1,39 @@
+## [1.3.14](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.13...v1.3.14) (2022-05-13)
+
+
+### Bug Fixes
+
+* **RecsListTable:** Fixing the category sorting ([#263](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/263)) ([41a5c09](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/41a5c09af34faa84f5af43763e99804f926751b1))
+
+## [1.3.13](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.12...v1.3.13) (2022-05-12)
+
+
+### Bug Fixes
+
+* update FEC config library to disable dot rule ([#264](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/264)) ([24f92a1](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/24f92a1d656c26bd60bccb95dca187162670aeaf))
+
+## [1.3.12](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.11...v1.3.12) (2022-05-09)
+
+
+### Bug Fixes
+
+* **Cluster rules table:** display table rows only when filerting is complete ([#261](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/261)) ([8016533](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/8016533d59b3fc334b88fb48720913ea9a51a10a))
+
+## [1.3.11](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.10...v1.3.11) (2022-05-09)
+
+## [1.3.10](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.9...v1.3.10) (2022-05-09)
+
+
+### Bug Fixes
+
+* **ClusterRules:** Open rows memorization  ([#251](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/251)) ([83f754e](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/83f754e354cb9774e406f5e35a9e59d558e4dd07))
+
+## [1.3.9](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.8...v1.3.9) (2022-04-27)
+
+## [1.3.8](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.7...v1.3.8) (2022-04-20)
+
+## [1.3.7](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.6...v1.3.7) (2022-04-14)
+
 ## [1.3.6](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.5...v1.3.6) (2022-04-12)
 
 

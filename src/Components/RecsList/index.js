@@ -15,10 +15,11 @@ const RecsListTable = lazy(() =>
 
 const RecsList = () => {
   const intl = useIntl();
-  // FIXME: https://consoledot.pages.redhat.com/insights-chrome/dev/api.html#_using_updatedocumenttitle_function
-  document.title = intl.formatMessage(messages.documentTitle, {
-    subnav: 'Recommendations',
-  });
+  insights.chrome.updateDocumentTitle(
+    intl.formatMessage(messages.documentTitle, {
+      subnav: intl.formatMessage(messages.recommendations),
+    })
+  );
 
   return (
     <React.Fragment>

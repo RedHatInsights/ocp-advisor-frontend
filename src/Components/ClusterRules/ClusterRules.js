@@ -62,7 +62,6 @@ const ClusterRules = ({ cluster }) => {
   const { isError, isUninitialized, isFetching, isSuccess, data, error } =
     cluster;
   const reports = data?.report?.data || [];
-
   const [filteredRows, setFilteredRows] = useState([]);
   const [displayedRows, setDisplayedRows] = useState([]);
   const [isAllExpanded, setIsAllExpanded] = useState(false);
@@ -70,30 +69,11 @@ const ClusterRules = ({ cluster }) => {
   const [firstRule, setFirstRule] = useState(''); // show a particular rule first
   const results = filteredRows.length;
   const { search } = useLocation();
-  // helps to distinguish the state when the API data received but not yet filtered
+  const [rowsUpdating, setRowsUpdating] = useState(true);
   const [rowsFiltered, setRowsFiltered] = useState(false);
-  const loadingState = isUninitialized || isFetching || !rowsFiltered;
+  const loadingState = isUninitialized || isFetching || rowsUpdating;
   const errorState = isError;
   const successState = isSuccess;
-
-  useEffect(() => {
-    setDisplayedRows(
-      buildDisplayedRows(filteredRows, filters.sortIndex, filters.sortDirection)
-    );
-  }, [
-    filteredRows,
-    filters.limit,
-    filters.offset,
-    filters.sortIndex,
-    filters.sortDirection,
-  ]);
-
-  useEffect(() => {
-    setFilteredRows(buildFilteredRows(reports, filters));
-    if (isSuccess && !rowsFiltered) {
-      setRowsFiltered(true);
-    }
-  }, [reports, filters]);
 
   useEffect(() => {
     if (search) {
@@ -113,19 +93,48 @@ const ClusterRules = ({ cluster }) => {
     }
   }, []);
 
+  useEffect(() => {
+    setFilteredRows(buildFilteredRows(reports, filters));
+  }, [reports, filters]);
+
+  useEffect(() => {
+    setDisplayedRows(
+      buildDisplayedRows(filteredRows, filters.sortIndex, filters.sortDirection)
+    );
+    setRowsFiltered(true);
+  }, [
+    filteredRows,
+    filters.limit,
+    filters.offset,
+    filters.sortIndex,
+    filters.sortDirection,
+  ]);
+
+  useEffect(() => {
+    if (rowsFiltered) {
+      setRowsUpdating(false);
+    }
+  }, [rowsFiltered]);
+
   const handleOnCollapse = (_e, rowId, isOpen) => {
     const collapseRows = [...displayedRows];
     collapseRows[rowId] = { ...collapseRows[rowId], isOpen };
     setDisplayedRows(collapseRows);
   };
 
-  const buildFilteredRows = (allRows, filters) =>
-    allRows
+  const buildFilteredRows = (allRows, filters) => {
+    const expandedRowsSet = new Set(
+      displayedRows
+        .filter((ruleExpanded) => ruleExpanded?.isOpen)
+        .map((object) => object?.rule?.rule_id)
+    );
+
+    return allRows
       .filter((rule) => passFilters(rule, filters))
       .map((value, key) => [
         {
           rule: value,
-          isOpen: isAllExpanded,
+          isOpen: isAllExpanded || expandedRowsSet?.has(value?.rule_id),
           cells: [
             {
               title: (
@@ -194,6 +203,7 @@ const ClusterRules = ({ cluster }) => {
           ],
         },
       ]);
+  };
 
   const buildDisplayedRows = (rows, index, direction) => {
     let sortingRows = [...rows];
@@ -227,6 +237,7 @@ const ClusterRules = ({ cluster }) => {
   };
 
   const onSort = (_e, index, direction) => {
+    setExpandFirst(false);
     setFirstRule('');
     return updateFilters({
       ...filters,

@@ -25,6 +25,5 @@ Webpack 5 comes with a feature called "federated modules." The feature is often 
 
 | Module name | Source code |
 | ----------- | ----------- |
-| Rule Details | https://github.com/RedHatInsights/insights-advisor-frontend/blob/master/src/PresentationalComponents/RuleDetails/RuleDetails.js |
 | Report Details | https://github.com/RedHatInsights/insights-advisor-frontend/blob/master/src/PresentationalComponents/ReportDetails/ReportDetails.js
 
