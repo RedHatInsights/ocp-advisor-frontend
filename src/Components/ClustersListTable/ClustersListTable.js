@@ -12,13 +12,14 @@ import {
   TableHeader,
   TableVariant,
 } from '@patternfly/react-table';
-import { Card, CardBody } from '@patternfly/react-core/dist/js/components/Card';
-import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
-import { Spinner } from '@patternfly/react-core/dist/js/components/Spinner';
 import {
+  Card,
+  CardBody,
+  Bullseye,
+  Spinner,
   Pagination,
   PaginationVariant,
-} from '@patternfly/react-core/dist/js/components/Pagination';
+} from '@patternfly/react-core/';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar/PrimaryToolbar';
 
 import {

@@ -17,16 +17,18 @@ import {
 } from '@redhat-cloud-services/frontend-components/PageHeader';
 import { Main } from '@redhat-cloud-services/frontend-components/Main';
 import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
-import { Label } from '@patternfly/react-core/dist/js/components/Label/Label';
-import { Title } from '@patternfly/react-core/dist/js/components/Title/Title';
-import { LabelGroup } from '@patternfly/react-core/dist/js/components/LabelGroup';
+import {
+  Label,
+  Title,
+  LabelGroup,
+  Button,
+  Dropdown,
+  DropdownItem,
+  DropdownToggle,
+} from '@patternfly/react-core/';
 import BellSlashIcon from '@patternfly/react-icons/dist/js/icons/bell-slash-icon';
 import CaretDownIcon from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
 import { addNotification } from '@redhat-cloud-services/frontend-components-notifications/';
-import { Button } from '@patternfly/react-core/dist/js/components/Button/Button';
-import { Dropdown } from '@patternfly/react-core/dist/js/components/Dropdown/Dropdown';
-import { DropdownItem } from '@patternfly/react-core/dist/js/components/Dropdown/DropdownItem';
-import { DropdownToggle } from '@patternfly/react-core/dist/js/components/Dropdown/DropdownToggle';
 import { Flex } from '@patternfly/react-core/dist/js/layouts/Flex/Flex';
 import { FlexItem } from '@patternfly/react-core/dist/js/layouts/Flex/FlexItem';
 import { ErrorState } from '@redhat-cloud-services/frontend-components/ErrorState';

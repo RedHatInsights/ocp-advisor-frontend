@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import capitalize from 'lodash/capitalize';
 import cloneDeep from 'lodash/cloneDeep';
 
-import { Tooltip } from '@patternfly/react-core/dist/js/components/Tooltip';
+import { Tooltip } from '@patternfly/react-core';
 import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
 
 import {

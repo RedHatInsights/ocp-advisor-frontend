@@ -1,10 +1,12 @@
 import { Route, Switch, Redirect } from 'react-router-dom';
 import React, { Suspense, lazy } from 'react';
 
-import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
-import { Spinner } from '@patternfly/react-core/dist/js/components/Spinner';
-import { EmptyState } from '@patternfly/react-core/dist/js/components/EmptyState';
-import { EmptyStateBody } from '@patternfly/react-core/dist/js/components/EmptyState';
+import {
+  Bullseye,
+  EmptyStateBody,
+  Spinner,
+  EmptyState,
+} from '@patternfly/react-core/';
 import InvalidObject from '@redhat-cloud-services/frontend-components/InvalidObject/InvalidObject';
 
 const Cluster = lazy(() =>
