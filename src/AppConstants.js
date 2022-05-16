@@ -254,9 +254,9 @@ export const RECS_LIST_COLUMNS_KEYS = [
   'total_risk',
   'impacted_clusters_count',
 ];
-export const AFFECTED_CLUSTERS_NAME_CELL = 0;
-export const AFFECTED_CLUSTERS_VERSION_CELL = 1;
-export const AFFECTED_CLUSTERS_LAST_SEEN_CELL = 2;
+export const AFFECTED_CLUSTERS_NAME_CELL = 1;
+export const AFFECTED_CLUSTERS_VERSION_CELL = 2;
+export const AFFECTED_CLUSTERS_LAST_SEEN_CELL = 3;
 export const AFFECTED_CLUSTERS_COLUMNS = [
   {
     title: intl.formatMessage(messages.name),

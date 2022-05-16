@@ -5,7 +5,7 @@ export const AFFECTED_CLUSTERS_INITIAL_STATE = {
   limit: 20,
   offset: 0,
   text: '',
-  sortIndex: 2,
+  sortIndex: 3,
   sortDirection: null,
 };
 

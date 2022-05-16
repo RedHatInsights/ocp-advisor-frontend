@@ -132,6 +132,7 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
     const rows = allRows.map((r) => ({
       id: r.cluster,
       cells: [
+        '', // left intentionally because checkboxes create the 0th column
         r.cluster_name || r.cluster,
         r.meta.cluster_version,
         r.last_checked_at,
@@ -139,17 +140,24 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
     }));
     return rows
       .filter((row) => {
-        return row?.cells[0].toLowerCase().includes(filters.text.toLowerCase());
+        return row?.cells[AFFECTED_CLUSTERS_NAME_CELL].toLowerCase().includes(
+          filters.text.toLowerCase()
+        );
       })
       .sort((a, b) => {
         let fst, snd;
         const d = filters.sortDirection === 'asc' ? 1 : -1;
-        switch (filters.sortIndex - 1) {
+        console.log(filters.sortIndex);
+        switch (filters.sortIndex) {
           case AFFECTED_CLUSTERS_NAME_CELL:
             if (filters.sortDirection === 'asc') {
-              return a?.cells[0].localeCompare(b?.cells[0]);
+              return a?.cells[AFFECTED_CLUSTERS_NAME_CELL].localeCompare(
+                b?.cells[AFFECTED_CLUSTERS_NAME_CELL]
+              );
             }
-            return b?.cells[0].localeCompare(a?.cells[0]);
+            return b?.cells[AFFECTED_CLUSTERS_NAME_CELL].localeCompare(
+              a?.cells[AFFECTED_CLUSTERS_NAME_CELL]
+            );
           case AFFECTED_CLUSTERS_LAST_SEEN_CELL:
             fst = new Date(a.cells[AFFECTED_CLUSTERS_LAST_SEEN_CELL] || 0);
             snd = new Date(b.cells[AFFECTED_CLUSTERS_LAST_SEEN_CELL] || 0);
