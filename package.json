@@ -32,7 +32,7 @@
     "@redhat-cloud-services/frontend-components-charts": "^3.2.2",
     "@redhat-cloud-services/frontend-components-notifications": "3.2.5",
     "@redhat-cloud-services/frontend-components-translations": "3.2.4",
-    "@redhat-cloud-services/frontend-components-utilities": "3.2.14",
+    "@redhat-cloud-services/frontend-components-utilities": "3.2.16",
     "@redhat-cloud-services/rule-components": "3.2.5",
     "@reduxjs/toolkit": "1.8.0",
     "axios": "^0.26.1",
