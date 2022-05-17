@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { compare, valid } from 'semver';
+import { valid } from 'semver';
 
 import { conditionalFilterType } from '@redhat-cloud-services/frontend-components/ConditionalFilter/conditionalFilterConstants';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
@@ -31,11 +31,16 @@ import {
   AFFECTED_CLUSTERS_LAST_SEEN_CELL,
   AFFECTED_CLUSTERS_NAME_CELL,
   AFFECTED_CLUSTERS_VERSION_CELL,
+  FILTER_CATEGORIES,
 } from '../../AppConstants';
 import Loading from '../Loading/Loading';
-import { updateAffectedClustersFilters } from '../../Services/Filters';
+import {
+  AFFECTED_CLUSTERS_INITIAL_STATE,
+  updateAffectedClustersFilters,
+} from '../../Services/Filters';
 import messages from '../../Messages';
 import DisableRule from '../Modals/DisableRule';
+import { buildFilterChips, compareSemVer } from '../Common/Tables';
 
 const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
   const intl = useIntl();
@@ -44,7 +49,6 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
   const [filteredRows, setFilteredRows] = useState([]);
   const [displayedRows, setDisplayedRows] = useState([]);
   const [disableRuleModalOpen, setDisableRuleModalOpen] = useState(false);
-  const [chips, setChips] = useState([]);
   const [selected, setSelected] = useState([]);
   const [host, setHost] = useState(undefined);
 
@@ -67,37 +71,6 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
   const updateFilters = (filters) =>
     dispatch(updateAffectedClustersFilters(filters));
 
-  const updateNameChip = (chips, newValue) => {
-    const newChips = chips;
-    const nameCategoryIndex = newChips.findIndex(
-      (chip) => chip.category === 'Name'
-    );
-    if (newValue === '') {
-      newChips.splice(nameCategoryIndex);
-    } else {
-      if (nameCategoryIndex === -1) {
-        newChips.push({ category: 'Name', chips: [{ name: newValue }] });
-      } else {
-        newChips[nameCategoryIndex] = {
-          category: 'Name',
-          chips: [{ name: newValue }],
-        };
-      }
-    }
-    return newChips;
-  };
-
-  const onChipDelete = () => {
-    // right now, only designed to treat the Name (text) filter
-    const newFilters = { ...filters, text: '' };
-    updateFilters(newFilters);
-  };
-
-  const onNameFilterChange = (value) => {
-    const newFilters = { ...filters, text: value, offset: 0 };
-    updateFilters(newFilters);
-  };
-
   const filterConfig = {
     items: [
       {
@@ -107,8 +80,28 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
         filterValues: {
           id: 'name-filter',
           key: 'name-filter',
-          onChange: (_e, value) => onNameFilterChange(value),
+          onChange: (event, value) => addFilterParam('text', value),
           value: filters.text,
+        },
+      },
+      {
+        label: 'Version',
+        placeholder: 'Filter by version',
+        type: conditionalFilterType.checkbox,
+        filterValues: {
+          id: 'version-filter',
+          key: 'version-filter',
+          onChange: (event, value) => addFilterParam('version', value),
+          value: filters.version,
+          items: rows
+            .filter((r) => r.meta.cluster_version !== '')
+            .sort((a, b) =>
+              compareSemVer(a.meta.cluster_version, b.meta.cluster_version, 1)
+            )
+            .reverse() // should start from the latest version
+            .map((r) => ({
+              value: r.meta.cluster_version,
+            })),
         },
       },
     ],
@@ -149,8 +142,12 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
     });
     return rows
       .filter((row) => {
-        return row?.cells[AFFECTED_CLUSTERS_NAME_CELL].toLowerCase().includes(
-          filters.text.toLowerCase()
+        return (
+          row?.cells[AFFECTED_CLUSTERS_NAME_CELL].toLowerCase().includes(
+            filters.text.toLowerCase()
+          ) &&
+          (filters.version.length === 0 ||
+            filters.version.includes(row.cells[AFFECTED_CLUSTERS_VERSION_CELL]))
         );
       })
       .sort((a, b) => {
@@ -165,12 +162,10 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
               )
             );
           case AFFECTED_CLUSTERS_VERSION_CELL:
-            return (
-              d *
-              compare(
-                a.cells[AFFECTED_CLUSTERS_VERSION_CELL] || '0.0.0',
-                b.cells[AFFECTED_CLUSTERS_VERSION_CELL] || '0.0.0'
-              )
+            return compareSemVer(
+              a.cells[AFFECTED_CLUSTERS_VERSION_CELL] || '0.0.0',
+              b.cells[AFFECTED_CLUSTERS_VERSION_CELL] || '0.0.0',
+              d
             );
           case AFFECTED_CLUSTERS_LAST_SEEN_CELL:
             fst = new Date(a.cells[AFFECTED_CLUSTERS_LAST_SEEN_CELL] || 0);
@@ -237,15 +232,31 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
   useEffect(() => {
     const newFilteredRows = buildFilteredRows(rows, filters);
     const newDisplayedRows = buildDisplayedRows(newFilteredRows);
-    const newChips = updateNameChip(chips, filters.text);
     setFilteredRows(newFilteredRows);
     setDisplayedRows(newDisplayedRows);
-    setChips(newChips);
   }, [query, filters]);
 
   const handleModalToggle = (disableRuleModalOpen, host = undefined) => {
     setDisableRuleModalOpen(disableRuleModalOpen);
     setHost(host);
+  };
+
+  const removeFilterParam = (param) => {
+    const { [param]: omitted, ...newFilters } = { ...filters, offset: 0 };
+    updateFilters({
+      ...newFilters,
+      ...(param === 'text'
+        ? { text: '' }
+        : param === 'version'
+        ? { version: [] }
+        : {}),
+    });
+  };
+
+  const addFilterParam = (param, values) => {
+    values.length > 0
+      ? updateFilters({ ...filters, offset: 0, ...{ [param]: values } })
+      : removeFilterParam(param);
   };
 
   return (
@@ -274,9 +285,27 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
           isError || (rows && rows.length === 0)
             ? undefined
             : {
-                filters: chips,
+                filters: buildFilterChips(filters, FILTER_CATEGORIES),
                 deleteTitle: intl.formatMessage(messages.resetFilters),
-                onDelete: onChipDelete,
+                onDelete: (event, itemsToRemove, isAll) => {
+                  if (isAll) {
+                    updateFilters(AFFECTED_CLUSTERS_INITIAL_STATE);
+                  } else {
+                    itemsToRemove.map((item) => {
+                      const newFilter = {
+                        [item.urlParam]: Array.isArray(filters[item.urlParam])
+                          ? filters[item.urlParam].filter(
+                              (value) =>
+                                String(value) !== String(item.chips[0].value)
+                            )
+                          : '',
+                      };
+                      newFilter[item.urlParam].length > 0
+                        ? updateFilters({ ...filters, ...newFilter })
+                        : removeFilterParam(item.urlParam);
+                    });
+                  }
+                },
               }
         }
         bulkSelect={{

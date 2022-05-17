@@ -375,7 +375,7 @@ describe('non-empty successful affected clusters table', () => {
     });
   });
 
-  describe.only('sorting', () => {
+  describe('sorting', () => {
     _.zip(
       ['name', 'cluster_version', 'last_checked_at'],
       TABLE_HEADERS
@@ -572,7 +572,7 @@ describe('non-empty successful affected clusters table', () => {
         .find(ROW)
         .first()
         .find('td')
-        .eq(3)
+        .eq(4)
         .click()
         .contains('Disable')
         .click();
@@ -663,6 +663,7 @@ describe('empty failed affected clusters table', () => {
 
   it('renders table header', () => {
     cy.get(TABLE).find('th').children().eq(0).should('have.text', 'Name');
-    cy.get(TABLE).find('th').children().eq(1).should('have.text', 'Last seen');
+    cy.get(TABLE).find('th').children().eq(1).should('have.text', 'Version');
+    cy.get(TABLE).find('th').children().eq(2).should('have.text', 'Last seen');
   });
 });

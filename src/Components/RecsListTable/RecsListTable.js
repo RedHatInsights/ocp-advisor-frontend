@@ -441,6 +441,7 @@ const RecsListTable = ({ query }) => {
       : [];
   };
 
+  // TODO: use the function from Common/Tables.js
   const buildFilterChips = () => {
     const localFilters = { ...filters };
     delete localFilters.sortIndex;

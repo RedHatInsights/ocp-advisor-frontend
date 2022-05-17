@@ -7,6 +7,7 @@ export const AFFECTED_CLUSTERS_INITIAL_STATE = {
   text: '',
   sortIndex: 3,
   sortDirection: null,
+  version: [],
 };
 
 // recommendations list page

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import capitalize from 'lodash/capitalize';
 import cloneDeep from 'lodash/cloneDeep';
+import { compare } from 'semver';
 
 import { Tooltip } from '@patternfly/react-core/dist/js/components/Tooltip';
 import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
@@ -160,6 +161,22 @@ const pruneFilters = (localFilters, filterCategories) => {
             ]
           : []),
       ];
+    } else if (key === 'version') {
+      return [
+        ...arr,
+        ...(item.length > 0
+          ? [
+              {
+                category: 'Version',
+                chips: item.map((it) => ({
+                  name: it,
+                  value: it,
+                })),
+                urlParam: key,
+              },
+            ]
+          : []),
+      ];
     }
   }, []);
 };
@@ -240,3 +257,5 @@ export const updateSearchParams = (filters = {}, columnMapping) => {
   });
   window.history.replaceState(null, null, url.href);
 };
+
+export const compareSemVer = (v1, v2, d) => d * compare(v1, v2);
