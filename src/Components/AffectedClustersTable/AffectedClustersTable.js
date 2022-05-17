@@ -71,7 +71,8 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
   const filters = useSelector(({ filters }) => filters.affectedClustersState);
   const perPage = filters.limit;
   const page = filters.offset / filters.limit + 1;
-  const allSelected = selected.length === filteredRows.length;
+  const allSelected =
+    filteredRows.length !== 0 && selected.length === filteredRows.length;
 
   const updateFilters = (filters) =>
     dispatch(updateAffectedClustersFilters(filters));
