@@ -357,6 +357,7 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
         <TableHeader />
         {(isUninitialized || isFetching) && <Loading />}
         {isError && (
+          // TODO: fix crooked message container
           <Card id="error-state-message" ouiaId="error-state">
             <CardBody>
               <ErrorState />
@@ -364,6 +365,7 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
           </Card>
         )}
         {isSuccess && rows.length === 0 && (
+          // TODO: fix crooked message container
           <Card id="empty-state-message" ouiaId="empty-state">
             <CardBody>
               <NoAffectedClusters />
@@ -375,6 +377,7 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
           (filteredRows.length > 0 ? (
             <TableBody />
           ) : (
+            // TODO: fix crooked message container
             <EmptyTable>
               <Bullseye>
                 <NoMatchingClusters />

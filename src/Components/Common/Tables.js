@@ -223,6 +223,7 @@ export const translateSortValue = (index, indexMapping, direction) => {
   return `${direction === 'asc' ? '' : '-'}${indexMapping[index]}`;
 };
 
+// TODO: remove since unused
 export const debounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
   useEffect(() => {
@@ -258,6 +259,7 @@ export const updateSearchParams = (filters = {}, columnMapping) => {
   window.history.replaceState(null, null, url.href);
 };
 
+// TODO: move to Utils.js
 export const compareSemVer = (v1, v2, d) => d * compare(v1, v2);
 
 export const removeFilterParam = (currentFilters, updateFilters, param) => {

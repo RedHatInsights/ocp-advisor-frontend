@@ -271,6 +271,7 @@ export const AFFECTED_CLUSTERS_COLUMNS = [
     transforms: [sortable, cellWidth(20)],
   },
 ];
+// TODO: remove since unused
 export const DEBOUNCE_DELAY = 600;
 export const CLUSTER_RULES_COLUMNS_KEYS = [
   '', // reserved for expand button
