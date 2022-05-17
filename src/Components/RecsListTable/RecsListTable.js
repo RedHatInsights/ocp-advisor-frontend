@@ -292,7 +292,7 @@ const RecsListTable = ({ query }) => {
         onChange: (_event, value) =>
           updateFilters({ ...filters, offset: 0, text: value }),
         value: searchText,
-        placeholder: intl.formatMessage(messages.filterBy),
+        placeholder: intl.formatMessage(messages.filterByName),
       },
     },
     {

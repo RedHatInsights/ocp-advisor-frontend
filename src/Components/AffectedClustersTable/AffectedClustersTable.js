@@ -81,8 +81,8 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
   const filterConfig = {
     items: [
       {
-        label: 'Name',
-        placeholder: 'Filter by name',
+        label: intl.formatMessage(messages.name),
+        placeholder: intl.formatMessage(messages.filterByName),
         type: conditionalFilterType.text,
         filterValues: {
           id: 'name-filter',
@@ -92,8 +92,8 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
         },
       },
       {
-        label: 'Version',
-        placeholder: 'Filter by version',
+        label: intl.formatMessage(messages.version),
+        placeholder: intl.formatMessage(messages.filterByVersion),
         type: conditionalFilterType.checkbox,
         filterValues: {
           id: 'version-filter',

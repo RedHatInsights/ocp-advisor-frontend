@@ -168,7 +168,7 @@ const ClustersListTable = ({
         key: 'text-filter',
         onChange: (_event, value) => updateFilters({ ...filters, text: value }),
         value: filters.text,
-        placeholder: intl.formatMessage(messages.filterBy),
+        placeholder: intl.formatMessage(messages.filterByName),
       },
     },
     {
