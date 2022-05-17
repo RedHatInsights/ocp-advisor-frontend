@@ -19,6 +19,10 @@ import {
   CHECKBOX,
   TBODY,
   TABLE,
+  TOOLBAR_FILTER,
+  DROPDOWN_TOGGLE,
+  DROPDOWN_ITEM,
+  ouiaId,
 } from '../../../cypress/utils/components';
 import {
   DEFAULT_ROW_COUNT,
@@ -43,6 +47,12 @@ import { AFFECTED_CLUSTERS_COLUMNS } from '../../AppConstants';
 const ROOT = 'div[id=affected-list-table]';
 const BULK_SELECT = 'clusters-selector';
 const SEARCH_ITEMS = ['ff', 'CUSTOM', 'Foobar', 'Not existing cluster'];
+const VERSION_COMBINATIONS = [
+  ['4.18.12'],
+  ['4.17.9'],
+  ['3.0.3'],
+  ['4.18.12', '4.17.9'],
+];
 const TABLE_HEADERS = _.map(AFFECTED_CLUSTERS_COLUMNS, (it) => it.title);
 
 let data = _.cloneDeep(clusterDetailData.data['enabled']);
@@ -476,6 +486,38 @@ describe('non-empty successful affected clusters table', () => {
             checkRowCounts(Math.min(DEFAULT_ROW_COUNT, data.length));
           }
         });
+      });
+    });
+
+    VERSION_COMBINATIONS.forEach((vs) => {
+      it(`can filter by versions ${vs}`, () => {
+        const filtered = data.filter((it) =>
+          vs.includes(it.meta.cluster_version)
+        );
+        const names = _.map(filtered, 'name');
+
+        cy.get(TOOLBAR_FILTER).find(DROPDOWN_TOGGLE).click();
+        cy.get(TOOLBAR_FILTER).find(DROPDOWN_ITEM).eq(1).click();
+        // open the versions dropdown
+        cy.get(ouiaId('Filter by version')).click();
+        vs.forEach((v) =>
+          cy
+            .get('.pf-c-select__menu')
+            .find('.pf-c-select__menu-item')
+            .contains(v)
+            .click()
+        );
+        // close the dropdown
+        cy.get(ouiaId('Filter by version')).click();
+        checkRowCounts(names.length);
+        cy.get(`td[data-label="Name"]`)
+          .then(($els) => {
+            return _.map(Cypress.$.makeArray($els), 'innerText');
+          })
+          .should(
+            'deep.equal',
+            names.slice(0, Math.min(DEFAULT_ROW_COUNT, names.length))
+          );
       });
     });
 
