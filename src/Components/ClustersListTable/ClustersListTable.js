@@ -38,6 +38,7 @@ import {
   paramParser,
   passFiltersCluster,
   removeFilterParam as _removeFilterParam,
+  addFilterParam as _addFilterParam,
   translateSortParams,
   updateSearchParams,
 } from '../Common/Tables';
@@ -73,6 +74,9 @@ const ClustersListTable = ({
 
   const removeFilterParam = (param) =>
     _removeFilterParam(filters, updateFilters, param);
+
+  const addFilterParam = (param, values) =>
+    _addFilterParam(filters, updateFilters, param, values);
 
   useEffect(() => {
     setDisplayedRows(
@@ -152,13 +156,6 @@ const ClustersListTable = ({
       filters.limit * (page - 1),
       filters.limit * (page - 1) + filters.limit
     );
-  };
-
-  // TODO: update URL when filters changed
-  const addFilterParam = (param, values) => {
-    values.length > 0
-      ? updateFilters({ ...filters, offset: 0, ...{ [param]: values } })
-      : removeFilterParam(param);
   };
 
   const filterConfigItems = [

@@ -55,6 +55,7 @@ import {
   translateSortParams,
   updateSearchParams,
   removeFilterParam as _removeFilterParam,
+  addFilterParam as _addFilterParam,
 } from '../Common/Tables';
 import DisableRule from '../Modals/DisableRule';
 import { Delete } from '../../Utilities/Api';
@@ -95,6 +96,9 @@ const RecsListTable = ({ query }) => {
 
   const removeFilterParam = (param) =>
     _removeFilterParam(filters, updateFilters, param);
+
+  const addFilterParam = (param, values) =>
+    _addFilterParam(filters, updateFilters, param, values);
 
   useEffect(() => {
     setDisplayedRows(
@@ -270,12 +274,6 @@ const RecsListTable = ({ query }) => {
         return updatedRow;
       });
   };
-
-  // TODO: update URL when filters changed
-  const addFilterParam = (param, values) =>
-    values.length > 0
-      ? updateFilters({ ...filters, offset: 0, ...{ [param]: values } })
-      : removeFilterParam(param);
 
   const toggleRulesDisabled = (rule_status) =>
     updateFilters({

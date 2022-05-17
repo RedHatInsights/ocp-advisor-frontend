@@ -44,6 +44,7 @@ import {
   buildFilterChips,
   compareSemVer,
   removeFilterParam as _removeFilterParam,
+  addFilterParam as _addFilterParam,
 } from '../Common/Tables';
 
 const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
@@ -77,6 +78,9 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
 
   const removeFilterParam = (param) =>
     _removeFilterParam(filters, updateFilters, param);
+
+  const addFilterParam = (param, values) =>
+    _addFilterParam(filters, updateFilters, param, values);
 
   const filterConfig = {
     items: [
@@ -246,12 +250,6 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
   const handleModalToggle = (disableRuleModalOpen, host = undefined) => {
     setDisableRuleModalOpen(disableRuleModalOpen);
     setHost(host);
-  };
-
-  const addFilterParam = (param, values) => {
-    values.length > 0
-      ? updateFilters({ ...filters, offset: 0, ...{ [param]: values } })
-      : removeFilterParam(param);
   };
 
   return (

@@ -273,3 +273,12 @@ export const removeFilterParam = (currentFilters, updateFilters, param) => {
       : {}),
   });
 };
+
+export const addFilterParam = (currentFilters, updateFilters, param, values) =>
+  values.length > 0
+    ? updateFilters({
+        ...currentFilters,
+        offset: 0,
+        ...{ [param]: values },
+      })
+    : removeFilterParam(currentFilters, updateFilters, param);
