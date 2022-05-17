@@ -259,3 +259,17 @@ export const updateSearchParams = (filters = {}, columnMapping) => {
 };
 
 export const compareSemVer = (v1, v2, d) => d * compare(v1, v2);
+
+export const removeFilterParam = (currentFilters, updateFilters, param) => {
+  const { [param]: omitted, ...newFilters } = { ...currentFilters, offset: 0 };
+  updateFilters({
+    ...newFilters,
+    ...(param === 'text'
+      ? { text: '' }
+      : param === 'hits'
+      ? { hits: [] }
+      : param === 'version'
+      ? { version: [] }
+      : {}),
+  });
+};

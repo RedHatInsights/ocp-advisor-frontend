@@ -54,6 +54,7 @@ import {
   paramParser,
   translateSortParams,
   updateSearchParams,
+  removeFilterParam as _removeFilterParam,
 } from '../Common/Tables';
 import DisableRule from '../Modals/DisableRule';
 import { Delete } from '../../Utilities/Api';
@@ -91,6 +92,9 @@ const RecsListTable = ({ query }) => {
   const loadingState = isUninitialized || isFetching || !rowsFiltered;
   const errorState = isError || (isSuccess && recs.length === 0);
   const successState = isSuccess && recs.length > 0;
+
+  const removeFilterParam = (param) =>
+    _removeFilterParam(filters, updateFilters, param);
 
   useEffect(() => {
     setDisplayedRows(
@@ -265,12 +269,6 @@ const RecsListTable = ({ query }) => {
         row[1].parent = index * 2;
         return updatedRow;
       });
-  };
-
-  const removeFilterParam = (param) => {
-    const filter = { ...filters, offset: 0 };
-    delete filter[param];
-    updateFilters({ ...filter, ...(param === 'text' ? { text: '' } : {}) });
   };
 
   // TODO: update URL when filters changed

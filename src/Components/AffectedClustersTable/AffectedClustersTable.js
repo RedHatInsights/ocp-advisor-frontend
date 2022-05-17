@@ -40,7 +40,11 @@ import {
 } from '../../Services/Filters';
 import messages from '../../Messages';
 import DisableRule from '../Modals/DisableRule';
-import { buildFilterChips, compareSemVer } from '../Common/Tables';
+import {
+  buildFilterChips,
+  compareSemVer,
+  removeFilterParam as _removeFilterParam,
+} from '../Common/Tables';
 
 const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
   const intl = useIntl();
@@ -70,6 +74,9 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
 
   const updateFilters = (filters) =>
     dispatch(updateAffectedClustersFilters(filters));
+
+  const removeFilterParam = (param) =>
+    _removeFilterParam(filters, updateFilters, param);
 
   const filterConfig = {
     items: [
@@ -239,18 +246,6 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
   const handleModalToggle = (disableRuleModalOpen, host = undefined) => {
     setDisableRuleModalOpen(disableRuleModalOpen);
     setHost(host);
-  };
-
-  const removeFilterParam = (param) => {
-    const { [param]: omitted, ...newFilters } = { ...filters, offset: 0 };
-    updateFilters({
-      ...newFilters,
-      ...(param === 'text'
-        ? { text: '' }
-        : param === 'version'
-        ? { version: [] }
-        : {}),
-    });
   };
 
   const addFilterParam = (param, values) => {

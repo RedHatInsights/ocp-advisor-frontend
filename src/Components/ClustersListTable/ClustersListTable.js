@@ -37,6 +37,7 @@ import {
   mapClustersToRows,
   paramParser,
   passFiltersCluster,
+  removeFilterParam as _removeFilterParam,
   translateSortParams,
   updateSearchParams,
 } from '../Common/Tables';
@@ -69,6 +70,9 @@ const ClustersListTable = ({
   const loadingState = isUninitialized || isFetching || !rowsFiltered;
   const errorState = isError;
   const successState = isSuccess;
+
+  const removeFilterParam = (param) =>
+    _removeFilterParam(filters, updateFilters, param);
 
   useEffect(() => {
     setDisplayedRows(
@@ -148,18 +152,6 @@ const ClustersListTable = ({
       filters.limit * (page - 1),
       filters.limit * (page - 1) + filters.limit
     );
-  };
-
-  const removeFilterParam = (param) => {
-    const { [param]: omitted, ...newFilters } = { ...filters, offset: 0 };
-    updateFilters({
-      ...newFilters,
-      ...(param === 'text'
-        ? { text: '' }
-        : param === 'hits'
-        ? { hits: [] }
-        : {}),
-    });
   };
 
   // TODO: update URL when filters changed
