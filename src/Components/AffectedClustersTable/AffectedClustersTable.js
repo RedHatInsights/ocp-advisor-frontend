@@ -4,6 +4,7 @@ import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { valid } from 'semver';
+import uniqBy from 'lodash/uniqBy';
 
 import { conditionalFilterType } from '@redhat-cloud-services/frontend-components/ConditionalFilter/conditionalFilterConstants';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
@@ -105,15 +106,16 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
           key: 'version-filter',
           onChange: (event, value) => addFilterParam('version', value),
           value: filters.version,
-          items: rows
-            .filter((r) => r.meta.cluster_version !== '')
-            .sort((a, b) =>
-              compareSemVer(a.meta.cluster_version, b.meta.cluster_version, 1)
-            )
-            .reverse() // should start from the latest version
-            .map((r) => ({
-              value: r.meta.cluster_version,
-            })),
+          items: uniqBy(
+            rows
+              .filter((r) => r.meta.cluster_version !== '')
+              .map((r) => ({
+                value: r.meta.cluster_version,
+              }))
+              .sort((a, b) => compareSemVer(a.value, b.value, 1))
+              .reverse(), // should start from the latest version
+            'value'
+          ),
         },
       },
     ],
