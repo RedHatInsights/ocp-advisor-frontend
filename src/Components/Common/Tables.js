@@ -70,6 +70,11 @@ export const passFiltersCluster = (cluster, filters) =>
           // clusters with at least one rule hit for any of the active risk filters
           filterValue.some((v) => cluster.hits_by_total_risk[v] > 0)
         );
+      case 'version':
+        return (
+          filterValue.length === 0 ||
+          filterValue.includes(cluster.cluster_version)
+        );
       default:
         return true;
     }
@@ -84,6 +89,7 @@ export const mapClustersToRows = (clusters) =>
           {cluster.cluster_name || cluster.cluster_id}
         </Link>
       </span>,
+      cluster.cluster_version || intl.formatMessage(messages.notAvailable),
       cluster.total_hit_count,
       cluster.hits_by_total_risk?.[4] || 0,
       cluster.hits_by_total_risk?.[3] || 0,

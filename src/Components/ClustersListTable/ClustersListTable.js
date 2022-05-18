@@ -41,6 +41,7 @@ import {
   addFilterParam as _addFilterParam,
   translateSortParams,
   updateSearchParams,
+  compareSemVer,
 } from '../Common/Tables';
 import Loading from '../Loading/Loading';
 import messages from '../../Messages';
@@ -49,6 +50,8 @@ import {
   NoMatchingClusters,
   NoRecsForClusters,
 } from '../MessageState/EmptyStates';
+import { conditionalFilterType } from '@redhat-cloud-services/frontend-components/ConditionalFilter/conditionalFilterConstants';
+import uniqBy from 'lodash/uniqBy';
 
 const ClustersListTable = ({
   query: { isError, isUninitialized, isFetching, isSuccess, data, refetch },
@@ -95,7 +98,7 @@ const ClustersListTable = ({
     if (isSuccess && !rowsFiltered) {
       setRowsFiltered(true);
     }
-  }, [data, filters.hits, filters.text]);
+  }, [data, filters]);
 
   useEffect(() => {
     if (search && filterBuilding) {
@@ -166,6 +169,27 @@ const ClustersListTable = ({
         onChange: (_event, value) => updateFilters({ ...filters, text: value }),
         value: filters.text,
         placeholder: intl.formatMessage(messages.filterByName),
+      },
+    },
+    {
+      label: intl.formatMessage(messages.version),
+      placeholder: intl.formatMessage(messages.filterByVersion),
+      type: conditionalFilterType.checkbox,
+      filterValues: {
+        id: 'version-filter',
+        key: 'version-filter',
+        onChange: (event, value) => addFilterParam('version', value),
+        value: filters.version,
+        items: uniqBy(
+          clusters
+            .filter((c) => c.cluster_version !== '')
+            .map((c) => ({
+              value: c.cluster_version,
+            }))
+            .sort((a, b) => compareSemVer(a.value, b.value, 1))
+            .reverse(), // should start from the latest version
+          'value'
+        ),
       },
     },
     {

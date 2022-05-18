@@ -220,28 +220,32 @@ export const CLUSTERS_LIST_COLUMNS = [
     transforms: [sortable, cellWidth(30)],
   },
   {
+    title: intl.formatMessage(messages.version),
+    transforms: [sortable, cellWidth(10)],
+  },
+  {
     title: intl.formatMessage(messages.recommendations),
-    transforms: [sortable, cellWidth(15)],
+    transforms: [sortable],
   },
   {
     title: intl.formatMessage(messages.critical),
-    transforms: [sortable, cellWidth(10)],
+    transforms: [sortable],
   },
   {
     title: intl.formatMessage(messages.important),
-    transforms: [sortable, cellWidth(10)],
+    transforms: [sortable],
   },
   {
     title: intl.formatMessage(messages.moderate),
-    transforms: [sortable, cellWidth(10)],
+    transforms: [sortable],
   },
   {
     title: intl.formatMessage(messages.low),
-    transforms: [sortable, cellWidth(10)],
+    transforms: [sortable],
   },
   {
     title: intl.formatMessage(messages.lastSeen),
-    transforms: [sortable, cellWidth(15)],
+    transforms: [sortable],
   },
 ];
 export const CLUSTER_NAME_CELL = 0;

@@ -29,6 +29,7 @@ export const CLUSTERS_LIST_INITIAL_STATE = {
   sortIndex: 6,
   sortDirection: 'desc',
   text: '',
+  version: [],
 };
 
 // single cluster page
