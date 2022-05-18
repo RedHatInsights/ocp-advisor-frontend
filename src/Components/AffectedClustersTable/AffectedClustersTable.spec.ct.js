@@ -96,6 +96,18 @@ describe('test data', () => {
       expect(arr).to.include('not existing cluster');
     });
   });
+  _.uniq(_.flatten(VERSION_COMBINATIONS)).map((c) =>
+    it(`has at least one cluster with version ${c}`, () => {
+      cy.wrap(_.filter(data, (it) => it.meta.cluster_version === c))
+        .its('length')
+        .should('be.gte', 1);
+    })
+  );
+  it(`has at least one cluster without a version`, () => {
+    cy.wrap(_.filter(data, (it) => it.meta.cluster_version === ''))
+      .its('length')
+      .should('be.gte', 1);
+  });
 });
 
 describe('non-empty successful affected clusters table', () => {
@@ -458,6 +470,7 @@ describe('non-empty successful affected clusters table', () => {
   });
 
   describe('filtering', () => {
+    // TODO: use filtersConf approach
     it('no chips are displayed by default', () => {
       cy.get(CHIP_GROUP).should('not.exist');
       cy.get('button').contains('Reset filters').should('not.exist');
