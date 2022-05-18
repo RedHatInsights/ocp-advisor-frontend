@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.14...v1.4.0) (2022-05-18)
+
+
+### Features
+
+* **Recommendation view:** display cluster version ([#272](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/272)) ([abb6918](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/abb69185929b81d4c8408be92bf7f4ccd56715c0))
+
 ## [1.3.14](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.13...v1.3.14) (2022-05-13)
 
 
