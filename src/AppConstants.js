@@ -260,15 +260,15 @@ export const AFFECTED_CLUSTERS_LAST_SEEN_CELL = 3;
 export const AFFECTED_CLUSTERS_COLUMNS = [
   {
     title: intl.formatMessage(messages.name),
-    transforms: [sortable, cellWidth(60)],
+    transforms: [sortable, cellWidth(70)],
   },
   {
     title: intl.formatMessage(messages.version),
-    transforms: [sortable, cellWidth(20)],
+    transforms: [sortable, cellWidth(15)],
   },
   {
     title: intl.formatMessage(messages.lastSeen),
-    transforms: [sortable, cellWidth(20)],
+    transforms: [sortable, cellWidth(15)],
   },
 ];
 // TODO: remove since unused
