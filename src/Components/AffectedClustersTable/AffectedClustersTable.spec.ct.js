@@ -717,8 +717,8 @@ describe('empty failed affected clusters table', () => {
   });
 
   it('renders table header', () => {
-    cy.get(TABLE).find('th').children().eq(0).should('have.text', 'Name');
-    cy.get(TABLE).find('th').children().eq(1).should('have.text', 'Version');
-    cy.get(TABLE).find('th').children().eq(2).should('have.text', 'Last seen');
+    TABLE_HEADERS.map((h, i) =>
+      cy.get(TABLE).find('th').eq(i).should('have.text', h)
+    );
   });
 });
