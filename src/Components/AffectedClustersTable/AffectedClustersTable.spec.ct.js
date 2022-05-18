@@ -387,7 +387,7 @@ describe('non-empty successful affected clusters table', () => {
 
   describe('sorting', () => {
     _.zip(
-      ['name', 'cluster_version', 'last_checked_at'],
+      ['name', 'meta.cluster_version', 'last_checked_at'],
       TABLE_HEADERS
     ).forEach(([category, label]) => {
       SORTING_ORDERS.forEach((order) => {
@@ -428,7 +428,7 @@ describe('non-empty successful affected clusters table', () => {
           }
 
           sortedClusters = _.map(
-            category === 'cluster_version'
+            category === 'meta.cluster_version'
               ? sortedClusters.sort(
                   (a, b) =>
                     (order === 'ascending' ? 1 : -1) *
