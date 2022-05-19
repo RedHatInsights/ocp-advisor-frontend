@@ -248,8 +248,6 @@ export const CLUSTERS_LIST_COLUMNS = [
     transforms: [sortable],
   },
 ];
-export const CLUSTER_NAME_CELL = 0;
-export const CLUSTER_LAST_CHECKED_CELL = 6;
 export const RECS_LIST_COLUMNS_KEYS = [
   '', // reserved for expand button
   'description',
@@ -323,6 +321,7 @@ export const LIKELIHOOD_LABEL_LOWER = {
 };
 export const CLUSTERS_LIST_COLUMNS_KEYS = [
   'name',
+  'version',
   'recommendations',
   'critical',
   'important',
@@ -330,3 +329,11 @@ export const CLUSTERS_LIST_COLUMNS_KEYS = [
   'low',
   'last_seen',
 ];
+export const CLUSTERS_TABLE_CELL_NAME = 0;
+export const CLUSTERS_TABLE_CELL_VERSION = 1;
+export const CLUSTERS_TABLE_CELL_RECOMMENDATIONS = 2;
+export const CLUSTERS_TABLE_CELL_CRITICAL = 3;
+export const CLUSTERS_TABLE_CELL_IMPORTANT = 4;
+export const CLUSTERS_TABLE_CELL_MODERATE = 5;
+export const CLUSTERS_TABLE_CELL_LOW = 6;
+export const CLUSTERS_TABLE_CELL_LAST_SEEN = 7;

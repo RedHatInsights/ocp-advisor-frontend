@@ -4,6 +4,9 @@ import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import isEqual from 'lodash/isEqual';
 import { useLocation } from 'react-router-dom';
+import uniqBy from 'lodash/uniqBy';
+import { valid } from 'semver';
+import { Link } from 'react-router-dom';
 
 import {
   SortByDirection,
@@ -19,7 +22,10 @@ import {
   Pagination,
   PaginationVariant,
 } from '@patternfly/react-core/dist/js/components/Pagination';
+import { Tooltip } from '@patternfly/react-core';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar/PrimaryToolbar';
+import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat';
+import { conditionalFilterType } from '@redhat-cloud-services/frontend-components/ConditionalFilter/conditionalFilterConstants';
 
 import {
   CLUSTERS_LIST_INITIAL_STATE,
@@ -28,13 +34,13 @@ import {
 import {
   CLUSTERS_LIST_COLUMNS,
   CLUSTERS_LIST_COLUMNS_KEYS,
+  CLUSTERS_TABLE_CELL_NAME,
+  CLUSTERS_TABLE_CELL_LAST_SEEN,
+  CLUSTERS_TABLE_CELL_VERSION,
   CLUSTER_FILTER_CATEGORIES,
-  CLUSTER_LAST_CHECKED_CELL,
-  CLUSTER_NAME_CELL,
 } from '../../AppConstants';
 import {
   buildFilterChips,
-  mapClustersToRows,
   paramParser,
   passFiltersCluster,
   removeFilterParam as _removeFilterParam,
@@ -50,8 +56,6 @@ import {
   NoMatchingClusters,
   NoRecsForClusters,
 } from '../MessageState/EmptyStates';
-import { conditionalFilterType } from '@redhat-cloud-services/frontend-components/ConditionalFilter/conditionalFilterConstants';
-import uniqBy from 'lodash/uniqBy';
 
 const ClustersListTable = ({
   query: { isError, isUninitialized, isFetching, isSuccess, data, refetch },
@@ -82,19 +86,11 @@ const ClustersListTable = ({
     _addFilterParam(filters, updateFilters, param, values);
 
   useEffect(() => {
-    setDisplayedRows(
-      buildDisplayedRows(filteredRows, filters.sortIndex, filters.sortDirection)
-    );
-  }, [
-    filteredRows,
-    filters.sortIndex,
-    filters.sortDirection,
-    filters.limit,
-    filters.offset,
-  ]);
+    setDisplayedRows(buildDisplayedRows(filteredRows));
+  }, [filteredRows, filters.limit, filters.offset]);
 
   useEffect(() => {
-    setFilteredRows(buildFilteredRows(clusters, filters));
+    setFilteredRows(buildFilteredRows(clusters));
     if (isSuccess && !rowsFiltered) {
       setRowsFiltered(true);
     }
@@ -129,37 +125,90 @@ const ClustersListTable = ({
     }
   }, [filters, filterBuilding]);
 
-  const buildFilteredRows = (allRows, filters) =>
-    mapClustersToRows(
-      allRows.filter((cluster) => passFiltersCluster(cluster, filters))
-    );
+  const buildFilteredRows = (items) => {
+    const filtered = items.filter((it) => {
+      return passFiltersCluster(it, filters);
+    });
+    const mapped = filtered.map((it, index) => {
+      if (it.cluster_version !== '' && !valid(it.cluster_version)) {
+        console.error(
+          `Cluster version ${it.cluster_version} has invalid format!`
+        );
+      }
 
-  const buildDisplayedRows = (rows, index, direction) => {
-    const sorted = [...rows];
-    index !== -1 &&
-      sorted.sort((a, b) => {
-        let fst, snd;
-        const d = direction === SortByDirection.asc ? 1 : -1;
-        switch (index) {
-          case CLUSTER_NAME_CELL:
-            fst = a.cluster.cluster_name || a.cluster.cluster_id;
-            snd = b.cluster.cluster_name || b.cluster.cluster_id;
-            return fst.localeCompare(snd) ? fst.localeCompare(snd) * d : 0;
-          case CLUSTER_LAST_CHECKED_CELL:
-            fst = new Date(a.cluster.last_checked_at || 0);
-            snd = new Date(b.cluster.last_checked_at || 0);
-            return fst > snd ? d : snd > fst ? -d : 0;
-          default:
-            fst = a.cells[index];
-            snd = b.cells[index];
-            return fst > snd ? d : snd > fst ? -d : 0;
-        }
-      });
-    return sorted.slice(
+      return {
+        entity: it,
+        cells: [
+          <span key={index}>
+            <Link to={`clusters/${it.cluster_id}`}>
+              {it.cluster_name || it.cluster_id}
+            </Link>
+          </span>,
+          it.cluster_version || intl.formatMessage(messages.notAvailable),
+          it.total_hit_count,
+          it.hits_by_total_risk?.[4] || 0,
+          it.hits_by_total_risk?.[3] || 0,
+          it.hits_by_total_risk?.[2] || 0,
+          it.hits_by_total_risk?.[1] || 0,
+          <span key={index}>
+            {it.last_checked_at ? (
+              <DateFormat
+                extraTitle={`${intl.formatMessage(messages.lastSeen)}: `}
+                date={it.last_checked_at}
+                variant="relative"
+              />
+            ) : (
+              <Tooltip
+                key={index}
+                content={
+                  <span>
+                    {intl.formatMessage(messages.lastSeen) + ': '}
+                    {intl.formatMessage(messages.nA)}
+                  </span>
+                }
+              >
+                <span>{intl.formatMessage(messages.nA)}</span>
+              </Tooltip>
+            )}
+          </span>,
+        ],
+      };
+    });
+    const sorted =
+      filters.sortIndex === -1
+        ? mapped
+        : mapped.sort((a, b) => {
+            let fst, snd;
+            const d = filters.sortDirection === SortByDirection.asc ? 1 : -1;
+            switch (filters.sortIndex) {
+              case CLUSTERS_TABLE_CELL_NAME:
+                fst = a.entity.cluster_name || a.entity.cluster_id;
+                snd = b.entity.cluster_name || b.entity.cluster_id;
+                return fst.localeCompare(snd) ? fst.localeCompare(snd) * d : 0;
+              case CLUSTERS_TABLE_CELL_VERSION:
+                return compareSemVer(
+                  a.entity.cluster_version || '0.0.0',
+                  b.entity.cluster_version || '0.0.0',
+                  d
+                );
+              case CLUSTERS_TABLE_CELL_LAST_SEEN:
+                fst = new Date(a.entity.last_checked_at || 0);
+                snd = new Date(b.entity.last_checked_at || 0);
+                return fst > snd ? d : snd > fst ? -d : 0;
+              default:
+                fst = a.cells[filters.sortIndex];
+                snd = b.cells[filters.sortIndex];
+                return fst > snd ? d : snd > fst ? -d : 0;
+            }
+          });
+    return sorted;
+  };
+
+  const buildDisplayedRows = (items) =>
+    items.slice(
       filters.limit * (page - 1),
       filters.limit * (page - 1) + filters.limit
     );
-  };
 
   const filterConfigItems = [
     {

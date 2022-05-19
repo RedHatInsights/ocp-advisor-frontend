@@ -80,45 +80,6 @@ export const passFiltersCluster = (cluster, filters) =>
     }
   });
 
-export const mapClustersToRows = (clusters) =>
-  clusters.map((cluster, index) => ({
-    cluster,
-    cells: [
-      <span key={index}>
-        <Link to={`clusters/${cluster.cluster_id}`}>
-          {cluster.cluster_name || cluster.cluster_id}
-        </Link>
-      </span>,
-      cluster.cluster_version || intl.formatMessage(messages.notAvailable),
-      cluster.total_hit_count,
-      cluster.hits_by_total_risk?.[4] || 0,
-      cluster.hits_by_total_risk?.[3] || 0,
-      cluster.hits_by_total_risk?.[2] || 0,
-      cluster.hits_by_total_risk?.[1] || 0,
-      <span key={index}>
-        {cluster.last_checked_at ? (
-          <DateFormat
-            extraTitle={`${intl.formatMessage(messages.lastSeen)}: `}
-            date={cluster.last_checked_at}
-            variant="relative"
-          />
-        ) : (
-          <Tooltip
-            key={index}
-            content={
-              <span>
-                {intl.formatMessage(messages.lastSeen) + ': '}
-                {intl.formatMessage(messages.nA)}
-              </span>
-            }
-          >
-            <span>{intl.formatMessage(messages.nA)}</span>
-          </Tooltip>
-        )}
-      </span>,
-    ],
-  }));
-
 const pruneFilters = (localFilters, filterCategories) => {
   const prunedFilters = Object.entries(localFilters || {});
   return prunedFilters.reduce((arr, it) => {
