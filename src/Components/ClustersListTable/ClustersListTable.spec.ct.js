@@ -319,7 +319,7 @@ describe('clusters list table', () => {
     });
   });
 
-  describe.only('filtering', () => {
+  describe('filtering', () => {
     // TODO improve filtering tests
     // TODO check that empty table is displayed with appropriate filters
 
