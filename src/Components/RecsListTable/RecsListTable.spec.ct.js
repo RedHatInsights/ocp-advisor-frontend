@@ -499,13 +499,7 @@ describe('successful non-empty recommendations list table', () => {
             .then(($els) => {
               return _.map(Cypress.$.makeArray($els), 'innerText');
             })
-            .should(
-              'deep.equal',
-              sortedData.slice(
-                0,
-                Math.min(DEFAULT_ROW_COUNT, sortedData.length)
-              )
-            );
+            .should('deep.equal', sortedData.slice(0, DEFAULT_ROW_COUNT));
         });
       });
     });
@@ -588,13 +582,7 @@ describe('successful non-empty recommendations list table', () => {
                     (it) => it.replace(' \nDisabled', '')
                   );
                 })
-                .should(
-                  'deep.equal',
-                  sortedNames.slice(
-                    0,
-                    Math.min(DEFAULT_ROW_COUNT, sortedNames.length)
-                  )
-                );
+                .should('deep.equal', sortedNames.slice(0, DEFAULT_ROW_COUNT));
             }
             // validate chips and url params
             cy.get(CHIP_GROUP)
@@ -657,13 +645,7 @@ describe('successful non-empty recommendations list table', () => {
                   (it) => it.replace(' \nDisabled', '')
                 );
               })
-              .should(
-                'deep.equal',
-                sortedNames.slice(
-                  0,
-                  Math.min(DEFAULT_ROW_COUNT, sortedNames.length)
-                )
-              );
+              .should('deep.equal', sortedNames.slice(0, DEFAULT_ROW_COUNT));
           }
           // validate chips and url params
           cy.get(CHIP_GROUP)

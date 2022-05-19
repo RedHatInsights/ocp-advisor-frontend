@@ -359,13 +359,7 @@ describe('clusters list table', () => {
             .then(($els) => {
               return _.map(Cypress.$.makeArray($els), 'innerText');
             })
-            .should(
-              'deep.equal',
-              sortedNames.slice(
-                0,
-                Math.min(DEFAULT_ROW_COUNT, sortedNames.length)
-              )
-            );
+            .should('deep.equal', sortedNames.slice(0, DEFAULT_ROW_COUNT));
         });
       });
     });
@@ -419,13 +413,7 @@ describe('clusters list table', () => {
                 .then(($els) => {
                   return _.map(Cypress.$.makeArray($els), 'innerText');
                 })
-                .should(
-                  'deep.equal',
-                  sortedNames.slice(
-                    0,
-                    Math.min(DEFAULT_ROW_COUNT, sortedNames.length)
-                  )
-                );
+                .should('deep.equal', sortedNames.slice(0, DEFAULT_ROW_COUNT));
             }
             // validate chips and url params
             cy.get(CHIP_GROUP)
@@ -481,13 +469,7 @@ describe('clusters list table', () => {
               .then(($els) => {
                 return _.map(Cypress.$.makeArray($els), 'innerText');
               })
-              .should(
-                'deep.equal',
-                sortedNames.slice(
-                  0,
-                  Math.min(DEFAULT_ROW_COUNT, sortedNames.length)
-                )
-              );
+              .should('deep.equal', sortedNames.slice(0, DEFAULT_ROW_COUNT));
           }
           // validate chips and url params
           cy.get(CHIP_GROUP)
