@@ -150,10 +150,7 @@ describe('non-empty successful affected clusters table', () => {
       .then(($els) => {
         return _.map(Cypress.$.makeArray($els), 'innerText');
       })
-      .should(
-        'deep.equal',
-        names.slice(0, Math.min(DEFAULT_ROW_COUNT, names.length))
-      );
+      .should('deep.equal', names.slice(0, DEFAULT_ROW_COUNT));
   });
 
   it('names of rows are links', () => {
@@ -457,13 +454,7 @@ describe('non-empty successful affected clusters table', () => {
             .then(($els) => {
               return _.map(Cypress.$.makeArray($els), 'innerText');
             })
-            .should(
-              'deep.equal',
-              sortedClusters.slice(
-                0,
-                Math.min(DEFAULT_ROW_COUNT, sortedClusters.length)
-              )
-            );
+            .should('deep.equal', sortedClusters.slice(0, DEFAULT_ROW_COUNT));
         });
       });
     });
