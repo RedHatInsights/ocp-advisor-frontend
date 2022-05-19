@@ -15,6 +15,9 @@ import {
   TBODY,
   TOOLBAR_FILTER,
   TABLE,
+  DROPDOWN_TOGGLE,
+  DROPDOWN_ITEM,
+  ouiaId,
 } from '../../../cypress/utils/components';
 import {
   DEFAULT_ROW_COUNT,
@@ -34,6 +37,8 @@ import {
   checkPaginationValues,
   changePagination,
 } from '../../../cypress/utils/pagination';
+import { compare } from 'semver';
+import { VERSION_COMBINATIONS } from '../../../cypress/utils/filters';
 
 // add property name to clusters
 let data = _.cloneDeep(clusters['data']);
@@ -98,6 +103,18 @@ describe('data', () => {
     cy.wrap(
       _.filter(data, (it) => Object.keys(it['hits_by_total_risk']).length)
     )
+      .its('length')
+      .should('be.gte', 1);
+  });
+  _.uniq(_.flatten(VERSION_COMBINATIONS)).map((c) =>
+    it(`has at least one cluster with version ${c}`, () => {
+      cy.wrap(_.filter(data, (it) => it.cluster_version === c))
+        .its('length')
+        .should('be.gte', 1);
+    })
+  );
+  it(`has at least one cluster without a version`, () => {
+    cy.wrap(_.filter(data, (it) => it.cluster_version === ''))
       .its('length')
       .should('be.gte', 1);
   });
@@ -224,6 +241,7 @@ describe('clusters list table', () => {
     _.zip(
       [
         'name',
+        'cluster_version',
         'total_hit_count',
         'hits_by_total_risk.4',
         'hits_by_total_risk.3',
@@ -264,14 +282,25 @@ describe('clusters list table', () => {
             category = (it) => it.last_checked_at || '1970-01-01T01:00:00.001Z';
           }
 
+          cy.log(data, clusters);
           // add property name to clusters
           let sortedNames = _.map(
             // all tables must preserve original ordering
-            _.orderBy(
-              _.cloneDeep(data),
-              [category],
-              [order === 'ascending' ? 'asc' : 'desc']
-            ),
+            category === 'cluster_version'
+              ? // use ... spread operator because sort modifies the array on place
+                [...data].sort(
+                  (a, b) =>
+                    (order === 'ascending' ? 1 : -1) *
+                    compare(
+                      a.cluster_version || '0.0.0',
+                      b.cluster_version || '0.0.0'
+                    )
+                )
+              : _.orderBy(
+                  _.cloneDeep(data),
+                  [category],
+                  [order === 'ascending' ? 'asc' : 'desc']
+                ),
             'name'
           );
           cy.get(`td[data-label="Name"]`)
@@ -290,7 +319,7 @@ describe('clusters list table', () => {
     });
   });
 
-  describe('filtering', () => {
+  describe.only('filtering', () => {
     // TODO improve filtering tests
     // TODO check that empty table is displayed with appropriate filters
 
@@ -303,7 +332,7 @@ describe('clusters list table', () => {
       cy.get(TOOLBAR_FILTER)
         .find('.pf-c-dropdown__menu')
         .find('li')
-        .eq(1)
+        .eq(2)
         .click();
       cy.get(TOOLBAR_FILTER).find('.pf-c-select__toggle').click();
       // remove "All clusters" filter value
@@ -341,7 +370,7 @@ describe('clusters list table', () => {
       cy.get(TOOLBAR_FILTER)
         .find('.pf-c-dropdown__menu')
         .find('li')
-        .eq(1)
+        .eq(2)
         .click();
       cy.get(TOOLBAR_FILTER).find('.pf-c-select__toggle').click();
       // unflag "All clusters"
@@ -358,9 +387,9 @@ describe('clusters list table', () => {
         .eq(1)
         .click()
         .then(() => expect(window.location.search).to.contain(`hits=4`));
-      cy.get('.pf-c-table__sort').eq(2).click();
+      cy.get('.pf-c-table__sort').eq(3).click();
       cy.getFirstRow().find('td[data-label=Critical]').should('have.text', 1);
-      cy.get('.pf-c-table__sort').eq(2).click();
+      cy.get('.pf-c-table__sort').eq(3).click();
       cy.getFirstRow().find('td[data-label=Critical]').should('have.text', 4);
     });
 
@@ -369,7 +398,7 @@ describe('clusters list table', () => {
       cy.get(TOOLBAR_FILTER)
         .find('.pf-c-dropdown__menu')
         .find('li')
-        .eq(1)
+        .eq(2)
         .click();
       cy.get(TOOLBAR_FILTER).find('.pf-c-select__toggle').click();
       cy.get(TOOLBAR_FILTER)
@@ -384,9 +413,9 @@ describe('clusters list table', () => {
         .eq(2)
         .click()
         .then(() => expect(window.location.search).to.contain(`hits=3`));
-      cy.get('.pf-c-table__sort').eq(3).click();
+      cy.get('.pf-c-table__sort').eq(4).click();
       cy.getFirstRow().find('td[data-label=Important]').should('have.text', 1);
-      cy.get('.pf-c-table__sort').eq(3).click();
+      cy.get('.pf-c-table__sort').eq(4).click();
       cy.getFirstRow().find('td[data-label=Important]').should('have.text', 9);
     });
 
@@ -395,7 +424,7 @@ describe('clusters list table', () => {
       cy.get(TOOLBAR_FILTER)
         .find('.pf-c-dropdown__menu')
         .find('li')
-        .eq(1)
+        .eq(2)
         .click();
       cy.get(TOOLBAR_FILTER).find('.pf-c-select__toggle').click();
       cy.get(TOOLBAR_FILTER)
@@ -410,9 +439,9 @@ describe('clusters list table', () => {
         .eq(3)
         .click()
         .then(() => expect(window.location.search).to.contain(`hits=2`));
-      cy.get('.pf-c-table__sort').eq(4).click();
+      cy.get('.pf-c-table__sort').eq(5).click();
       cy.getFirstRow().find('td[data-label=Moderate]').should('have.text', 3);
-      cy.get('.pf-c-table__sort').eq(4).click();
+      cy.get('.pf-c-table__sort').eq(5).click();
       cy.getFirstRow().find('td[data-label=Moderate]').should('have.text', 19);
     });
 
@@ -421,7 +450,7 @@ describe('clusters list table', () => {
       cy.get(TOOLBAR_FILTER)
         .find('.pf-c-dropdown__menu')
         .find('li')
-        .eq(1)
+        .eq(2)
         .click();
       cy.get(TOOLBAR_FILTER).find('.pf-c-select__toggle').click();
       cy.get(TOOLBAR_FILTER)
@@ -436,9 +465,9 @@ describe('clusters list table', () => {
         .eq(4)
         .click()
         .then(() => expect(window.location.search).to.contain(`hits=1`));
-      cy.get('.pf-c-table__sort').eq(5).click();
+      cy.get('.pf-c-table__sort').eq(6).click();
       cy.getFirstRow().find('td[data-label=Low]').should('have.text', 1);
-      cy.get('.pf-c-table__sort').eq(5).click();
+      cy.get('.pf-c-table__sort').eq(6).click();
       cy.getFirstRow().find('td[data-label=Low]').should('have.text', 14);
     });
 
@@ -455,6 +484,38 @@ describe('clusters list table', () => {
         .each((r) => {
           cy.wrap(r).contains('cc');
         });
+    });
+
+    VERSION_COMBINATIONS.forEach((vs) => {
+      it(`can filter by versions ${vs}`, () => {
+        const filtered = namedClustersDefaultSorting.filter((it) =>
+          vs.includes(it.cluster_version)
+        );
+        const names = _.map(filtered, (it) => it.cluster_name || it.cluster_id);
+
+        cy.get(TOOLBAR_FILTER).find(DROPDOWN_TOGGLE).click();
+        cy.get(TOOLBAR_FILTER).find(DROPDOWN_ITEM).eq(1).click();
+        // open the versions dropdown
+        cy.get(ouiaId('Filter by version')).click();
+        vs.forEach((v) =>
+          cy
+            .get('.pf-c-select__menu')
+            .find('.pf-c-select__menu-item')
+            .contains(v)
+            .click()
+        );
+        // close the dropdown
+        cy.get(ouiaId('Filter by version')).click();
+        checkRowCounts(names.length);
+        cy.get(`td[data-label="Name"]`)
+          .then(($els) => {
+            return _.map(Cypress.$.makeArray($els), 'innerText');
+          })
+          .should(
+            'deep.equal',
+            names.slice(0, Math.min(DEFAULT_ROW_COUNT, names.length))
+          );
+      });
     });
   });
 
