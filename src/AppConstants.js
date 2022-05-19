@@ -255,17 +255,23 @@ export const RECS_LIST_COLUMNS_KEYS = [
   'impacted_clusters_count',
 ];
 export const AFFECTED_CLUSTERS_NAME_CELL = 1;
-export const AFFECTED_CLUSTERS_LAST_SEEN = 2;
+export const AFFECTED_CLUSTERS_VERSION_CELL = 2;
+export const AFFECTED_CLUSTERS_LAST_SEEN_CELL = 3;
 export const AFFECTED_CLUSTERS_COLUMNS = [
   {
     title: intl.formatMessage(messages.name),
-    transforms: [sortable, cellWidth(80)],
+    transforms: [sortable, cellWidth(70)],
+  },
+  {
+    title: intl.formatMessage(messages.version),
+    transforms: [sortable, cellWidth(15)],
   },
   {
     title: intl.formatMessage(messages.lastSeen),
-    transforms: [sortable, cellWidth(20)],
+    transforms: [sortable, cellWidth(15)],
   },
 ];
+// TODO: remove since unused
 export const DEBOUNCE_DELAY = 600;
 export const CLUSTER_RULES_COLUMNS_KEYS = [
   '', // reserved for expand button

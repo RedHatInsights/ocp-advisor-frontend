@@ -1,3 +1,24 @@
+# [1.4.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.14...v1.4.0) (2022-05-18)
+
+
+### Features
+
+* **Recommendation view:** display cluster version ([#272](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/272)) ([abb6918](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/abb69185929b81d4c8408be92bf7f4ccd56715c0))
+
+## [1.3.14](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.13...v1.3.14) (2022-05-13)
+
+
+### Bug Fixes
+
+* **RecsListTable:** Fixing the category sorting ([#263](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/263)) ([41a5c09](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/41a5c09af34faa84f5af43763e99804f926751b1))
+
+## [1.3.13](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.12...v1.3.13) (2022-05-12)
+
+
+### Bug Fixes
+
+* update FEC config library to disable dot rule ([#264](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/264)) ([24f92a1](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/24f92a1d656c26bd60bccb95dca187162670aeaf))
+
 ## [1.3.12](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.11...v1.3.12) (2022-05-09)
 
 

@@ -54,6 +54,8 @@ import {
   paramParser,
   translateSortParams,
   updateSearchParams,
+  removeFilterParam as _removeFilterParam,
+  addFilterParam as _addFilterParam,
 } from '../Common/Tables';
 import DisableRule from '../Modals/DisableRule';
 import { Delete } from '../../Utilities/Api';
@@ -91,6 +93,12 @@ const RecsListTable = ({ query }) => {
   const loadingState = isUninitialized || isFetching || !rowsFiltered;
   const errorState = isError || (isSuccess && recs.length === 0);
   const successState = isSuccess && recs.length > 0;
+
+  const removeFilterParam = (param) =>
+    _removeFilterParam(filters, updateFilters, param);
+
+  const addFilterParam = (param, values) =>
+    _addFilterParam(filters, updateFilters, param, values);
 
   useEffect(() => {
     setDisplayedRows(
@@ -151,15 +159,7 @@ const RecsListTable = ({ query }) => {
             {
               title: (
                 <span key={key}>
-                  <Link
-                    key={key}
-                    // https://github.com/RedHatInsights/ocp-advisor-frontend/issues/29
-                    to={`/recommendations/${
-                      process.env.NODE_ENV === 'development'
-                        ? value.rule_id.replaceAll('.', '%2E')
-                        : value.rule_id
-                    }`}
-                  >
+                  <Link key={key} to={`/recommendations/${value.rule_id}`}>
                     {' '}
                     {value?.description || value?.rule_id}{' '}
                   </Link>
@@ -247,15 +247,18 @@ const RecsListTable = ({ query }) => {
         },
       ]);
   };
-
+  /* the category sorting compares only the first element of the array.
+   Could be refactored later when we assign a priority numbers to each of the category
+   and sort them in the array based on the priority.
+*/
   const buildDisplayedRows = (rows, index, direction) => {
     const sortingRows = [...rows].sort((firstItem, secondItem) => {
       const d = direction === SortByDirection.asc ? 1 : -1;
       const fst = firstItem[0].rule[RECS_LIST_COLUMNS_KEYS[index]];
       const snd = secondItem[0].rule[RECS_LIST_COLUMNS_KEYS[index]];
       if (index === 3) {
-        return extractCategories(fst)[0].localeCompare(
-          extractCategories(snd)[0]
+        return (
+          d * extractCategories(fst)[0].localeCompare(extractCategories(snd)[0])
         );
       }
       return fst > snd ? d : snd > fst ? -d : 0;
@@ -272,18 +275,6 @@ const RecsListTable = ({ query }) => {
       });
   };
 
-  const removeFilterParam = (param) => {
-    const filter = { ...filters, offset: 0 };
-    delete filter[param];
-    updateFilters({ ...filter, ...(param === 'text' ? { text: '' } : {}) });
-  };
-
-  // TODO: update URL when filters changed
-  const addFilterParam = (param, values) =>
-    values.length > 0
-      ? updateFilters({ ...filters, offset: 0, ...{ [param]: values } })
-      : removeFilterParam(param);
-
   const toggleRulesDisabled = (rule_status) =>
     updateFilters({
       ...filters,
@@ -299,7 +290,7 @@ const RecsListTable = ({ query }) => {
         onChange: (_event, value) =>
           updateFilters({ ...filters, offset: 0, text: value }),
         value: searchText,
-        placeholder: intl.formatMessage(messages.filterBy),
+        placeholder: intl.formatMessage(messages.filterByName),
       },
     },
     {
@@ -446,6 +437,7 @@ const RecsListTable = ({ query }) => {
       : [];
   };
 
+  // TODO: use the function from Common/Tables.js
   const buildFilterChips = () => {
     const localFilters = { ...filters };
     delete localFilters.sortIndex;

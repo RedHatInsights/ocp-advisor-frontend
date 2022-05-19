@@ -14,6 +14,7 @@ import {
   CHIP,
   CHIP_GROUP,
   PAGINATION,
+  TABLE,
 } from '../../../cypress/utils/components';
 import {
   hasChip,
@@ -34,11 +35,12 @@ import {
   itemsPerPage,
 } from '../../../cypress/utils/pagination';
 import { TOTAL_RISK, CATEGORIES } from '../../../cypress/utils/globals';
-import { RECS_LIST_COLUMNS } from '../../AppConstants';
+import { RECS_LIST_COLUMNS, RULE_CATEGORIES } from '../../AppConstants';
 import {
   checkRowCounts,
   columnName2UrlParam,
   checkTableHeaders,
+  tableIsSortedBy,
 } from '../../../cypress/utils/table';
 import { SORTING_ORDERS } from '../../../cypress/utils/globals';
 // TODO make more use of ../../../cypress/utils/components
@@ -158,7 +160,7 @@ const DEFAULT_DISPLAYED_SIZE = Math.min(
 const filterCombos = [{ impacting: ['1 or more'] }];
 
 // actions
-Cypress.Commands.add('getAllRows', () => cy.get(ROOT).find(ROW));
+Cypress.Commands.add('getAllRows', () => cy.get(TABLE).find(ROW));
 Cypress.Commands.add('removeStatusFilter', () => {
   cy.get(CHIP)
     .contains('Enabled')
@@ -183,7 +185,7 @@ Cypress.Commands.add('getColumns', () => {
   /* patternfly/react-table-4.71.16, for some reason, renders extra empty `th` container;
        thus, it is necessary to look at the additional `scope` attr to distinguish between visible columns
   */
-  cy.get(ROOT).find('table > thead > tr > th[scope="col"]');
+  cy.get(`${TABLE} > thead > tr > th[scope="col"]`);
 });
 Cypress.Commands.add('sortByCol', (colIndex) => {
   cy.getColumns()
@@ -302,7 +304,7 @@ describe('successful non-empty recommendations list table', () => {
   it('renders table', () => {
     cy.get(ROOT).within(() => {
       cy.get(TOOLBAR).should('have.length', 1);
-      cy.get('table').should('have.length', 1);
+      cy.get(TABLE).should('have.length', 1);
     });
   });
 
@@ -379,9 +381,7 @@ describe('successful non-empty recommendations list table', () => {
 
     it('sort by total risk', () => {
       const column = 'Total risk';
-      cy.get(ROOT)
-        .find(`th[data-label="${column}"]`)
-        .should('have.class', 'pf-c-table__sort pf-m-selected');
+      tableIsSortedBy(column);
       expect(window.location.search).to.contain(
         `sort=-${columnName2UrlParam(column)}`
       );
@@ -453,10 +453,15 @@ describe('successful non-empty recommendations list table', () => {
   });
 
   describe('sorting', () => {
-    // TODO implement category sorting
     _.zip(
-      ['description', 'publish_date', 'total_risk', 'impacted_clusters_count'],
-      ['Name', 'Modified', 'Total risk', 'Clusters'] // TODO use TABLE_HEADERS
+      [
+        'description',
+        'publish_date',
+        'tags',
+        'total_risk',
+        'impacted_clusters_count',
+      ],
+      TABLE_HEADERS
     ).forEach(([category, label]) => {
       SORTING_ORDERS.forEach((order) => {
         it(`${order} by ${label}`, () => {
@@ -484,13 +489,21 @@ describe('successful non-empty recommendations list table', () => {
                 )
               );
           }
-
+          let orderIteratee = category;
+          if (category === 'tags') {
+            orderIteratee = (it) =>
+              _.first(
+                it.tags.filter((string) =>
+                  Object.keys(RULE_CATEGORIES).includes(string)
+                )
+              );
+          }
           // add property name to clusters
           let sortedData = _.map(
             // all tables must preserve original ordering
             _.orderBy(
               _.cloneDeep(filterData(DEFAULT_FILTERS)),
-              [category],
+              [orderIteratee],
               [order === 'ascending' ? 'asc' : 'desc']
             ),
             'description'
@@ -726,7 +739,7 @@ describe('successful non-empty recommendations list table', () => {
     // TODO make test data independent
     // TODO check also non-enabled by default rules
     it('each row has a kebab', () => {
-      cy.get(ROOT)
+      cy.get(TABLE)
         .find('tbody[role=rowgroup] .pf-c-dropdown__toggle')
         .should('have.length', 4);
     });
@@ -756,7 +769,7 @@ describe('successful non-empty recommendations list table', () => {
   it('rule content is rendered', () => {
     // expand all rules
     cy.get('.pf-c-toolbar__expand-all-icon > svg').click();
-    cy.get(ROOT)
+    cy.get(TABLE)
       .find('.pf-c-table__expandable-row.pf-m-expanded')
       .each((el) => {
         // contains description
