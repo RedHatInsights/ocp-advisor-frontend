@@ -15,9 +15,6 @@ import {
   TBODY,
   CHIP,
   TABLE,
-  DROPDOWN_TOGGLE,
-  DROPDOWN_ITEM,
-  ouiaId,
 } from '../../../cypress/utils/components';
 import {
   DEFAULT_ROW_COUNT,
@@ -80,6 +77,18 @@ const TOTAL_RISK_MAP = _.cloneDeep(TOTAL_RISK);
 TOTAL_RISK_MAP['All clusters'] = 'all';
 
 const filtersConf = {
+  version: {
+    selectorText: 'Version',
+    values: Array.from(
+      cumulativeCombinations(_.uniq(_.flatten(VERSION_COMBINATIONS)))
+    ),
+    type: 'checkbox',
+    filterFunc: (it, value) => {
+      return value.includes(it.cluster_version);
+    },
+    urlParam: 'version',
+    urlValue: (it) => encodeURIComponent(String(it)),
+  },
   name: {
     selectorText: 'Name',
     values: ['Foo', 'Foo Bar', 'Not existing cluster'],
@@ -176,6 +185,7 @@ describe('data', () => {
     cy.wrap(_.filter(data, (it) => it.cluster_version === ''))
       .its('length')
       .should('be.gte', 1);
+  });
   it('at least two clusters match foo for their names', () => {
     cy.wrap(filterData(data, { name: 'foo' }))
       .its('length')
@@ -416,7 +426,7 @@ describe('clusters list table', () => {
       // TODO headers are displayed
     });
 
-    describe('single filter', () => {
+    describe.only('single filter', () => {
       Object.entries(filtersConf).forEach(([k, v]) => {
         v.values.forEach((filterValues) => {
           it(`${k}: ${filterValues}`, () => {
@@ -528,38 +538,6 @@ describe('clusters list table', () => {
           }
           cy.get('button').contains('Reset filters').should('exist');
         });
-      });
-    });
-
-    VERSION_COMBINATIONS.forEach((vs) => {
-      it(`can filter by versions ${vs}`, () => {
-        const filtered = namedClustersDefaultSorting.filter((it) =>
-          vs.includes(it.cluster_version)
-        );
-        const names = _.map(filtered, (it) => it.cluster_name || it.cluster_id);
-
-        cy.get(TOOLBAR_FILTER).find(DROPDOWN_TOGGLE).click();
-        cy.get(TOOLBAR_FILTER).find(DROPDOWN_ITEM).eq(1).click();
-        // open the versions dropdown
-        cy.get(ouiaId('Filter by version')).click();
-        vs.forEach((v) =>
-          cy
-            .get('.pf-c-select__menu')
-            .find('.pf-c-select__menu-item')
-            .contains(v)
-            .click()
-        );
-        // close the dropdown
-        cy.get(ouiaId('Filter by version')).click();
-        checkRowCounts(names.length);
-        cy.get(`td[data-label="Name"]`)
-          .then(($els) => {
-            return _.map(Cypress.$.makeArray($els), 'innerText');
-          })
-          .should(
-            'deep.equal',
-            names.slice(0, Math.min(DEFAULT_ROW_COUNT, names.length))
-          );
       });
     });
   });
