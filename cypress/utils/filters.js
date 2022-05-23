@@ -59,8 +59,18 @@ function applyFilters(filters, filtersConf) {
           .find('input[type=checkbox]')
           .check({ force: true });
       });
+      // close dropdown again
+      cy.get(FILTER_TOGGLE).click({ force: true });
+    } else if (item.type == 'radio') {
+      cy.get(FILTER_TOGGLE).click({ force: true });
+      cy.get('ul[class=pf-c-select__menu]')
+        .find('label')
+        .contains(value)
+        .parent()
+        .find('input[type=radio]')
+        .check({ force: true });
     } else {
-      throw `${it.type} not recognized`;
+      throw `${item.type} not recognized`;
     }
   }
 }
@@ -101,4 +111,25 @@ function filter(conf, data, filters) {
   return filteredData;
 }
 
-export { applyFilters, urlParamConvert, hasChip, filter, VERSION_COMBINATIONS };
+function removeAllChips() {
+  // FIXME does not work: CCXDEV-8090
+  // cy.get(CHIP_GROUP)
+  //   .find(CHIP)
+  //   .ouiaId('close', 'button')
+  //   .each(($el) => cy.wrap($el).click());
+  cy.get(CHIP_GROUP)
+    .find(CHIP)
+    .ouiaId('close', 'button')
+    .each(() => {
+      cy.get(CHIP_GROUP).find(CHIP).ouiaId('close', 'button').eq(0).click();
+    });
+}
+
+export {
+  applyFilters,
+  urlParamConvert,
+  hasChip,
+  filter,
+  removeAllChips,
+  VERSION_COMBINATIONS,
+};

@@ -115,7 +115,7 @@ describe('test data', () => {
       })
     ).should('have.length', 0);
   });
-  it('the first combo filter has less rules hitting that the default at least one', () => {
+  it('the first combo filter has less rules hitting that the default and at least one', () => {
     cy.wrap(filterData(data, filterCombos[0]))
       .its('length')
       .should('be.gte', 1)
@@ -325,7 +325,7 @@ describe('cluster rules table', () => {
           } else {
             cy.get(`td[data-label="Description"]`)
               .then(($els) => {
-                return _.map(Cypress.$.makeArray($els), 'innerText').sort();
+                return _.map(Cypress.$.makeArray($els), 'innerText');
               })
               .should('deep.equal', sortedDescriptions);
           }

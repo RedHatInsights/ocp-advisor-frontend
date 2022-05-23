@@ -40,7 +40,7 @@
     },
     {
       "cluster_id": "b93b11ed-1fa6-4b23-a7f5-2557d4521d20",
-      "cluster_name": "",
+      "cluster_name": "foo bar",
       "last_checked_at": "2020-08-12T19:20:20.482Z",
       "total_hit_count": 25,
       "hits_by_total_risk": {
@@ -325,7 +325,7 @@
     },
     {
       "cluster_id": "707e82e4-34f3-4ad8-8814-28cadd718e1a",
-      "cluster_name": "",
+      "cluster_name": "foo baz",
       "last_checked_at": "2020-05-15T23:10:49.825Z",
       "total_hit_count": 41,
       "hits_by_total_risk": {
