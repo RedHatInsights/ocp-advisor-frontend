@@ -221,11 +221,11 @@ export const CLUSTERS_LIST_COLUMNS = [
   },
   {
     title: intl.formatMessage(messages.version),
-    transforms: [sortable, cellWidth(10)],
+    transforms: [sortable],
   },
   {
     title: intl.formatMessage(messages.recommendations),
-    transforms: [sortable],
+    transforms: [sortable, cellWidth(15)],
   },
   {
     title: intl.formatMessage(messages.critical),
