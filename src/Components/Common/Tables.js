@@ -1,19 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import capitalize from 'lodash/capitalize';
 import cloneDeep from 'lodash/cloneDeep';
+import { useEffect, useState } from 'react';
 import { compare } from 'semver';
-
-import { Tooltip } from '@patternfly/react-core/dist/js/components/Tooltip';
-import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
-
 import {
   CLUSTER_FILTER_CATEGORIES,
   FILTER_CATEGORIES,
-  intl,
   RULE_CATEGORIES,
 } from '../../AppConstants';
-import messages from '../../Messages';
 
 export const passFilters = (rule, filters) =>
   Object.entries(filters).every(([filterKey, filterValue]) => {
