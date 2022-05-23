@@ -77,18 +77,6 @@ const TOTAL_RISK_MAP = _.cloneDeep(TOTAL_RISK);
 TOTAL_RISK_MAP['All clusters'] = 'all';
 
 const filtersConf = {
-  version: {
-    selectorText: 'Version',
-    values: Array.from(
-      cumulativeCombinations(_.uniq(_.flatten(VERSION_COMBINATIONS)))
-    ),
-    type: 'checkbox',
-    filterFunc: (it, value) => {
-      return value.includes(it.cluster_version);
-    },
-    urlParam: 'version',
-    urlValue: (it) => encodeURIComponent(String(it)),
-  },
   name: {
     selectorText: 'Name',
     values: ['Foo', 'Foo Bar', 'Not existing cluster'],
@@ -111,6 +99,18 @@ const filtersConf = {
     urlParam: 'hits',
     urlValue: (it) =>
       encodeURIComponent(_.map(it, (x) => TOTAL_RISK_MAP[x]).join(',')),
+  },
+  version: {
+    selectorText: 'Version',
+    values: Array.from(
+      cumulativeCombinations(_.uniq(_.flatten(VERSION_COMBINATIONS)))
+    ),
+    type: 'checkbox',
+    filterFunc: (it, value) => {
+      return value.includes(it.cluster_version);
+    },
+    urlParam: 'version',
+    urlValue: (it) => encodeURIComponent(String(it)),
   },
 };
 
@@ -376,7 +376,6 @@ describe('clusters list table', () => {
             category = (it) => it.last_checked_at || '1970-01-01T01:00:00.001Z';
           }
 
-          cy.log(data, clusters);
           // add property name to clusters
           let sortedNames = _.map(
             // all tables must preserve original ordering
@@ -435,7 +434,7 @@ describe('clusters list table', () => {
       // TODO headers are displayed
     });
 
-    describe.only('single filter', () => {
+    describe('single filter', () => {
       Object.entries(filtersConf).forEach(([k, v]) => {
         v.values.forEach((filterValues) => {
           it(`${k}: ${filterValues}`, () => {
