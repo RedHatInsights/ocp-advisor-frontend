@@ -116,9 +116,18 @@ const filtersConf = {
 
 const DEFAULT_FILTERS = { risk: ['All clusters'] };
 
-// TODO invert parameters and make data optional as well0
-const filterData = (data, filters = DEFAULT_FILTERS) =>
-  filter(filtersConf, data, filters);
+// TODO invert parameters and make data optional as well
+const filterData = (data, filters = DEFAULT_FILTERS) => {
+  if (!_.has(filters, 'risk')) {
+    // absence of "risk" means there are only clusters that have at least 1 hit
+    return filter(
+      filtersConf,
+      _.filter(data, (it) => it.total_hit_count > 0),
+      filters
+    );
+  }
+  return filter(filtersConf, data, filters);
+};
 const filterApply = (filters) => applyFilters(filters, filtersConf);
 
 // TODO add more combinations of filters for testing
