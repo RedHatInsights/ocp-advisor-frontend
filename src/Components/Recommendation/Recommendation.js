@@ -25,12 +25,12 @@ import {
   Dropdown,
   DropdownItem,
   DropdownToggle,
+  Flex,
+  FlexItem,
 } from '@patternfly/react-core/';
 import BellSlashIcon from '@patternfly/react-icons/dist/js/icons/bell-slash-icon';
 import CaretDownIcon from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
 import { addNotification } from '@redhat-cloud-services/frontend-components-notifications/';
-import { Flex } from '@patternfly/react-core/dist/js/layouts/Flex/Flex';
-import { FlexItem } from '@patternfly/react-core/dist/js/layouts/Flex/FlexItem';
 import { ErrorState } from '@redhat-cloud-services/frontend-components/ErrorState';
 import {
   AdvisorProduct,

@@ -2,8 +2,7 @@ import * as React from 'react';
 import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 
-import { Stack, StackItem } from '@patternfly/react-core/dist/js/layouts/Stack';
-import { Title, Button } from '@patternfly/react-core';
+import { Title, Button, Stack, StackItem } from '@patternfly/react-core';
 import {
   EmptyState,
   EmptyStateBody,

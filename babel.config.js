@@ -1,13 +1,6 @@
 const path = require('path');
 const glob = require('glob');
 
-const mapper = {
-  TextVariants: 'Text',
-  DropdownPosition: 'dropdownConstants',
-  //TextListVariants: 'TextList',
-  //TextListItemVariants: 'TextListItem'
-};
-
 module.exports = {
   presets: [
     // Polyfills
@@ -33,7 +26,7 @@ module.exports = {
               path.resolve(
                 __dirname,
                 `./node_modules/@patternfly/react-core/dist/js/**/${
-                  mapper[importName] || importName
+                  importName || importName
                 }.js`
               )
             );
