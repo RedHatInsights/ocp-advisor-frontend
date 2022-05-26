@@ -25,9 +25,7 @@ module.exports = {
             const files = glob.sync(
               path.resolve(
                 __dirname,
-                `./node_modules/@patternfly/react-core/dist/js/**/${
-                  importName || importName
-                }.js`
+                `./node_modules/@patternfly/react-core/dist/js/**/${importName}.js`
               )
             );
             if (files.length > 0) {
