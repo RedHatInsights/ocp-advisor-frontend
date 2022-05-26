@@ -42,17 +42,12 @@ import {
 } from '../../../cypress/utils/pagination';
 import rule from '../../../cypress/fixtures/api/insights-results-aggregator/v2/rule/external.rules.rule|ERROR_KEY.json';
 import { AFFECTED_CLUSTERS_COLUMNS } from '../../AppConstants';
+import { VERSION_COMBINATIONS } from '../../../cypress/utils/filters';
 
 // selectors
 const ROOT = 'div[id=affected-list-table]';
 const BULK_SELECT = 'clusters-selector';
 const SEARCH_ITEMS = ['ff', 'CUSTOM', 'Foobar', 'Not existing cluster'];
-const VERSION_COMBINATIONS = [
-  ['4.18.12'],
-  ['4.17.9'],
-  ['3.0.3'],
-  ['4.18.12', '4.17.9'],
-];
 const TABLE_HEADERS = _.map(AFFECTED_CLUSTERS_COLUMNS, (it) => it.title);
 
 let data = _.cloneDeep(clusterDetailData.data['enabled']);

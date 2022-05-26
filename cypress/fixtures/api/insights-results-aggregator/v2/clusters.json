@@ -5,201 +5,374 @@
       "cluster_name": "gvgubed6h jzcmr99ojh",
       "last_checked_at": "2021-04-08T20:35:32.798Z",
       "total_hit_count": 37,
-      "hits_by_total_risk": { "1": 8, "2": 16, "3": 9, "4": 4 }
+      "hits_by_total_risk": {
+        "1": 8,
+        "2": 16,
+        "3": 9,
+        "4": 4
+      },
+      "cluster_version": ""
     },
     {
       "cluster_id": "0abb45ac-3ade-49c7-a7d4-ec2af0ee21db",
       "cluster_name": "y7gz4faz1 k6rqb02yo",
       "last_checked_at": "2020-02-22T08:32:37.690Z",
       "total_hit_count": 13,
-      "hits_by_total_risk": { "1": 2, "2": 3, "3": 5, "4": 3 }
+      "hits_by_total_risk": {
+        "1": 2,
+        "2": 3,
+        "3": 5,
+        "4": 3
+      },
+      "cluster_version": ""
     },
     {
       "cluster_id": "689b9530-0289-4736-aced-880b1f8d59df",
       "cluster_name": "z6wp31moti 10bvba5qx",
       "last_checked_at": "2020-10-26T23:43:04.239Z",
       "total_hit_count": 15,
-      "hits_by_total_risk": { "1": 3, "2": 9, "3": 3 }
+      "hits_by_total_risk": {
+        "1": 3,
+        "2": 9,
+        "3": 3
+      },
+      "cluster_version": "4.2.24"
     },
     {
       "cluster_id": "b93b11ed-1fa6-4b23-a7f5-2557d4521d20",
       "cluster_name": "foo bar",
       "last_checked_at": "2020-08-12T19:20:20.482Z",
       "total_hit_count": 25,
-      "hits_by_total_risk": { "1": 0, "2": 19, "3": 2, "4": 4 }
+      "hits_by_total_risk": {
+        "1": 0,
+        "2": 19,
+        "3": 2,
+        "4": 4
+      },
+      "cluster_version": "4.5.4"
     },
     {
       "cluster_id": "3955ab06-88a9-4896-be0e-66de34999ec8",
       "cluster_name": "5uq3oy111 ufq7fnxcd",
       "last_checked_at": "2021-07-18T16:28:11.348Z",
       "total_hit_count": 21,
-      "hits_by_total_risk": { "1": 7, "2": 8, "3": 3, "4": 3 }
+      "hits_by_total_risk": {
+        "1": 7,
+        "2": 8,
+        "3": 3,
+        "4": 3
+      },
+      "cluster_version": ""
     },
     {
       "cluster_id": "7e4980f5-f99d-485b-9636-ac975c0ce7a1",
       "cluster_name": "",
       "last_checked_at": "2021-03-04T14:09:19.418Z",
       "total_hit_count": 19,
-      "hits_by_total_risk": { "1": 1, "2": 6, "3": 8, "4": 4 }
+      "hits_by_total_risk": {
+        "1": 1,
+        "2": 6,
+        "3": 8,
+        "4": 4
+      },
+      "cluster_version": "4.4.16"
     },
     {
       "cluster_id": "cb193f16-a894-41c0-9f30-d0539edcc762",
       "cluster_name": "",
       "last_checked_at": "2020-03-29T14:08:49.699Z",
       "total_hit_count": 18,
-      "hits_by_total_risk": { "1": 1, "2": 11, "3": 6, "4": 0 }
+      "hits_by_total_risk": {
+        "1": 1,
+        "2": 11,
+        "3": 6,
+        "4": 0
+      },
+      "cluster_version": ""
     },
     {
       "cluster_id": "5a7810fe-7b63-4c25-85c0-20af33fcb32e",
       "cluster_name": "",
       "last_checked_at": "2021-03-18T20:30:58.839Z",
       "total_hit_count": 19,
-      "hits_by_total_risk": { "1": 6, "2": 13, "3": 0, "4": 0 }
+      "hits_by_total_risk": {
+        "1": 6,
+        "2": 13,
+        "3": 0,
+        "4": 0
+      },
+      "cluster_version": "4.3.12"
     },
     {
       "cluster_id": "a999094d-cbf5-4105-b436-e2f6ec554fbe",
       "cluster_name": "",
       "last_checked_at": "2019-04-01T21:41:25.982Z",
       "total_hit_count": 24,
-      "hits_by_total_risk": { "1": 8, "2": 14, "3": 0, "4": 2 }
+      "hits_by_total_risk": {
+        "1": 8,
+        "2": 14,
+        "3": 0,
+        "4": 2
+      },
+      "cluster_version": "4.0.0"
     },
     {
       "cluster_id": "947b8f15-cc44-47ca-9265-945085d4f3b8",
       "cluster_name": "",
       "last_checked_at": "2021-11-27T17:32:34.063Z",
       "total_hit_count": 23,
-      "hits_by_total_risk": { "1": 5, "2": 9, "3": 7, "4": 2 }
+      "hits_by_total_risk": {
+        "1": 5,
+        "2": 9,
+        "3": 7,
+        "4": 2
+      },
+      "cluster_version": "4.6.13"
     },
     {
       "cluster_id": "cf27b922-aeb6-404f-9eba-128abdc23858",
       "cluster_name": "dxrxsrxcng 6el3om2ow",
       "last_checked_at": "2021-05-17T14:57:27.196Z",
       "total_hit_count": 20,
-      "hits_by_total_risk": { "1": 11, "2": 5, "3": 1, "4": 3 }
+      "hits_by_total_risk": {
+        "1": 11,
+        "2": 5,
+        "3": 1,
+        "4": 3
+      },
+      "cluster_version": "4.18.12"
     },
     {
       "cluster_id": "b2a968c8-aad5-4ada-886e-c97e833e918a",
       "cluster_name": "",
       "last_checked_at": "2021-05-09T21:50:04.034Z",
       "total_hit_count": 16,
-      "hits_by_total_risk": { "1": 3, "2": 6, "3": 6, "4": 1 }
+      "hits_by_total_risk": {
+        "1": 3,
+        "2": 6,
+        "3": 6,
+        "4": 1
+      },
+      "cluster_version": ""
     },
     {
       "cluster_id": "ef6b962a-67c8-4dc5-8190-b441a364da2c",
       "cluster_name": "",
       "last_checked_at": "2021-07-20T07:02:39.709Z",
       "total_hit_count": 21,
-      "hits_by_total_risk": { "1": 2, "2": 13, "3": 5, "4": 1 }
+      "hits_by_total_risk": {
+        "1": 2,
+        "2": 13,
+        "3": 5,
+        "4": 1
+      },
+      "cluster_version": ""
     },
     {
       "cluster_id": "7795cbcd-0353-4e59-b920-fc1c39a27064",
       "cluster_name": "ss8gckqoc lbukzf7pwi",
       "last_checked_at": "2021-11-26T12:39:41.512Z",
       "total_hit_count": 0,
-      "hits_by_total_risk": { "1": 0, "2": 0, "3": 0, "4": 0 }
+      "hits_by_total_risk": {
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0
+      },
+      "cluster_version": "4.18.12"
     },
     {
       "cluster_id": "e6b7e3c9-59a2-4666-8f31-a3d8aad9ed32",
       "cluster_name": "7vymuht3 uba0sq6jyi",
       "last_checked_at": "2020-09-29T12:27:48.188Z",
       "total_hit_count": 27,
-      "hits_by_total_risk": { "1": 2, "2": 19, "3": 6, "4": 0 }
+      "hits_by_total_risk": {
+        "1": 2,
+        "2": 19,
+        "3": 6,
+        "4": 0
+      },
+      "cluster_version": "4.6.9"
     },
     {
       "cluster_id": "99d8d133-e5fc-42f2-981d-d88932023e48",
       "cluster_name": "qjydd73t8 q0kx4ca95l",
       "total_hit_count": 0,
-      "hits_by_total_risk": { "1": 0, "2": 0, "3": 0, "4": 0 }
+      "hits_by_total_risk": {
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0
+      },
+      "cluster_version": "4.1.2"
     },
     {
       "cluster_id": "a2f15021-ba2a-46a4-af1d-8966b681249d",
       "cluster_name": "",
       "last_checked_at": "2019-07-21T18:37:25.346Z",
       "total_hit_count": 23,
-      "hits_by_total_risk": { "1": 6, "2": 9, "3": 7, "4": 1 }
+      "hits_by_total_risk": {
+        "1": 6,
+        "2": 9,
+        "3": 7,
+        "4": 1
+      },
+      "cluster_version": "4.7.10"
     },
     {
       "cluster_id": "d35f7b4d-40fa-4ccd-b43c-e81137deaebd",
       "cluster_name": "",
       "last_checked_at": "2021-04-09T17:55:29.729Z",
       "total_hit_count": 29,
-      "hits_by_total_risk": { "1": 7, "2": 18, "3": 0, "4": 4 }
+      "hits_by_total_risk": {
+        "1": 7,
+        "2": 18,
+        "3": 0,
+        "4": 4
+      },
+      "cluster_version": "4.18.12"
     },
     {
       "cluster_id": "084ac7a7-1c7d-49ff-b56e-f94881da242d",
       "cluster_name": "gen1t0mfs ia532w7tz",
       "last_checked_at": "2019-04-16T10:16:22.865Z",
       "total_hit_count": 25,
-      "hits_by_total_risk": { "1": 1, "2": 19, "3": 2, "4": 3 }
+      "hits_by_total_risk": {
+        "1": 1,
+        "2": 19,
+        "3": 2,
+        "4": 3
+      },
+      "cluster_version": "3.0.3"
     },
     {
       "cluster_id": "de4cfd37-4c8e-4cb6-abba-cbf488d22390",
       "cluster_name": "1ghhxwjfoi 5b5hbyv07",
       "last_checked_at": "2021-08-02T11:14:13.329Z",
       "total_hit_count": 17,
-      "hits_by_total_risk": { "1": 5, "2": 3, "3": 8, "4": 1 }
+      "hits_by_total_risk": {
+        "1": 5,
+        "2": 3,
+        "3": 8,
+        "4": 1
+      },
+      "cluster_version": "4.8.27"
     },
     {
       "cluster_id": "956cc95d-9f65-4a6a-800c-f14f7ab6f812",
       "cluster_name": "t9ypvmelgg 9fbqdh0epk",
       "last_checked_at": "2020-07-17T04:01:59.093Z",
       "total_hit_count": 22,
-      "hits_by_total_risk": { "1": 2, "2": 8, "3": 8, "4": 4 }
+      "hits_by_total_risk": {
+        "1": 2,
+        "2": 8,
+        "3": 8,
+        "4": 4
+      },
+      "cluster_version": "4.0.2"
     },
     {
       "cluster_id": "96699c7a-9e72-4400-87b7-b314aebfe7fb",
       "cluster_name": "jpy8emdxh mkt86jqvj",
       "last_checked_at": "2020-04-21T16:58:15.823Z",
       "total_hit_count": 9,
-      "hits_by_total_risk": { "1": 3, "2": 0, "3": 5, "4": 1 }
+      "hits_by_total_risk": {
+        "1": 3,
+        "2": 0,
+        "3": 5,
+        "4": 1
+      },
+      "cluster_version": "4.4.24"
     },
     {
       "cluster_id": "849f9d51-f22a-444d-a601-d4512307b7da",
       "cluster_name": "s8yl8o7kr 5cb21ou71",
       "last_checked_at": "2019-07-19T08:18:12.495Z",
       "total_hit_count": 23,
-      "hits_by_total_risk": { "1": 5, "2": 13, "3": 2, "4": 3 }
+      "hits_by_total_risk": {
+        "1": 5,
+        "2": 13,
+        "3": 2,
+        "4": 3
+      },
+      "cluster_version": "4.17.9"
     },
     {
       "cluster_id": "fc603601-0ff8-45e4-b0f3-c7f76d2ef36b",
       "cluster_name": "gsbq8pthf xah3olxhz",
       "last_checked_at": "2019-02-09T13:43:12.855Z",
       "total_hit_count": 0,
-      "hits_by_total_risk": { "1": 0, "2": 0, "3": 0, "4": 0 }
+      "hits_by_total_risk": {
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0
+      },
+      "cluster_version": "4.5.5"
     },
     {
       "cluster_id": "deba971e-8f8c-4e37-8e0a-4655523250de",
       "cluster_name": "",
       "last_checked_at": "2021-02-23T11:13:10.518Z",
       "total_hit_count": 20,
-      "hits_by_total_risk": { "1": 0, "2": 9, "3": 9, "4": 2 }
+      "hits_by_total_risk": {
+        "1": 0,
+        "2": 9,
+        "3": 9,
+        "4": 2
+      },
+      "cluster_version": "4.7.7"
     },
     {
       "cluster_id": "707e82e4-34f3-4ad8-8814-28cadd718e1a",
       "cluster_name": "foo baz",
       "last_checked_at": "2020-05-15T23:10:49.825Z",
       "total_hit_count": 41,
-      "hits_by_total_risk": { "1": 14, "2": 18, "3": 7, "4": 2 }
+      "hits_by_total_risk": {
+        "1": 14,
+        "2": 18,
+        "3": 7,
+        "4": 2
+      },
+      "cluster_version": "4.1.2"
     },
     {
       "cluster_id": "d5b3b06a-31af-4ebe-8192-2fde8a811a62",
       "cluster_name": "",
       "last_checked_at": "2021-02-21T05:12:59.441Z",
       "total_hit_count": 0,
-      "hits_by_total_risk": { "1": 0, "2": 0, "3": 0, "4": 0 }
+      "hits_by_total_risk": {
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0
+      },
+      "cluster_version": ""
     },
     {
       "cluster_id": "cc59cabb-cb40-4a7e-8665-feb822a210e3",
       "cluster_name": "",
       "last_checked_at": "2019-12-18T14:21:12.020Z",
       "total_hit_count": 19,
-      "hits_by_total_risk": { "1": 11, "2": 8, "3": 0, "4": 0 }
+      "hits_by_total_risk": {
+        "1": 11,
+        "2": 8,
+        "3": 0,
+        "4": 0
+      },
+      "cluster_version": "4.17.9"
     },
     {
       "cluster_id": "0abb45ac-3ade-49c7-a7d4-ec2af0ee21db",
       "cluster_name": "y7gz4faz1 k6rqb02yo",
       "total_hit_count": 0,
-      "hits_by_total_risk": { "1": 0, "2": 0, "3": 0, "4": 0 }
+      "hits_by_total_risk": {
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0
+      },
+      "cluster_version": "4.3.24"
     }
   ],
   "meta": {

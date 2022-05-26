@@ -41,6 +41,8 @@ import {
   checkPaginationValues,
   changePagination,
 } from '../../../cypress/utils/pagination';
+import { compare } from 'semver';
+import { VERSION_COMBINATIONS } from '../../../cypress/utils/filters';
 
 // add property name to clusters
 let data = _.cloneDeep(clusters['data']);
@@ -98,13 +100,34 @@ const filtersConf = {
     urlValue: (it) =>
       encodeURIComponent(_.map(it, (x) => TOTAL_RISK_MAP[x]).join(',')),
   },
+  version: {
+    selectorText: 'Version',
+    values: Array.from(
+      cumulativeCombinations(_.uniq(_.flatten(VERSION_COMBINATIONS)))
+    ),
+    type: 'checkbox',
+    filterFunc: (it, value) => {
+      return value.includes(it.cluster_version);
+    },
+    urlParam: 'version',
+    urlValue: (it) => encodeURIComponent(String(it)),
+  },
 };
 
 const DEFAULT_FILTERS = { risk: ['All clusters'] };
 
-// TODO invert parameters and make data optional as well0
-const filterData = (data, filters = DEFAULT_FILTERS) =>
-  filter(filtersConf, data, filters);
+// TODO invert parameters and make data optional as well
+const filterData = (data, filters = DEFAULT_FILTERS) => {
+  if (!_.has(filters, 'risk')) {
+    // absence of "risk" means there are only clusters that have at least 1 hit
+    return filter(
+      filtersConf,
+      _.filter(data, (it) => it.total_hit_count > 0),
+      filters
+    );
+  }
+  return filter(filtersConf, data, filters);
+};
 const filterApply = (filters) => applyFilters(filters, filtersConf);
 
 // TODO add more combinations of filters for testing
@@ -157,6 +180,18 @@ describe('data', () => {
         (it) => Object.keys(it['hits_by_total_risk']).length < 4
       )
     )
+      .its('length')
+      .should('be.gte', 1);
+  });
+  _.uniq(_.flatten(VERSION_COMBINATIONS)).map((c) =>
+    it(`has at least one cluster with version ${c}`, () => {
+      cy.wrap(_.filter(data, (it) => it.cluster_version === c))
+        .its('length')
+        .should('be.gte', 1);
+    })
+  );
+  it(`has at least one cluster without a version`, () => {
+    cy.wrap(_.filter(data, (it) => it.cluster_version === ''))
       .its('length')
       .should('be.gte', 1);
   });
@@ -300,6 +335,7 @@ describe('clusters list table', () => {
     _.zip(
       [
         'name',
+        'cluster_version',
         'total_hit_count',
         'hits_by_total_risk.4',
         'hits_by_total_risk.3',
@@ -343,11 +379,21 @@ describe('clusters list table', () => {
           // add property name to clusters
           let sortedNames = _.map(
             // all tables must preserve original ordering
-            _.orderBy(
-              _.cloneDeep(data),
-              [category],
-              [order === 'ascending' ? 'asc' : 'desc']
-            ),
+            category === 'cluster_version'
+              ? // use ... spread operator because sort modifies the array on place
+                [...data].sort(
+                  (a, b) =>
+                    (order === 'ascending' ? 1 : -1) *
+                    compare(
+                      a.cluster_version || '0.0.0',
+                      b.cluster_version || '0.0.0'
+                    )
+                )
+              : _.orderBy(
+                  _.cloneDeep(data),
+                  [category],
+                  [order === 'ascending' ? 'asc' : 'desc']
+                ),
             'name'
           );
           cy.get(`td[data-label="Name"]`)
