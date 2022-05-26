@@ -48,6 +48,7 @@ import {
   translateSortParams,
   updateSearchParams,
   compareSemVer,
+  toValidSemVer,
 } from '../Common/Tables';
 import Loading from '../Loading/Loading';
 import messages from '../../Messages';
@@ -56,6 +57,7 @@ import {
   NoMatchingClusters,
   NoRecsForClusters,
 } from '../MessageState/EmptyStates';
+import { coerce } from 'semver';
 
 const ClustersListTable = ({
   query: { isError, isUninitialized, isFetching, isSuccess, data, refetch },
@@ -130,11 +132,16 @@ const ClustersListTable = ({
       return passFiltersCluster(it, filters);
     });
     const mapped = filtered.map((it, index) => {
-      if (it.cluster_version !== '' && !valid(it.cluster_version)) {
+      if (
+        it.cluster_version !== undefined &&
+        it.cluster_version !== '' &&
+        !valid(coerce(it.cluster_version))
+      ) {
         console.error(
           `Cluster version ${it.cluster_version} has invalid format!`
         );
       }
+      const ver = toValidSemVer(it.cluster_version);
 
       return {
         entity: it,
@@ -144,7 +151,7 @@ const ClustersListTable = ({
               {it.cluster_name || it.cluster_id}
             </Link>
           </span>,
-          it.cluster_version || intl.formatMessage(messages.notAvailable),
+          ver === '0.0.0' ? intl.formatMessage(messages.notAvailable) : ver,
           it.total_hit_count,
           it.hits_by_total_risk?.[4] || 0,
           it.hits_by_total_risk?.[3] || 0,
@@ -187,8 +194,8 @@ const ClustersListTable = ({
                 return fst.localeCompare(snd) ? fst.localeCompare(snd) * d : 0;
               case CLUSTERS_TABLE_CELL_VERSION:
                 return compareSemVer(
-                  a.entity.cluster_version || '0.0.0',
-                  b.entity.cluster_version || '0.0.0',
+                  toValidSemVer(a.entity.cluster_version),
+                  toValidSemVer(b.entity.cluster_version),
                   d
                 );
               case CLUSTERS_TABLE_CELL_LAST_SEEN:
@@ -231,11 +238,19 @@ const ClustersListTable = ({
         value: filters.version,
         items: uniqBy(
           clusters
-            .filter((c) => c.cluster_version !== '')
+            .filter(
+              (c) => c.cluster_version !== undefined && c.cluster_version !== ''
+            )
             .map((c) => ({
-              value: c.cluster_version,
+              value: toValidSemVer(c.cluster_version),
             }))
-            .sort((a, b) => compareSemVer(a.value, b.value, 1))
+            .sort((a, b) =>
+              compareSemVer(
+                toValidSemVer(a.cluster_version),
+                toValidSemVer(b.cluster_version),
+                1
+              )
+            )
             .reverse(), // should start from the latest version
           'value'
         ),
