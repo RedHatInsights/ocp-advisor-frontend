@@ -1,9 +1,5 @@
-import {
-  Tooltip,
-  TooltipPosition,
-} from '@patternfly/react-core/dist/js/components/Tooltip/Tooltip';
-
-import { Label } from '@patternfly/react-core/dist/js/components/Label/Label';
+import { TooltipPosition } from '@patternfly/react-core/dist/js/components/Tooltip/Tooltip';
+import { Tooltip, Label } from '@patternfly/react-core';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { useIntl } from 'react-intl';

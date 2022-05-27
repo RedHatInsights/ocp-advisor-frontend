@@ -13,17 +13,16 @@ import {
   TableHeader,
   TableVariant,
 } from '@patternfly/react-table';
-import { Card, CardBody } from '@patternfly/react-core/dist/js/components/Card';
 import {
   Pagination,
-  PaginationVariant,
-} from '@patternfly/react-core/dist/js/components/Pagination';
-import { Stack } from '@patternfly/react-core/dist/js/layouts/Stack';
-import isEqual from 'lodash/isEqual';
-import {
+  Stack,
+  Card,
+  CardBody,
   Tooltip,
-  TooltipPosition,
-} from '@patternfly/react-core/dist/js/components/Tooltip';
+} from '@patternfly/react-core';
+import { TooltipPosition } from '@patternfly/react-core/dist/js/components/Tooltip';
+import { PaginationVariant } from '@patternfly/react-core/dist/js/components/Pagination/Pagination';
+import isEqual from 'lodash/isEqual';
 
 import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
 import { InsightsLabel } from '@redhat-cloud-services/frontend-components/InsightsLabel';
