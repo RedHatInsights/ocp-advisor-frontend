@@ -65,43 +65,38 @@ function filterData(text = '') {
 
 describe('test data', () => {
   it('has enabled clusters', () => {
-    cy.wrap(data).its('length').should('be.gte', 1);
+    expect(data).to.have.length.gte(1);
   });
   it('has more enabled clusters than default rows', () => {
-    cy.wrap(data).its('length').should('be.gt', DEFAULT_ROW_COUNT);
+    expect(data).to.have.length.gt(DEFAULT_ROW_COUNT);
   });
   it('has less data than 51', () => {
-    // 50 is the value [2] in pagination
-    cy.wrap(data).its('length').should('be.lte', 50);
+    expect(data).to.have.length.lte(PAGINATION_VALUES[2]);
   });
   it('has more than one enabled clusters with "custom" in name', () => {
-    cy.wrap(filterData('custom')).its('length').should('be.gt', 1);
+    expect(filterData('custom')).to.have.length.gt(1);
   });
   it('"foobar" is in the list of names to search and thre is at least one enabled cluster matching', () => {
-    cy.wrap(filterData('foobar')).its('length').should('be.eq', 1);
-    cy.wrap(_.map(SEARCH_ITEMS, (it) => it.toLowerCase())).should((arr) => {
-      expect(arr).to.include('foobar');
-    });
+    expect(filterData('foobar')).to.have.lengthOf(1);
+    expect(_.map(SEARCH_ITEMS, (it) => it.toLowerCase())).to.include('foobar');
   });
   it('"Not existing cluster" is in the list of names to search and there are no enabled clusters matching it', () => {
-    cy.wrap(filterData('Not existing cluster'))
-      .its('length')
-      .should('be.eq', 0);
-    cy.wrap(_.map(SEARCH_ITEMS, (it) => it.toLowerCase())).should((arr) => {
-      expect(arr).to.include('not existing cluster');
-    });
+    expect(filterData('Not existing cluster')).to.have.lengthOf(0);
+    expect(_.map(SEARCH_ITEMS, (it) => it.toLowerCase())).to.include(
+      'not existing cluster'
+    );
   });
   _.uniq(_.flatten(VERSION_COMBINATIONS)).map((c) =>
     it(`has at least one cluster with version ${c}`, () => {
-      cy.wrap(_.filter(data, (it) => it.meta.cluster_version === c))
-        .its('length')
-        .should('be.gte', 1);
+      expect(
+        _.filter(data, (it) => it.meta.cluster_version === c)
+      ).to.have.length.gte(1);
     })
   );
   it(`has at least one cluster without a version`, () => {
-    cy.wrap(_.filter(data, (it) => it.meta.cluster_version === ''))
-      .its('length')
-      .should('be.gte', 1);
+    expect(
+      _.filter(data, (it) => it.meta.cluster_version === '')
+    ).to.have.length.gte(1);
   });
 });
 
