@@ -41,6 +41,8 @@ import { NoMatchingRecs } from '../MessageState/EmptyStates';
 import {
   paramParser,
   passFilters,
+  removeFilterParam as _removeFilterParam,
+  addFilterParam as _addFilterParam,
   translateSortParams,
 } from '../Common/Tables';
 import {
@@ -71,6 +73,15 @@ const ClusterRules = ({ cluster }) => {
   const loadingState = isUninitialized || isFetching || rowsUpdating;
   const errorState = isError;
   const successState = isSuccess;
+
+  const removeFilterParam = (param) =>
+    _removeFilterParam(filters, updateFilters, param);
+
+  const addFilterParam = (param, values) => {
+    setExpandFirst(false);
+    setFirstRule('');
+    return _addFilterParam(filters, updateFilters, param, values);
+  };
 
   useEffect(() => {
     if (search) {
@@ -241,21 +252,6 @@ const ClusterRules = ({ cluster }) => {
       sortIndex: index,
       sortDirection: direction,
     });
-  };
-
-  const removeFilterParam = (param) => {
-    const filter = { ...filters, offset: 0 };
-    delete filter[param];
-    updateFilters({ ...filter, ...(param === 'text' ? { text: '' } : {}) });
-  };
-
-  // TODO: update URL when filters changed
-  const addFilterParam = (param, values) => {
-    setExpandFirst(false);
-    setFirstRule('');
-    return values.length > 0
-      ? updateFilters({ ...filters, offset: 0, ...{ [param]: values } })
-      : removeFilterParam(param);
   };
 
   const filterConfigItems = [

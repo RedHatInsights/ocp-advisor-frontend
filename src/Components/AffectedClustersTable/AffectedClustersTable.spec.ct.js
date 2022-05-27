@@ -3,6 +3,7 @@ import { mount } from '@cypress/react';
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import _ from 'lodash';
+import { compare } from 'semver';
 
 import { AffectedClustersTable } from './AffectedClustersTable';
 import clusterDetailData from '../../../cypress/fixtures/api/insights-results-aggregator/v2/rule/external.rules.rule|ERROR_KEY/clusters_detail.json';
@@ -18,6 +19,10 @@ import {
   CHECKBOX,
   TBODY,
   TABLE,
+  TOOLBAR_FILTER,
+  DROPDOWN_TOGGLE,
+  DROPDOWN_ITEM,
+  ouiaId,
 } from '../../../cypress/utils/components';
 import {
   DEFAULT_ROW_COUNT,
@@ -37,6 +42,7 @@ import {
 } from '../../../cypress/utils/pagination';
 import rule from '../../../cypress/fixtures/api/insights-results-aggregator/v2/rule/external.rules.rule|ERROR_KEY.json';
 import { AFFECTED_CLUSTERS_COLUMNS } from '../../AppConstants';
+import { VERSION_COMBINATIONS } from '../../../cypress/utils/filters';
 
 // selectors
 const ROOT = 'div[id=affected-list-table]';
@@ -85,6 +91,18 @@ describe('test data', () => {
       expect(arr).to.include('not existing cluster');
     });
   });
+  _.uniq(_.flatten(VERSION_COMBINATIONS)).map((c) =>
+    it(`has at least one cluster with version ${c}`, () => {
+      cy.wrap(_.filter(data, (it) => it.meta.cluster_version === c))
+        .its('length')
+        .should('be.gte', 1);
+    })
+  );
+  it(`has at least one cluster without a version`, () => {
+    cy.wrap(_.filter(data, (it) => it.meta.cluster_version === ''))
+      .its('length')
+      .should('be.gte', 1);
+  });
 });
 
 describe('non-empty successful affected clusters table', () => {
@@ -127,10 +145,7 @@ describe('non-empty successful affected clusters table', () => {
       .then(($els) => {
         return _.map(Cypress.$.makeArray($els), 'innerText');
       })
-      .should(
-        'deep.equal',
-        names.slice(0, Math.min(DEFAULT_ROW_COUNT, names.length))
-      );
+      .should('deep.equal', names.slice(0, DEFAULT_ROW_COUNT));
   });
 
   it('names of rows are links', () => {
@@ -375,63 +390,73 @@ describe('non-empty successful affected clusters table', () => {
   });
 
   describe('sorting', () => {
-    _.zip(['name', 'last_checked_at'], TABLE_HEADERS).forEach(
-      ([category, label]) => {
-        SORTING_ORDERS.forEach((order) => {
-          it(`${order} by ${label}`, () => {
-            const col = `td[data-label="${label}"]`;
-            const header = `th[data-label="${label}"]`;
+    _.zip(
+      ['name', 'meta.cluster_version', 'last_checked_at'],
+      TABLE_HEADERS
+    ).forEach(([category, label]) => {
+      SORTING_ORDERS.forEach((order) => {
+        it(`${order} by ${label}`, () => {
+          const col = `td[data-label="${label}"]`;
+          const header = `th[data-label="${label}"]`;
 
-            cy.get(col).should(
-              'have.length',
-              Math.min(DEFAULT_ROW_COUNT, data.length)
-            );
-            if (order === 'ascending') {
-              cy.get(header).find('button').click();
-            } else {
-              cy.get(header).find('button').dblclick();
+          cy.get(col).should(
+            'have.length',
+            Math.min(DEFAULT_ROW_COUNT, data.length)
+          );
+          if (order === 'ascending') {
+            cy.get(header).find('button').click();
+          } else {
+            cy.get(header).find('button').dblclick();
+          }
+
+          // add property name to clusters
+          let sortedClusters = _.cloneDeep(
+            clusterDetailData.data['enabled'].map((it) => ({
+              ...it,
+              name: it['cluster_name'] ? it['cluster_name'] : it['cluster'],
+            }))
+          );
+          // convert N/A timestamps as really old ones
+          sortedClusters.forEach((it) => {
+            if (it['last_checked_at'] === '') {
+              it['last_checked_at'] = '1970-01-01T01:00:00.001Z';
             }
-
-            // add property name to clusters
-            let sortedClusters = _.cloneDeep(data);
-            // convert N/A timestamps as really old ones
-            sortedClusters.forEach((it) => {
-              if (it['last_checked_at'] === '') {
-                it['last_checked_at'] = '1970-01-01T01:00:00.001Z';
-              }
-            });
-
-            if (category === 'name') {
-              // name sorting is case insensitive
-              category = (it) => it.name.toLowerCase();
+            if (it.meta.cluster_version === '') {
+              it.meta.cluster_version = '0.0.0';
             }
-
-            sortedClusters = _.map(
-              _.orderBy(
-                sortedClusters,
-                [category],
-                [order === 'ascending' ? 'asc' : 'desc']
-              ),
-              'name'
-            );
-            cy.get(`td[data-label="Name"]`)
-              .then(($els) => {
-                return _.map(Cypress.$.makeArray($els), 'innerText');
-              })
-              .should(
-                'deep.equal',
-                sortedClusters.slice(
-                  0,
-                  Math.min(DEFAULT_ROW_COUNT, sortedClusters.length)
-                )
-              );
           });
+
+          if (category === 'name') {
+            // name sorting is case insensitive
+            category = (it) => it.name.toLowerCase();
+          }
+
+          sortedClusters = _.map(
+            category === 'meta.cluster_version'
+              ? sortedClusters.sort(
+                  (a, b) =>
+                    (order === 'ascending' ? 1 : -1) *
+                    compare(a.meta.cluster_version, b.meta.cluster_version)
+                )
+              : _.orderBy(
+                  sortedClusters,
+                  [category],
+                  [order === 'ascending' ? 'asc' : 'desc']
+                ),
+            'name'
+          );
+          cy.get(`td[data-label="Name"]`)
+            .then(($els) => {
+              return _.map(Cypress.$.makeArray($els), 'innerText');
+            })
+            .should('deep.equal', sortedClusters.slice(0, DEFAULT_ROW_COUNT));
         });
-      }
-    );
+      });
+    });
   });
 
   describe('filtering', () => {
+    // TODO: use filtersConf approach
     it('no chips are displayed by default', () => {
       cy.get(CHIP_GROUP).should('not.exist');
       cy.get('button').contains('Reset filters').should('not.exist');
@@ -460,6 +485,38 @@ describe('non-empty successful affected clusters table', () => {
             checkRowCounts(Math.min(DEFAULT_ROW_COUNT, data.length));
           }
         });
+      });
+    });
+
+    VERSION_COMBINATIONS.forEach((vs) => {
+      it(`can filter by versions ${vs}`, () => {
+        const filtered = data.filter((it) =>
+          vs.includes(it.meta.cluster_version)
+        );
+        const names = _.map(filtered, 'name');
+
+        cy.get(TOOLBAR_FILTER).find(DROPDOWN_TOGGLE).click();
+        cy.get(TOOLBAR_FILTER).find(DROPDOWN_ITEM).eq(1).click();
+        // open the versions dropdown
+        cy.get(ouiaId('Filter by version')).click();
+        vs.forEach((v) =>
+          cy
+            .get('.pf-c-select__menu')
+            .find('.pf-c-select__menu-item')
+            .contains(v)
+            .click()
+        );
+        // close the dropdown
+        cy.get(ouiaId('Filter by version')).click();
+        checkRowCounts(names.length);
+        cy.get(`td[data-label="Name"]`)
+          .then(($els) => {
+            return _.map(Cypress.$.makeArray($els), 'innerText');
+          })
+          .should(
+            'deep.equal',
+            names.slice(0, Math.min(DEFAULT_ROW_COUNT, names.length))
+          );
       });
     });
 
@@ -556,7 +613,7 @@ describe('non-empty successful affected clusters table', () => {
         .find(ROW)
         .first()
         .find('td')
-        .eq(3)
+        .eq(4)
         .click()
         .contains('Disable')
         .click();
@@ -646,7 +703,8 @@ describe('empty failed affected clusters table', () => {
   });
 
   it('renders table header', () => {
-    cy.get(TABLE).find('th').children().eq(0).should('have.text', 'Name');
-    cy.get(TABLE).find('th').children().eq(1).should('have.text', 'Last seen');
+    TABLE_HEADERS.map((h, i) =>
+      cy.get(TABLE).find('th').eq(i).should('have.text', h)
+    );
   });
 });

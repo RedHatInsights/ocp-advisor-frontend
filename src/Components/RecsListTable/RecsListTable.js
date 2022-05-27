@@ -15,13 +15,13 @@ import {
 } from '@patternfly/react-table';
 import {
   Pagination,
-  PaginationVariant,
   Stack,
   Card,
   CardBody,
   Tooltip,
-  TooltipPosition,
 } from '@patternfly/react-core';
+import { TooltipPosition } from '@patternfly/react-core/dist/js/components/Tooltip';
+import { PaginationVariant } from '@patternfly/react-core/dist/js/components/Pagination/Pagination';
 import isEqual from 'lodash/isEqual';
 
 import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
@@ -53,6 +53,8 @@ import {
   paramParser,
   translateSortParams,
   updateSearchParams,
+  removeFilterParam as _removeFilterParam,
+  addFilterParam as _addFilterParam,
 } from '../Common/Tables';
 import DisableRule from '../Modals/DisableRule';
 import { Delete } from '../../Utilities/Api';
@@ -90,6 +92,12 @@ const RecsListTable = ({ query }) => {
   const loadingState = isUninitialized || isFetching || !rowsFiltered;
   const errorState = isError || (isSuccess && recs.length === 0);
   const successState = isSuccess && recs.length > 0;
+
+  const removeFilterParam = (param) =>
+    _removeFilterParam(filters, updateFilters, param);
+
+  const addFilterParam = (param, values) =>
+    _addFilterParam(filters, updateFilters, param, values);
 
   useEffect(() => {
     setDisplayedRows(
@@ -266,18 +274,6 @@ const RecsListTable = ({ query }) => {
       });
   };
 
-  const removeFilterParam = (param) => {
-    const filter = { ...filters, offset: 0 };
-    delete filter[param];
-    updateFilters({ ...filter, ...(param === 'text' ? { text: '' } : {}) });
-  };
-
-  // TODO: update URL when filters changed
-  const addFilterParam = (param, values) =>
-    values.length > 0
-      ? updateFilters({ ...filters, offset: 0, ...{ [param]: values } })
-      : removeFilterParam(param);
-
   const toggleRulesDisabled = (rule_status) =>
     updateFilters({
       ...filters,
@@ -293,7 +289,7 @@ const RecsListTable = ({ query }) => {
         onChange: (_event, value) =>
           updateFilters({ ...filters, offset: 0, text: value }),
         value: searchText,
-        placeholder: intl.formatMessage(messages.filterBy),
+        placeholder: intl.formatMessage(messages.filterByName),
       },
     },
     {
@@ -440,6 +436,7 @@ const RecsListTable = ({ query }) => {
       : [];
   };
 
+  // TODO: use the function from Common/Tables.js
   const buildFilterChips = () => {
     const localFilters = { ...filters };
     delete localFilters.sortIndex;

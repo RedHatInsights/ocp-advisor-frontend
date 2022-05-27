@@ -45,11 +45,6 @@ export default defineMessages({
     description: 'Used in the hitting rules table for the single cluster view',
     defaultMessage: 'Description',
   },
-  filterBy: {
-    id: 'filterBy',
-    description: 'Filter by name',
-    defaultMessage: 'Filter by name',
-  },
   totalRisk: {
     id: 'totalRisk',
     description:
@@ -596,5 +591,22 @@ export default defineMessages({
     id: 'feedbackThankyou',
     description: 'Thanking user for feedback',
     defaultMessage: 'Thank you for your feedback!',
+  },
+  version: {
+    id: 'version',
+    description: 'Version label name',
+    defaultMessage: 'Version',
+  },
+  filterByName: {
+    id: 'filterByName',
+    defaultMessage: 'Filter by name',
+  },
+  filterByVersion: {
+    id: 'filterByVersion',
+    defaultMessage: 'Filter by version',
+  },
+  notAvailable: {
+    id: 'notAvailable',
+    defaultMessage: 'Not available',
   },
 });
