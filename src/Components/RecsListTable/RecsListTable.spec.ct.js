@@ -203,26 +203,23 @@ before(() => {
 
 describe('data', () => {
   it('has values', () => {
-    cy.wrap(data).its('length').should('be.gte', 1);
+    expect(data).to.have.length.gte(1);
   });
   it('has values even with default filters', () => {
-    cy.wrap(filterData(DEFAULT_FILTERS)).its('length').should('be.gte', 1);
+    expect(filterData(DEFAULT_FILTERS)).to.have.length.gte(1);
   });
   it('at least two recommendations match lorem for their descriptions', () => {
-    cy.wrap(filterData({ name: 'lorem' }))
-      .its('length')
-      .should('be.gt', 1);
+    expect(filterData({ name: 'lorem' })).to.have.length.gt(1);
   });
   it('only one recommendation matches 1Lorem in the description', () => {
-    cy.wrap(filterData({ name: '1lorem' }))
-      .its('length')
-      .should('be.eq', 1);
+    expect(filterData({ name: '1lorem' })).to.have.lengthOf(1);
   });
   it('the first combo filter different recommendations hitting that the default and at least one', () => {
-    cy.wrap(filterData(filterCombos[0]))
-      .its('length')
-      .should('be.gte', 1)
-      .and('be.not.eq', filterData(DEFAULT_FILTERS).length);
+    const filteredData = filterData(filterCombos[0]);
+    expect(filteredData).to.have.length.gte(1);
+    expect(filteredData).to.not.have.lengthOf(
+      filterData(DEFAULT_FILTERS).length
+    );
   });
 });
 
