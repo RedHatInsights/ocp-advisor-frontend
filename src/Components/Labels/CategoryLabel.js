@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
 import camelCase from 'lodash/camelCase';
 
-import { Label } from '@patternfly/react-core/dist/js/components/Label/index';
-import { LabelGroup } from '@patternfly/react-core/dist/js/components/LabelGroup/LabelGroup';
+import { Label, LabelGroup } from '@patternfly/react-core';
 import LockIcon from '@patternfly/react-icons/dist/esm/icons/lock-icon';
 import PortIcon from '@patternfly/react-icons/dist/esm/icons/port-icon';
 import AutomationIcon from '@patternfly/react-icons/dist/esm/icons/automation-icon';

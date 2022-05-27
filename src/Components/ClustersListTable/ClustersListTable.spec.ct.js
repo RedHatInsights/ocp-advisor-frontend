@@ -137,51 +137,45 @@ const filterCombos = [{ risk: ['Critical', 'Moderate'], name: 'foo' }];
 
 describe('data', () => {
   it('has values', () => {
-    cy.wrap(filterData(data)).its('length').should('be.gte', 1);
+    expect(filterData(data)).to.have.length.gte(1);
   });
   it('has more entried than default pagination', () => {
-    cy.wrap(filterData(data)).its('length').should('be.gt', DEFAULT_ROW_COUNT);
+    expect(filterData(data)).to.have.length.gt(DEFAULT_ROW_COUNT);
   });
   it('at least one cluster has cluster name', () => {
-    cy.wrap(_.filter(filterData(data), (it) => it.cluster_name))
-      .its('length')
-      .should('be.gte', 1);
+    expect(
+      _.filter(filterData(data), (it) => it.cluster_name)
+    ).to.have.length.gte(1);
   });
   it('first cluster has name', () => {
-    cy.wrap(filterData(data)[0]['cluster_name']).should('not.be.empty');
+    expect(filterData(data)[0]['cluster_name']).to.not.be.empty;
   });
   it('first page items contains at least one cluster without name', () => {
     const itemsInFirstPage = DEFAULT_DISPLAYED_SIZE;
-    cy.wrap(
+    expect(
       _.filter(
         filterData(data).slice(0, itemsInFirstPage),
         (it) => it.cluster_name
       )
-    )
-      .its('length')
-      .should('be.lt', itemsInFirstPage);
+    ).to.have.length.lt(itemsInFirstPage);
   });
   it('at least one entry has last seen', () => {
-    cy.wrap(_.filter(filterData(data), (it) => it.last_checked_at))
-      .its('length')
-      .should('be.gte', 1);
+    expect(
+      _.filter(filterData(data), (it) => it.last_checked_at)
+    ).to.have.length.gte(1);
   });
   it('at least one entry does not have last seen', () => {
-    cy.wrap(
+    expect(
       _.filter(filterData(data), (it) => it.last_checked_at === undefined)
-    )
-      .its('length')
-      .should('be.gte', 1);
+    ).to.have.length.gte(1);
   });
   it('at least one entry does not have all values for total risk categories', () => {
-    cy.wrap(
+    expect(
       _.filter(
         filterData(clusters['data']),
         (it) => Object.keys(it['hits_by_total_risk']).length < 4
       )
-    )
-      .its('length')
-      .should('be.gte', 1);
+    ).to.have.length.gte(1);
   });
   _.uniq(_.flatten(VERSION_COMBINATIONS)).map((c) =>
     it(`has at least one cluster with version ${c}`, () => {
@@ -196,20 +190,15 @@ describe('data', () => {
       .should('be.gte', 1);
   });
   it('at least two clusters match foo for their names', () => {
-    cy.wrap(filterData(data, { name: 'foo' }))
-      .its('length')
-      .should('be.gt', 1);
+    expect(filterData(data, { name: 'foo' })).to.have.length.gt(1);
   });
   it('only one cluster matches foo bar in the name', () => {
-    cy.wrap(filterData(data, { name: 'foo bar' }))
-      .its('length')
-      .should('be.eq', 1);
+    expect(filterData(data, { name: 'foo bar' })).to.have.lengthOf(1);
   });
   it('the first combo filter has less clusters hitting that the default and at least one', () => {
-    cy.wrap(filterData(data, filterCombos[0]))
-      .its('length')
-      .should('be.gte', 1)
-      .and('be.lt', filterData(data, {}).length); // TODO can use namedCluster.length directly unless data is optional
+    const filteredData = filterData(data, filterCombos[0]);
+    expect(filteredData).to.have.length.gte(1);
+    expect(filteredData).to.have.length.lt(filterData(data, {}).length); // TODO can use namedCluster.length directly unless data is optional
   });
 });
 

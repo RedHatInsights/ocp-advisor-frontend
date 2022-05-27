@@ -17,11 +17,8 @@ import {
   TableHeader,
   TableVariant,
 } from '@patternfly/react-table';
-import { Card, CardBody } from '@patternfly/react-core/dist/js/components/Card';
-import {
-  Tooltip,
-  TooltipPosition,
-} from '@patternfly/react-core/dist/js/components/Tooltip';
+import { Card, CardBody, Tooltip } from '@patternfly/react-core';
+import { TooltipPosition } from '@patternfly/react-core/dist/js/components/Tooltip';
 import InfoCircleIcon from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import { global_danger_color_100 as globalDangerColor100 } from '@patternfly/react-tokens/dist/js/global_danger_color_100';

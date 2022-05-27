@@ -2,15 +2,13 @@ import * as React from 'react';
 import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 
-import { Stack, StackItem } from '@patternfly/react-core/dist/js/layouts/Stack';
-import { Title } from '@patternfly/react-core/dist/js/components/Title';
+import { Title, Button, Stack, StackItem } from '@patternfly/react-core';
 import {
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateSecondaryActions,
 } from '@patternfly/react-core/dist/js/components/EmptyState';
-import { Button } from '@patternfly/react-core/dist/js/components/Button';
 import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import CheckCircleIcon from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 import PlusCircleIcon from '@patternfly/react-icons/dist/js/icons/plus-circle-icon';
