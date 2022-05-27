@@ -16,7 +16,7 @@ import {
   Bullseye,
   Pagination,
   PaginationVariant,
-} from '@patternfly/react-core/';
+} from '@patternfly/react-core';
 import { Table } from '@patternfly/react-table/dist/js/components/Table/Table';
 import { TableBody } from '@patternfly/react-table/dist/js/components/Table/Body';
 import { TableHeader } from '@patternfly/react-table/dist/js/components/Table/Header';

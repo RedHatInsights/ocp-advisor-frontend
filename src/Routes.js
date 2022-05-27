@@ -6,7 +6,7 @@ import {
   EmptyStateBody,
   Spinner,
   EmptyState,
-} from '@patternfly/react-core/';
+} from '@patternfly/react-core';
 import InvalidObject from '@redhat-cloud-services/frontend-components/InvalidObject/InvalidObject';
 
 const Cluster = lazy(() =>

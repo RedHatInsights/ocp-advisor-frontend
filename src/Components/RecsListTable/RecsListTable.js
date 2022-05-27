@@ -21,7 +21,7 @@ import {
   CardBody,
   Tooltip,
   TooltipPosition,
-} from '@patternfly/react-core/';
+} from '@patternfly/react-core';
 import isEqual from 'lodash/isEqual';
 
 import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
