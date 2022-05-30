@@ -35,7 +35,7 @@
     "@redhat-cloud-services/frontend-components-utilities": "3.2.16",
     "@redhat-cloud-services/rule-components": "3.2.5",
     "@reduxjs/toolkit": "1.8.0",
-    "axios": "^0.26.1",
+    "axios": "^0.27.2",
     "babel-plugin-formatjs": "^10.3.23",
     "classnames": "2.3.1",
     "lodash": "^4.17.21",
