@@ -220,32 +220,34 @@ export const CLUSTERS_LIST_COLUMNS = [
     transforms: [sortable, cellWidth(30)],
   },
   {
+    title: intl.formatMessage(messages.version),
+    transforms: [sortable],
+  },
+  {
     title: intl.formatMessage(messages.recommendations),
     transforms: [sortable, cellWidth(15)],
   },
   {
     title: intl.formatMessage(messages.critical),
-    transforms: [sortable, cellWidth(10)],
+    transforms: [sortable],
   },
   {
     title: intl.formatMessage(messages.important),
-    transforms: [sortable, cellWidth(10)],
+    transforms: [sortable],
   },
   {
     title: intl.formatMessage(messages.moderate),
-    transforms: [sortable, cellWidth(10)],
+    transforms: [sortable],
   },
   {
     title: intl.formatMessage(messages.low),
-    transforms: [sortable, cellWidth(10)],
+    transforms: [sortable],
   },
   {
     title: intl.formatMessage(messages.lastSeen),
-    transforms: [sortable, cellWidth(15)],
+    transforms: [sortable],
   },
 ];
-export const CLUSTER_NAME_CELL = 0;
-export const CLUSTER_LAST_CHECKED_CELL = 6;
 export const RECS_LIST_COLUMNS_KEYS = [
   '', // reserved for expand button
   'description',
@@ -255,17 +257,23 @@ export const RECS_LIST_COLUMNS_KEYS = [
   'impacted_clusters_count',
 ];
 export const AFFECTED_CLUSTERS_NAME_CELL = 1;
-export const AFFECTED_CLUSTERS_LAST_SEEN = 2;
+export const AFFECTED_CLUSTERS_VERSION_CELL = 2;
+export const AFFECTED_CLUSTERS_LAST_SEEN_CELL = 3;
 export const AFFECTED_CLUSTERS_COLUMNS = [
   {
     title: intl.formatMessage(messages.name),
-    transforms: [sortable, cellWidth(80)],
+    transforms: [sortable, cellWidth(70)],
+  },
+  {
+    title: intl.formatMessage(messages.version),
+    transforms: [sortable, cellWidth(15)],
   },
   {
     title: intl.formatMessage(messages.lastSeen),
-    transforms: [sortable, cellWidth(20)],
+    transforms: [sortable, cellWidth(15)],
   },
 ];
+// TODO: remove since unused
 export const DEBOUNCE_DELAY = 600;
 export const CLUSTER_RULES_COLUMNS_KEYS = [
   '', // reserved for expand button
@@ -313,6 +321,7 @@ export const LIKELIHOOD_LABEL_LOWER = {
 };
 export const CLUSTERS_LIST_COLUMNS_KEYS = [
   'name',
+  'version',
   'recommendations',
   'critical',
   'important',
@@ -320,3 +329,11 @@ export const CLUSTERS_LIST_COLUMNS_KEYS = [
   'low',
   'last_seen',
 ];
+export const CLUSTERS_TABLE_CELL_NAME = 0;
+export const CLUSTERS_TABLE_CELL_VERSION = 1;
+export const CLUSTERS_TABLE_CELL_RECOMMENDATIONS = 2;
+export const CLUSTERS_TABLE_CELL_CRITICAL = 3;
+export const CLUSTERS_TABLE_CELL_IMPORTANT = 4;
+export const CLUSTERS_TABLE_CELL_MODERATE = 5;
+export const CLUSTERS_TABLE_CELL_LOW = 6;
+export const CLUSTERS_TABLE_CELL_LAST_SEEN = 7;

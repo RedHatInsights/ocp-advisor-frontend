@@ -74,52 +74,46 @@ const filterCombos = [
 
 describe('test data', () => {
   it('has rules', () => {
-    cy.wrap(data).its('length').should('be.gte', 1);
+    expect(data).to.have.length.gte(1);
   });
   it('has more than 1 enabled rule', () => {
-    cy.wrap(RULES_ENABLED).should('be.gt', 1);
+    expect(RULES_ENABLED).to.be.gt(1);
   });
   it('has 0 disabled rules', () => {
-    cy.wrap(_.filter(data, (it) => it.disabled).length).should('be.eq', 0);
+    expect(_.filter(data, (it) => it.disabled)).to.have.lengthOf(0);
   });
   it('all total risk values are present', () => {
-    cy.wrap(_.uniq(_.map(data, 'total_risk')))
-      .its('length')
-      .should('be.eq', TOTAL_RISK_VALUES.length);
+    expect(_.uniq(_.map(data, 'total_risk'))).to.have.lengthOf(
+      TOTAL_RISK_VALUES.length
+    );
   });
   it('all categories are present', () => {
-    cy.wrap(_.uniq(_.flatMap(data, 'tags')))
-      .its('length')
-      .should('be.eq', CATEGORY_TAGS.length);
+    expect(_.uniq(_.flatMap(data, 'tags'))).to.have.lengthOf(
+      CATEGORY_TAGS.length
+    );
   });
   it('at least 2 descriptions are different', () => {
-    cy.wrap(_.uniq(_.map(data, 'description')))
-      .its('length')
-      .should('be.gte', 2);
+    expect(_.uniq(_.map(data, 'description'))).to.have.length.gte(2);
   });
   it('has only 1 description matching "1Lorem"', () => {
-    cy.wrap(filterData(data, { description: '1Lorem' })).should(
-      'have.length',
+    expect(filterData(data, { description: '1Lorem' })).to.have.lengthOf(1);
+  });
+  it('has multiple descriptions matching "Lorem ipsum"', () => {
+    expect(filterData(data, { description: 'Lorem ipsum' })).to.have.length.gt(
       1
     );
   });
-  it('has multiple descriptions matching "Lorem ipsum"', () => {
-    cy.wrap(filterData(data, { description: 'Lorem ipsum' }))
-      .its('length')
-      .should('be.gt', 1);
-  });
   it('has no descriptions matching "Not existing recommendation"', () => {
-    cy.wrap(
+    expect(
       filterData(data, {
         description: 'Not existing recommendation',
       })
-    ).should('have.length', 0);
+    ).to.have.lengthOf(0);
   });
-  it('the first combo filter has less rules hitting that the default at least one', () => {
-    cy.wrap(filterData(data, filterCombos[0]))
-      .its('length')
-      .should('be.gte', 1)
-      .and('be.lt', RULES_ENABLED);
+  it('the first combo filter has less rules hitting that the default and at least one', () => {
+    const filteredData = filterData(data, filterCombos[0]);
+    expect(filteredData).to.have.length.gte(1);
+    expect(filteredData).to.have.length.lt(RULES_ENABLED);
   });
 });
 
@@ -325,7 +319,7 @@ describe('cluster rules table', () => {
           } else {
             cy.get(`td[data-label="Description"]`)
               .then(($els) => {
-                return _.map(Cypress.$.makeArray($els), 'innerText').sort();
+                return _.map(Cypress.$.makeArray($els), 'innerText');
               })
               .should('deep.equal', sortedDescriptions);
           }

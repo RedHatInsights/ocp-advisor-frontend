@@ -10,9 +10,8 @@ import {
   TableHeader,
   cellWidth,
 } from '@patternfly/react-table';
-import { Button } from '@patternfly/react-core/dist/js/components/Button/Button';
+import { Button, Modal } from '@patternfly/react-core';
 import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
-import { Modal } from '@patternfly/react-core/dist/js/components/Modal/Modal';
 import OutlinedBellIcon from '@patternfly/react-icons/dist/js/icons/outlined-bell-icon';
 import { addNotification as notification } from '@redhat-cloud-services/frontend-components-notifications/';
 

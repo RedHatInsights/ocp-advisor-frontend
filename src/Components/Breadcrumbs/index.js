@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
 import { Link, useLocation } from 'react-router-dom';
 
-import { Breadcrumb } from '@patternfly/react-core/dist/js/components/Breadcrumb/Breadcrumb';
-import { BreadcrumbItem } from '@patternfly/react-core/dist/js/components/Breadcrumb/BreadcrumbItem';
+import { Breadcrumb, BreadcrumbItem } from '@patternfly/react-core';
 
 import messages from '../../Messages';
 

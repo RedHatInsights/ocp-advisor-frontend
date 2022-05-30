@@ -1,3 +1,17 @@
+## [1.4.1](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.4.0...v1.4.1) (2022-05-27)
+
+
+### Bug Fixes
+
+* **App:** babel transformation for the react-core modules ([#279](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/279)) ([f04ac70](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/f04ac700b5c73e2d4758a95761cdf1283f0139a2))
+
+# [1.4.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.14...v1.4.0) (2022-05-18)
+
+
+### Features
+
+* **Recommendation view:** display cluster version ([#272](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/272)) ([abb6918](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/abb69185929b81d4c8408be92bf7f4ccd56715c0))
+
 ## [1.3.14](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.3.13...v1.3.14) (2022-05-13)
 
 

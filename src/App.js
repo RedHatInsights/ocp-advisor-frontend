@@ -9,9 +9,8 @@ import PropTypes from 'prop-types';
 import NotificationsPortal from '@redhat-cloud-services/frontend-components-notifications/NotificationPortal';
 import { getRegistry } from '@redhat-cloud-services/frontend-components-utilities/Registry/Registry';
 import { notificationsReducer } from '@redhat-cloud-services/frontend-components-notifications/redux';
-import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye/Bullseye';
+import { Bullseye, Spinner } from '@patternfly/react-core';
 import LockIcon from '@patternfly/react-icons/dist/js/icons/lock-icon';
-import { Spinner } from '@patternfly/react-core/dist/js/components/Spinner';
 
 import { Routes } from './Routes';
 import ErrorBoundary from './Utilities/ErrorBoundary';

@@ -1,12 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { CLUSTERS_TABLE_CELL_LAST_SEEN } from '../AppConstants';
 
 // single recommendation page
 export const AFFECTED_CLUSTERS_INITIAL_STATE = {
   limit: 20,
   offset: 0,
   text: '',
-  sortIndex: 2,
+  // TODO: use a constant instead
+  sortIndex: 3,
   sortDirection: null,
+  version: [],
 };
 
 // recommendations list page
@@ -15,6 +18,7 @@ export const RECS_LIST_INITIAL_STATE = {
   offset: 0,
   impacting: ['true'],
   // default sorting by total risk
+  // TODO: use a constant instead
   sortIndex: 4,
   sortDirection: 'desc',
   rule_status: 'enabled',
@@ -25,9 +29,10 @@ export const CLUSTERS_LIST_INITIAL_STATE = {
   limit: 20,
   offset: 0,
   hits: ['all'],
-  sortIndex: 6,
+  sortIndex: CLUSTERS_TABLE_CELL_LAST_SEEN,
   sortDirection: 'desc',
   text: '',
+  version: [],
 };
 
 // single cluster page
@@ -35,6 +40,7 @@ export const CLUSTER_RULES_INITIAL_STATE = {
   limit: 20,
   offset: 0,
   // default sorting by total risk
+  // TODO: use a constant instead
   sortIndex: -1,
   sortDirection: 'desc',
   text: '',

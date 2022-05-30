@@ -3,7 +3,7 @@ import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
 import { ErrorState } from '../Components/MessageState/EmptyStates';
-import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye/Bullseye';
+import { Bullseye } from '@patternfly/react-core';
 
 class ErrorBoundary extends React.Component {
   constructor(props) {

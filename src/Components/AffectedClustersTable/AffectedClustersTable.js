@@ -3,22 +3,25 @@ import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { valid } from 'semver';
+import uniqBy from 'lodash/uniqBy';
 
 import { conditionalFilterType } from '@redhat-cloud-services/frontend-components/ConditionalFilter/conditionalFilterConstants';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
 import { EmptyTable } from '@redhat-cloud-services/frontend-components/EmptyTable';
 import { TableToolbar } from '@redhat-cloud-services/frontend-components/TableToolbar';
 import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
-import { Card, CardBody } from '@patternfly/react-core/dist/js/components/Card';
+import {
+  Card,
+  CardBody,
+  Tooltip,
+  Bullseye,
+  Pagination,
+} from '@patternfly/react-core';
+import { PaginationVariant } from '@patternfly/react-core/dist/js/components/Pagination/Pagination';
 import { Table } from '@patternfly/react-table/dist/js/components/Table/Table';
 import { TableBody } from '@patternfly/react-table/dist/js/components/Table/Body';
 import { TableHeader } from '@patternfly/react-table/dist/js/components/Table/Header';
-import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
-import { Tooltip } from '@patternfly/react-core/dist/js/components/Tooltip';
-import {
-  Pagination,
-  PaginationVariant,
-} from '@patternfly/react-core/dist/js/components/Pagination/Pagination';
 
 import {
   ErrorState,
@@ -27,13 +30,24 @@ import {
 } from '../MessageState/EmptyStates';
 import {
   AFFECTED_CLUSTERS_COLUMNS,
-  AFFECTED_CLUSTERS_LAST_SEEN,
+  AFFECTED_CLUSTERS_LAST_SEEN_CELL,
   AFFECTED_CLUSTERS_NAME_CELL,
+  AFFECTED_CLUSTERS_VERSION_CELL,
+  FILTER_CATEGORIES,
 } from '../../AppConstants';
 import Loading from '../Loading/Loading';
-import { updateAffectedClustersFilters } from '../../Services/Filters';
+import {
+  AFFECTED_CLUSTERS_INITIAL_STATE,
+  updateAffectedClustersFilters,
+} from '../../Services/Filters';
 import messages from '../../Messages';
 import DisableRule from '../Modals/DisableRule';
+import {
+  buildFilterChips,
+  compareSemVer,
+  removeFilterParam as _removeFilterParam,
+  addFilterParam as _addFilterParam,
+} from '../Common/Tables';
 
 const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
   const intl = useIntl();
@@ -42,7 +56,6 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
   const [filteredRows, setFilteredRows] = useState([]);
   const [displayedRows, setDisplayedRows] = useState([]);
   const [disableRuleModalOpen, setDisableRuleModalOpen] = useState(false);
-  const [chips, setChips] = useState([]);
   const [selected, setSelected] = useState([]);
   const [host, setHost] = useState(undefined);
 
@@ -60,53 +73,50 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
   const filters = useSelector(({ filters }) => filters.affectedClustersState);
   const perPage = filters.limit;
   const page = filters.offset / filters.limit + 1;
-  const allSelected = selected.length === filteredRows.length;
+  const allSelected =
+    filteredRows.length !== 0 && selected.length === filteredRows.length;
 
   const updateFilters = (filters) =>
     dispatch(updateAffectedClustersFilters(filters));
 
-  const updateNameChip = (chips, newValue) => {
-    const newChips = chips;
-    const nameCategoryIndex = newChips.findIndex(
-      (chip) => chip.category === 'Name'
-    );
-    if (newValue === '') {
-      newChips.splice(nameCategoryIndex);
-    } else {
-      if (nameCategoryIndex === -1) {
-        newChips.push({ category: 'Name', chips: [{ name: newValue }] });
-      } else {
-        newChips[nameCategoryIndex] = {
-          category: 'Name',
-          chips: [{ name: newValue }],
-        };
-      }
-    }
-    return newChips;
-  };
+  const removeFilterParam = (param) =>
+    _removeFilterParam(filters, updateFilters, param);
 
-  const onChipDelete = () => {
-    // right now, only designed to treat the Name (text) filter
-    const newFilters = { ...filters, text: '' };
-    updateFilters(newFilters);
-  };
-
-  const onNameFilterChange = (value) => {
-    const newFilters = { ...filters, text: value, offset: 0 };
-    updateFilters(newFilters);
-  };
+  const addFilterParam = (param, values) =>
+    _addFilterParam(filters, updateFilters, param, values);
 
   const filterConfig = {
     items: [
       {
-        label: 'Name',
-        placeholder: 'Filter by name',
+        label: intl.formatMessage(messages.name),
+        placeholder: intl.formatMessage(messages.filterByName),
         type: conditionalFilterType.text,
         filterValues: {
           id: 'name-filter',
           key: 'name-filter',
-          onChange: (_e, value) => onNameFilterChange(value),
+          onChange: (event, value) => addFilterParam('text', value),
           value: filters.text,
+        },
+      },
+      {
+        label: intl.formatMessage(messages.version),
+        placeholder: intl.formatMessage(messages.filterByVersion),
+        type: conditionalFilterType.checkbox,
+        filterValues: {
+          id: 'version-filter',
+          key: 'version-filter',
+          onChange: (event, value) => addFilterParam('version', value),
+          value: filters.version,
+          items: uniqBy(
+            rows
+              .filter((r) => r.meta.cluster_version !== '')
+              .map((r) => ({
+                value: r.meta.cluster_version,
+              }))
+              .sort((a, b) => compareSemVer(a.value, b.value, 1))
+              .reverse(), // should start from the latest version
+            'value'
+          ),
         },
       },
     ],
@@ -128,27 +138,53 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
 
   // constructs array of rows (from the initial data) checking currently applied filters
   const buildFilteredRows = (allRows, filters) => {
-    const rows = allRows.map((r) => ({
-      id: r.cluster,
-      cells: [r?.cluster_name || r.cluster],
-      last_checked_at: r?.last_checked_at,
-    }));
+    const rows = allRows.map((r) => {
+      if (r.meta.cluster_version !== '' && !valid(r.meta.cluster_version)) {
+        console.error(
+          `Cluster version ${r.meta.cluster_version} has invalid format!`
+        );
+      }
+
+      return {
+        id: r.cluster,
+        cells: [
+          '',
+          r.cluster_name || r.cluster,
+          r.meta.cluster_version,
+          r.last_checked_at,
+        ],
+      };
+    });
     return rows
       .filter((row) => {
-        return row?.cells[0].toLowerCase().includes(filters.text.toLowerCase());
+        return (
+          row?.cells[AFFECTED_CLUSTERS_NAME_CELL].toLowerCase().includes(
+            filters.text.toLowerCase()
+          ) &&
+          (filters.version.length === 0 ||
+            filters.version.includes(row.cells[AFFECTED_CLUSTERS_VERSION_CELL]))
+        );
       })
       .sort((a, b) => {
         let fst, snd;
         const d = filters.sortDirection === 'asc' ? 1 : -1;
         switch (filters.sortIndex) {
           case AFFECTED_CLUSTERS_NAME_CELL:
-            if (filters.sortDirection === 'asc') {
-              return a?.cells[0].localeCompare(b?.cells[0]);
-            }
-            return b?.cells[0].localeCompare(a?.cells[0]);
-          case AFFECTED_CLUSTERS_LAST_SEEN:
-            fst = new Date(a.last_checked_at || 0);
-            snd = new Date(b.last_checked_at || 0);
+            return (
+              d *
+              a?.cells[AFFECTED_CLUSTERS_NAME_CELL].localeCompare(
+                b?.cells[AFFECTED_CLUSTERS_NAME_CELL]
+              )
+            );
+          case AFFECTED_CLUSTERS_VERSION_CELL:
+            return compareSemVer(
+              a.cells[AFFECTED_CLUSTERS_VERSION_CELL] || '0.0.0',
+              b.cells[AFFECTED_CLUSTERS_VERSION_CELL] || '0.0.0',
+              d
+            );
+          case AFFECTED_CLUSTERS_LAST_SEEN_CELL:
+            fst = new Date(a.cells[AFFECTED_CLUSTERS_LAST_SEEN_CELL] || 0);
+            snd = new Date(b.cells[AFFECTED_CLUSTERS_LAST_SEEN_CELL] || 0);
             return fst > snd ? d : snd > fst ? -d : 0;
         }
       });
@@ -162,14 +198,18 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
         cells: [
           <span key={r.id}>
             <Link to={`/clusters/${r.id}?first=${rule.rule_id}`}>
-              {r.cells[0]}
+              {r.cells[AFFECTED_CLUSTERS_NAME_CELL]}
             </Link>
           </span>,
           <span key={r.id}>
-            {r.last_checked_at ? (
+            {r.cells[AFFECTED_CLUSTERS_VERSION_CELL] ||
+              intl.formatMessage(messages.notAvailable)}
+          </span>,
+          <span key={r.id}>
+            {r.cells[AFFECTED_CLUSTERS_LAST_SEEN_CELL] ? (
               <DateFormat
                 extraTitle={`${intl.formatMessage(messages.lastSeen)}: `}
-                date={r.last_checked_at}
+                date={r.cells[AFFECTED_CLUSTERS_LAST_SEEN_CELL]}
                 variant="relative"
               />
             ) : (
@@ -207,10 +247,8 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
   useEffect(() => {
     const newFilteredRows = buildFilteredRows(rows, filters);
     const newDisplayedRows = buildDisplayedRows(newFilteredRows);
-    const newChips = updateNameChip(chips, filters.text);
     setFilteredRows(newFilteredRows);
     setDisplayedRows(newDisplayedRows);
-    setChips(newChips);
   }, [query, filters]);
 
   const handleModalToggle = (disableRuleModalOpen, host = undefined) => {
@@ -244,9 +282,27 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
           isError || (rows && rows.length === 0)
             ? undefined
             : {
-                filters: chips,
+                filters: buildFilterChips(filters, FILTER_CATEGORIES),
                 deleteTitle: intl.formatMessage(messages.resetFilters),
-                onDelete: onChipDelete,
+                onDelete: (event, itemsToRemove, isAll) => {
+                  if (isAll) {
+                    updateFilters(AFFECTED_CLUSTERS_INITIAL_STATE);
+                  } else {
+                    itemsToRemove.map((item) => {
+                      const newFilter = {
+                        [item.urlParam]: Array.isArray(filters[item.urlParam])
+                          ? filters[item.urlParam].filter(
+                              (value) =>
+                                String(value) !== String(item.chips[0].value)
+                            )
+                          : '',
+                      };
+                      newFilter[item.urlParam].length > 0
+                        ? updateFilters({ ...filters, ...newFilter })
+                        : removeFilterParam(item.urlParam);
+                    });
+                  }
+                },
               }
         }
         bulkSelect={{
@@ -297,15 +353,15 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
         actions={[
           {
             title: 'Disable recommendation for cluster',
-            onClick: (event, rowIndex) => {
-              return handleModalToggle(true, filteredRows[rowIndex].id);
-            },
+            onClick: (event, rowIndex) =>
+              handleModalToggle(true, filteredRows[rowIndex].id),
           },
         ]}
       >
         <TableHeader />
         {(isUninitialized || isFetching) && <Loading />}
         {isError && (
+          // TODO: fix crooked message container
           <Card id="error-state-message" ouiaId="error-state">
             <CardBody>
               <ErrorState />
@@ -313,6 +369,7 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
           </Card>
         )}
         {isSuccess && rows.length === 0 && (
+          // TODO: fix crooked message container
           <Card id="empty-state-message" ouiaId="empty-state">
             <CardBody>
               <NoAffectedClusters />
@@ -324,6 +381,7 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
           (filteredRows.length > 0 ? (
             <TableBody />
           ) : (
+            // TODO: fix crooked message container
             <EmptyTable>
               <Bullseye>
                 <NoMatchingClusters />

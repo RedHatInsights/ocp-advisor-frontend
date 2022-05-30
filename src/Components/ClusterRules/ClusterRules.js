@@ -17,11 +17,8 @@ import {
   TableHeader,
   TableVariant,
 } from '@patternfly/react-table';
-import { Card, CardBody } from '@patternfly/react-core/dist/js/components/Card';
-import {
-  Tooltip,
-  TooltipPosition,
-} from '@patternfly/react-core/dist/js/components/Tooltip';
+import { Card, CardBody, Tooltip } from '@patternfly/react-core';
+import { TooltipPosition } from '@patternfly/react-core/dist/js/components/Tooltip';
 import InfoCircleIcon from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import { global_danger_color_100 as globalDangerColor100 } from '@patternfly/react-tokens/dist/js/global_danger_color_100';
@@ -44,6 +41,8 @@ import { NoMatchingRecs } from '../MessageState/EmptyStates';
 import {
   paramParser,
   passFilters,
+  removeFilterParam as _removeFilterParam,
+  addFilterParam as _addFilterParam,
   translateSortParams,
 } from '../Common/Tables';
 import {
@@ -74,6 +73,15 @@ const ClusterRules = ({ cluster }) => {
   const loadingState = isUninitialized || isFetching || rowsUpdating;
   const errorState = isError;
   const successState = isSuccess;
+
+  const removeFilterParam = (param) =>
+    _removeFilterParam(filters, updateFilters, param);
+
+  const addFilterParam = (param, values) => {
+    setExpandFirst(false);
+    setFirstRule('');
+    return _addFilterParam(filters, updateFilters, param, values);
+  };
 
   useEffect(() => {
     if (search) {
@@ -244,21 +252,6 @@ const ClusterRules = ({ cluster }) => {
       sortIndex: index,
       sortDirection: direction,
     });
-  };
-
-  const removeFilterParam = (param) => {
-    const filter = { ...filters, offset: 0 };
-    delete filter[param];
-    updateFilters({ ...filter, ...(param === 'text' ? { text: '' } : {}) });
-  };
-
-  // TODO: update URL when filters changed
-  const addFilterParam = (param, values) => {
-    setExpandFirst(false);
-    setFirstRule('');
-    return values.length > 0
-      ? updateFilters({ ...filters, offset: 0, ...{ [param]: values } })
-      : removeFilterParam(param);
   };
 
   const filterConfigItems = [
