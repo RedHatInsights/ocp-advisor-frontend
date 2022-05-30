@@ -2,9 +2,13 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
 
-import { Grid, GridItem } from '@patternfly/react-core/dist/js/layouts/Grid';
-import { Stack, StackItem } from '@patternfly/react-core/dist/js/layouts/Stack';
-import { Title } from '@patternfly/react-core/dist/js/components/Title';
+import {
+  Grid,
+  GridItem,
+  Stack,
+  StackItem,
+  Title,
+} from '@patternfly/react-core';
 import { Dropdown, DropdownToggle, DropdownItem } from '@patternfly/react-core';
 import Skeleton from '@redhat-cloud-services/frontend-components/Skeleton';
 import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat/DateFormat';

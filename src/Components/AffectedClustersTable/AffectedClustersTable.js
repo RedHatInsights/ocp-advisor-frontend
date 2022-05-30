@@ -11,16 +11,17 @@ import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryTo
 import { EmptyTable } from '@redhat-cloud-services/frontend-components/EmptyTable';
 import { TableToolbar } from '@redhat-cloud-services/frontend-components/TableToolbar';
 import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
-import { Card, CardBody } from '@patternfly/react-core/dist/js/components/Card';
+import {
+  Card,
+  CardBody,
+  Tooltip,
+  Bullseye,
+  Pagination,
+} from '@patternfly/react-core';
+import { PaginationVariant } from '@patternfly/react-core/dist/js/components/Pagination/Pagination';
 import { Table } from '@patternfly/react-table/dist/js/components/Table/Table';
 import { TableBody } from '@patternfly/react-table/dist/js/components/Table/Body';
 import { TableHeader } from '@patternfly/react-table/dist/js/components/Table/Header';
-import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
-import { Tooltip } from '@patternfly/react-core/dist/js/components/Tooltip';
-import {
-  Pagination,
-  PaginationVariant,
-} from '@patternfly/react-core/dist/js/components/Pagination/Pagination';
 
 import {
   ErrorState,
@@ -202,7 +203,7 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
           </span>,
           <span key={r.id}>
             {r.cells[AFFECTED_CLUSTERS_VERSION_CELL] ||
-              intl.formatMessage(messages.nA)}
+              intl.formatMessage(messages.notAvailable)}
           </span>,
           <span key={r.id}>
             {r.cells[AFFECTED_CLUSTERS_LAST_SEEN_CELL] ? (

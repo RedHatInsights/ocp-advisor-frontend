@@ -1,19 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import capitalize from 'lodash/capitalize';
 import cloneDeep from 'lodash/cloneDeep';
-import { compare } from 'semver';
-
-import { Tooltip } from '@patternfly/react-core/dist/js/components/Tooltip';
-import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
-
+import { useEffect, useState } from 'react';
+import { coerce, compare, valid } from 'semver';
 import {
   CLUSTER_FILTER_CATEGORIES,
   FILTER_CATEGORIES,
-  intl,
   RULE_CATEGORIES,
 } from '../../AppConstants';
-import messages from '../../Messages';
 
 export const passFilters = (rule, filters) =>
   Object.entries(filters).every(([filterKey, filterValue]) => {
@@ -70,48 +63,15 @@ export const passFiltersCluster = (cluster, filters) =>
           // clusters with at least one rule hit for any of the active risk filters
           filterValue.some((v) => cluster.hits_by_total_risk[v] > 0)
         );
+      case 'version':
+        return (
+          filterValue.length === 0 ||
+          filterValue.includes(toValidSemVer(cluster.cluster_version))
+        );
       default:
         return true;
     }
   });
-
-export const mapClustersToRows = (clusters) =>
-  clusters.map((cluster, index) => ({
-    cluster,
-    cells: [
-      <span key={index}>
-        <Link to={`clusters/${cluster.cluster_id}`}>
-          {cluster.cluster_name || cluster.cluster_id}
-        </Link>
-      </span>,
-      cluster.total_hit_count,
-      cluster.hits_by_total_risk?.[4] || 0,
-      cluster.hits_by_total_risk?.[3] || 0,
-      cluster.hits_by_total_risk?.[2] || 0,
-      cluster.hits_by_total_risk?.[1] || 0,
-      <span key={index}>
-        {cluster.last_checked_at ? (
-          <DateFormat
-            extraTitle={`${intl.formatMessage(messages.lastSeen)}: `}
-            date={cluster.last_checked_at}
-            variant="relative"
-          />
-        ) : (
-          <Tooltip
-            key={index}
-            content={
-              <span>
-                {intl.formatMessage(messages.lastSeen) + ': '}
-                {intl.formatMessage(messages.nA)}
-              </span>
-            }
-          >
-            <span>{intl.formatMessage(messages.nA)}</span>
-          </Tooltip>
-        )}
-      </span>,
-    ],
-  }));
 
 const pruneFilters = (localFilters, filterCategories) => {
   const prunedFilters = Object.entries(localFilters || {});
@@ -261,6 +221,9 @@ export const updateSearchParams = (filters = {}, columnMapping) => {
 
 // TODO: move to Utils.js
 export const compareSemVer = (v1, v2, d) => d * compare(v1, v2);
+export const toValidSemVer = (version) =>
+  coerce(version === undefined || !valid(coerce(version)) ? '0.0.0' : version)
+    .version;
 
 export const removeFilterParam = (currentFilters, updateFilters, param) => {
   const { [param]: omitted, ...newFilters } = { ...currentFilters, offset: 0 };

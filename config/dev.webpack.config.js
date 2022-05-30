@@ -37,6 +37,7 @@ plugins.push(
     }
   )
 );
+plugins.push(new BundleAnalyzerPlugin());
 
 plugins.push(new BundleAnalyzerPlugin());
 

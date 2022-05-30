@@ -10,6 +10,12 @@ import { CHIP_GROUP, CHIP } from './components';
 
 const FILTERS_DROPDOWN = 'ul[class=pf-c-dropdown__menu]';
 const FILTER_TOGGLE = 'span[class=pf-c-select__toggle-arrow]';
+const VERSION_COMBINATIONS = [
+  ['4.18.12'],
+  ['4.17.9'],
+  ['3.0.3'],
+  ['4.18.12', '4.17.9'],
+];
 
 /**
  * A filter configuration
@@ -119,4 +125,11 @@ function removeAllChips() {
     });
 }
 
-export { applyFilters, urlParamConvert, hasChip, filter, removeAllChips };
+export {
+  applyFilters,
+  urlParamConvert,
+  hasChip,
+  filter,
+  removeAllChips,
+  VERSION_COMBINATIONS,
+};

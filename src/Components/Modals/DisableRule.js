@@ -3,12 +3,14 @@ import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 
-import { Button } from '@patternfly/react-core/dist/js/components/Button/Button';
-import { Checkbox } from '@patternfly/react-core/dist/js/components/Checkbox/Checkbox';
-import { Form } from '@patternfly/react-core/dist/js/components/Form/Form';
-import { FormGroup } from '@patternfly/react-core/dist/js/components/Form/FormGroup';
-import { Modal } from '@patternfly/react-core/dist/js/components/Modal/Modal';
-import { TextInput } from '@patternfly/react-core/dist/js/components/TextInput/TextInput';
+import {
+  Button,
+  Checkbox,
+  Form,
+  FormGroup,
+  Modal,
+  TextInput,
+} from '@patternfly/react-core';
 import { addNotification } from '@redhat-cloud-services/frontend-components-notifications/';
 
 import messages from '../../Messages';
