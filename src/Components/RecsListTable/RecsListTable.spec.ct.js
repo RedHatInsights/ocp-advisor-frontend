@@ -334,7 +334,7 @@ describe('successful non-empty recommendations list table', () => {
       .and('have.text', 'Enabled');
   });
 
-  it('7 filters available', () => {
+  it.only('Expected filters available', () => {
     const FILTERS_DROPDOWN = 'ul[class=pf-c-dropdown__menu]';
     const FILTER_ITEM = 'button[class=pf-c-dropdown__menu-item]';
 
@@ -343,20 +343,13 @@ describe('successful non-empty recommendations list table', () => {
       .find('button[class=pf-c-dropdown__toggle]')
       .should('have.length', 1)
       .click();
-    cy.get(FILTERS_DROPDOWN).find(FILTER_ITEM).should('have.length', 7);
+    const filtersNames = _.map(filtersConf, 'selectorText');
     cy.get(FILTERS_DROPDOWN)
       .find(FILTER_ITEM)
-      .each(($el) =>
-        expect($el.text()).to.be.oneOf([
-          'Name',
-          'Total risk',
-          'Impact',
-          'Likelihood',
-          'Category',
-          'Clusters impacted',
-          'Status',
-        ])
-      );
+      .should('have.length', filtersNames.length);
+    cy.get(FILTERS_DROPDOWN)
+      .find(FILTER_ITEM)
+      .each(($el) => expect($el.text()).to.be.oneOf(filtersNames));
   });
 
   describe('defaults', () => {
