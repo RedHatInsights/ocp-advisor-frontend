@@ -160,7 +160,7 @@ describe('cluster rules table', () => {
   it('total risk is mapped', () => {
     cy.get('td[data-label="Total risk"]').each((el) => {
       cy.wrap(el).should((risk) => {
-        expect(risk.get(0).innerText).to.be.oneOf(TOTAL_RISK_VALUES);
+        expect(risk.text()).to.be.oneOf(TOTAL_RISK_VALUES);
       });
     });
   });

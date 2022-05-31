@@ -553,7 +553,7 @@ describe('clusters list table', () => {
       });
   });
 
-  it('total risk hits are mapped correctly', () => {
+  it.only('total risk hits are mapped correctly', () => {
     cy.get('table')
       .find(TBODY)
       .find(ROW)
@@ -566,7 +566,7 @@ describe('clusters list table', () => {
                 namedClustersDefaultSorting[index].hits_by_total_risk[
                   TOTAL_RISK_MAP[riskCategory]
                 ] || 0;
-              expect($el.get(0).innerText).to.eq(expectedNumber.toString());
+              expect($el.text()).to.eq(expectedNumber.toString());
             });
         });
         cy.wrap($el)
@@ -575,7 +575,7 @@ describe('clusters list table', () => {
             const totalHitsNumber = Object.values(
               namedClustersDefaultSorting[index].hits_by_total_risk
             ).reduce((acc, it) => acc + it, 0);
-            expect($el.get(0).innerText).to.eq(totalHitsNumber.toString());
+            expect($el.text()).to.eq(totalHitsNumber.toString());
           });
       });
   });
