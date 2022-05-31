@@ -373,7 +373,7 @@ describe('successful non-empty recommendations list table', () => {
       );
     });
 
-    it.only('applies filters', () => {
+    it('applies filters', () => {
       for (const [key, value] of Object.entries(DEFAULT_FILTERS)) {
         const conf = filtersConf[key];
         if (conf.type === 'checkbox') {
@@ -715,12 +715,10 @@ describe('successful non-empty recommendations list table', () => {
         .should('have.text', 'Disabled');
     });
 
-    // TODO make test data independent
-    // TODO check also non-enabled by default rules
     it('each row has a kebab', () => {
       cy.get(TABLE)
         .find('tbody[role=rowgroup] .pf-c-dropdown__toggle')
-        .should('have.length', 4);
+        .should('have.length', DEFAULT_DISPLAYED_SIZE);
     });
 
     it('enabled rule has the disable action', () => {
