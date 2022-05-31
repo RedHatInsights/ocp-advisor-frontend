@@ -221,6 +221,10 @@ describe('data', () => {
       filterData(DEFAULT_FILTERS).length
     );
   });
+  it('there is at least one disabled recommendation in the first page', () => {
+    const firstData = filterData({}).slice(0, DEFAULT_ROW_COUNT + 1);
+    expect(_.filter(firstData, (it) => it.disabled)).to.have.length.gte(1);
+  });
 });
 
 const urlParamsList = [
@@ -353,12 +357,6 @@ describe('successful non-empty recommendations list table', () => {
           'Status',
         ])
       );
-  });
-
-  // TODO do not hardcode data
-  it('table has 7 recs including non-impacting', () => {
-    cy.removeImpactingFilter();
-    checkRowCounts(7);
   });
 
   describe('defaults', () => {
@@ -516,18 +514,6 @@ describe('successful non-empty recommendations list table', () => {
   });
 
   describe('filtering', () => {
-    it('include disabled rules', () => {
-      cy.removeStatusFilter().then(() => {
-        expect(window.location.search).to.not.contain('rule_status');
-      });
-      // TODO Verify that rule is in data as disabled
-      checkRowCounts(5)
-        .find('td[data-label="Name"]')
-        .contains('disabled rule with 2 impacted')
-        .should('have.length', 1);
-      // TODO make test data agnostic as long as one disabled rule is present
-    });
-
     it('can clear filters', () => {
       removeAllChips();
       // apply some filters
