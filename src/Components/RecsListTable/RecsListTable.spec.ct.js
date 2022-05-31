@@ -759,8 +759,6 @@ describe('successful non-empty recommendations list table', () => {
         cy.wrap(el).find('.ins-c-rule-details__stack');
       });
   });
-
-  // TODO: test search parameters with likelihood, impact, category filters
 });
 
 describe('empty recommendations list table', () => {
