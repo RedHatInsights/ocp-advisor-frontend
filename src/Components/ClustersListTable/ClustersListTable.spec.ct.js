@@ -553,7 +553,7 @@ describe('clusters list table', () => {
       });
   });
 
-  it.only('total risk hits are mapped correctly', () => {
+  it('total risk hits are mapped correctly', () => {
     cy.get('table')
       .find(TBODY)
       .find(ROW)

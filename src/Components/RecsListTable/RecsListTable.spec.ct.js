@@ -334,7 +334,7 @@ describe('successful non-empty recommendations list table', () => {
       .and('have.text', 'Enabled');
   });
 
-  it.only('Expected filters available', () => {
+  it('Expected filters available', () => {
     const FILTERS_DROPDOWN = 'ul[class=pf-c-dropdown__menu]';
     const FILTER_ITEM = 'button[class=pf-c-dropdown__menu-item]';
 
@@ -353,8 +353,6 @@ describe('successful non-empty recommendations list table', () => {
   });
 
   describe('defaults', () => {
-    // TODO enhance tests See ClustersListTable
-
     it(`shows maximum ${DEFAULT_ROW_COUNT} recommendations`, () => {
       checkRowCounts(DEFAULT_DISPLAYED_SIZE);
       expect(window.location.search).to.contain(`limit=${DEFAULT_ROW_COUNT}`);
@@ -375,12 +373,17 @@ describe('successful non-empty recommendations list table', () => {
       );
     });
 
-    it('applies filters', () => {
+    it.only('applies filters', () => {
       for (const [key, value] of Object.entries(DEFAULT_FILTERS)) {
-        // TODO fix v
-        // const [group, item] = urlParamConvert(key, value);
-        // hasChip(group, item);
         const conf = filtersConf[key];
+        if (conf.type === 'checkbox') {
+          value.forEach((it) => {
+            hasChip(conf.selectorText, it);
+          });
+        } else {
+          hasChip(conf.selectorText, value);
+        }
+
         expect(window.location.search).to.contain(
           `${conf.urlParam}=${conf.urlValue(value)}`
         );
