@@ -732,12 +732,14 @@ describe('successful non-empty recommendations list table', () => {
         .should('have.text', 'Disable recommendation');
     });
 
-    // TODO make test data agnostic
     it('disabled rule has the enable action', () => {
-      cy.removeStatusFilter();
-      cy.removeImpactingFilter();
-      cy.clickOnRowKebab('disabled rule with 2 impacted');
-      cy.getRowByName('disabled rule with 2 impacted')
+      removeAllChips();
+      const firstDisabledRecommendation = _.filter(
+        filterData({}),
+        (it) => it.disabled
+      )[0];
+      cy.clickOnRowKebab(firstDisabledRecommendation.description);
+      cy.getRowByName(firstDisabledRecommendation.description)
         .find('.pf-c-dropdown__menu button')
         .should('have.text', 'Enable recommendation');
     });
