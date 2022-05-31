@@ -1,6 +1,5 @@
 const { resolve } = require('path');
 const config = require('@redhat-cloud-services/frontend-components-config');
-const TerserPlugin = require('terser-webpack-plugin');
 
 const BundleAnalyzerPlugin =
   require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
@@ -29,9 +28,5 @@ module.exports = function (env) {
   return {
     ...webpackConfig,
     plugins,
-    optimization: {
-      minimize: true,
-      minimizer: [new TerserPlugin()],
-    },
   };
 };
