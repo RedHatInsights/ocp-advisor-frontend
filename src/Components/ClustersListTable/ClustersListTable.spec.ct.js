@@ -261,15 +261,9 @@ describe('clusters list table', () => {
       );
     });
 
-    // TODO use hasChip function
     it('applies total risk "All clusters" filter', () => {
-      cy.get(CHIP_GROUP)
-        .find('.pf-c-chip-group__label')
-        .should('have.text', 'Total risk');
-      cy.get(CHIP_GROUP)
-        .find('.pf-c-chip__text')
-        .should('have.length', 1)
-        .should('have.text', 'All clusters');
+      hasChip('Total risk', 'All clusters');
+      cy.get(CHIP_GROUP).find('.pf-c-chip__text').should('have.length', 1);
       expect(window.location.search).to.contain(`hits=all`);
     });
 
@@ -559,7 +553,7 @@ describe('clusters list table', () => {
       });
   });
 
-  it.only('total risk hits are mapped correctly', () => {
+  it('total risk hits are mapped correctly', () => {
     cy.get('table')
       .find(TBODY)
       .find(ROW)
