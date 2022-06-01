@@ -221,6 +221,10 @@ describe('data', () => {
       filterData(DEFAULT_FILTERS).length
     );
   });
+  it('there is at least one disabled recommendation in the first page', () => {
+    const firstData = filterData({}).slice(0, DEFAULT_ROW_COUNT);
+    expect(_.filter(firstData, (it) => it.disabled)).to.have.length.gte(1);
+  });
 });
 
 const urlParamsList = [
@@ -330,7 +334,7 @@ describe('successful non-empty recommendations list table', () => {
       .and('have.text', 'Enabled');
   });
 
-  it('7 filters available', () => {
+  it('Expected filters available', () => {
     const FILTERS_DROPDOWN = 'ul[class=pf-c-dropdown__menu]';
     const FILTER_ITEM = 'button[class=pf-c-dropdown__menu-item]';
 
@@ -339,31 +343,16 @@ describe('successful non-empty recommendations list table', () => {
       .find('button[class=pf-c-dropdown__toggle]')
       .should('have.length', 1)
       .click();
-    cy.get(FILTERS_DROPDOWN).find(FILTER_ITEM).should('have.length', 7);
+    const filtersNames = _.map(filtersConf, 'selectorText');
     cy.get(FILTERS_DROPDOWN)
       .find(FILTER_ITEM)
-      .each(($el) =>
-        expect($el.text()).to.be.oneOf([
-          'Name',
-          'Total risk',
-          'Impact',
-          'Likelihood',
-          'Category',
-          'Clusters impacted',
-          'Status',
-        ])
-      );
-  });
-
-  // TODO do not hardcode data
-  it('table has 7 recs including non-impacting', () => {
-    cy.removeImpactingFilter();
-    checkRowCounts(7);
+      .should('have.length', filtersNames.length);
+    cy.get(FILTERS_DROPDOWN)
+      .find(FILTER_ITEM)
+      .each(($el) => expect($el.text()).to.be.oneOf(filtersNames));
   });
 
   describe('defaults', () => {
-    // TODO enhance tests See ClustersListTable
-
     it(`shows maximum ${DEFAULT_ROW_COUNT} recommendations`, () => {
       checkRowCounts(DEFAULT_DISPLAYED_SIZE);
       expect(window.location.search).to.contain(`limit=${DEFAULT_ROW_COUNT}`);
@@ -386,10 +375,15 @@ describe('successful non-empty recommendations list table', () => {
 
     it('applies filters', () => {
       for (const [key, value] of Object.entries(DEFAULT_FILTERS)) {
-        // TODO fix v
-        // const [group, item] = urlParamConvert(key, value);
-        // hasChip(group, item);
         const conf = filtersConf[key];
+        if (conf.type === 'checkbox') {
+          value.forEach((it) => {
+            hasChip(conf.selectorText, it);
+          });
+        } else {
+          hasChip(conf.selectorText, value);
+        }
+
         expect(window.location.search).to.contain(
           `${conf.urlParam}=${conf.urlValue(value)}`
         );
@@ -516,18 +510,6 @@ describe('successful non-empty recommendations list table', () => {
   });
 
   describe('filtering', () => {
-    it('include disabled rules', () => {
-      cy.removeStatusFilter().then(() => {
-        expect(window.location.search).to.not.contain('rule_status');
-      });
-      // TODO Verify that rule is in data as disabled
-      checkRowCounts(5)
-        .find('td[data-label="Name"]')
-        .contains('disabled rule with 2 impacted')
-        .should('have.length', 1);
-      // TODO make test data agnostic as long as one disabled rule is present
-    });
-
     it('can clear filters', () => {
       removeAllChips();
       // apply some filters
@@ -733,12 +715,10 @@ describe('successful non-empty recommendations list table', () => {
         .should('have.text', 'Disabled');
     });
 
-    // TODO make test data independent
-    // TODO check also non-enabled by default rules
     it('each row has a kebab', () => {
       cy.get(TABLE)
         .find('tbody[role=rowgroup] .pf-c-dropdown__toggle')
-        .should('have.length', 4);
+        .should('have.length', DEFAULT_DISPLAYED_SIZE);
     });
 
     it('enabled rule has the disable action', () => {
@@ -752,12 +732,14 @@ describe('successful non-empty recommendations list table', () => {
         .should('have.text', 'Disable recommendation');
     });
 
-    // TODO make test data agnostic
     it('disabled rule has the enable action', () => {
-      cy.removeStatusFilter();
-      cy.removeImpactingFilter();
-      cy.clickOnRowKebab('disabled rule with 2 impacted');
-      cy.getRowByName('disabled rule with 2 impacted')
+      removeAllChips();
+      const firstDisabledRecommendation = _.filter(
+        filterData({}),
+        (it) => it.disabled
+      )[0];
+      cy.clickOnRowKebab(firstDisabledRecommendation.description);
+      cy.getRowByName(firstDisabledRecommendation.description)
         .find('.pf-c-dropdown__menu button')
         .should('have.text', 'Enable recommendation');
     });
@@ -777,8 +759,6 @@ describe('successful non-empty recommendations list table', () => {
         cy.wrap(el).find('.ins-c-rule-details__stack');
       });
   });
-
-  // TODO: test search parameters with likelihood, impact, category filters
 });
 
 describe('empty recommendations list table', () => {

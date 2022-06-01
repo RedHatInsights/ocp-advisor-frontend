@@ -15,6 +15,7 @@ import {
   TBODY,
   CHIP,
   TABLE,
+  ROW,
 } from '../../../cypress/utils/components';
 import {
   DEFAULT_ROW_COUNT,
@@ -203,9 +204,6 @@ describe('data', () => {
 });
 
 describe('clusters list table', () => {
-  // TODO remove those commands and convert to functions or utilities
-  Cypress.Commands.add('getFirstRow', () => cy.get(TBODY).children().eq(0));
-
   beforeEach(() => {
     mount(
       <MemoryRouter initialEntries={['/clusters']} initialIndex={0}>
@@ -263,15 +261,9 @@ describe('clusters list table', () => {
       );
     });
 
-    // TODO use hasChip function
     it('applies total risk "All clusters" filter', () => {
-      cy.get(CHIP_GROUP)
-        .find('.pf-c-chip-group__label')
-        .should('have.text', 'Total risk');
-      cy.get(CHIP_GROUP)
-        .find('.pf-c-chip__text')
-        .should('have.length', 1)
-        .should('have.text', 'All clusters');
+      hasChip('Total risk', 'All clusters');
+      cy.get(CHIP_GROUP).find('.pf-c-chip__text').should('have.length', 1);
       expect(window.location.search).to.contain(`hits=all`);
     });
 
@@ -561,12 +553,31 @@ describe('clusters list table', () => {
       });
   });
 
-  // TODO avoid hardcoded values
-  it('shows correct amount of each type of the rule hits', () => {
-    cy.getFirstRow().find('td[data-label=Critical]').should('have.text', 2);
-    cy.getFirstRow().find('td[data-label=Important]').should('have.text', 7);
-    cy.getFirstRow().find('td[data-label=Moderate]').should('have.text', 9);
-    cy.getFirstRow().find('td[data-label=Low]').should('have.text', 5);
+  it('total risk hits are mapped correctly', () => {
+    cy.get('table')
+      .find(TBODY)
+      .find(ROW)
+      .each(($el, index) => {
+        Object.keys(TOTAL_RISK).forEach((riskCategory) => {
+          cy.wrap($el)
+            .find(`td[data-label=${riskCategory}]`)
+            .should(($el) => {
+              const expectedNumber =
+                namedClustersDefaultSorting[index].hits_by_total_risk[
+                  TOTAL_RISK_MAP[riskCategory]
+                ] || 0;
+              expect($el.text()).to.eq(expectedNumber.toString());
+            });
+        });
+        cy.wrap($el)
+          .find(`td[data-label="Recommendations"]`)
+          .should(($el) => {
+            const totalHitsNumber = Object.values(
+              namedClustersDefaultSorting[index].hits_by_total_risk
+            ).reduce((acc, it) => acc + it, 0);
+            expect($el.text()).to.eq(totalHitsNumber.toString());
+          });
+      });
   });
 });
 

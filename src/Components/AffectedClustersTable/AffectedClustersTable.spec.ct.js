@@ -463,7 +463,6 @@ describe('non-empty successful affected clusters table', () => {
   });
 
   describe('filtering', () => {
-    // TODO: use filtersConf approach
     it('no chips are displayed by default', () => {
       cy.get(CHIP_GROUP).should('not.exist');
       cy.get('button').contains('Reset filters').should('not.exist');
