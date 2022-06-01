@@ -222,7 +222,7 @@ describe('data', () => {
     );
   });
   it('there is at least one disabled recommendation in the first page', () => {
-    const firstData = filterData({}).slice(0, DEFAULT_ROW_COUNT + 1);
+    const firstData = filterData({}).slice(0, DEFAULT_ROW_COUNT);
     expect(_.filter(firstData, (it) => it.disabled)).to.have.length.gte(1);
   });
 });
