@@ -33,6 +33,10 @@ export const SmartProxyApi = createApi({
         };
       },
     }),
+    getClusterInfo: builder.query({
+      query: ({ id }) => `v2/cluster/${id}/info`,
+      transformResponse: (response) => response?.cluster,
+    }),
   }),
 });
 
@@ -45,4 +49,5 @@ export const {
   useGetRecsQuery,
   useLazyGetRecsQuery,
   useGetClustersQuery,
+  useGetClusterInfoQuery,
 } = SmartProxyApi;
