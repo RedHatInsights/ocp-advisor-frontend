@@ -207,7 +207,14 @@ const ClusterRules = ({ cluster }) => {
           cells: [
             {
               title: (
-                <ReportDetails key={`child-${key}`} report={{ rule: value }} />
+                <ReportDetails
+                  key={`child-${key}`}
+                  report={{
+                    rule: value,
+                    resolution: value.resolution,
+                    details: value.extra_data,
+                  }}
+                />
               ),
             },
           ],
