@@ -20,7 +20,7 @@ const MessageState = ({
   title,
   variant,
 }) => (
-  <EmptyState className={className} variant={variant}>
+  <EmptyState className={className} variant={variant} ouiaId="empty-state">
     {icon !== 'none' && (
       <EmptyStateIcon className={iconClass} style={iconStyle} icon={icon} />
     )}

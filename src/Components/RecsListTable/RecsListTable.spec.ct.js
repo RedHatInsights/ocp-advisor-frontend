@@ -15,6 +15,7 @@ import {
   CHIP_GROUP,
   PAGINATION,
   TABLE,
+  TITLE,
 } from '../../../cypress/utils/components';
 import {
   hasChip,
@@ -158,6 +159,20 @@ const DEFAULT_DISPLAYED_SIZE = Math.min(
 );
 
 const filterCombos = [{ impacting: ['1 or more'] }];
+
+const checkEmptyState = () => {
+  cy.get('[ouiaid=empty-state]').within(() => {
+    cy.get('.pf-c-empty-state__icon').should('have.length', 1);
+    cy.get(`h5${TITLE}`).should(
+      'have.text',
+      'No matching recommendations found'
+    );
+    cy.get('.pf-c-empty-state__body').should(
+      'have.text',
+      'To continue, edit your filter settings and search again.'
+    );
+  });
+};
 
 // actions
 Cypress.Commands.add('getAllRows', () => cy.get(TABLE).find(ROW));
@@ -537,8 +552,8 @@ describe('successful non-empty recommendations list table', () => {
       filterApply({
         name: 'Not existing recommendation',
       });
-      // TODO check empty table view
-      // TODO headers are displayed
+      checkEmptyState();
+      checkTableHeaders(TABLE_HEADERS);
     });
 
     it('no filters show all recommendations', () => {
@@ -564,8 +579,8 @@ describe('successful non-empty recommendations list table', () => {
             removeAllChips();
             filterApply(filters);
             if (sortedNames.length === 0) {
-              // TODO check empty table view
-              // TODO headers are displayed
+              checkEmptyState();
+              checkTableHeaders(TABLE_HEADERS);
             } else {
               cy.get(`td[data-label="Name"]`)
                 .then(($els) => {
@@ -614,6 +629,7 @@ describe('successful non-empty recommendations list table', () => {
       });
     });
 
+    // TODO: add more combinations
     describe('combined filters', () => {
       filterCombos.forEach((filters) => {
         it(`${Object.keys(filters)}`, () => {
@@ -628,7 +644,8 @@ describe('successful non-empty recommendations list table', () => {
           removeAllChips();
           filterApply(filters);
           if (sortedNames.length === 0) {
-            // TODO check empty table view
+            checkEmptyState();
+            checkTableHeaders(TABLE_HEADERS);
           } else {
             cy.get(`td[data-label="Name"]`)
               .then(($els) => {
