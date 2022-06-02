@@ -35,7 +35,7 @@ import {
   FILTER_CATEGORIES,
   CLUSTER_RULES_COLUMNS,
 } from '../../AppConstants';
-import ReportDetails from '../ReportDetails/ReportDetails';
+import { ReportDetails } from '@redhat-cloud-services/frontend-components-advisor-components';
 import RuleLabels from '../Labels/RuleLabels';
 import { NoMatchingRecs } from '../MessageState/EmptyStates';
 import {
@@ -206,7 +206,9 @@ const ClusterRules = ({ cluster }) => {
           fullWidth: true,
           cells: [
             {
-              title: <ReportDetails key={`child-${key}`} report={value} />,
+              title: (
+                <ReportDetails key={`child-${key}`} report={{ rule: value }} />
+              ),
             },
           ],
         },
