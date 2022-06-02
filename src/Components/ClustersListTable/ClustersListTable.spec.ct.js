@@ -59,8 +59,9 @@ data.forEach((it) => {
       : 0;
   });
 });
+const dataUnsorted = _.cloneDeep(data);
 // default sorting
-let namedClustersDefaultSorting = _.orderBy(
+data = _.orderBy(
   data,
   [(it) => it.last_checked_at || '1970-01-01T01:00:00.001Z'],
   ['desc']
@@ -118,62 +119,54 @@ const filtersConf = {
 const DEFAULT_FILTERS = { risk: ['All clusters'] };
 
 // TODO invert parameters and make data optional as well
-const filterData = (data, filters = DEFAULT_FILTERS) => {
+const filterData = (filters = DEFAULT_FILTERS, values = data) => {
   if (!_.has(filters, 'risk')) {
     // absence of "risk" means there are only clusters that have at least 1 hit
     return filter(
       filtersConf,
-      _.filter(data, (it) => it.total_hit_count > 0),
+      _.filter(values, (it) => it.total_hit_count > 0),
       filters
     );
   }
-  return filter(filtersConf, data, filters);
+  return filter(filtersConf, values, filters);
 };
 const filterApply = (filters) => applyFilters(filters, filtersConf);
 
 // TODO add more combinations of filters for testing
 const filterCombos = [{ risk: ['Critical', 'Moderate'], name: 'foo' }];
 
-// TODO use filterData in all tests except of data or namedClusters or namedClustersDefaultSorting
-
 describe('data', () => {
   it('has values', () => {
-    expect(filterData(data)).to.have.length.gte(1);
+    expect(filterData()).to.have.length.gte(1);
   });
-  it('has more entried than default pagination', () => {
-    expect(filterData(data)).to.have.length.gt(DEFAULT_ROW_COUNT);
+  it('has more entries than default pagination', () => {
+    expect(filterData()).to.have.length.gt(DEFAULT_ROW_COUNT);
   });
   it('at least one cluster has cluster name', () => {
-    expect(
-      _.filter(filterData(data), (it) => it.cluster_name)
-    ).to.have.length.gte(1);
-  });
-  it('first cluster has name', () => {
-    expect(filterData(data)[0]['cluster_name']).to.not.be.empty;
+    expect(_.filter(filterData(), (it) => it.cluster_name)).to.have.length.gte(
+      1
+    );
   });
   it('first page items contains at least one cluster without name', () => {
     const itemsInFirstPage = DEFAULT_DISPLAYED_SIZE;
     expect(
-      _.filter(
-        filterData(data).slice(0, itemsInFirstPage),
-        (it) => it.cluster_name
-      )
+      _.filter(filterData().slice(0, itemsInFirstPage), (it) => it.cluster_name)
     ).to.have.length.lt(itemsInFirstPage);
   });
   it('at least one entry has last seen', () => {
     expect(
-      _.filter(filterData(data), (it) => it.last_checked_at)
+      _.filter(filterData(), (it) => it.last_checked_at)
     ).to.have.length.gte(1);
   });
   it('at least one entry does not have last seen', () => {
     expect(
-      _.filter(filterData(data), (it) => it.last_checked_at === undefined)
+      _.filter(filterData(), (it) => it.last_checked_at === undefined)
     ).to.have.length.gte(1);
   });
-  it('at least one entry does not have all values for total risk categories', () => {
+  it('at least one entry in the original data does not have all values for total risk categories', () => {
     expect(
       _.filter(
-        filterData(clusters['data']),
+        filterData(DEFAULT_FILTERS, clusters['data']),
         (it) => Object.keys(it['hits_by_total_risk']).length < 4
       )
     ).to.have.length.gte(1);
@@ -191,15 +184,15 @@ describe('data', () => {
       .should('be.gte', 1);
   });
   it('at least two clusters match foo for their names', () => {
-    expect(filterData(data, { name: 'foo' })).to.have.length.gt(1);
+    expect(filterData({ name: 'foo' })).to.have.length.gt(1);
   });
   it('only one cluster matches foo bar in the name', () => {
-    expect(filterData(data, { name: 'foo bar' })).to.have.lengthOf(1);
+    expect(filterData({ name: 'foo bar' })).to.have.lengthOf(1);
   });
   it('the first combo filter has less clusters hitting that the default and at least one', () => {
-    const filteredData = filterData(data, filterCombos[0]);
+    const filteredData = filterData(filterCombos[0]);
     expect(filteredData).to.have.length.gte(1);
-    expect(filteredData).to.have.length.lt(filterData(data, {}).length); // TODO can use namedCluster.length directly unless data is optional
+    expect(filteredData).to.have.length.lt(filterData({}).length); // TODO can use namedCluster.length directly unless data is optional
   });
 });
 
@@ -362,7 +355,7 @@ describe('clusters list table', () => {
             // all tables must preserve original ordering
             category === 'cluster_version'
               ? // use ... spread operator because sort modifies the array on place
-                [...data].sort(
+                [...dataUnsorted].sort(
                   (a, b) =>
                     (order === 'ascending' ? 1 : -1) *
                     compare(
@@ -371,7 +364,7 @@ describe('clusters list table', () => {
                     )
                 )
               : _.orderBy(
-                  _.cloneDeep(data),
+                  _.cloneDeep(dataUnsorted),
                   [category],
                   [order === 'ascending' ? 'asc' : 'desc']
                 ),
@@ -421,10 +414,7 @@ describe('clusters list table', () => {
           it(`${k}: ${filterValues}`, () => {
             const filters = {};
             filters[k] = filterValues;
-            let sortedNames = _.map(
-              filterData(namedClustersDefaultSorting, filters),
-              'name'
-            );
+            let sortedNames = _.map(filterData(filters), 'name');
             removeAllChips();
             filterApply(filters);
             if (sortedNames.length === 0) {
@@ -478,10 +468,7 @@ describe('clusters list table', () => {
     describe('combined filters', () => {
       filterCombos.forEach((filters) => {
         it(`${Object.keys(filters)}`, () => {
-          let sortedNames = _.map(
-            filterData(namedClustersDefaultSorting, filters),
-            'name'
-          );
+          let sortedNames = _.map(filterData(filters), 'name');
           removeAllChips();
           filterApply(filters);
           if (sortedNames.length === 0) {
@@ -532,7 +519,7 @@ describe('clusters list table', () => {
   });
 
   it('rows show cluster names instead uuids when available', () => {
-    const names = _.map(namedClustersDefaultSorting, 'name');
+    const names = _.map(data, 'name');
     cy.get(`td[data-label="Name"]`)
       .then(($els) => {
         return _.map(Cypress.$.makeArray($els), 'innerText');
@@ -546,10 +533,8 @@ describe('clusters list table', () => {
       .each(($el, index) => {
         cy.wrap($el)
           .find('td[data-label=Name]')
-          .find(
-            `a[href="/clusters/${namedClustersDefaultSorting[index]['cluster_id']}"]`
-          )
-          .should('have.text', namedClustersDefaultSorting[index]['name']);
+          .find(`a[href="/clusters/${data[index]['cluster_id']}"]`)
+          .should('have.text', data[index]['name']);
       });
   });
 
@@ -563,9 +548,8 @@ describe('clusters list table', () => {
             .find(`td[data-label=${riskCategory}]`)
             .should(($el) => {
               const expectedNumber =
-                namedClustersDefaultSorting[index].hits_by_total_risk[
-                  TOTAL_RISK_MAP[riskCategory]
-                ] || 0;
+                data[index].hits_by_total_risk[TOTAL_RISK_MAP[riskCategory]] ||
+                0;
               expect($el.text()).to.eq(expectedNumber.toString());
             });
         });
@@ -573,7 +557,7 @@ describe('clusters list table', () => {
           .find(`td[data-label="Recommendations"]`)
           .should(($el) => {
             const totalHitsNumber = Object.values(
-              namedClustersDefaultSorting[index].hits_by_total_risk
+              data[index].hits_by_total_risk
             ).reduce((acc, it) => acc + it, 0);
             expect($el.text()).to.eq(totalHitsNumber.toString());
           });

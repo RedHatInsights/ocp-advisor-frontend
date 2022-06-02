@@ -55,6 +55,7 @@ let data = _.cloneDeep(clusterDetailData.data['enabled']);
 data.forEach(
   (it) => (it['name'] = it['cluster_name'] ? it['cluster_name'] : it['cluster'])
 );
+const dataUnsorted = _.cloneDeep(data);
 // default sorting
 data = _.orderBy(data, ['last_checked_at'], ['desc']);
 
@@ -417,12 +418,7 @@ describe('non-empty successful affected clusters table', () => {
           }
 
           // add property name to clusters
-          let sortedClusters = _.cloneDeep(
-            clusterDetailData.data['enabled'].map((it) => ({
-              ...it,
-              name: it['cluster_name'] ? it['cluster_name'] : it['cluster'],
-            }))
-          );
+          let sortedClusters = _.cloneDeep(dataUnsorted);
           // convert N/A timestamps as really old ones
           sortedClusters.forEach((it) => {
             if (it['last_checked_at'] === '') {

@@ -55,7 +55,9 @@ const DEFAULT_FILTERS = {
 };
 const TABLE_HEADERS = _.map(RECS_LIST_COLUMNS, (it) => it.title);
 
-const data = ruleResponse.recommendations;
+let data = ruleResponse.recommendations;
+const dataUnsorted = _.cloneDeep(data);
+data = _.orderBy(data, ['total_risk'], ['desc']);
 
 const IMPACT = { Low: 1, Medium: 2, High: 3, Critical: 4 };
 const LIKELIHOOD = { Low: 1, Medium: 2, High: 3, Critical: 4 };
@@ -148,8 +150,8 @@ const filtersConf = {
   },
 };
 
-const filterData = (filters = DEFAULT_FILTERS) =>
-  filter(filtersConf, data, filters);
+const filterData = (filters = DEFAULT_FILTERS, values = data) =>
+  filter(filtersConf, values, filters);
 const filterApply = (filters) => applyFilters(filters, filtersConf);
 
 const DEFAULT_DISPLAYED_SIZE = Math.min(
@@ -206,7 +208,7 @@ describe('data', () => {
     expect(data).to.have.length.gte(1);
   });
   it('has values even with default filters', () => {
-    expect(filterData(DEFAULT_FILTERS)).to.have.length.gte(1);
+    expect(filterData()).to.have.length.gte(1);
   });
   it('at least two recommendations match lorem for their descriptions', () => {
     expect(filterData({ name: 'lorem' })).to.have.length.gt(1);
@@ -217,9 +219,7 @@ describe('data', () => {
   it('the first combo filter different recommendations hitting that the default and at least one', () => {
     const filteredData = filterData(filterCombos[0]);
     expect(filteredData).to.have.length.gte(1);
-    expect(filteredData).to.not.have.lengthOf(
-      filterData(DEFAULT_FILTERS).length
-    );
+    expect(filteredData).to.not.have.lengthOf(filterData().length);
   });
   it('there is at least one disabled recommendation in the first page', () => {
     const firstData = filterData({}).slice(0, DEFAULT_ROW_COUNT);
@@ -402,7 +402,7 @@ describe('successful non-empty recommendations list table', () => {
 
   describe('pagination', () => {
     it('shows correct total number of recommendations', () => {
-      checkPaginationTotal(filterData(DEFAULT_FILTERS).length);
+      checkPaginationTotal(filterData().length);
     });
 
     it('values are expected ones', () => {
@@ -415,31 +415,27 @@ describe('successful non-empty recommendations list table', () => {
         changePagination(el).then(() =>
           expect(window.location.search).to.contain(`limit=${el}`)
         );
-        checkRowCounts(Math.min(el, filterData(DEFAULT_FILTERS).length));
+        checkRowCounts(Math.min(el, filterData().length));
       });
     });
     it('can iterate over pages', () => {
-      cy.wrap(itemsPerPage(filterData(DEFAULT_FILTERS).length)).each(
-        (el, index, list) => {
-          checkRowCounts(Math.min(el, filterData(DEFAULT_FILTERS).length)).then(
-            () => {
-              expect(window.location.search).to.contain(
-                `offset=${DEFAULT_ROW_COUNT * index}`
-              );
-            }
+      cy.wrap(itemsPerPage(filterData().length)).each((el, index, list) => {
+        checkRowCounts(Math.min(el, filterData().length)).then(() => {
+          expect(window.location.search).to.contain(
+            `offset=${DEFAULT_ROW_COUNT * index}`
           );
-          cy.get(TOOLBAR)
-            .find(PAGINATION)
-            .find('button[data-action="next"]')
-            .then(($button) => {
-              if (index === list.length - 1) {
-                cy.wrap($button).should('be.disabled');
-              } else {
-                cy.wrap($button).click();
-              }
-            });
-        }
-      );
+        });
+        cy.get(TOOLBAR)
+          .find(PAGINATION)
+          .find('button[data-action="next"]')
+          .then(($button) => {
+            if (index === list.length - 1) {
+              cy.wrap($button).should('be.disabled');
+            } else {
+              cy.wrap($button).click();
+            }
+          });
+      });
     });
   });
 
@@ -493,7 +489,7 @@ describe('successful non-empty recommendations list table', () => {
           let sortedData = _.map(
             // all tables must preserve original ordering
             _.orderBy(
-              _.cloneDeep(filterData(DEFAULT_FILTERS)),
+              _.cloneDeep(filterData(DEFAULT_FILTERS, dataUnsorted)),
               [orderIteratee],
               [order === 'ascending' ? 'asc' : 'desc']
             ),
