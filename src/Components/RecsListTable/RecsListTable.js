@@ -614,7 +614,7 @@ const RecsListTable = ({ query }) => {
                       fullWidth: true,
                       cells: [
                         {
-                          props: { colSpan: 5 },
+                          props: { colSpan: RECS_LIST_COLUMNS.length + 1 },
                           title: <List key="loading-cell" />,
                         },
                       ],
@@ -626,7 +626,7 @@ const RecsListTable = ({ query }) => {
                       fullWidth: true,
                       cells: [
                         {
-                          props: { colSpan: 5 },
+                          props: { colSpan: RECS_LIST_COLUMNS.length + 1 },
                           title: <NoMatchingRecs ouiaId="empty-state" />,
                         },
                       ],
