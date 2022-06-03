@@ -30,6 +30,7 @@ import {
   checkTableHeaders,
   checkRowCounts,
   tableIsSortedBy,
+  checkNoMatchState,
 } from '../../../cypress/utils/table';
 import {
   itemsPerPage,
@@ -477,8 +478,8 @@ describe('non-empty successful affected clusters table', () => {
             let sortedNames = _.map(filterData(filters), 'name');
             filterApply(filters);
             if (sortedNames.length === 0) {
-              // TODO check empty table view
-              // TODO headers are displayed
+              checkNoMatchState();
+              checkTableHeaders(TABLE_HEADERS);
             } else {
               cy.get(`td[data-label="Name"]`)
                 .then(($els) => {
@@ -514,7 +515,7 @@ describe('non-empty successful affected clusters table', () => {
           let sortedNames = _.map(filterData(filters), 'name');
           filterApply(filters);
           if (sortedNames.length === 0) {
-            // TODO check empty table view
+            checkNoMatchState();
           } else {
             cy.get(`td[data-label="Name"]`)
               .then(($els) => {
@@ -554,8 +555,8 @@ describe('non-empty successful affected clusters table', () => {
 
     it('empty state is displayed when filters do not match any rule', () => {
       cy.get('#name-filter').type('Not existing cluster');
-      // TODO check empty table view
-      // TODO headers are displayed
+      checkNoMatchState();
+      checkTableHeaders(TABLE_HEADERS);
     });
   });
 
@@ -691,8 +692,8 @@ describe('empty successful affected clusters table', () => {
   });
 
   it('renders no clusters message', () => {
-    cy.get('#empty-state-message')
-      .find('h4')
+    cy.get('[ouiaid="empty-state"]')
+      .find('h5')
       .should('have.text', 'No clusters');
   });
 
@@ -728,8 +729,8 @@ describe('empty failed affected clusters table', () => {
   });
 
   it('renders error message', () => {
-    cy.get('#error-state-message')
-      .find('h4')
+    cy.get('[ouiaid="empty-state"]')
+      .find('h5')
       .should('have.text', 'Something went wrong');
   });
 
