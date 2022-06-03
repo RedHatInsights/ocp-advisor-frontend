@@ -80,8 +80,6 @@ const NoMatchingRecs = () => {
     <MessageState
       title={intl.formatMessage(messages.noMatchingRecsTitle)}
       text={intl.formatMessage(messages.noMatchingRecsBody)}
-      icon={CheckCircleIcon}
-      iconStyle={{ color: globalSuccessColor100.value }}
     />
   );
 };
