@@ -26,23 +26,19 @@ import messages from '../../Messages';
 const ErrorState = () => {
   const intl = useIntl();
   return (
-    <EmptyState>
-      <EmptyStateIcon
-        icon={ExclamationCircleIcon}
-        color={globalDangerColor100.value}
-      />
-      <Title headingLevel="h4" size="lg">
-        {intl.formatMessage(messages.errorStateTitle)}
-      </Title>
-      <EmptyStateBody>
+    <MessageState
+      title={intl.formatMessage(messages.errorStateTitle)}
+      text={
         <Stack>
           <StackItem>{intl.formatMessage(messages.errorStateBody)}</StackItem>
           <StackItem>
             <DefaultErrorMessage />
           </StackItem>
         </Stack>
-      </EmptyStateBody>
-    </EmptyState>
+      }
+      icon={ExclamationCircleIcon}
+      iconStyle={{ color: globalDangerColor100.value }}
+    />
   );
 };
 
