@@ -620,7 +620,7 @@ const RecsListTable = ({ query }) => {
             <ErrorState />
           )
         }
-        onCollapse={handleOnCollapse}
+        onCollapse={handleOnCollapse} // TODO: set undefined when there is an empty state
         sortBy={{
           index: filters.sortIndex,
           direction: filters.sortDirection,

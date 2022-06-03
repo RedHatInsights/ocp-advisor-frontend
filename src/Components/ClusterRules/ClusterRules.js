@@ -419,7 +419,7 @@ const ClusterRules = ({ cluster }) => {
       <Table
         aria-label={'Cluster recommendations table'}
         ouiaId="recommendations"
-        onCollapse={handleOnCollapse}
+        onCollapse={handleOnCollapse} // TODO: set undefined when there is an empty state
         rows={
           errorState || loadingState || noMatch || noInput ? (
             [
