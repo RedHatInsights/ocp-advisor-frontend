@@ -17,7 +17,10 @@ import {
 } from '../../../cypress/utils/globals';
 import { applyFilters, filter } from '../../../cypress/utils/filters';
 import { cumulativeCombinations } from '../../../cypress/utils/combine';
-import { checkTableHeaders } from '../../../cypress/utils/table';
+import {
+  checkEmptyState,
+  checkTableHeaders,
+} from '../../../cypress/utils/table';
 import {
   CHIP_GROUP,
   CHIP,
@@ -256,8 +259,11 @@ describe('cluster rules table', () => {
       filterApply({
         description: 'Not existing recommendation',
       });
-      // TODO check empty table view
-      // TODO headers are displayed
+      checkEmptyState(
+        'No matching recommendations found',
+        'To continue, edit your filter settings and search again.'
+      );
+      checkTableHeaders(TABLE_HEADERS);
     });
 
     describe('single filter', () => {
@@ -272,8 +278,11 @@ describe('cluster rules table', () => {
             ).sort();
             filterApply(filters);
             if (sortedDescriptions.length === 0) {
-              // TODO check empty table view
-              // TODO headers are displayed
+              checkEmptyState(
+                'No matching recommendations found',
+                'To continue, edit your filter settings and search again.'
+              );
+              checkTableHeaders(TABLE_HEADERS);
             } else {
               cy.get(`td[data-label="Description"]`)
                 .then(($els) => {
@@ -315,7 +324,10 @@ describe('cluster rules table', () => {
           ).sort();
           filterApply(filters);
           if (sortedDescriptions.length === 0) {
-            // TODO check empty table view
+            checkEmptyState(
+              'No matching recommendations found',
+              'To continue, edit your filter settings and search again.'
+            );
           } else {
             cy.get(`td[data-label="Description"]`)
               .then(($els) => {
@@ -385,13 +397,11 @@ describe('empty cluster rules table', () => {
   });
 
   it('renders no recommendation message', () => {
-    cy.get('[data-ouia-component-id="no-recommendations"]')
-      .contains('The cluster is not affected by any known recommendations')
-      .should('exist');
-  });
-
-  it('does not render table', () => {
-    cy.get(TABLE).should('not.exist');
+    checkEmptyState(
+      'The cluster is not affected by any known recommendations',
+      'No known recommendations affect this cluster.',
+      true
+    );
   });
 });
 
