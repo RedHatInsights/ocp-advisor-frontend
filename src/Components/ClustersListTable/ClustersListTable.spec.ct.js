@@ -34,7 +34,7 @@ import {
   checkRowCounts,
   columnName2UrlParam,
   tableIsSortedBy,
-  checkEmptyState,
+  checkNoMatchingClusters,
 } from '../../../cypress/utils/table';
 import { CLUSTERS_LIST_COLUMNS } from '../../AppConstants';
 import {
@@ -414,7 +414,7 @@ describe('clusters list table', () => {
         name: 'Not existing clusters',
         risk: ['Critical', 'Moderate'],
       });
-      checkEmptyState('No matching clusters found');
+      checkNoMatchingClusters();
       checkTableHeaders(TABLE_HEADERS);
     });
 
@@ -431,7 +431,7 @@ describe('clusters list table', () => {
             removeAllChips();
             filterApply(filters);
             if (sortedNames.length === 0) {
-              checkEmptyState('No matching clusters found');
+              checkNoMatchingClusters();
               checkTableHeaders(TABLE_HEADERS);
             } else {
               cy.get(`td[data-label="Name"]`)
@@ -488,7 +488,7 @@ describe('clusters list table', () => {
           removeAllChips();
           filterApply(filters);
           if (sortedNames.length === 0) {
-            checkEmptyState('No matching clusters found');
+            checkNoMatchingClusters();
           } else {
             cy.get(`td[data-label="Name"]`)
               .then(($els) => {

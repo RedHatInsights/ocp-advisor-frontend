@@ -46,10 +46,20 @@ function checkEmptyState(title, checkIcon = false) {
     });
 }
 
+function checkNoMatchingClusters() {
+  return checkEmptyState('No matching clusters found');
+}
+
+function checkNoMatchingRecs() {
+  return checkEmptyState('No matching recommendations found');
+}
+
 export {
   checkTableHeaders,
   checkRowCounts,
   columnName2UrlParam,
   tableIsSortedBy,
   checkEmptyState,
+  checkNoMatchingClusters,
+  checkNoMatchingRecs,
 };

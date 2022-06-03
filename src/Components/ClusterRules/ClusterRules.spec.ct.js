@@ -19,6 +19,7 @@ import { applyFilters, filter } from '../../../cypress/utils/filters';
 import { cumulativeCombinations } from '../../../cypress/utils/combine';
 import {
   checkEmptyState,
+  checkNoMatchingRecs,
   checkTableHeaders,
 } from '../../../cypress/utils/table';
 import {
@@ -261,7 +262,7 @@ describe('cluster rules table', () => {
       filterApply({
         description: 'Not existing recommendation',
       });
-      checkEmptyState('No matching recommendations found');
+      checkNoMatchingRecs();
       checkTableHeaders(TABLE_HEADERS);
     });
 
@@ -277,7 +278,7 @@ describe('cluster rules table', () => {
             ).sort();
             filterApply(filters);
             if (sortedDescriptions.length === 0) {
-              checkEmptyState('No matching recommendations found');
+              checkNoMatchingRecs();
               checkTableHeaders(TABLE_HEADERS);
             } else {
               cy.get(`td[data-label="Description"]`)
@@ -320,7 +321,7 @@ describe('cluster rules table', () => {
           ).sort();
           filterApply(filters);
           if (sortedDescriptions.length === 0) {
-            checkEmptyState('No matching recommendations found');
+            checkNoMatchingRecs();
           } else {
             cy.get(`td[data-label="Description"]`)
               .then(($els) => {

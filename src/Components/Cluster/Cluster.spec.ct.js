@@ -7,7 +7,10 @@ import { Cluster } from './Cluster';
 import { Provider } from 'react-redux';
 import getStore from '../../Store';
 import singleClusterPageReport from '../../../cypress/fixtures/api/insights-results-aggregator/v2/cluster/dcb95bbf-8673-4f3a-a63c-12d4a530aa6f/reports-disabled-false.json';
-import { checkEmptyState, checkRowCounts } from '../../../cypress/utils/table';
+import {
+  checkNoMatchingRecs,
+  checkRowCounts,
+} from '../../../cypress/utils/table';
 import { TBODY } from '../../../cypress/utils/components';
 
 // selectors
@@ -146,7 +149,7 @@ describe('cluster page', () => {
       expect($el.text()).to.be.oneOf(['foo bar', 'Low', 'Performance'])
     );
     checkRowCounts(1);
-    checkEmptyState('No matching recommendations found');
+    checkNoMatchingRecs();
   });
 
   it('adds additional filters passed by the query parameters №2', () => {
@@ -170,7 +173,7 @@ describe('cluster page', () => {
       ])
     );
     checkRowCounts(1);
-    checkEmptyState('No matching recommendations found');
+    checkNoMatchingRecs();
   });
 });
 
