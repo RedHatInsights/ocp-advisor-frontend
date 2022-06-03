@@ -333,7 +333,6 @@ const ClustersListTable = ({
             filterConfig={{ items: filterConfigItems }}
             activeFiltersConfig={activeFiltersConfig}
           />
-          {loadingState && <Loading />}
           {errorState && (
             <Card ouiaId="error-state">
               <CardBody>
@@ -341,56 +340,54 @@ const ClustersListTable = ({
               </CardBody>
             </Card>
           )}
-          {!loadingState && successState && (
-            <React.Fragment>
-              <Table
-                aria-label="Table of clusters"
-                ouiaId="clusters"
-                variant={TableVariant.compact}
-                cells={CLUSTERS_LIST_COLUMNS}
-                rows={
-                  loadingState
-                    ? [
-                        {
-                          fullWidth: true,
-                          cells: [
-                            {
-                              props: {
-                                colSpan: CLUSTERS_LIST_COLUMNS.length + 1,
-                              },
-                              title: <List key="loading-cell" />,
+          <React.Fragment>
+            <Table
+              aria-label="Table of clusters"
+              ouiaId="clusters"
+              variant={TableVariant.compact}
+              cells={CLUSTERS_LIST_COLUMNS}
+              rows={
+                loadingState
+                  ? [
+                      {
+                        fullWidth: true,
+                        cells: [
+                          {
+                            props: {
+                              colSpan: CLUSTERS_LIST_COLUMNS.length + 1,
                             },
-                          ],
-                        },
-                      ]
-                    : clusters.length > 0 && filteredRows.length === 0
-                    ? [
-                        {
-                          fullWidth: true,
-                          cells: [
-                            {
-                              props: {
-                                colSpan: CLUSTERS_LIST_COLUMNS.length + 1,
-                              },
-                              title: <NoMatchingClusters />,
+                            title: <List key="loading-cell" />,
+                          },
+                        ],
+                      },
+                    ]
+                  : clusters.length > 0 && filteredRows.length === 0
+                  ? [
+                      {
+                        fullWidth: true,
+                        cells: [
+                          {
+                            props: {
+                              colSpan: CLUSTERS_LIST_COLUMNS.length + 1,
                             },
-                          ],
-                        },
-                      ]
-                    : displayedRows
-                }
-                sortBy={{
-                  index: filters.sortIndex,
-                  direction: filters.sortDirection,
-                }}
-                onSort={onSort}
-                isStickyHeader
-              >
-                <TableHeader />
-                <TableBody />
-              </Table>
-            </React.Fragment>
-          )}
+                            title: <NoMatchingClusters />,
+                          },
+                        ],
+                      },
+                    ]
+                  : displayedRows
+              }
+              sortBy={{
+                index: filters.sortIndex,
+                direction: filters.sortDirection,
+              }}
+              onSort={onSort}
+              isStickyHeader
+            >
+              <TableHeader />
+              <TableBody />
+            </Table>
+          </React.Fragment>
           <Pagination
             ouiaId="pager"
             itemCount={filteredRows.length}
