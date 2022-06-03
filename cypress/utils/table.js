@@ -36,6 +36,7 @@ function tableIsSortedBy(columnTitle) {
 }
 
 function checkEmptyState(title, checkIcon = false) {
+  checkRowCounts(1);
   cy.get(TABLE)
     .find('[ouiaid=empty-state]')
     .should('have.length', 1)

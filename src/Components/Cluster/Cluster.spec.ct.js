@@ -141,7 +141,6 @@ describe('cluster page', () => {
     cy.get(FILTER_CHIPS).each(($el) =>
       expect($el.text()).to.be.oneOf(['foo bar', 'Low', 'Performance'])
     );
-    checkRowCounts(1);
     checkNoMatchingRecs();
   });
 
@@ -165,7 +164,6 @@ describe('cluster page', () => {
         'Service Availability',
       ])
     );
-    checkRowCounts(1);
     checkNoMatchingRecs();
   });
 });
