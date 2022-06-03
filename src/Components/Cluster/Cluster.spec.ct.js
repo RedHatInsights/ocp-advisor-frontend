@@ -11,7 +11,6 @@ import {
   checkNoMatchingRecs,
   checkRowCounts,
 } from '../../../cypress/utils/table';
-import { TBODY } from '../../../cypress/utils/components';
 
 // selectors
 const CLUSTER_HEADER = '#cluster-header';
@@ -94,10 +93,7 @@ describe('cluster page', () => {
     cy.get(CLUSTER_HEADER).should('have.length', 1);
     // renders table component
     cy.get(RULES_TABLE).should('have.length', 1);
-    cy.get('[data-ouia-component-id=loading-skeleton]').should(
-      'have.length',
-      1
-    );
+    cy.ouiaId('loading-skeleton').should('have.length', 1);
   });
 
   it('cluster page in the error state', () => {
