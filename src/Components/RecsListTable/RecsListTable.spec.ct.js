@@ -15,7 +15,6 @@ import {
   CHIP_GROUP,
   PAGINATION,
   TABLE,
-  TITLE,
 } from '../../../cypress/utils/components';
 import {
   hasChip,
@@ -42,6 +41,7 @@ import {
   columnName2UrlParam,
   checkTableHeaders,
   tableIsSortedBy,
+  checkNoMatchState,
 } from '../../../cypress/utils/table';
 import { SORTING_ORDERS } from '../../../cypress/utils/globals';
 // TODO make more use of ../../../cypress/utils/components
@@ -159,20 +159,6 @@ const DEFAULT_DISPLAYED_SIZE = Math.min(
 );
 
 const filterCombos = [{ impacting: ['1 or more'] }];
-
-const checkEmptyState = () => {
-  cy.get('[ouiaid=empty-state]').within(() => {
-    cy.get('.pf-c-empty-state__icon').should('have.length', 1);
-    cy.get(`h5${TITLE}`).should(
-      'have.text',
-      'No matching recommendations found'
-    );
-    cy.get('.pf-c-empty-state__body').should(
-      'have.text',
-      'To continue, edit your filter settings and search again.'
-    );
-  });
-};
 
 // actions
 Cypress.Commands.add('getAllRows', () => cy.get(TABLE).find(ROW));
@@ -552,7 +538,7 @@ describe('successful non-empty recommendations list table', () => {
       filterApply({
         name: 'Not existing recommendation',
       });
-      checkEmptyState();
+      checkNoMatchState(true);
       checkTableHeaders(TABLE_HEADERS);
     });
 
@@ -579,7 +565,7 @@ describe('successful non-empty recommendations list table', () => {
             removeAllChips();
             filterApply(filters);
             if (sortedNames.length === 0) {
-              checkEmptyState();
+              checkNoMatchState(true);
               checkTableHeaders(TABLE_HEADERS);
             } else {
               cy.get(`td[data-label="Name"]`)
@@ -644,7 +630,7 @@ describe('successful non-empty recommendations list table', () => {
           removeAllChips();
           filterApply(filters);
           if (sortedNames.length === 0) {
-            checkEmptyState();
+            checkNoMatchState(true);
             checkTableHeaders(TABLE_HEADERS);
           } else {
             cy.get(`td[data-label="Name"]`)

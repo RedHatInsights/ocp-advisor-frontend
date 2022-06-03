@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { ROW, TBODY } from './components';
+import { ROW, TABLE, TBODY, TITLE } from './components';
 
 function checkTableHeaders(expectedHeaders) {
   /* patternfly/react-table-4.71.16, for some reason, renders extra empty `th` container;
@@ -33,9 +33,27 @@ function tableIsSortedBy(columnTitle) {
     .should('have.class', 'pf-c-table__sort pf-m-selected');
 }
 
+function checkNoMatchState(isRecsList) {
+  cy.get(TABLE)
+    .find('[ouiaid=empty-state]')
+    .should('have.length', 1)
+    .within(() => {
+      cy.get('.pf-c-empty-state__icon').should('have.length', 0);
+      cy.get(`h5${TITLE}`).should(
+        'have.text',
+        `No matching ${isRecsList ? 'recommendations' : 'clusters'} found`
+      );
+      cy.get('.pf-c-empty-state__body').should(
+        'have.text',
+        'To continue, edit your filter settings and search again.'
+      );
+    });
+}
+
 export {
   checkTableHeaders,
   checkRowCounts,
   columnName2UrlParam,
   tableIsSortedBy,
+  checkNoMatchState,
 };
