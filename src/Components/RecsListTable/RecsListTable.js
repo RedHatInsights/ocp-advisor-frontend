@@ -660,7 +660,7 @@ RecsListTable.propTypes = {
     isUninitialized: PropTypes.bool.isRequired,
     isFetching: PropTypes.bool.isRequired,
     isSuccess: PropTypes.bool.isRequired,
-    data: PropTypes.array,
+    data: PropTypes.object,
     refetch: PropTypes.func,
   }),
 };

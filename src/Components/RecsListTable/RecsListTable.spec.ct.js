@@ -795,9 +795,11 @@ describe('empty recommendations list table', () => {
   });
 
   it('renders error message', () => {
-    cy.get('#error-state-message')
-      .find('h4')
-      .should('have.text', 'Something went wrong');
+    checkEmptyState(
+      'Something went wrong',
+      'There was a problem processing the request. Please try again.If the problem persists, contact Red Hat Support or check our  status page for known outages.',
+      true
+    ); // error is shown because it is not OK if API responds 200 but with no recommendations
   });
 });
 
@@ -823,8 +825,10 @@ describe('error recommendations list table', () => {
   });
 
   it('renders error message', () => {
-    cy.get('#error-state-message')
-      .find('h4')
-      .should('have.text', 'Something went wrong');
+    checkEmptyState(
+      'Something went wrong',
+      'There was a problem processing the request. Please try again.If the problem persists, contact Red Hat Support or check our  status page for known outages.',
+      true
+    );
   });
 });
