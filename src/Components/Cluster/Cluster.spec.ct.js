@@ -66,10 +66,7 @@ describe('cluster page', () => {
     // renders table component
     cy.get(RULES_TABLE).should('have.length', 1);
     // test how many rows were rendered
-    // TODO: for selectable rows, tbody is rendered for each row, and checkRowCounts doesn't work correctly
-    cy.get('table')
-      .find(TBODY)
-      .should('have.length', singleClusterPageReport.report.data.length);
+    checkRowCounts(singleClusterPageReport.report.data.length, true);
   });
 
   it('cluster page in the loading state', () => {
