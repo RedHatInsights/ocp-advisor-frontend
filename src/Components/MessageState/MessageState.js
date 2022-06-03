@@ -21,7 +21,7 @@ const MessageState = ({
   variant,
 }) => (
   <EmptyState className={className} variant={variant} ouiaId="empty-state">
-    {icon !== 'none' && (
+    {icon && (
       <EmptyStateIcon className={iconClass} style={iconStyle} icon={icon} />
     )}
     <Title headingLevel="h5" size="lg">
@@ -44,7 +44,6 @@ MessageState.propTypes = {
 };
 
 MessageState.defaultProps = {
-  icon: CubesIcon,
   title: '',
   variant: EmptyStateVariant.full,
 };

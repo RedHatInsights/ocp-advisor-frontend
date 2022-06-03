@@ -67,14 +67,10 @@ const NoAffectedClusters = () => {
 const NoMatchingClusters = () => {
   const intl = useIntl();
   return (
-    <EmptyState>
-      <Title headingLevel="h5" size="lg">
-        {intl.formatMessage(messages.noMatchingClustersTitle)}
-      </Title>
-      <EmptyStateBody>
-        {intl.formatMessage(messages.noMatchingClustersBody)}
-      </EmptyStateBody>
-    </EmptyState>
+    <MessageState
+      title={intl.formatMessage(messages.noMatchingClustersTitle)}
+      text={intl.formatMessage(messages.noMatchingClustersBody)}
+    />
   );
 };
 // used in the recs list table: no filters match
