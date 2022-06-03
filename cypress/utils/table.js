@@ -33,7 +33,7 @@ function tableIsSortedBy(columnTitle) {
     .should('have.class', 'pf-c-table__sort pf-m-selected');
 }
 
-function checkEmptyState(title, body, checkIcon = false) {
+function checkEmptyState(title, checkIcon = false) {
   cy.get(TABLE)
     .find('[ouiaid=empty-state]')
     .should('have.length', 1)
@@ -43,7 +43,6 @@ function checkEmptyState(title, body, checkIcon = false) {
         checkIcon ? 1 : 0
       );
       cy.get(`h5${TITLE}`).should('have.text', title);
-      cy.get('.pf-c-empty-state__body').should('have.text', body);
     });
 }
 

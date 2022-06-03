@@ -146,10 +146,7 @@ describe('cluster page', () => {
       expect($el.text()).to.be.oneOf(['foo bar', 'Low', 'Performance'])
     );
     checkRowCounts(1);
-    checkEmptyState(
-      'No matching recommendations found',
-      'To continue, edit your filter settings and search again.'
-    );
+    checkEmptyState('No matching recommendations found');
   });
 
   it('adds additional filters passed by the query parameters №2', () => {
@@ -173,10 +170,7 @@ describe('cluster page', () => {
       ])
     );
     checkRowCounts(1);
-    checkEmptyState(
-      'No matching recommendations found',
-      'To continue, edit your filter settings and search again.'
-    );
+    checkEmptyState('No matching recommendations found');
   });
 });
 

@@ -540,10 +540,7 @@ describe('successful non-empty recommendations list table', () => {
       filterApply({
         name: 'Not existing recommendation',
       });
-      checkEmptyState(
-        'No matching recommendations found',
-        'To continue, edit your filter settings and search again.'
-      );
+      checkEmptyState('No matching recommendations found');
       checkTableHeaders(TABLE_HEADERS);
     });
 
@@ -570,10 +567,7 @@ describe('successful non-empty recommendations list table', () => {
             removeAllChips();
             filterApply(filters);
             if (sortedNames.length === 0) {
-              checkEmptyState(
-                'No matching recommendations found',
-                'To continue, edit your filter settings and search again.'
-              );
+              checkEmptyState('No matching recommendations found');
               checkTableHeaders(TABLE_HEADERS);
             } else {
               cy.get(`td[data-label="Name"]`)
@@ -638,10 +632,7 @@ describe('successful non-empty recommendations list table', () => {
           removeAllChips();
           filterApply(filters);
           if (sortedNames.length === 0) {
-            checkEmptyState(
-              'No matching recommendations found',
-              'To continue, edit your filter settings and search again.'
-            );
+            checkEmptyState('No matching recommendations found');
             checkTableHeaders(TABLE_HEADERS);
           } else {
             cy.get(`td[data-label="Name"]`)
@@ -797,11 +788,7 @@ describe('empty recommendations list table', () => {
   });
 
   it('renders error message', () => {
-    checkEmptyState(
-      'Something went wrong',
-      'There was a problem processing the request. Please try again.If the problem persists, contact Red Hat Support or check our  status page for known outages.',
-      true
-    ); // error is shown because it is not OK if API responds 200 but with no recommendations
+    checkEmptyState('Something went wrong', true); // error is shown because it is not OK if API responds 200 but with no recommendations
   });
 });
 
@@ -827,10 +814,6 @@ describe('error recommendations list table', () => {
   });
 
   it('renders error message', () => {
-    checkEmptyState(
-      'Something went wrong',
-      'There was a problem processing the request. Please try again.If the problem persists, contact Red Hat Support or check our  status page for known outages.',
-      true
-    );
+    checkEmptyState('Something went wrong', true);
   });
 });

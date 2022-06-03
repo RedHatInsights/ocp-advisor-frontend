@@ -480,10 +480,7 @@ describe('non-empty successful affected clusters table', () => {
             let sortedNames = _.map(filterData(filters), 'name');
             filterApply(filters);
             if (sortedNames.length === 0) {
-              checkEmptyState(
-                'No matching clusters found',
-                'To continue, edit your filter settings and search again.'
-              );
+              checkEmptyState('No matching clusters found');
               checkTableHeaders(TABLE_HEADERS);
             } else {
               cy.get(`td[data-label="Name"]`)
@@ -520,10 +517,7 @@ describe('non-empty successful affected clusters table', () => {
           let sortedNames = _.map(filterData(filters), 'name');
           filterApply(filters);
           if (sortedNames.length === 0) {
-            checkEmptyState(
-              'No matching clusters found',
-              'To continue, edit your filter settings and search again.'
-            );
+            checkEmptyState('No matching clusters found');
           } else {
             cy.get(`td[data-label="Name"]`)
               .then(($els) => {
@@ -563,10 +557,7 @@ describe('non-empty successful affected clusters table', () => {
 
     it('empty state is displayed when filters do not match any rule', () => {
       cy.get('#name-filter').type('Not existing cluster');
-      checkEmptyState(
-        'No matching clusters found',
-        'To continue, edit your filter settings and search again.'
-      );
+      checkEmptyState('No matching clusters found');
       checkTableHeaders(TABLE_HEADERS);
     });
   });
@@ -703,9 +694,7 @@ describe('empty successful affected clusters table', () => {
   });
 
   it('renders no clusters message', () => {
-    cy.get('[ouiaid="empty-state"]')
-      .find('h5')
-      .should('have.text', 'No clusters');
+    checkEmptyState('No clusters', true);
   });
 
   it('renders table headers', () => {

@@ -414,10 +414,7 @@ describe('clusters list table', () => {
         name: 'Not existing clusters',
         risk: ['Critical', 'Moderate'],
       });
-      checkEmptyState(
-        'No matching clusters found',
-        'To continue, edit your filter settings and search again.'
-      );
+      checkEmptyState('No matching clusters found');
       checkTableHeaders(TABLE_HEADERS);
     });
 
@@ -434,10 +431,7 @@ describe('clusters list table', () => {
             removeAllChips();
             filterApply(filters);
             if (sortedNames.length === 0) {
-              checkEmptyState(
-                'No matching clusters found',
-                'To continue, edit your filter settings and search again.'
-              );
+              checkEmptyState('No matching clusters found');
               checkTableHeaders(TABLE_HEADERS);
             } else {
               cy.get(`td[data-label="Name"]`)
@@ -494,10 +488,7 @@ describe('clusters list table', () => {
           removeAllChips();
           filterApply(filters);
           if (sortedNames.length === 0) {
-            checkEmptyState(
-              'No matching clusters found',
-              'To continue, edit your filter settings and search again.'
-            );
+            checkEmptyState('No matching clusters found');
           } else {
             cy.get(`td[data-label="Name"]`)
               .then(($els) => {

@@ -261,10 +261,7 @@ describe('cluster rules table', () => {
       filterApply({
         description: 'Not existing recommendation',
       });
-      checkEmptyState(
-        'No matching recommendations found',
-        'To continue, edit your filter settings and search again.'
-      );
+      checkEmptyState('No matching recommendations found');
       checkTableHeaders(TABLE_HEADERS);
     });
 
@@ -280,10 +277,7 @@ describe('cluster rules table', () => {
             ).sort();
             filterApply(filters);
             if (sortedDescriptions.length === 0) {
-              checkEmptyState(
-                'No matching recommendations found',
-                'To continue, edit your filter settings and search again.'
-              );
+              checkEmptyState('No matching recommendations found');
               checkTableHeaders(TABLE_HEADERS);
             } else {
               cy.get(`td[data-label="Description"]`)
@@ -326,10 +320,7 @@ describe('cluster rules table', () => {
           ).sort();
           filterApply(filters);
           if (sortedDescriptions.length === 0) {
-            checkEmptyState(
-              'No matching recommendations found',
-              'To continue, edit your filter settings and search again.'
-            );
+            checkEmptyState('No matching recommendations found');
           } else {
             cy.get(`td[data-label="Description"]`)
               .then(($els) => {
@@ -401,7 +392,6 @@ describe('empty cluster rules table', () => {
   it('renders no recommendation message', () => {
     checkEmptyState(
       'The cluster is not affected by any known recommendations',
-      'No known recommendations affect this cluster.',
       true
     );
   });
