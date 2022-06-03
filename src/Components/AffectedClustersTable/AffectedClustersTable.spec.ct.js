@@ -113,6 +113,8 @@ describe('test data', () => {
   });
 });
 
+// TODO: when checking empty state, also check toolbar available and not disabled
+
 describe('non-empty successful affected clusters table', () => {
   beforeEach(() => {
     mount(

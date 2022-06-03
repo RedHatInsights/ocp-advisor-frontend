@@ -202,6 +202,8 @@ before(() => {
 
 // TODO test data
 
+// TODO: when checking empty state, also check toolbar available and not disabled
+
 describe('data', () => {
   it('has values', () => {
     expect(data).to.have.length.gte(1);

@@ -137,6 +137,8 @@ const filterCombos = [{ risk: ['Critical', 'Moderate'], name: 'foo' }];
 
 // TODO use filterData in all tests except of data or namedClusters or namedClustersDefaultSorting
 
+// TODO: when checking empty state, also check toolbar available and not disabled
+
 describe('data', () => {
   it('has values', () => {
     expect(filterData(data)).to.have.length.gte(1);

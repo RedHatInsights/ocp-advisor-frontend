@@ -75,6 +75,8 @@ const filterCombos = [
   { risk: ['Critical', 'Moderate'], category: ['Service Availability'] },
 ];
 
+// TODO: when checking empty state, also check toolbar available and not disabled
+
 describe('test data', () => {
   it('has rules', () => {
     expect(data).to.have.length.gte(1);
