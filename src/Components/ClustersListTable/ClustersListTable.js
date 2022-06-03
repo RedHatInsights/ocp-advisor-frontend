@@ -4,6 +4,7 @@ import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import isEqual from 'lodash/isEqual';
 import { useLocation } from 'react-router-dom';
+import { List } from 'react-content-loader';
 import uniqBy from 'lodash/uniqBy';
 import { valid } from 'semver';
 import { Link } from 'react-router-dom';
@@ -347,7 +348,37 @@ const ClustersListTable = ({
                 ouiaId="clusters"
                 variant={TableVariant.compact}
                 cells={CLUSTERS_LIST_COLUMNS}
-                rows={displayedRows}
+                rows={
+                  loadingState
+                    ? [
+                        {
+                          fullWidth: true,
+                          cells: [
+                            {
+                              props: {
+                                colSpan: CLUSTERS_LIST_COLUMNS.length + 1,
+                              },
+                              title: <List key="loading-cell" />,
+                            },
+                          ],
+                        },
+                      ]
+                    : clusters.length > 0 && filteredRows.length === 0
+                    ? [
+                        {
+                          fullWidth: true,
+                          cells: [
+                            {
+                              props: {
+                                colSpan: CLUSTERS_LIST_COLUMNS.length + 1,
+                              },
+                              title: <NoMatchingClusters />,
+                            },
+                          ],
+                        },
+                      ]
+                    : displayedRows
+                }
                 sortBy={{
                   index: filters.sortIndex,
                   direction: filters.sortDirection,
@@ -358,13 +389,6 @@ const ClustersListTable = ({
                 <TableHeader />
                 <TableBody />
               </Table>
-              {filteredRows.length === 0 && (
-                <Card ouiaId="empty-state">
-                  <CardBody>
-                    <NoMatchingClusters />
-                  </CardBody>
-                </Card>
-              )}
             </React.Fragment>
           )}
           <Pagination
