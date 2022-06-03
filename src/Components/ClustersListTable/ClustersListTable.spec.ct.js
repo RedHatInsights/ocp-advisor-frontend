@@ -34,6 +34,7 @@ import {
   checkRowCounts,
   columnName2UrlParam,
   tableIsSortedBy,
+  checkNoMatchState,
 } from '../../../cypress/utils/table';
 import { CLUSTERS_LIST_COLUMNS } from '../../AppConstants';
 import {
@@ -411,8 +412,8 @@ describe('clusters list table', () => {
         name: 'Not existing clusters',
         risk: ['Critical', 'Moderate'],
       });
-      // TODO check empty table view
-      // TODO headers are displayed
+      checkNoMatchState();
+      checkTableHeaders(TABLE_HEADERS);
     });
 
     describe('single filter', () => {
@@ -428,8 +429,8 @@ describe('clusters list table', () => {
             removeAllChips();
             filterApply(filters);
             if (sortedNames.length === 0) {
-              // TODO check empty table view
-              // TODO headers are displayed
+              checkNoMatchState();
+              checkTableHeaders(TABLE_HEADERS);
             } else {
               cy.get(`td[data-label="Name"]`)
                 .then(($els) => {
@@ -485,7 +486,7 @@ describe('clusters list table', () => {
           removeAllChips();
           filterApply(filters);
           if (sortedNames.length === 0) {
-            // TODO check empty table view
+            checkNoMatchState();
           } else {
             cy.get(`td[data-label="Name"]`)
               .then(($els) => {
