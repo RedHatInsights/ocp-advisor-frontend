@@ -4,7 +4,6 @@ import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import isEqual from 'lodash/isEqual';
 import { useLocation } from 'react-router-dom';
-import { List } from 'react-content-loader';
 import uniqBy from 'lodash/uniqBy';
 import { valid } from 'semver';
 import { Link } from 'react-router-dom';
@@ -16,14 +15,7 @@ import {
   TableHeader,
   TableVariant,
 } from '@patternfly/react-table';
-import {
-  Card,
-  CardBody,
-  Bullseye,
-  Spinner,
-  Pagination,
-  Tooltip,
-} from '@patternfly/react-core';
+import { Pagination, Tooltip } from '@patternfly/react-core';
 import { PaginationVariant } from '@patternfly/react-core/dist/js/components/Pagination/Pagination';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar/PrimaryToolbar';
 import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat';
@@ -81,6 +73,7 @@ const ClustersListTable = ({
   const { search } = useLocation();
   const loadingState = isUninitialized || isFetching || !rowsFiltered;
   const errorState = isError;
+  const noMatch = clusters.length > 0 && filteredRows.length === 0;
   const successState = isSuccess;
 
   const removeFilterParam = (param) =>
@@ -307,12 +300,8 @@ const ClustersListTable = ({
 
   return (
     <>
-      {loadingState ? (
-        <Bullseye>
-          <Spinner />
-        </Bullseye>
-      ) : clusters.length === 0 ? (
-        <NoRecsForClusters />
+      {clusters.length === 0 ? (
+        <NoRecsForClusters /> // TODO: do not mix this logic in the table component
       ) : (
         <div id="clusters-list-table">
           <PrimaryToolbar
@@ -333,61 +322,48 @@ const ClustersListTable = ({
             filterConfig={{ items: filterConfigItems }}
             activeFiltersConfig={activeFiltersConfig}
           />
-          {errorState && (
-            <Card ouiaId="error-state">
-              <CardBody>
+          <Table
+            aria-label="Table of clusters"
+            ouiaId="clusters"
+            variant={TableVariant.compact}
+            cells={CLUSTERS_LIST_COLUMNS}
+            rows={
+              errorState || loadingState || noMatch ? (
+                [
+                  {
+                    fullWidth: true,
+                    cells: [
+                      {
+                        props: {
+                          colSpan: CLUSTERS_LIST_COLUMNS.length + 1,
+                        },
+                        title: errorState ? (
+                          <ErrorState />
+                        ) : loadingState ? (
+                          <Loading />
+                        ) : (
+                          <NoMatchingClusters />
+                        ),
+                      },
+                    ],
+                  },
+                ]
+              ) : successState ? (
+                displayedRows
+              ) : (
                 <ErrorState />
-              </CardBody>
-            </Card>
-          )}
-          <React.Fragment>
-            <Table
-              aria-label="Table of clusters"
-              ouiaId="clusters"
-              variant={TableVariant.compact}
-              cells={CLUSTERS_LIST_COLUMNS}
-              rows={
-                loadingState
-                  ? [
-                      {
-                        fullWidth: true,
-                        cells: [
-                          {
-                            props: {
-                              colSpan: CLUSTERS_LIST_COLUMNS.length + 1,
-                            },
-                            title: <List key="loading-cell" />,
-                          },
-                        ],
-                      },
-                    ]
-                  : clusters.length > 0 && filteredRows.length === 0
-                  ? [
-                      {
-                        fullWidth: true,
-                        cells: [
-                          {
-                            props: {
-                              colSpan: CLUSTERS_LIST_COLUMNS.length + 1,
-                            },
-                            title: <NoMatchingClusters />,
-                          },
-                        ],
-                      },
-                    ]
-                  : displayedRows
-              }
-              sortBy={{
-                index: filters.sortIndex,
-                direction: filters.sortDirection,
-              }}
-              onSort={onSort}
-              isStickyHeader
-            >
-              <TableHeader />
-              <TableBody />
-            </Table>
-          </React.Fragment>
+              )
+            }
+            sortBy={{
+              index: filters.sortIndex,
+              direction: filters.sortDirection,
+            }}
+            onSort={onSort}
+            isStickyHeader
+          >
+            <TableHeader />
+            <TableBody />
+          </Table>
           <Pagination
             ouiaId="pager"
             itemCount={filteredRows.length}
