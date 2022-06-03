@@ -49,18 +49,12 @@ const ErrorState = () => {
 const NoAffectedClusters = () => {
   const intl = useIntl();
   return (
-    <EmptyState>
-      <EmptyStateIcon
-        icon={CheckCircleIcon}
-        color={globalSuccessColor100.value}
-      />
-      <Title headingLevel="h4" size="lg">
-        {intl.formatMessage(messages.noAffectedClustersTitle)}
-      </Title>
-      <EmptyStateBody>
-        {intl.formatMessage(messages.noAffectedClustersBody)}
-      </EmptyStateBody>
-    </EmptyState>
+    <MessageState
+      title={intl.formatMessage(messages.noAffectedClustersTitle)}
+      text={intl.formatMessage(messages.noAffectedClustersBody)}
+      icon={CheckCircleIcon}
+      iconStyle={{ color: globalSuccessColor100.value }}
+    />
   );
 };
 
