@@ -15,6 +15,9 @@ import PlusCircleIcon from '@patternfly/react-icons/dist/js/icons/plus-circle-ic
 import { global_success_color_100 as globalSuccessColor100 } from '@patternfly/react-tokens/dist/js/global_success_color_100';
 import { global_danger_color_100 as globalDangerColor100 } from '@patternfly/react-tokens/dist/js/global_danger_color_100';
 import { InProgressIcon } from '@patternfly/react-icons/dist/esm/icons/in-progress-icon';
+import InfoCircleIcon from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
+import { global_info_color_100 as globalInfoColor100 } from '@patternfly/react-tokens/dist/js/global_info_color_100.js';
+import CheckIcon from '@patternfly/react-icons/dist/js/icons/check-icon';
 
 import DefaultErrorMessage from '@redhat-cloud-services/frontend-components/ErrorState/DefaultErrorMessage';
 
@@ -132,6 +135,57 @@ const NoRecsForClusters = () => {
   );
 };
 
+const NoInsightsResults = () => {
+  const intl = useIntl();
+  return (
+    <MessageState
+      title={intl.formatMessage(messages.noRecsFoundError)}
+      text={
+        <React.Fragment>
+          {intl.formatMessage(messages.noRecsFoundErrorDesc)}
+          <a href="https://docs.openshift.com/container-platform/latest/support/getting-support.html">
+            {' '}
+            OpenShift documentation.
+          </a>
+        </React.Fragment>
+      }
+      icon={InfoCircleIcon}
+      iconStyle={{
+        color: globalInfoColor100.value,
+      }}
+      variant="large"
+    />
+  );
+};
+
+const NoRecsError = () => {
+  const intl = useIntl();
+  return (
+    <MessageState
+      title={intl.formatMessage(messages.noRecsError)}
+      text={intl.formatMessage(messages.noRecsErrorDesc)}
+      icon={ExclamationCircleIcon}
+      iconStyle={{
+        color: globalDangerColor100.value,
+      }}
+    />
+  );
+};
+
+const NoRecsAffecting = () => {
+  const intl = useIntl();
+  return (
+    <MessageState
+      icon={CheckIcon}
+      iconStyle={{
+        color: globalSuccessColor100.value,
+      }}
+      title={intl.formatMessage(messages.noRecommendations)}
+      text={intl.formatMessage(messages.noRecommendationsDesc)}
+    />
+  );
+};
+
 export {
   ErrorState,
   NoAffectedClusters,
@@ -139,4 +193,7 @@ export {
   NoMatchingRecs,
   ComingSoon,
   NoRecsForClusters,
+  NoInsightsResults,
+  NoRecsError,
+  NoRecsAffecting,
 };

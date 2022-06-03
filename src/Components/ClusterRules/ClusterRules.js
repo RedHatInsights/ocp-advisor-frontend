@@ -7,7 +7,6 @@ import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import capitalize from 'lodash/capitalize';
 
-import CheckIcon from '@patternfly/react-icons/dist/js/icons/check-icon';
 import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat/DateFormat';
 import InsightsLabel from '@redhat-cloud-services/frontend-components/InsightsLabel';
 import {
@@ -17,16 +16,11 @@ import {
   TableHeader,
   TableVariant,
 } from '@patternfly/react-table';
-import { Card, CardBody, Tooltip } from '@patternfly/react-core';
+import { Tooltip } from '@patternfly/react-core';
 import { TooltipPosition } from '@patternfly/react-core/dist/js/components/Tooltip';
-import InfoCircleIcon from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
-import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
-import { global_danger_color_100 as globalDangerColor100 } from '@patternfly/react-tokens/dist/js/global_danger_color_100';
-import { global_info_color_100 as globalInfoColor100 } from '@patternfly/react-tokens/dist/js/global_info_color_100.js';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
 
 import messages from '../../Messages';
-import MessageState from '../MessageState/MessageState';
 import {
   IMPACT_LABEL,
   LIKELIHOOD_LABEL,
@@ -37,7 +31,13 @@ import {
 } from '../../AppConstants';
 import ReportDetails from '../ReportDetails/ReportDetails';
 import RuleLabels from '../Labels/RuleLabels';
-import { NoMatchingRecs } from '../MessageState/EmptyStates';
+import {
+  ErrorState,
+  NoMatchingRecs,
+  NoRecsError,
+  NoInsightsResults,
+  NoRecsAffecting,
+} from '../MessageState/EmptyStates';
 import {
   paramParser,
   passFilters,
@@ -73,6 +73,8 @@ const ClusterRules = ({ cluster }) => {
   const loadingState = isUninitialized || isFetching || rowsUpdating;
   const errorState = isError;
   const successState = isSuccess;
+  const noInput = successState && reports.length === 0;
+  const noMatch = reports.length > 0 && filteredRows.length === 0;
 
   const removeFilterParam = (param) =>
     _removeFilterParam(filters, updateFilters, param);
@@ -414,79 +416,55 @@ const ClusterRules = ({ cluster }) => {
             : activeFiltersConfig
         }
       />
-      {loadingState && !errorState && !successState && (
-        <Loading id="loading-skeleton" />
-      )}
-      {errorState &&
-        !successState &&
-        (error?.status === 404 ? (
-          <MessageState
-            title={intl.formatMessage(messages.noRecsFoundError)}
-            text={
-              <React.Fragment>
-                {intl.formatMessage(messages.noRecsFoundErrorDesc)}
-                <a href="https://docs.openshift.com/container-platform/latest/support/getting-support.html">
-                  {' '}
-                  OpenShift documentation.
-                </a>
-              </React.Fragment>
-            }
-            icon={InfoCircleIcon}
-            iconStyle={{ color: globalInfoColor100.value }}
-            variant="large"
-          />
-        ) : (
-          <MessageState
-            title={intl.formatMessage(messages.noRecsError)}
-            text={intl.formatMessage(messages.noRecsErrorDesc)}
-            icon={ExclamationCircleIcon}
-            iconStyle={{ color: globalDangerColor100.value }}
-          />
-        ))}
-      {!loadingState && !errorState && successState && (
-        <React.Fragment>
-          {reports.length > 0 ? (
-            <React.Fragment>
-              <Table
-                aria-label={'Cluster recommendations table'}
-                ouiaId="recommendations"
-                onCollapse={handleOnCollapse}
-                rows={displayedRows}
-                cells={CLUSTER_RULES_COLUMNS}
-                sortBy={{
-                  index: filters.sortIndex,
-                  direction: filters.sortDirection,
-                }}
-                onSort={onSort}
-                variant={TableVariant.compact}
-                isStickyHeader
-              >
-                <TableHeader />
-                <TableBody />
-              </Table>
-              {results === 0 && (
-                <Card ouiaId="empty-state">
-                  <CardBody>
-                    <NoMatchingRecs />
-                  </CardBody>
-                </Card>
-              )}
-            </React.Fragment>
+      <Table
+        aria-label={'Cluster recommendations table'}
+        ouiaId="recommendations"
+        onCollapse={handleOnCollapse}
+        rows={
+          errorState || loadingState || noMatch || noInput ? (
+            [
+              {
+                fullWidth: true,
+                cells: [
+                  {
+                    props: {
+                      colSpan: CLUSTER_RULES_COLUMNS.length + 1,
+                    },
+                    title: errorState ? (
+                      error?.status === 404 ? (
+                        <NoInsightsResults /> // no Insights results received yet
+                      ) : (
+                        <NoRecsError /> // any other problem
+                      )
+                    ) : loadingState ? (
+                      <Loading />
+                    ) : noInput ? (
+                      <NoRecsAffecting />
+                    ) : (
+                      <NoMatchingRecs />
+                    ),
+                  },
+                ],
+              },
+            ]
+          ) : successState ? (
+            displayedRows
           ) : (
-            // ? Welcome to Insights feature for new clusters with disabled Insights?
-            <Card ouiaId="no-recommendations">
-              <CardBody>
-                <MessageState
-                  icon={CheckIcon}
-                  iconClass="ins-c-insights__check"
-                  title={intl.formatMessage(messages.noRecommendations)}
-                  text={intl.formatMessage(messages.noRecommendationsDesc)}
-                />
-              </CardBody>
-            </Card>
-          )}
-        </React.Fragment>
-      )}
+            <ErrorState />
+          )
+        }
+        cells={CLUSTER_RULES_COLUMNS}
+        sortBy={{
+          index: filters.sortIndex,
+          direction: filters.sortDirection,
+        }}
+        onSort={onSort}
+        variant={TableVariant.compact}
+        isStickyHeader
+      >
+        <TableHeader />
+        <TableBody />
+      </Table>
     </div>
   );
 };

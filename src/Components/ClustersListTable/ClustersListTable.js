@@ -300,7 +300,7 @@ const ClustersListTable = ({
 
   return (
     <>
-      {clusters.length === 0 ? (
+      {isSuccess && clusters.length === 0 ? (
         <NoRecsForClusters /> // TODO: do not mix this logic in the table component
       ) : (
         <div id="clusters-list-table">
