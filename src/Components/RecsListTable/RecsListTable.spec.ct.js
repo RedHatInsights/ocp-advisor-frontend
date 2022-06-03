@@ -41,7 +41,7 @@ import {
   columnName2UrlParam,
   checkTableHeaders,
   tableIsSortedBy,
-  checkNoMatchState,
+  checkEmptyState,
 } from '../../../cypress/utils/table';
 import { SORTING_ORDERS } from '../../../cypress/utils/globals';
 // TODO make more use of ../../../cypress/utils/components
@@ -538,7 +538,10 @@ describe('successful non-empty recommendations list table', () => {
       filterApply({
         name: 'Not existing recommendation',
       });
-      checkNoMatchState(true);
+      checkEmptyState(
+        'No matching recommendations found',
+        'To continue, edit your filter settings and search again.'
+      );
       checkTableHeaders(TABLE_HEADERS);
     });
 
@@ -565,7 +568,10 @@ describe('successful non-empty recommendations list table', () => {
             removeAllChips();
             filterApply(filters);
             if (sortedNames.length === 0) {
-              checkNoMatchState(true);
+              checkEmptyState(
+                'No matching recommendations found',
+                'To continue, edit your filter settings and search again.'
+              );
               checkTableHeaders(TABLE_HEADERS);
             } else {
               cy.get(`td[data-label="Name"]`)
@@ -630,7 +636,10 @@ describe('successful non-empty recommendations list table', () => {
           removeAllChips();
           filterApply(filters);
           if (sortedNames.length === 0) {
-            checkNoMatchState(true);
+            checkEmptyState(
+              'No matching recommendations found',
+              'To continue, edit your filter settings and search again.'
+            );
             checkTableHeaders(TABLE_HEADERS);
           } else {
             cy.get(`td[data-label="Name"]`)

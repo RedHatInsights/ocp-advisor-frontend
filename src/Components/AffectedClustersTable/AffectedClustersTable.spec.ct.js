@@ -30,7 +30,7 @@ import {
   checkTableHeaders,
   checkRowCounts,
   tableIsSortedBy,
-  checkNoMatchState,
+  checkEmptyState,
 } from '../../../cypress/utils/table';
 import {
   itemsPerPage,
@@ -478,7 +478,10 @@ describe('non-empty successful affected clusters table', () => {
             let sortedNames = _.map(filterData(filters), 'name');
             filterApply(filters);
             if (sortedNames.length === 0) {
-              checkNoMatchState();
+              checkEmptyState(
+                'No matching clusters found',
+                'To continue, edit your filter settings and search again.'
+              );
               checkTableHeaders(TABLE_HEADERS);
             } else {
               cy.get(`td[data-label="Name"]`)
@@ -515,7 +518,10 @@ describe('non-empty successful affected clusters table', () => {
           let sortedNames = _.map(filterData(filters), 'name');
           filterApply(filters);
           if (sortedNames.length === 0) {
-            checkNoMatchState();
+            checkEmptyState(
+              'No matching clusters found',
+              'To continue, edit your filter settings and search again.'
+            );
           } else {
             cy.get(`td[data-label="Name"]`)
               .then(($els) => {
@@ -555,7 +561,10 @@ describe('non-empty successful affected clusters table', () => {
 
     it('empty state is displayed when filters do not match any rule', () => {
       cy.get('#name-filter').type('Not existing cluster');
-      checkNoMatchState();
+      checkEmptyState(
+        'No matching clusters found',
+        'To continue, edit your filter settings and search again.'
+      );
       checkTableHeaders(TABLE_HEADERS);
     });
   });

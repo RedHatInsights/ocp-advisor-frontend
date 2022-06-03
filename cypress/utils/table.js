@@ -33,20 +33,17 @@ function tableIsSortedBy(columnTitle) {
     .should('have.class', 'pf-c-table__sort pf-m-selected');
 }
 
-function checkNoMatchState(isRecsList) {
+function checkEmptyState(title, body, checkIcon = false) {
   cy.get(TABLE)
     .find('[ouiaid=empty-state]')
     .should('have.length', 1)
     .within(() => {
-      cy.get('.pf-c-empty-state__icon').should('have.length', 0);
-      cy.get(`h5${TITLE}`).should(
-        'have.text',
-        `No matching ${isRecsList ? 'recommendations' : 'clusters'} found`
+      cy.get('.pf-c-empty-state__icon').should(
+        'have.length',
+        checkIcon ? 1 : 0
       );
-      cy.get('.pf-c-empty-state__body').should(
-        'have.text',
-        'To continue, edit your filter settings and search again.'
-      );
+      cy.get(`h5${TITLE}`).should('have.text', title);
+      cy.get('.pf-c-empty-state__body').should('have.text', body);
     });
 }
 
@@ -55,5 +52,5 @@ export {
   checkRowCounts,
   columnName2UrlParam,
   tableIsSortedBy,
-  checkNoMatchState,
+  checkEmptyState,
 };
