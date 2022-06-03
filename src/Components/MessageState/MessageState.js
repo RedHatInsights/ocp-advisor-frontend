@@ -1,6 +1,5 @@
 import { EmptyStateVariant } from '@patternfly/react-core/dist/js/components/EmptyState/EmptyState';
 
-import CubesIcon from '@patternfly/react-icons/dist/js/icons/cubes-icon';
 import {
   EmptyStateIcon,
   EmptyStateBody,
