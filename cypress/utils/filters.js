@@ -9,7 +9,7 @@ import { FILTER_CATEGORIES } from '../../src/AppConstants';
 import { CHIP_GROUP, CHIP } from './components';
 
 const FILTERS_DROPDOWN = 'ul[class=pf-c-dropdown__menu]';
-const FILTER_TOGGLE = 'span[class=pf-c-select__toggle-arrow]';
+const FILTER_TOGGLE = 'button[class=pf-c-select__toggle]';
 const VERSION_COMBINATIONS = [
   ['4.18.12'],
   ['4.17.9'],
@@ -41,34 +41,34 @@ function applyFilters(filters, filtersConf) {
     // open filter selector
     cy.get('div.ins-c-primary-toolbar__filter')
       .find('button[class=pf-c-dropdown__toggle]')
-      .click({ force: true });
+      .click();
 
     // select appropriate filter
-    cy.get(FILTERS_DROPDOWN).contains(item.selectorText).click({ force: true });
+    cy.get(FILTERS_DROPDOWN).contains(item.selectorText).click();
 
     // fill appropriate filter
     if (item.type === 'input') {
       cy.get('input.ins-c-conditional-filter').type(value);
     } else if (item.type === 'checkbox') {
-      cy.get(FILTER_TOGGLE).click({ force: true });
+      cy.get(FILTER_TOGGLE).click();
       value.forEach((it) => {
         cy.get('ul[class=pf-c-select__menu]')
           .find('label')
           .contains(it)
           .parent()
           .find('input[type=checkbox]')
-          .check({ force: true });
+          .check();
       });
       // close dropdown again
-      cy.get(FILTER_TOGGLE).click({ force: true });
+      cy.get(FILTER_TOGGLE).click();
     } else if (item.type == 'radio') {
-      cy.get(FILTER_TOGGLE).click({ force: true });
+      cy.get(FILTER_TOGGLE).click();
       cy.get('ul[class=pf-c-select__menu]')
         .find('label')
         .contains(value)
         .parent()
         .find('input[type=radio]')
-        .check({ force: true });
+        .check();
     } else {
       throw `${item.type} not recognized`;
     }

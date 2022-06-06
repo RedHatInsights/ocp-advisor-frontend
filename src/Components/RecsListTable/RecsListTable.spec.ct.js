@@ -187,12 +187,6 @@ Cypress.Commands.add('getColumns', () => {
   */
   cy.get(`${TABLE} > thead > tr > th[scope="col"]`);
 });
-Cypress.Commands.add('sortByCol', (colIndex) => {
-  cy.getColumns()
-    .eq(colIndex)
-    .find('span[class=pf-c-table__sort-indicator]')
-    .click({ force: true });
-});
 
 before(() => {
   // the flag tells not to fetch external federated modules
