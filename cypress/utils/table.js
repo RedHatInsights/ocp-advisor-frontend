@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { ROW, TBODY } from './components';
+import { ROW, TABLE_HEADER, TBODY } from './components';
 
 function checkTableHeaders(expectedHeaders) {
   /* patternfly/react-table-4.71.16, for some reason, renders extra empty `th` container;
@@ -33,9 +33,14 @@ function tableIsSortedBy(columnTitle) {
     .should('have.class', 'pf-c-table__sort pf-m-selected');
 }
 
+function expandAllRows() {
+  return cy.get(`${TABLE_HEADER} .pf-c-table__toggle`).click();
+}
+
 export {
   checkTableHeaders,
   checkRowCounts,
   columnName2UrlParam,
   tableIsSortedBy,
+  expandAllRows,
 };

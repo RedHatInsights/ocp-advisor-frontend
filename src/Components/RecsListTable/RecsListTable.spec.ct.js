@@ -41,6 +41,7 @@ import {
   columnName2UrlParam,
   checkTableHeaders,
   tableIsSortedBy,
+  expandAllRows,
 } from '../../../cypress/utils/table';
 import { SORTING_ORDERS } from '../../../cypress/utils/globals';
 // TODO make more use of ../../../cypress/utils/components
@@ -740,8 +741,7 @@ describe('successful non-empty recommendations list table', () => {
   });
 
   it('rule content is rendered', () => {
-    // expand all rules
-    cy.get('.pf-c-toolbar__expand-all-icon > svg').click();
+    expandAllRows();
     cy.get(TABLE)
       .find('.pf-c-table__expandable-row.pf-m-expanded')
       .each((el) => {
