@@ -21,7 +21,7 @@ const filterableTable = {
   isDisplayed: (id) =>
     cy
       .get(`div[id=${id}]`)
-      .within(($div) => {
+      .within(() => {
         cy.get(TOOLBAR).should('have.length', 1);
         cy.get('table').should('have.length', 1);
         cy.get('div[data-ouia-component-type="RHI/TableToolbar"]').should(
@@ -63,7 +63,7 @@ const filterableTable = {
         .find('ul[class=pf-c-options-menu__menu]')
         .find('[data-ouia-component-type="PF4/DropdownItem"]')
         .contains(`${value}`)
-        .click({ force: true }); // caused by the css issue
+        .click();
     },
     nextButton: () => cy.get(PAGINATION_NEXT),
   },
