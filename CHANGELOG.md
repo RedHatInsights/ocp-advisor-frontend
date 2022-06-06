@@ -1,3 +1,10 @@
+## [1.4.2](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.4.1...v1.4.2) (2022-06-06)
+
+
+### Bug Fixes
+
+* Show display name even when Insights not available ([#299](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/299)) ([47d9845](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/47d984512b512d92211efc6bddb7be8ba6a18933))
+
 ## [1.4.1](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.4.0...v1.4.1) (2022-05-27)
 
 
