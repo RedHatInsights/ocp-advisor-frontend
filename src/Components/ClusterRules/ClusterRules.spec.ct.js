@@ -17,7 +17,7 @@ import {
 } from '../../../cypress/utils/globals';
 import { applyFilters, filter } from '../../../cypress/utils/filters';
 import { cumulativeCombinations } from '../../../cypress/utils/combine';
-import { checkTableHeaders } from '../../../cypress/utils/table';
+import { checkTableHeaders, expandAllRows } from '../../../cypress/utils/table';
 import {
   CHIP_GROUP,
   CHIP,
@@ -177,11 +177,9 @@ describe('cluster rules table', () => {
   });
 
   it('expand all, collapse all', () => {
-    const TOOLBAR = '[class="pf-c-toolbar__item"]';
-
-    cy.get(TOOLBAR).find('button').click();
+    expandAllRows();
     cy.get(EXPANDABLES).should('have.length', RULES_ENABLED);
-    cy.get(TOOLBAR).find('button').click();
+    expandAllRows();
     cy.get(EXPANDABLES).should('have.length', 0);
   });
 
