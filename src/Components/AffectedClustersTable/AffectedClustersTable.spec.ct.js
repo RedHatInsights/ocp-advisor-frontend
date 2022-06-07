@@ -371,6 +371,23 @@ describe('non-empty successful affected clusters table', () => {
         });
       cy.get('#toggle-checkbox-text').should('not.exist');
     });
+
+    it.only('text is updated according to the number of rows selected', () => {
+      let nSelectedRows = 0;
+      // select some rows
+      cy.get(TABLE)
+        .find(TBODY)
+        .find(ROW)
+        .each((row, index) => {
+          if (index % 2 == 0 && index < DEFAULT_ROW_COUNT) {
+            cy.wrap(row).find('td').first().find('input').click();
+            nSelectedRows += 1;
+          }
+        })
+        .then(() => {
+          cy.get('#toggle-checkbox-text').contains(`${nSelectedRows} selected`);
+        });
+    });
   });
 
   describe('pagination', () => {
