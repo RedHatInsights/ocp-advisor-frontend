@@ -469,25 +469,23 @@ const RecsListTable = ({ query }) => {
     },
   };
 
-  //Responsible for the handling collapse for all the recommendations
-  //Used in the PrimaryToolbar
-  const collapseAll = (_e, isOpen) => {
-    setIsAllExpanded(isOpen);
-    setDisplayedRows(
-      displayedRows.map((row) => {
-        return {
+  const handleOnCollapse = (_e, rowId, isOpen) => {
+    if (rowId === undefined) {
+      // if undefined, all rows are affected
+      setIsAllExpanded(isOpen);
+      setDisplayedRows(
+        displayedRows.map((row) => ({
           ...row,
           isOpen: isOpen,
-        };
-      })
-    );
-  };
-
-  //Responsible for handling collapse for single recommendation
-  const handleOnCollapse = (_e, rowId, isOpen) => {
-    const collapseRows = [...displayedRows];
-    collapseRows[rowId] = { ...collapseRows[rowId], isOpen };
-    setDisplayedRows(collapseRows);
+        }))
+      );
+    } else {
+      setDisplayedRows(
+        displayedRows.map((row, index) =>
+          index === rowId ? { ...row, isOpen } : row
+        )
+      );
+    }
   };
 
   const ackRule = async (rowId) => {
@@ -563,7 +561,6 @@ const RecsListTable = ({ query }) => {
         />
       )}
       <PrimaryToolbar
-        expandAll={{ isAllExpanded, onClick: collapseAll }}
         pagination={{
           itemCount: filteredRows.length,
           page: filters.offset / filters.limit + 1,
@@ -629,6 +626,7 @@ const RecsListTable = ({ query }) => {
         actionResolver={actionResolver}
         isStickyHeader
         ouiaSafe={testSafe}
+        canCollapseAll
       >
         <TableHeader />
         <TableBody />

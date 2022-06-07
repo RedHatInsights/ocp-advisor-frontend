@@ -15,6 +15,7 @@ import {
   CHIP_GROUP,
   PAGINATION,
   TABLE,
+  ROWS_TOGGLER,
 } from '../../../cypress/utils/components';
 import {
   hasChip,
@@ -746,8 +747,7 @@ describe('successful non-empty recommendations list table', () => {
   });
 
   it('rule content is rendered', () => {
-    // expand all rules
-    cy.get('.pf-c-toolbar__expand-all-icon > svg').click();
+    cy.get(ROWS_TOGGLER).click();
     cy.get(TABLE)
       .find('.pf-c-table__expandable-row.pf-m-expanded')
       .each((el) => {

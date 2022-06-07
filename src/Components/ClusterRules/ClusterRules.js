@@ -127,9 +127,22 @@ const ClusterRules = ({ cluster }) => {
   }, [rowsFiltered]);
 
   const handleOnCollapse = (_e, rowId, isOpen) => {
-    const collapseRows = [...displayedRows];
-    collapseRows[rowId] = { ...collapseRows[rowId], isOpen };
-    setDisplayedRows(collapseRows);
+    if (rowId === undefined) {
+      // if undefined, all rows are affected
+      setIsAllExpanded(isOpen);
+      setDisplayedRows(
+        displayedRows.map((row) => ({
+          ...row,
+          isOpen: isOpen,
+        }))
+      );
+    } else {
+      setDisplayedRows(
+        displayedRows.map((row, index) =>
+          index === rowId ? { ...row, isOpen } : row
+        )
+      );
+    }
   };
 
   const buildFilteredRows = (allRows, filters) => {
@@ -381,24 +394,9 @@ const ClusterRules = ({ cluster }) => {
     },
   };
 
-  //Responsible for the handling collapse for all the recommendations
-  //Used in the PrimaryToolbar
-  const collapseAll = (_e, isOpen) => {
-    setIsAllExpanded(isOpen);
-    setDisplayedRows(
-      displayedRows.map((row) => {
-        return {
-          ...row,
-          isOpen: isOpen,
-        };
-      })
-    );
-  };
-
   return (
     <div id="cluster-recs-list-table">
       <PrimaryToolbar
-        expandAll={{ isAllExpanded, onClick: collapseAll }}
         filterConfig={{
           items: filterConfigItems,
           isDisabled: loadingState || errorState || reports.length === 0,
@@ -461,6 +459,7 @@ const ClusterRules = ({ cluster }) => {
         onSort={onSort}
         variant={TableVariant.compact}
         isStickyHeader
+        canCollapseAll
       >
         <TableHeader />
         <TableBody />

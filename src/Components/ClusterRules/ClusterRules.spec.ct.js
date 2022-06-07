@@ -28,6 +28,7 @@ import {
   ROW,
   TOOLBAR,
   TABLE,
+  ROWS_TOGGLER,
 } from '../../../cypress/utils/components';
 
 const data = singleClusterPageReport.report.data;
@@ -183,11 +184,9 @@ describe('cluster rules table', () => {
   });
 
   it('expand all, collapse all', () => {
-    const TOOLBAR = '[class="pf-c-toolbar__item"]';
-
-    cy.get(TOOLBAR).find('button').click();
+    cy.get(ROWS_TOGGLER).click();
     cy.get(EXPANDABLES).should('have.length', RULES_ENABLED);
-    cy.get(TOOLBAR).find('button').click();
+    cy.get(ROWS_TOGGLER).click();
     cy.get(EXPANDABLES).should('have.length', 0);
   });
 

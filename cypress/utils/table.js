@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { ROW, TABLE, TBODY, TITLE } from './components';
+import { ROW, TBODY, TABLE, TITLE } from './components';
 
 function checkTableHeaders(expectedHeaders) {
   /* patternfly/react-table-4.71.16, for some reason, renders extra empty `th` container;
