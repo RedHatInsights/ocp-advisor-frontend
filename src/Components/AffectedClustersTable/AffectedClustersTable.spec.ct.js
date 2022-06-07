@@ -320,9 +320,7 @@ describe('non-empty successful affected clusters table', () => {
 
       cy.ouiaId(BULK_SELECT).find('input').should('be.checked');
       // contains right text
-      cy.ouiaId(BULK_SELECT)
-        .find('label.pf-c-dropdown__toggle-check')
-        .contains(`${data.length} selected`);
+      cy.get('#toggle-checkbox-text').contains(`${data.length} selected`);
       // checks all rows
       cy.get(TABLE)
         .find(TBODY)
@@ -372,7 +370,7 @@ describe('non-empty successful affected clusters table', () => {
       cy.get('#toggle-checkbox-text').should('not.exist');
     });
 
-    it.only('text is updated according to the number of rows selected', () => {
+    it('text is updated according to the number of rows selected', () => {
       let nSelectedRows = 0;
       // select some rows
       cy.get(TABLE)
