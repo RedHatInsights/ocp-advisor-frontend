@@ -304,7 +304,7 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
               {(content?.hosts_acked_count ||
                 ackedClusters?.length > 0 ||
                 content?.disabled) && (
-                <Card className="cardOverride">
+                <Card className="cardOverride" ouiaId="host-acked">
                   <CardHeader>
                     <Title headingLevel="h4" size="xl">
                       <BellSlashIcon size="sm" />
