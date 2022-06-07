@@ -21,6 +21,7 @@ import {
   checkEmptyState,
   checkNoMatchingRecs,
   checkTableHeaders,
+  checkRowCounts,
 } from '../../../cypress/utils/table';
 import {
   CHIP_GROUP,
@@ -180,6 +181,9 @@ describe('cluster rules table', () => {
     it('no chips are displayed by default', () => {
       cy.get(CHIP_GROUP).should('not.exist');
       cy.get('button').contains('Reset filters').should('not.exist');
+    });
+    it.only('all expected rows are displayed', () => {
+      checkRowCounts(RULES_ENABLED);
     });
   });
 
