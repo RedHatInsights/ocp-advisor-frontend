@@ -82,6 +82,7 @@ const ViewHostAcks = ({
           title: (
             <Button
               key={item.cluster_id}
+              ouiaId="enable"
               isInline
               variant="link"
               onClick={() => deleteAck(item)}
