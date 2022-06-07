@@ -182,7 +182,7 @@ describe('cluster rules table', () => {
       cy.get(CHIP_GROUP).should('not.exist');
       cy.get('button').contains('Reset filters').should('not.exist');
     });
-    it.only('all expected rows are displayed', () => {
+    it('all expected rows are displayed', () => {
       checkRowCounts(RULES_ENABLED);
     });
   });
