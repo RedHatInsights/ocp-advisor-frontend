@@ -17,13 +17,14 @@ import {
 } from '../../../cypress/utils/globals';
 import { applyFilters, filter } from '../../../cypress/utils/filters';
 import { cumulativeCombinations } from '../../../cypress/utils/combine';
-import { checkTableHeaders, expandAllRows } from '../../../cypress/utils/table';
+import { checkTableHeaders } from '../../../cypress/utils/table';
 import {
   CHIP_GROUP,
   CHIP,
   ROW,
   TOOLBAR,
   TABLE,
+  ROWS_TOGGLER,
 } from '../../../cypress/utils/components';
 
 const data = singleClusterPageReport.report.data;
@@ -177,9 +178,9 @@ describe('cluster rules table', () => {
   });
 
   it('expand all, collapse all', () => {
-    expandAllRows();
+    cy.get(ROWS_TOGGLER).click();
     cy.get(EXPANDABLES).should('have.length', RULES_ENABLED);
-    expandAllRows();
+    cy.get(ROWS_TOGGLER).click();
     cy.get(EXPANDABLES).should('have.length', 0);
   });
 

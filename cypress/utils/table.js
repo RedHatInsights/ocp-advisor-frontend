@@ -33,14 +33,9 @@ function tableIsSortedBy(columnTitle) {
     .should('have.class', 'pf-c-table__sort pf-m-selected');
 }
 
-function expandAllRows() {
-  return cy.get(`${TABLE_HEADER} .pf-c-table__toggle`).click();
-}
-
 export {
   checkTableHeaders,
   checkRowCounts,
   columnName2UrlParam,
   tableIsSortedBy,
-  expandAllRows,
 };

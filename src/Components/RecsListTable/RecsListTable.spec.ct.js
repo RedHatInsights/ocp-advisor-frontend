@@ -15,6 +15,7 @@ import {
   CHIP_GROUP,
   PAGINATION,
   TABLE,
+  ROWS_TOGGLER,
 } from '../../../cypress/utils/components';
 import {
   hasChip,
@@ -41,7 +42,6 @@ import {
   columnName2UrlParam,
   checkTableHeaders,
   tableIsSortedBy,
-  expandAllRows,
 } from '../../../cypress/utils/table';
 import { SORTING_ORDERS } from '../../../cypress/utils/globals';
 // TODO make more use of ../../../cypress/utils/components
@@ -741,7 +741,7 @@ describe('successful non-empty recommendations list table', () => {
   });
 
   it('rule content is rendered', () => {
-    expandAllRows();
+    cy.get(ROWS_TOGGLER).click();
     cy.get(TABLE)
       .find('.pf-c-table__expandable-row.pf-m-expanded')
       .each((el) => {

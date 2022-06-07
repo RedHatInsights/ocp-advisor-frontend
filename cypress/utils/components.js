@@ -16,6 +16,7 @@ const TBODY = 'tbody[role=rowgroup]';
 const TOOLBAR_FILTER = '.ins-c-primary-toolbar__filter';
 const TABLE = 'table';
 const TABLE_HEADER = 'thead';
+const ROWS_TOGGLER = `${TABLE_HEADER} .pf-c-table__toggle`;
 
 const ouiaId = (id) => `[data-ouia-component-id="${id}"]`;
 
@@ -37,4 +38,5 @@ export {
   TOOLBAR_FILTER,
   TABLE,
   TABLE_HEADER,
+  ROWS_TOGGLER,
 };
