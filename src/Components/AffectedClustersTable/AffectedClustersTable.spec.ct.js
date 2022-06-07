@@ -229,6 +229,33 @@ describe('non-empty successful affected clusters table', () => {
       cy.get(MODAL).should('have.length', 1);
     });
 
+    it('checkbox can be un-clicked and all row are unselected', () => {
+      cy.ouiaId(BULK_SELECT, 'input').dblclick().should('not.be.checked');
+      // contains right text
+      cy.get('#toggle-checkbox-text').should('not.exist');
+      // checks all rows
+      cy.get(TABLE)
+        .find(TBODY)
+        .find(ROW)
+        .each((row) => {
+          cy.wrap(row)
+            .find('td')
+            .first()
+            .find('input')
+            .should('not.be.checked');
+        });
+      // bulk disabling button is not enabled
+      cy.get(TOOLBAR)
+        .find('.pf-m-spacer-sm')
+        .find(DROPDOWN)
+        .within((el) => {
+          cy.wrap(el).click();
+          cy.get('button')
+            .contains('Disable recommendation for selected clusters')
+            .should('have.class', 'pf-m-disabled');
+        });
+    });
+
     it('checkbox is unselected when a row is unselected', () => {
       cy.ouiaId(BULK_SELECT).find('input').click().should('be.checked');
       // removing one row unselects it
@@ -253,26 +280,6 @@ describe('non-empty successful affected clusters table', () => {
           cy.get('button')
             .contains('Disable recommendation for selected clusters')
             .should('not.have.class', 'pf-m-disabled');
-        });
-    });
-
-    it('checkbox unchecking removes all checks from rows', () => {
-      cy.ouiaId(BULK_SELECT).find('input').click().should('be.checked');
-
-      cy.ouiaId(BULK_SELECT).find('input').click();
-      cy.ouiaId(BULK_SELECT)
-        .find('label.pf-c-dropdown__toggle-check')
-        .contains('selected')
-        .should('not.exist');
-      cy.get(TABLE)
-        .find(TBODY)
-        .find(ROW)
-        .each((row) => {
-          cy.wrap(row)
-            .find('td')
-            .first()
-            .find('input')
-            .should('not.be.checked');
         });
     });
 
