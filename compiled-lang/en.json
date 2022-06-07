@@ -60,7 +60,7 @@
   "noMatchingRecommendationsTitle": "No matching recommendations found",
   "noRecommendations": "The cluster is not affected by any known recommendations",
   "noRecommendationsDesc": "No known recommendations affect this cluster.",
-  "noRecsError": "No recommendations available.",
+  "noRecsError": "No recommendations available",
   "noRecsErrorDesc": "There was an error fetching recommendations for this cluster. Refresh your page to try again.",
   "noRecsForClusterListBody": "To get started, create or register your cluster to get recommendations from Insights Advisor.",
   "noRecsForClusterListTitle": "No clusters yet",
