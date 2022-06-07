@@ -51,13 +51,13 @@ const BULK_SELECT = 'clusters-selector';
 const SEARCH_ITEMS = ['ff', 'CUSTOM', 'Foobar', 'Not existing cluster'];
 const TABLE_HEADERS = _.map(AFFECTED_CLUSTERS_COLUMNS, (it) => it.title);
 
-let data = _.cloneDeep(clusterDetailData.data['enabled']);
-data.forEach(
+let values = _.cloneDeep(clusterDetailData.data['enabled']);
+values.forEach(
   (it) => (it['name'] = it['cluster_name'] ? it['cluster_name'] : it['cluster'])
 );
-const dataUnsorted = _.cloneDeep(data);
+const dataUnsorted = _.cloneDeep(values);
 // default sorting
-data = _.orderBy(data, ['last_checked_at'], ['desc']);
+const data = _.orderBy(values, ['last_checked_at'], ['desc']);
 
 const filtersConf = {
   name: {

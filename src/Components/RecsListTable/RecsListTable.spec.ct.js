@@ -55,9 +55,9 @@ const DEFAULT_FILTERS = {
 };
 const TABLE_HEADERS = _.map(RECS_LIST_COLUMNS, (it) => it.title);
 
-let data = ruleResponse.recommendations;
-const dataUnsorted = _.cloneDeep(data);
-data = _.orderBy(data, ['total_risk'], ['desc']);
+let values = ruleResponse.recommendations;
+const dataUnsorted = _.cloneDeep(values);
+const data = _.orderBy(values, ['total_risk'], ['desc']);
 
 const IMPACT = { Low: 1, Medium: 2, High: 3, Critical: 4 };
 const LIKELIHOOD = { Low: 1, Medium: 2, High: 3, Critical: 4 };

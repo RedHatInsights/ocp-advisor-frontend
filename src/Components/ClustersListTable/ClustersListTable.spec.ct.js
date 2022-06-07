@@ -46,23 +46,23 @@ import { compare } from 'semver';
 import { VERSION_COMBINATIONS } from '../../../cypress/utils/filters';
 
 // add property name to clusters
-let data = _.cloneDeep(clusters['data']);
-data.forEach(
+let values = _.cloneDeep(clusters['data']);
+values.forEach(
   (it) =>
     (it['name'] = it['cluster_name'] ? it['cluster_name'] : it['cluster_id'])
 );
 // fill possible missing values
-data.forEach((it) => {
+values.forEach((it) => {
   ['1', '2', '3', '4'].forEach((k) => {
     it['hits_by_total_risk'][k] = it['hits_by_total_risk'][k]
       ? it['hits_by_total_risk'][k]
       : 0;
   });
 });
-const dataUnsorted = _.cloneDeep(data);
+const dataUnsorted = _.cloneDeep(values);
 // default sorting
-data = _.orderBy(
-  data,
+const data = _.orderBy(
+  values,
   [(it) => it.last_checked_at || '1970-01-01T01:00:00.001Z'],
   ['desc']
 );
