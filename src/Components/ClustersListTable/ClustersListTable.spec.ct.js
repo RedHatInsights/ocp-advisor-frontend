@@ -34,6 +34,7 @@ import {
   checkRowCounts,
   columnName2UrlParam,
   tableIsSortedBy,
+  checkNoMatchingClusters,
 } from '../../../cypress/utils/table';
 import { CLUSTERS_LIST_COLUMNS } from '../../AppConstants';
 import {
@@ -134,6 +135,8 @@ const filterApply = (filters) => applyFilters(filters, filtersConf);
 
 // TODO add more combinations of filters for testing
 const filterCombos = [{ risk: ['Critical', 'Moderate'], name: 'foo' }];
+
+// TODO: when checking empty state, also check toolbar available and not disabled
 
 describe('data', () => {
   it('has values', () => {
@@ -404,8 +407,8 @@ describe('clusters list table', () => {
         name: 'Not existing clusters',
         risk: ['Critical', 'Moderate'],
       });
-      // TODO check empty table view
-      // TODO headers are displayed
+      checkNoMatchingClusters();
+      checkTableHeaders(TABLE_HEADERS);
     });
 
     describe('single filter', () => {
@@ -418,8 +421,8 @@ describe('clusters list table', () => {
             removeAllChips();
             filterApply(filters);
             if (sortedNames.length === 0) {
-              // TODO check empty table view
-              // TODO headers are displayed
+              checkNoMatchingClusters();
+              checkTableHeaders(TABLE_HEADERS);
             } else {
               cy.get(`td[data-label="Name"]`)
                 .then(($els) => {
@@ -472,7 +475,7 @@ describe('clusters list table', () => {
           removeAllChips();
           filterApply(filters);
           if (sortedNames.length === 0) {
-            // TODO check empty table view
+            checkNoMatchingClusters();
           } else {
             cy.get(`td[data-label="Name"]`)
               .then(($els) => {

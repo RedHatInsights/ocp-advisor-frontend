@@ -13,13 +13,7 @@ import {
   TableHeader,
   TableVariant,
 } from '@patternfly/react-table';
-import {
-  Pagination,
-  Stack,
-  Card,
-  CardBody,
-  Tooltip,
-} from '@patternfly/react-core';
+import { Pagination, Stack, Tooltip } from '@patternfly/react-core';
 import { TooltipPosition } from '@patternfly/react-core/dist/js/components/Tooltip';
 import { PaginationVariant } from '@patternfly/react-core/dist/js/components/Pagination/Pagination';
 import isEqual from 'lodash/isEqual';
@@ -46,7 +40,6 @@ import {
   mapContentToValues,
   strong,
 } from '../../Utilities/intlHelper';
-import { List } from 'react-content-loader';
 import { ErrorState, NoMatchingRecs } from '../MessageState/EmptyStates';
 import {
   passFilters,
@@ -66,6 +59,7 @@ import {
   RuleDetailsMessagesKeys,
 } from '@redhat-cloud-services/frontend-components-advisor-components';
 import { adjustOCPRule } from '../../Utilities/Rule';
+import Loading from '../Loading/Loading';
 
 const RecsListTable = ({ query }) => {
   const intl = useIntl();
@@ -92,6 +86,7 @@ const RecsListTable = ({ query }) => {
   const loadingState = isUninitialized || isFetching || !rowsFiltered;
   const errorState = isError || (isSuccess && recs.length === 0);
   const successState = isSuccess && recs.length > 0;
+  const noMatch = recs.length > 0 && filteredRows.length === 0;
 
   const removeFilterParam = (param) =>
     _removeFilterParam(filters, updateFilters, param);
@@ -474,25 +469,23 @@ const RecsListTable = ({ query }) => {
     },
   };
 
-  //Responsible for the handling collapse for all the recommendations
-  //Used in the PrimaryToolbar
-  const collapseAll = (_e, isOpen) => {
-    setIsAllExpanded(isOpen);
-    setDisplayedRows(
-      displayedRows.map((row) => {
-        return {
+  const handleOnCollapse = (_e, rowId, isOpen) => {
+    if (rowId === undefined) {
+      // if undefined, all rows are affected
+      setIsAllExpanded(isOpen);
+      setDisplayedRows(
+        displayedRows.map((row) => ({
           ...row,
           isOpen: isOpen,
-        };
-      })
-    );
-  };
-
-  //Responsible for handling collapse for single recommendation
-  const handleOnCollapse = (_e, rowId, isOpen) => {
-    const collapseRows = [...displayedRows];
-    collapseRows[rowId] = { ...collapseRows[rowId], isOpen };
-    setDisplayedRows(collapseRows);
+        }))
+      );
+    } else {
+      setDisplayedRows(
+        displayedRows.map((row, index) =>
+          index === rowId ? { ...row, isOpen } : row
+        )
+      );
+    }
   };
 
   const ackRule = async (rowId) => {
@@ -568,7 +561,6 @@ const RecsListTable = ({ query }) => {
         />
       )}
       <PrimaryToolbar
-        expandAll={{ isAllExpanded, onClick: collapseAll }}
         pagination={{
           itemCount: filteredRows.length,
           page: filters.offset / filters.limit + 1,
@@ -593,62 +585,52 @@ const RecsListTable = ({ query }) => {
         }}
         activeFiltersConfig={errorState ? undefined : activeFiltersConfig}
       />
-      {errorState && (
-        <Card id="error-state-message" ouiaId="error-state">
-          <CardBody>
+      <Table
+        aria-label="Table of recommendations"
+        ouiaId="recommendations"
+        variant={TableVariant.compact}
+        cells={RECS_LIST_COLUMNS}
+        rows={
+          errorState || loadingState || noMatch ? (
+            [
+              {
+                fullWidth: true,
+                cells: [
+                  {
+                    props: {
+                      colSpan: RECS_LIST_COLUMNS.length + 1,
+                    },
+                    title: errorState ? (
+                      <ErrorState />
+                    ) : loadingState ? (
+                      <Loading />
+                    ) : (
+                      <NoMatchingRecs />
+                    ),
+                  },
+                ],
+              },
+            ]
+          ) : successState ? (
+            displayedRows
+          ) : (
             <ErrorState />
-          </CardBody>
-        </Card>
-      )}
-      {(loadingState || successState) && (
-        <React.Fragment>
-          <Table
-            aria-label="Table of recommendations"
-            ouiaId="recommendations"
-            variant={TableVariant.compact}
-            cells={RECS_LIST_COLUMNS}
-            rows={
-              loadingState
-                ? [
-                    {
-                      fullWidth: true,
-                      cells: [
-                        {
-                          props: { colSpan: 5 },
-                          title: <List key="loading-cell" />,
-                        },
-                      ],
-                    },
-                  ]
-                : recs.length > 0 && filteredRows.length === 0
-                ? [
-                    {
-                      fullWidth: true,
-                      cells: [
-                        {
-                          props: { colSpan: 5 },
-                          title: <NoMatchingRecs ouiaId="empty-state" />,
-                        },
-                      ],
-                    },
-                  ]
-                : displayedRows
-            }
-            onCollapse={handleOnCollapse}
-            sortBy={{
-              index: filters.sortIndex,
-              direction: filters.sortDirection,
-            }}
-            onSort={onSort}
-            actionResolver={actionResolver}
-            isStickyHeader
-            ouiaSafe={testSafe}
-          >
-            <TableHeader />
-            <TableBody />
-          </Table>
-        </React.Fragment>
-      )}
+          )
+        }
+        onCollapse={handleOnCollapse} // TODO: set undefined when there is an empty state
+        sortBy={{
+          index: filters.sortIndex,
+          direction: filters.sortDirection,
+        }}
+        onSort={onSort}
+        actionResolver={actionResolver}
+        isStickyHeader
+        ouiaSafe={testSafe}
+        canCollapseAll
+      >
+        <TableHeader />
+        <TableBody />
+      </Table>
       <Pagination
         ouiaId="pager"
         itemCount={filteredRows.length}
@@ -676,7 +658,7 @@ RecsListTable.propTypes = {
     isUninitialized: PropTypes.bool.isRequired,
     isFetching: PropTypes.bool.isRequired,
     isSuccess: PropTypes.bool.isRequired,
-    data: PropTypes.array,
+    data: PropTypes.object,
     refetch: PropTypes.func,
   }),
 };

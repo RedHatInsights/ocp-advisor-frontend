@@ -7,7 +7,10 @@ import { Cluster } from './Cluster';
 import { Provider } from 'react-redux';
 import getStore from '../../Store';
 import singleClusterPageReport from '../../../cypress/fixtures/api/insights-results-aggregator/v2/cluster/dcb95bbf-8673-4f3a-a63c-12d4a530aa6f/reports-disabled-false.json';
-import { checkRowCounts } from '../../../cypress/utils/table';
+import {
+  checkNoMatchingRecs,
+  checkRowCounts,
+} from '../../../cypress/utils/table';
 
 // selectors
 const CLUSTER_HEADER = '#cluster-header';
@@ -62,7 +65,7 @@ describe('cluster page', () => {
     // renders table component
     cy.get(RULES_TABLE).should('have.length', 1);
     // test how many rows were rendered
-    checkRowCounts(singleClusterPageReport.report.data.length);
+    checkRowCounts(singleClusterPageReport.report.data.length, true);
   });
 
   it('cluster page in the loading state', () => {
@@ -90,7 +93,7 @@ describe('cluster page', () => {
     cy.get(CLUSTER_HEADER).should('have.length', 1);
     // renders table component
     cy.get(RULES_TABLE).should('have.length', 1);
-    cy.get('#loading-skeleton').should('have.length', 1);
+    cy.ouiaId('loading-skeleton').should('have.length', 1);
   });
 
   it('cluster page in the error state', () => {
@@ -138,7 +141,7 @@ describe('cluster page', () => {
     cy.get(FILTER_CHIPS).each(($el) =>
       expect($el.text()).to.be.oneOf(['foo bar', 'Low', 'Performance'])
     );
-    checkRowCounts(0);
+    checkNoMatchingRecs();
   });
 
   it('adds additional filters passed by the query parameters №2', () => {
@@ -161,7 +164,7 @@ describe('cluster page', () => {
         'Service Availability',
       ])
     );
-    checkRowCounts(0);
+    checkNoMatchingRecs();
   });
 });
 
@@ -206,7 +209,9 @@ describe('Cluster page display name test №1', () => {
       <MemoryRouter>
         <Intl>
           <Provider store={getStore()}>
-            <Cluster cluster="" match={props.match} />
+            <Cluster
+              {...{ ...props, cluster: { ...props.cluster, data: null } }}
+            />
           </Provider>
         </Intl>
       </MemoryRouter>

@@ -17,13 +17,18 @@ import {
 } from '../../../cypress/utils/globals';
 import { applyFilters, filter } from '../../../cypress/utils/filters';
 import { cumulativeCombinations } from '../../../cypress/utils/combine';
-import { checkTableHeaders } from '../../../cypress/utils/table';
+import {
+  checkEmptyState,
+  checkNoMatchingRecs,
+  checkTableHeaders,
+} from '../../../cypress/utils/table';
 import {
   CHIP_GROUP,
   CHIP,
   ROW,
   TOOLBAR,
   TABLE,
+  ROWS_TOGGLER,
 } from '../../../cypress/utils/components';
 
 const data = singleClusterPageReport.report.data;
@@ -71,6 +76,8 @@ const filterApply = (filters) => applyFilters(filters, filtersConf);
 const filterCombos = [
   { risk: ['Critical', 'Moderate'], category: ['Service Availability'] },
 ];
+
+// TODO: when checking empty state, also check toolbar available and not disabled
 
 describe('test data', () => {
   it('has rules', () => {
@@ -175,11 +182,9 @@ describe('cluster rules table', () => {
   });
 
   it('expand all, collapse all', () => {
-    const TOOLBAR = '[class="pf-c-toolbar__item"]';
-
-    cy.get(TOOLBAR).find('button').click();
+    cy.get(ROWS_TOGGLER).click();
     cy.get(EXPANDABLES).should('have.length', RULES_ENABLED);
-    cy.get(TOOLBAR).find('button').click();
+    cy.get(ROWS_TOGGLER).click();
     cy.get(EXPANDABLES).should('have.length', 0);
   });
 
@@ -254,8 +259,8 @@ describe('cluster rules table', () => {
       filterApply({
         description: 'Not existing recommendation',
       });
-      // TODO check empty table view
-      // TODO headers are displayed
+      checkNoMatchingRecs();
+      checkTableHeaders(TABLE_HEADERS);
     });
 
     describe('single filter', () => {
@@ -270,8 +275,8 @@ describe('cluster rules table', () => {
             ).sort();
             filterApply(filters);
             if (sortedDescriptions.length === 0) {
-              // TODO check empty table view
-              // TODO headers are displayed
+              checkNoMatchingRecs();
+              checkTableHeaders(TABLE_HEADERS);
             } else {
               cy.get(`td[data-label="Description"]`)
                 .then(($els) => {
@@ -313,7 +318,7 @@ describe('cluster rules table', () => {
           ).sort();
           filterApply(filters);
           if (sortedDescriptions.length === 0) {
-            // TODO check empty table view
+            checkNoMatchingRecs();
           } else {
             cy.get(`td[data-label="Description"]`)
               .then(($els) => {
@@ -383,13 +388,10 @@ describe('empty cluster rules table', () => {
   });
 
   it('renders no recommendation message', () => {
-    cy.get('[data-ouia-component-id="no-recommendations"]')
-      .contains('The cluster is not affected by any known recommendations')
-      .should('exist');
-  });
-
-  it('does not render table', () => {
-    cy.get(TABLE).should('not.exist');
+    checkEmptyState(
+      'The cluster is not affected by any known recommendations',
+      true
+    );
   });
 });
 

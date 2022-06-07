@@ -15,6 +15,7 @@ import {
   CHIP_GROUP,
   PAGINATION,
   TABLE,
+  ROWS_TOGGLER,
 } from '../../../cypress/utils/components';
 import {
   hasChip,
@@ -41,6 +42,8 @@ import {
   columnName2UrlParam,
   checkTableHeaders,
   tableIsSortedBy,
+  checkEmptyState,
+  checkNoMatchingRecs,
 } from '../../../cypress/utils/table';
 import { SORTING_ORDERS } from '../../../cypress/utils/globals';
 // TODO make more use of ../../../cypress/utils/components
@@ -189,12 +192,6 @@ Cypress.Commands.add('getColumns', () => {
   */
   cy.get(`${TABLE} > thead > tr > th[scope="col"]`);
 });
-Cypress.Commands.add('sortByCol', (colIndex) => {
-  cy.getColumns()
-    .eq(colIndex)
-    .find('span[class=pf-c-table__sort-indicator]')
-    .click({ force: true });
-});
 
 before(() => {
   // the flag tells not to fetch external federated modules
@@ -202,6 +199,8 @@ before(() => {
 });
 
 // TODO test data
+
+// TODO: when checking empty state, also check toolbar available and not disabled
 
 describe('data', () => {
   it('has values', () => {
@@ -533,8 +532,8 @@ describe('successful non-empty recommendations list table', () => {
       filterApply({
         name: 'Not existing recommendation',
       });
-      // TODO check empty table view
-      // TODO headers are displayed
+      checkNoMatchingRecs();
+      checkTableHeaders(TABLE_HEADERS);
     });
 
     it('no filters show all recommendations', () => {
@@ -560,8 +559,8 @@ describe('successful non-empty recommendations list table', () => {
             removeAllChips();
             filterApply(filters);
             if (sortedNames.length === 0) {
-              // TODO check empty table view
-              // TODO headers are displayed
+              checkNoMatchingRecs();
+              checkTableHeaders(TABLE_HEADERS);
             } else {
               cy.get(`td[data-label="Name"]`)
                 .then(($els) => {
@@ -610,6 +609,7 @@ describe('successful non-empty recommendations list table', () => {
       });
     });
 
+    // TODO: add more combinations
     describe('combined filters', () => {
       filterCombos.forEach((filters) => {
         it(`${Object.keys(filters)}`, () => {
@@ -624,7 +624,8 @@ describe('successful non-empty recommendations list table', () => {
           removeAllChips();
           filterApply(filters);
           if (sortedNames.length === 0) {
-            // TODO check empty table view
+            checkNoMatchingRecs();
+            checkTableHeaders(TABLE_HEADERS);
           } else {
             cy.get(`td[data-label="Name"]`)
               .then(($els) => {
@@ -742,8 +743,7 @@ describe('successful non-empty recommendations list table', () => {
   });
 
   it('rule content is rendered', () => {
-    // expand all rules
-    cy.get('.pf-c-toolbar__expand-all-icon > svg').click();
+    cy.get(ROWS_TOGGLER).click();
     cy.get(TABLE)
       .find('.pf-c-table__expandable-row.pf-m-expanded')
       .each((el) => {
@@ -779,9 +779,7 @@ describe('empty recommendations list table', () => {
   });
 
   it('renders error message', () => {
-    cy.get('#error-state-message')
-      .find('h4')
-      .should('have.text', 'Something went wrong');
+    checkEmptyState('Something went wrong', true); // error is shown because it is not OK if API responds 200 but with no recommendations
   });
 });
 
@@ -807,8 +805,6 @@ describe('error recommendations list table', () => {
   });
 
   it('renders error message', () => {
-    cy.get('#error-state-message')
-      .find('h4')
-      .should('have.text', 'Something went wrong');
+    checkEmptyState('Something went wrong', true);
   });
 });

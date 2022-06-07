@@ -15,6 +15,9 @@ const DROPDOWN_ITEM = '[data-ouia-component-type="PF4/DropdownItem"]';
 const TBODY = 'tbody[role=rowgroup]';
 const TOOLBAR_FILTER = '.ins-c-primary-toolbar__filter';
 const TABLE = 'table';
+const TABLE_HEADER = 'thead';
+const ROWS_TOGGLER = `${TABLE_HEADER} .pf-c-table__toggle`;
+const TITLE = '[data-ouia-component-type="PF4/Title"]';
 
 const ouiaId = (id) => `[data-ouia-component-id="${id}"]`;
 
@@ -35,4 +38,7 @@ export {
   TBODY,
   TOOLBAR_FILTER,
   TABLE,
+  TABLE_HEADER,
+  ROWS_TOGGLER,
+  TITLE,
 };

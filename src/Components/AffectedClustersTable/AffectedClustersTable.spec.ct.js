@@ -30,6 +30,8 @@ import {
   checkTableHeaders,
   checkRowCounts,
   tableIsSortedBy,
+  checkEmptyState,
+  checkNoMatchingClusters,
 } from '../../../cypress/utils/table';
 import {
   itemsPerPage,
@@ -112,6 +114,8 @@ describe('test data', () => {
     expect(filterData({ version: [''] })).to.have.length.gte(1);
   });
 });
+
+// TODO: when checking empty state, also check toolbar available and not disabled
 
 describe('non-empty successful affected clusters table', () => {
   beforeEach(() => {
@@ -473,8 +477,8 @@ describe('non-empty successful affected clusters table', () => {
             let sortedNames = _.map(filterData(filters), 'name');
             filterApply(filters);
             if (sortedNames.length === 0) {
-              // TODO check empty table view
-              // TODO headers are displayed
+              checkNoMatchingClusters();
+              checkTableHeaders(TABLE_HEADERS);
             } else {
               cy.get(`td[data-label="Name"]`)
                 .then(($els) => {
@@ -510,7 +514,7 @@ describe('non-empty successful affected clusters table', () => {
           let sortedNames = _.map(filterData(filters), 'name');
           filterApply(filters);
           if (sortedNames.length === 0) {
-            // TODO check empty table view
+            checkNoMatchingClusters;
           } else {
             cy.get(`td[data-label="Name"]`)
               .then(($els) => {
@@ -550,8 +554,8 @@ describe('non-empty successful affected clusters table', () => {
 
     it('empty state is displayed when filters do not match any rule', () => {
       cy.get('#name-filter').type('Not existing cluster');
-      // TODO check empty table view
-      // TODO headers are displayed
+      checkNoMatchingClusters();
+      checkTableHeaders(TABLE_HEADERS);
     });
   });
 
@@ -687,9 +691,7 @@ describe('empty successful affected clusters table', () => {
   });
 
   it('renders no clusters message', () => {
-    cy.get('#empty-state-message')
-      .find('h4')
-      .should('have.text', 'No clusters');
+    checkEmptyState('No clusters', true);
   });
 
   it('renders table headers', () => {
@@ -724,8 +726,8 @@ describe('empty failed affected clusters table', () => {
   });
 
   it('renders error message', () => {
-    cy.get('#error-state-message')
-      .find('h4')
+    cy.get('[ouiaid="empty-state"]')
+      .find('h5')
       .should('have.text', 'Something went wrong');
   });
 

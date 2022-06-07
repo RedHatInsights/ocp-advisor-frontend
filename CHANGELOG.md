@@ -1,3 +1,26 @@
+## [1.4.5](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.4.4...v1.4.5) (2022-06-07)
+
+
+### Bug Fixes
+
+* **Tables:** fix wrong placement of "Expand all" button ([#309](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/309)) ([edf4bc8](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/edf4bc8e17dc5eadad96c88860c2a05a0ea671ef))
+
+## [1.4.4](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.4.3...v1.4.4) (2022-06-07)
+
+
+### Bug Fixes
+
+* **Tables:** unify empty state handling across tables; implement tests ([#302](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/302)) ([c59821a](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/c59821a15f3f29772e79a8b39a590685cffcdab8))
+
+## [1.4.3](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.4.2...v1.4.3) (2022-06-06)
+
+## [1.4.2](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.4.1...v1.4.2) (2022-06-06)
+
+
+### Bug Fixes
+
+* Show display name even when Insights not available ([#299](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/299)) ([47d9845](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/47d984512b512d92211efc6bddb7be8ba6a18933))
+
 ## [1.4.1](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.4.0...v1.4.1) (2022-05-27)
 
 
