@@ -8,20 +8,11 @@ import uniqBy from 'lodash/uniqBy';
 
 import { conditionalFilterType } from '@redhat-cloud-services/frontend-components/ConditionalFilter/conditionalFilterConstants';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
-import { EmptyTable } from '@redhat-cloud-services/frontend-components/EmptyTable';
 import { TableToolbar } from '@redhat-cloud-services/frontend-components/TableToolbar';
 import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
-import {
-  Card,
-  CardBody,
-  Tooltip,
-  Bullseye,
-  Pagination,
-} from '@patternfly/react-core';
+import { Tooltip, Pagination } from '@patternfly/react-core';
 import { PaginationVariant } from '@patternfly/react-core/dist/js/components/Pagination/Pagination';
-import { Table } from '@patternfly/react-table/dist/js/components/Table/Table';
-import { TableBody } from '@patternfly/react-table/dist/js/components/Table/Body';
-import { TableHeader } from '@patternfly/react-table/dist/js/components/Table/Header';
+import { Table, TableHeader, TableBody } from '@patternfly/react-table';
 
 import {
   ErrorState,
@@ -69,12 +60,17 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
        clusters that are affected by the rec */
     data = { disabled: [], enabled: [] },
   } = query;
-  const rows = data.enabled;
+  const rows = data?.enabled || [];
   const filters = useSelector(({ filters }) => filters.affectedClustersState);
   const perPage = filters.limit;
   const page = filters.offset / filters.limit + 1;
   const allSelected =
     filteredRows.length !== 0 && selected.length === filteredRows.length;
+  const loadingState = isUninitialized || isFetching;
+  const errorState = isError;
+  const successState = isSuccess;
+  const noInput = successState && rows.length === 0;
+  const noMatch = rows.length > 0 && filteredRows.length === 0;
 
   const updateFilters = (filters) =>
     dispatch(updateAffectedClustersFilters(filters));
@@ -342,7 +338,35 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
         ouiaId="clusters"
         variant="compact"
         cells={AFFECTED_CLUSTERS_COLUMNS}
-        rows={displayedRows}
+        rows={
+          errorState || loadingState || noMatch || noInput ? (
+            [
+              {
+                fullWidth: true,
+                cells: [
+                  {
+                    props: {
+                      colSpan: AFFECTED_CLUSTERS_COLUMNS.length + 1,
+                    },
+                    title: errorState ? (
+                      <ErrorState />
+                    ) : loadingState ? (
+                      <Loading />
+                    ) : noInput ? (
+                      <NoAffectedClusters />
+                    ) : (
+                      <NoMatchingClusters />
+                    ),
+                  },
+                ],
+              },
+            ]
+          ) : successState ? (
+            displayedRows
+          ) : (
+            <ErrorState />
+          )
+        }
         sortBy={{
           index: filters.sortIndex,
           direction: filters.sortDirection,
@@ -359,35 +383,7 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
         ]}
       >
         <TableHeader />
-        {(isUninitialized || isFetching) && <Loading />}
-        {isError && (
-          // TODO: fix crooked message container
-          <Card id="error-state-message" ouiaId="error-state">
-            <CardBody>
-              <ErrorState />
-            </CardBody>
-          </Card>
-        )}
-        {isSuccess && rows.length === 0 && (
-          // TODO: fix crooked message container
-          <Card id="empty-state-message" ouiaId="empty-state">
-            <CardBody>
-              <NoAffectedClusters />
-            </CardBody>
-          </Card>
-        )}
-        {isSuccess &&
-          rows.length > 0 &&
-          (filteredRows.length > 0 ? (
-            <TableBody />
-          ) : (
-            // TODO: fix crooked message container
-            <EmptyTable>
-              <Bullseye>
-                <NoMatchingClusters />
-              </Bullseye>
-            </EmptyTable>
-          ))}
+        <TableBody />
       </Table>
       <TableToolbar isFooter className="ins-c-inventory__table--toolbar">
         <Pagination
@@ -411,7 +407,10 @@ AffectedClustersTable.propTypes = {
     isUninitialized: PropTypes.bool.isRequired,
     isFetching: PropTypes.bool.isRequired,
     isSuccess: PropTypes.bool.isRequired,
-    data: PropTypes.array,
+    data: PropTypes.shape({
+      enabled: PropTypes.array,
+      disabled: PropTypes.array,
+    }),
   }),
   rule: PropTypes.object,
   afterDisableFn: PropTypes.func,

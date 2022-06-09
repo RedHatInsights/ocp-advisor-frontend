@@ -16,7 +16,7 @@ import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat/Da
 import messages from '../../Messages';
 import { OneLineLoader } from '../../Utilities/Loaders';
 
-export const ClusterHeader = ({ clusterId, clusterData }) => {
+export const ClusterHeader = ({ clusterId, clusterData, clusterInfo }) => {
   const location = window.location;
   const [isOpen, setIsOpen] = useState(false);
   const intl = useIntl();
@@ -26,6 +26,12 @@ export const ClusterHeader = ({ clusterId, clusterData }) => {
     isFetching: isFetchingCluster,
     data: cluster,
   } = clusterData;
+
+  const {
+    isUninitialized: isUninitializedInfo,
+    isFetching: isFetchingInfo,
+    data: info,
+  } = clusterInfo;
 
   const redirectOCM = (clusterId) => {
     location.assign(
@@ -44,18 +50,18 @@ export const ClusterHeader = ({ clusterId, clusterData }) => {
   return (
     <Grid id="cluster-header" md={12} hasGutter>
       <GridItem span={8}>
-        {isUninitializedCluster || isFetchingCluster ? (
-          <Skeleton size="sm" />
-        ) : (
-          <Title
-            size="2xl"
-            headingLevel="h1"
-            id="cluster-header-title"
-            ouiaId="cluster-name"
-          >
-            {clusterData?.data?.report?.meta.cluster_name || clusterId}
-          </Title>
-        )}
+        <Title
+          size="2xl"
+          headingLevel="h1"
+          id="cluster-header-title"
+          ouiaId="cluster-name"
+        >
+          {isUninitializedInfo || isFetchingInfo ? (
+            <Skeleton size="sm" />
+          ) : (
+            info?.display_name || clusterId
+          )}
+        </Title>
       </GridItem>
       <GridItem span={4} id="cluster-header-dropdown">
         <Dropdown
@@ -77,8 +83,7 @@ export const ClusterHeader = ({ clusterId, clusterData }) => {
       <GridItem>
         <Stack>
           <StackItem id="cluster-header-uuid">
-            <span>UUID: </span>
-            <span>{clusterId || intl.formatMessage(messages.unknown)}</span>
+            <span>UUID:</span> <span>{clusterId}</span>
           </StackItem>
           <StackItem id="cluster-header-last-seen">
             <span>{intl.formatMessage(messages.lastSeen)}: </span>
@@ -103,6 +108,15 @@ export const ClusterHeader = ({ clusterId, clusterData }) => {
 
 ClusterHeader.propTypes = {
   clusterId: PropTypes.string.isRequired,
-  displayName: PropTypes.object.isRequired,
   clusterData: PropTypes.object.isRequired,
+  clusterInfo: PropTypes.shape({
+    isUninitialized: PropTypes.bool.isRequired,
+    isFetching: PropTypes.bool.isRequired,
+    data: PropTypes.shape({
+      cluster_id: PropTypes.string,
+      display_name: PropTypes.string,
+      managed: PropTypes.bool,
+      status: PropTypes.string,
+    }),
+  }),
 };

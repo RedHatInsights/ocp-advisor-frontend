@@ -22,9 +22,15 @@ describe('cluster page header', () => {
           report: {
             meta: {
               last_checked_at: '2021-07-24T14:22:36.109Z',
-              cluster_name: 'Cluster with issues',
             },
           },
+        },
+      },
+      clusterInfo: {
+        isUninitialized: false,
+        isFetching: false,
+        data: {
+          display_name: 'Cluster with issues',
         },
       },
     };
@@ -45,10 +51,10 @@ describe('cluster page header', () => {
   it('show skeleton when in the loading state', () => {
     props = {
       ...props,
-      displayName: {
-        ...props.displayName,
+      clusterInfo: {
+        isUninitialized: false,
         isFetching: true,
-        data: undefined,
+        data: null,
       },
     };
     mount(
@@ -58,7 +64,7 @@ describe('cluster page header', () => {
     );
     // check title
     cy.get(HEADER_TITLE).should('have.length', 1);
-    cy.get('.ins-c-skeleton').should('have.length', 0);
+    cy.get('.ins-c-skeleton').should('have.length', 1);
     // check uuid text
     cy.get(UUID_FIELD).should('have.text', 'foobar');
     // check uuid text
@@ -66,7 +72,7 @@ describe('cluster page header', () => {
   });
   // this test is not checking UUID but name
   it('show UUID when display name is unavailable', () => {
-    props.clusterData.data.report.meta.cluster_name = undefined;
+    props.clusterInfo.data.display_name = undefined;
     mount(
       <Intl>
         <ClusterHeader {...props} />

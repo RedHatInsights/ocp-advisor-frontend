@@ -1,7 +1,10 @@
 import React from 'react';
 import { useRouteMatch } from 'react-router-dom';
 
-import { useGetClusterByIdQuery } from '../../Services/SmartProxy';
+import {
+  useGetClusterByIdQuery,
+  useGetClusterInfoQuery,
+} from '../../Services/SmartProxy';
 import { ClusterHeader } from './ClusterHeader';
 
 const ClusterHeaderWrapper = () => {
@@ -11,8 +14,17 @@ const ClusterHeaderWrapper = () => {
     id: clusterId,
     includeDisabled: false,
   });
+  const clusterInfo = useGetClusterInfoQuery({
+    id: clusterId,
+  });
 
-  return <ClusterHeader clusterId={clusterId} clusterData={clusterData} />;
+  return (
+    <ClusterHeader
+      clusterId={clusterId}
+      clusterData={clusterData}
+      clusterInfo={clusterInfo}
+    />
+  );
 };
 
 export default ClusterHeaderWrapper;

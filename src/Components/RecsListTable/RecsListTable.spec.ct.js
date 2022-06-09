@@ -15,6 +15,7 @@ import {
   CHIP_GROUP,
   PAGINATION,
   TABLE,
+  ROWS_TOGGLER,
 } from '../../../cypress/utils/components';
 import {
   hasChip,
@@ -41,6 +42,8 @@ import {
   columnName2UrlParam,
   checkTableHeaders,
   tableIsSortedBy,
+  checkEmptyState,
+  checkNoMatchingRecs,
 } from '../../../cypress/utils/table';
 import { SORTING_ORDERS } from '../../../cypress/utils/globals';
 // TODO make more use of ../../../cypress/utils/components
@@ -187,12 +190,6 @@ Cypress.Commands.add('getColumns', () => {
   */
   cy.get(`${TABLE} > thead > tr > th[scope="col"]`);
 });
-Cypress.Commands.add('sortByCol', (colIndex) => {
-  cy.getColumns()
-    .eq(colIndex)
-    .find('span[class=pf-c-table__sort-indicator]')
-    .click({ force: true });
-});
 
 before(() => {
   // the flag tells not to fetch external federated modules
@@ -200,6 +197,8 @@ before(() => {
 });
 
 // TODO test data
+
+// TODO: when checking empty state, also check toolbar available and not disabled
 
 describe('data', () => {
   it('has values', () => {
@@ -220,6 +219,10 @@ describe('data', () => {
     expect(filteredData).to.not.have.lengthOf(
       filterData(DEFAULT_FILTERS).length
     );
+  });
+  it('there is at least one disabled recommendation in the first page', () => {
+    const firstData = filterData({}).slice(0, DEFAULT_ROW_COUNT);
+    expect(_.filter(firstData, (it) => it.disabled)).to.have.length.gte(1);
   });
 });
 
@@ -330,7 +333,7 @@ describe('successful non-empty recommendations list table', () => {
       .and('have.text', 'Enabled');
   });
 
-  it('7 filters available', () => {
+  it('Expected filters available', () => {
     const FILTERS_DROPDOWN = 'ul[class=pf-c-dropdown__menu]';
     const FILTER_ITEM = 'button[class=pf-c-dropdown__menu-item]';
 
@@ -339,31 +342,16 @@ describe('successful non-empty recommendations list table', () => {
       .find('button[class=pf-c-dropdown__toggle]')
       .should('have.length', 1)
       .click();
-    cy.get(FILTERS_DROPDOWN).find(FILTER_ITEM).should('have.length', 7);
+    const filtersNames = _.map(filtersConf, 'selectorText');
     cy.get(FILTERS_DROPDOWN)
       .find(FILTER_ITEM)
-      .each(($el) =>
-        expect($el.text()).to.be.oneOf([
-          'Name',
-          'Total risk',
-          'Impact',
-          'Likelihood',
-          'Category',
-          'Clusters impacted',
-          'Status',
-        ])
-      );
-  });
-
-  // TODO do not hardcode data
-  it('table has 7 recs including non-impacting', () => {
-    cy.removeImpactingFilter();
-    checkRowCounts(7);
+      .should('have.length', filtersNames.length);
+    cy.get(FILTERS_DROPDOWN)
+      .find(FILTER_ITEM)
+      .each(($el) => expect($el.text()).to.be.oneOf(filtersNames));
   });
 
   describe('defaults', () => {
-    // TODO enhance tests See ClustersListTable
-
     it(`shows maximum ${DEFAULT_ROW_COUNT} recommendations`, () => {
       checkRowCounts(DEFAULT_DISPLAYED_SIZE);
       expect(window.location.search).to.contain(`limit=${DEFAULT_ROW_COUNT}`);
@@ -386,10 +374,15 @@ describe('successful non-empty recommendations list table', () => {
 
     it('applies filters', () => {
       for (const [key, value] of Object.entries(DEFAULT_FILTERS)) {
-        // TODO fix v
-        // const [group, item] = urlParamConvert(key, value);
-        // hasChip(group, item);
         const conf = filtersConf[key];
+        if (conf.type === 'checkbox') {
+          value.forEach((it) => {
+            hasChip(conf.selectorText, it);
+          });
+        } else {
+          hasChip(conf.selectorText, value);
+        }
+
         expect(window.location.search).to.contain(
           `${conf.urlParam}=${conf.urlValue(value)}`
         );
@@ -516,18 +509,6 @@ describe('successful non-empty recommendations list table', () => {
   });
 
   describe('filtering', () => {
-    it('include disabled rules', () => {
-      cy.removeStatusFilter().then(() => {
-        expect(window.location.search).to.not.contain('rule_status');
-      });
-      // TODO Verify that rule is in data as disabled
-      checkRowCounts(5)
-        .find('td[data-label="Name"]')
-        .contains('disabled rule with 2 impacted')
-        .should('have.length', 1);
-      // TODO make test data agnostic as long as one disabled rule is present
-    });
-
     it('can clear filters', () => {
       removeAllChips();
       // apply some filters
@@ -555,8 +536,8 @@ describe('successful non-empty recommendations list table', () => {
       filterApply({
         name: 'Not existing recommendation',
       });
-      // TODO check empty table view
-      // TODO headers are displayed
+      checkNoMatchingRecs();
+      checkTableHeaders(TABLE_HEADERS);
     });
 
     it('no filters show all recommendations', () => {
@@ -582,8 +563,8 @@ describe('successful non-empty recommendations list table', () => {
             removeAllChips();
             filterApply(filters);
             if (sortedNames.length === 0) {
-              // TODO check empty table view
-              // TODO headers are displayed
+              checkNoMatchingRecs();
+              checkTableHeaders(TABLE_HEADERS);
             } else {
               cy.get(`td[data-label="Name"]`)
                 .then(($els) => {
@@ -632,6 +613,7 @@ describe('successful non-empty recommendations list table', () => {
       });
     });
 
+    // TODO: add more combinations
     describe('combined filters', () => {
       filterCombos.forEach((filters) => {
         it(`${Object.keys(filters)}`, () => {
@@ -646,7 +628,8 @@ describe('successful non-empty recommendations list table', () => {
           removeAllChips();
           filterApply(filters);
           if (sortedNames.length === 0) {
-            // TODO check empty table view
+            checkNoMatchingRecs();
+            checkTableHeaders(TABLE_HEADERS);
           } else {
             cy.get(`td[data-label="Name"]`)
               .then(($els) => {
@@ -733,12 +716,10 @@ describe('successful non-empty recommendations list table', () => {
         .should('have.text', 'Disabled');
     });
 
-    // TODO make test data independent
-    // TODO check also non-enabled by default rules
     it('each row has a kebab', () => {
       cy.get(TABLE)
         .find('tbody[role=rowgroup] .pf-c-dropdown__toggle')
-        .should('have.length', 4);
+        .should('have.length', DEFAULT_DISPLAYED_SIZE);
     });
 
     it('enabled rule has the disable action', () => {
@@ -752,20 +733,21 @@ describe('successful non-empty recommendations list table', () => {
         .should('have.text', 'Disable recommendation');
     });
 
-    // TODO make test data agnostic
     it('disabled rule has the enable action', () => {
-      cy.removeStatusFilter();
-      cy.removeImpactingFilter();
-      cy.clickOnRowKebab('disabled rule with 2 impacted');
-      cy.getRowByName('disabled rule with 2 impacted')
+      removeAllChips();
+      const firstDisabledRecommendation = _.filter(
+        filterData({}),
+        (it) => it.disabled
+      )[0];
+      cy.clickOnRowKebab(firstDisabledRecommendation.description);
+      cy.getRowByName(firstDisabledRecommendation.description)
         .find('.pf-c-dropdown__menu button')
         .should('have.text', 'Enable recommendation');
     });
   });
 
   it('rule content is rendered', () => {
-    // expand all rules
-    cy.get('.pf-c-toolbar__expand-all-icon > svg').click();
+    cy.get(ROWS_TOGGLER).click();
     cy.get(TABLE)
       .find('.pf-c-table__expandable-row.pf-m-expanded')
       .each((el) => {
@@ -777,8 +759,6 @@ describe('successful non-empty recommendations list table', () => {
         cy.wrap(el).find('.ins-c-rule-details__stack');
       });
   });
-
-  // TODO: test search parameters with likelihood, impact, category filters
 });
 
 describe('empty recommendations list table', () => {
@@ -803,9 +783,7 @@ describe('empty recommendations list table', () => {
   });
 
   it('renders error message', () => {
-    cy.get('#error-state-message')
-      .find('h4')
-      .should('have.text', 'Something went wrong');
+    checkEmptyState('Something went wrong', true); // error is shown because it is not OK if API responds 200 but with no recommendations
   });
 });
 
@@ -831,8 +809,6 @@ describe('error recommendations list table', () => {
   });
 
   it('renders error message', () => {
-    cy.get('#error-state-message')
-      .find('h4')
-      .should('have.text', 'Something went wrong');
+    checkEmptyState('Something went wrong', true);
   });
 });
