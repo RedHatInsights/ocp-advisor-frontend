@@ -394,7 +394,7 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
                               uuids: ackedClusters.map((c) => c.cluster_id),
                             })
                           }
-                          ouiaId="enable-all"
+                          ouiaId="enable"
                         >
                           {intl.formatMessage(messages.enableRuleForClusters)}
                         </Button>
@@ -406,7 +406,7 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
                         isInline
                         variant="link"
                         onClick={() => enableRule(rule)}
-                        ouiaId="rule"
+                        ouiaId="enable"
                       >
                         {intl.formatMessage(messages.enableRule)}
                       </Button>
