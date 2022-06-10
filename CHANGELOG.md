@@ -1,3 +1,10 @@
+## [1.4.6](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.4.5...v1.4.6) (2022-06-10)
+
+
+### Bug Fixes
+
+* **Cluster reports:** fix infinite table re-render when there are no rules ([#315](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/315)) ([54632ef](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/54632efa79593f5e2a4df2219e8526f60d8585ca))
+
 ## [1.4.5](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.4.4...v1.4.5) (2022-06-07)
 
 
