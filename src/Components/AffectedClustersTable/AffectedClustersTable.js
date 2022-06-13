@@ -260,7 +260,7 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
           isModalOpen={disableRuleModalOpen}
           rule={rule}
           afterFn={afterDisableFn}
-          hosts={selected}
+          hosts={host !== undefined ? [] : selected}
           host={host}
         />
       )}
