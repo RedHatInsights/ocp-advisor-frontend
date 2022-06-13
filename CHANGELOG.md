@@ -1,3 +1,10 @@
+## [1.4.7](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.4.6...v1.4.7) (2022-06-13)
+
+
+### Bug Fixes
+
+* **Recommendation clusters:** Fix always checked checkbox in the disable rule modal ([#316](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/316)) ([4e4231e](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/4e4231eef4421cc0f483a4f4cb623b5f87778b53))
+
 ## [1.4.6](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.4.5...v1.4.6) (2022-06-10)
 
 
