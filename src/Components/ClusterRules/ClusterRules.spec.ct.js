@@ -70,7 +70,7 @@ const filtersConf = {
   },
 };
 
-const filterData = (data, filters) => filter(filtersConf, data, filters);
+const filterData = (filters) => filter(filtersConf, data, filters);
 const filterApply = (filters) => applyFilters(filters, filtersConf);
 
 // TODO add more combinations of filters for testing
@@ -104,22 +104,20 @@ describe('test data', () => {
     expect(_.uniq(_.map(data, 'description'))).to.have.length.gte(2);
   });
   it('has only 1 description matching "1Lorem"', () => {
-    expect(filterData(data, { description: '1Lorem' })).to.have.lengthOf(1);
+    expect(filterData({ description: '1Lorem' })).to.have.lengthOf(1);
   });
   it('has multiple descriptions matching "Lorem ipsum"', () => {
-    expect(filterData(data, { description: 'Lorem ipsum' })).to.have.length.gt(
-      1
-    );
+    expect(filterData({ description: 'Lorem ipsum' })).to.have.length.gt(1);
   });
   it('has no descriptions matching "Not existing recommendation"', () => {
     expect(
-      filterData(data, {
+      filterData({
         description: 'Not existing recommendation',
       })
     ).to.have.lengthOf(0);
   });
   it('the first combo filter has less rules hitting that the default and at least one', () => {
-    const filteredData = filterData(data, filterCombos[0]);
+    const filteredData = filterData(filterCombos[0]);
     expect(filteredData).to.have.length.gte(1);
     expect(filteredData).to.have.length.lt(RULES_ENABLED);
   });
@@ -276,7 +274,7 @@ describe('cluster rules table', () => {
             const filters = {};
             filters[k] = filterValues;
             const sortedDescriptions = _.map(
-              filterData(data, filters),
+              filterData(filters),
               'description'
             ).sort();
             filterApply(filters);
@@ -319,7 +317,7 @@ describe('cluster rules table', () => {
       filterCombos.forEach((filters) => {
         it(`${Object.keys(filters)}`, () => {
           const sortedDescriptions = _.map(
-            filterData(data, filters),
+            filterData(filters),
             'description'
           ).sort();
           filterApply(filters);

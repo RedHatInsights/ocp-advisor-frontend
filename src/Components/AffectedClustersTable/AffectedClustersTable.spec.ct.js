@@ -53,12 +53,13 @@ const BULK_SELECT = 'clusters-selector';
 const SEARCH_ITEMS = ['ff', 'CUSTOM', 'Foobar', 'Not existing cluster'];
 const TABLE_HEADERS = _.map(AFFECTED_CLUSTERS_COLUMNS, (it) => it.title);
 
-let data = _.cloneDeep(clusterDetailData.data['enabled']);
-data.forEach(
+let values = _.cloneDeep(clusterDetailData.data['enabled']);
+values.forEach(
   (it) => (it['name'] = it['cluster_name'] ? it['cluster_name'] : it['cluster'])
 );
+const dataUnsorted = _.cloneDeep(values);
 // default sorting
-data = _.orderBy(data, ['last_checked_at'], ['desc']);
+const data = _.orderBy(values, ['last_checked_at'], ['desc']);
 
 const filtersConf = {
   name: {
@@ -443,12 +444,7 @@ describe('non-empty successful affected clusters table', () => {
           }
 
           // add property name to clusters
-          let sortedClusters = _.cloneDeep(
-            clusterDetailData.data['enabled'].map((it) => ({
-              ...it,
-              name: it['cluster_name'] ? it['cluster_name'] : it['cluster'],
-            }))
-          );
+          let sortedClusters = _.cloneDeep(dataUnsorted);
           // convert N/A timestamps as really old ones
           sortedClusters.forEach((it) => {
             if (it['last_checked_at'] === '') {
