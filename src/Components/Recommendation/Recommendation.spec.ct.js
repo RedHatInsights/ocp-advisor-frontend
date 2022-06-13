@@ -30,6 +30,7 @@ const defaultPropsAck = {
 const defaultPropsClusterDetails = {
   data: clusterDetails.data,
   isFetching: false,
+  isSuccess: true,
   refetch: undefined,
 };
 
@@ -53,6 +54,6 @@ describe('breadcrumbs', () => {
 
   it('category labels are displayed', () => {
     // TODO
-    cy.get('h1').should('have.length', 2);
+    cy.get('h1').should('have.length', 1);
   });
 });
