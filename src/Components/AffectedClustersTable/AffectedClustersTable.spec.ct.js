@@ -528,14 +528,14 @@ describe('non-empty successful affected clusters table', () => {
     });
 
     it('can Reset filters', () => {
-      cy.get('#name-filter').type('Not existing cluster');
+      filterApply({ name: 'Not existing cluster' });
       cy.get(TOOLBAR).find('button').contains('Reset filters').click();
       cy.get(TOOLBAR).find(CHIP_GROUP).should('not.exist');
       checkRowCounts(Math.min(DEFAULT_ROW_COUNT, filterData({}).length));
     });
 
     it('empty state is displayed when filters do not match any rule', () => {
-      cy.get('#name-filter').type('Not existing cluster');
+      filterApply({ name: 'Not existing cluster' });
       checkNoMatchingClusters();
       checkTableHeaders(TABLE_HEADERS);
     });
