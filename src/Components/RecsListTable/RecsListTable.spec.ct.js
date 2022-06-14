@@ -574,7 +574,7 @@ describe('successful non-empty recommendations list table', () => {
     });
 
     // TODO: add more combinations
-    describe.only('combined filters', () => {
+    describe('combined filters', () => {
       filterCombos.forEach((filters) => {
         it(`${Object.keys(filters)}`, () => {
           // disabled recommendations have Disabled in their names

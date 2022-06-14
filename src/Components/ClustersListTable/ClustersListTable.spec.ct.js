@@ -431,7 +431,7 @@ describe('clusters list table', () => {
       });
     });
 
-    describe.only('combined filters', () => {
+    describe('combined filters', () => {
       filterCombos.forEach((filters) => {
         it(`${Object.keys(filters)}`, () => {
           checkFiltering(
