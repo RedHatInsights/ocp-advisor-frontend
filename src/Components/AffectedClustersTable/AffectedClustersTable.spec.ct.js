@@ -748,9 +748,7 @@ describe('empty failed affected clusters table', () => {
   });
 
   it('renders error message', () => {
-    cy.get('[ouiaid="empty-state"]')
-      .find('h5')
-      .should('have.text', 'Something went wrong');
+    checkEmptyState('Something went wrong', true);
   });
 
   it('renders table header', () => {
