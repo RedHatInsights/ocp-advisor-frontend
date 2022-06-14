@@ -35,6 +35,7 @@ import {
   columnName2UrlParam,
   tableIsSortedBy,
   checkNoMatchingClusters,
+  checkFiltering,
 } from '../../../cypress/utils/table';
 import { CLUSTERS_LIST_COLUMNS } from '../../AppConstants';
 import {
@@ -411,58 +412,21 @@ describe('clusters list table', () => {
       checkTableHeaders(TABLE_HEADERS);
     });
 
-    describe('single filter', () => {
+    describe.only('single filter', () => {
       Object.entries(filtersConf).forEach(([k, v]) => {
         v.values.forEach((filterValues) => {
           it(`${k}: ${filterValues}`, () => {
-            const filters = {};
-            filters[k] = filterValues;
-            let sortedNames = _.map(filterData(filters), 'name');
-            removeAllChips();
-            filterApply(filters);
-            if (sortedNames.length === 0) {
-              checkNoMatchingClusters();
-              checkTableHeaders(TABLE_HEADERS);
-            } else {
-              cy.get(`td[data-label="Name"]`)
-                .then(($els) => {
-                  return _.map(Cypress.$.makeArray($els), 'innerText');
-                })
-                .should('deep.equal', sortedNames.slice(0, DEFAULT_ROW_COUNT));
-            }
-            // validate chips and url params
-            cy.get(CHIP_GROUP)
-              .should('have.length', Object.keys(filters).length)
-              .then(() => {
-                for (const [k, v] of Object.entries(filtersConf)) {
-                  if (k in filters) {
-                    const urlValue = v.urlValue(filters[k]);
-                    expect(window.location.search).to.contain(
-                      `${v.urlParam}=${urlValue}`
-                    );
-                  } else {
-                    expect(window.location.search).to.not.contain(
-                      `${v.urlParam}=`
-                    );
-                  }
-                }
-              });
-            // check chips
-            for (const [k, v] of Object.entries(filters)) {
-              let groupName = filtersConf[k].selectorText;
-              const nExpectedItems =
-                filtersConf[k].type === 'checkbox' ? v.length : 1;
-              cy.get(CHIP_GROUP)
-                .contains(groupName)
-                .parents(CHIP_GROUP)
-                .then((chipGroup) => {
-                  cy.wrap(chipGroup)
-                    .find(CHIP)
-                    .its('length')
-                    .should('be.eq', Math.min(3, nExpectedItems)); // limited to show 3
-                });
-            }
-            cy.get('button').contains('Reset filters').should('exist');
+            const filters = { [k]: filterValues };
+            checkFiltering(
+              filters,
+              filtersConf,
+              _.map(filterData(filters), 'name').slice(0, DEFAULT_ROW_COUNT),
+              'Name',
+              TABLE_HEADERS,
+              'No matching clusters found',
+              true,
+              true
+            );
           });
         });
       });

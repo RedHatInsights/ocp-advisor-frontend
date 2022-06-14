@@ -32,6 +32,7 @@ import {
   tableIsSortedBy,
   checkEmptyState,
   checkNoMatchingClusters,
+  checkFiltering,
 } from '../../../cypress/utils/table';
 import {
   itemsPerPage,
@@ -490,41 +491,21 @@ describe('non-empty successful affected clusters table', () => {
       cy.get('button').contains('Reset filters').should('not.exist');
     });
 
-    describe('single filter', () => {
+    describe.only('single filter', () => {
       Object.entries(filtersConf).forEach(([k, v]) => {
         v.values.forEach((filterValues) => {
           it(`${k}: ${filterValues}`, () => {
-            const filters = {};
-            filters[k] = filterValues;
-            let sortedNames = _.map(filterData(filters), 'name');
-            filterApply(filters);
-            if (sortedNames.length === 0) {
-              checkNoMatchingClusters();
-              checkTableHeaders(TABLE_HEADERS);
-            } else {
-              cy.get(`td[data-label="Name"]`)
-                .then(($els) => {
-                  return _.map(Cypress.$.makeArray($els), 'innerText');
-                })
-                .should('deep.equal', sortedNames.slice(0, DEFAULT_ROW_COUNT));
-            }
-
-            // check chips
-            for (const [k, v] of Object.entries(filters)) {
-              let groupName = filtersConf[k].selectorText;
-              const nExpectedItems =
-                filtersConf[k].type === 'checkbox' ? v.length : 1;
-              cy.get(CHIP_GROUP)
-                .contains(groupName)
-                .parents(CHIP_GROUP)
-                .then((chipGroup) => {
-                  cy.wrap(chipGroup)
-                    .find(CHIP)
-                    .its('length')
-                    .should('be.eq', Math.min(3, nExpectedItems)); // limited to show 3
-                });
-            }
-            cy.get('button').contains('Reset filters').should('exist');
+            const filters = { [k]: filterValues };
+            checkFiltering(
+              filters,
+              filtersConf,
+              _.map(filterData(filters), 'name').slice(0, DEFAULT_ROW_COUNT),
+              'Name',
+              TABLE_HEADERS,
+              'No matching clusters found',
+              false,
+              false
+            );
           });
         });
       });
