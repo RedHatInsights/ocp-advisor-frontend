@@ -491,7 +491,7 @@ describe('non-empty successful affected clusters table', () => {
       cy.get('button').contains('Reset filters').should('not.exist');
     });
 
-    describe.only('single filter', () => {
+    describe('single filter', () => {
       Object.entries(filtersConf).forEach(([k, v]) => {
         v.values.forEach((filterValues) => {
           it(`${k}: ${filterValues}`, () => {

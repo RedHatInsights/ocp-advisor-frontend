@@ -268,7 +268,7 @@ describe('cluster rules table', () => {
       checkTableHeaders(TABLE_HEADERS);
     });
 
-    describe.only('single filter', () => {
+    describe('single filter', () => {
       Object.entries(filtersConf).forEach(([k, v]) => {
         v.values.forEach((filterValues) => {
           it(`${k}: ${filterValues}`, () => {
