@@ -19,7 +19,6 @@ import {
   CHECKBOX,
   TBODY,
   TABLE,
-  CHIP,
 } from '../../../cypress/utils/components';
 import {
   DEFAULT_ROW_COUNT,
@@ -511,39 +510,19 @@ describe('non-empty successful affected clusters table', () => {
       });
     });
 
-    describe('combined filters', () => {
+    describe.only('combined filters', () => {
       filterCombos.forEach((filters) => {
         it(`${Object.keys(filters)}`, () => {
-          let sortedNames = _.map(filterData(filters), 'name');
-          filterApply(filters);
-          if (sortedNames.length === 0) {
-            checkNoMatchingClusters;
-          } else {
-            cy.get(`td[data-label="Name"]`)
-              .then(($els) => {
-                return _.map(
-                  _.map(Cypress.$.makeArray($els), 'innerText'),
-                  (it) => it.replace(' \nDisabled', '')
-                );
-              })
-              .should('deep.equal', sortedNames.slice(0, DEFAULT_ROW_COUNT));
-          }
-          // check chips
-          for (const [k, v] of Object.entries(filters)) {
-            let groupName = filtersConf[k].selectorText;
-            const nExpectedItems =
-              filtersConf[k].type === 'checkbox' ? v.length : 1;
-            cy.get(CHIP_GROUP)
-              .contains(groupName)
-              .parents(CHIP_GROUP)
-              .then((chipGroup) => {
-                cy.wrap(chipGroup)
-                  .find(CHIP)
-                  .its('length')
-                  .should('be.eq', Math.min(3, nExpectedItems)); // limited to show 3
-              });
-          }
-          cy.get('button').contains('Reset filters').should('exist');
+          checkFiltering(
+            filters,
+            filtersConf,
+            _.map(filterData(filters), 'name').slice(0, DEFAULT_ROW_COUNT),
+            'Name',
+            TABLE_HEADERS,
+            'No matching clusters found',
+            false,
+            false
+          );
         });
       });
     });
