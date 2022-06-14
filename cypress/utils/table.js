@@ -57,6 +57,74 @@ function checkNoMatchingRecs() {
   return checkEmptyState('No matching recommendations found');
 }
 
+/**
+ * A column is sorted and then data and a reference column (which can be different than the
+ * sorting one) are compared to see if order matches
+ *
+ * @param {Object} data - following order from API response and complemented with any
+ * modification needed
+ * @param {*} field - key in the data to sort by, or function
+ * @param {string} label - identifier of the column
+ * @param {string} order - ascending or descending
+ * @param {string} columnField - identifier of the column to be used in the comparison with the data
+ * @param {string} dataField - key in the data to be used in the comparison with the data
+ * @param {integer} nExpectedRows - number of expected rows to be displayed in the table
+ * @param {string} validateURL - string expected as sort value in URL. If not provided, it is not checked
+ */
+function checkSorting(
+  data,
+  sortingField,
+  label,
+  order,
+  columnField,
+  dataField,
+  nExpectedRows,
+  validateURL
+) {
+  // get appropriate locators
+  const col = `td[data-label="${label}"]`;
+  const header = `th[data-label="${label}"]`;
+
+  // check number of rows
+  cy.get(col).should('have.length', nExpectedRows);
+
+  // sort by column and verify URL
+  if (order === 'ascending') {
+    cy.get(header)
+      .find('button')
+      .click()
+      .then(() => {
+        if (validateURL) {
+          expect(window.location.search).to.contain(
+            `sort=${columnName2UrlParam(validateURL)}`
+          );
+        }
+      });
+  } else {
+    cy.get(header)
+      .find('button')
+      .click()
+      .click() // TODO dblclick fails for unknown reason in RecsListTable when sorting by Clusters
+      .then(() => {
+        if (validateURL) {
+          expect(window.location.search).to.contain(
+            `sort=-${columnName2UrlParam(validateURL)}`
+          );
+        }
+      });
+  }
+
+  let sortedValues = _.map(
+    _.orderBy(data, [sortingField], [order === 'descending' ? 'desc' : 'asc']),
+    dataField
+  );
+  cy.get(`td[data-label="${columnField}"]`)
+    .then(($els) => {
+      return _.map(Cypress.$.makeArray($els), 'innerText');
+    })
+    .should('deep.equal', sortedValues.slice(0, nExpectedRows));
+}
+
 export {
   checkTableHeaders,
   checkRowCounts,
@@ -65,4 +133,5 @@ export {
   checkEmptyState,
   checkNoMatchingClusters,
   checkNoMatchingRecs,
+  checkSorting,
 };

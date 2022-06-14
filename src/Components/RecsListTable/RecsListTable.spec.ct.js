@@ -44,6 +44,7 @@ import {
   tableIsSortedBy,
   checkEmptyState,
   checkNoMatchingRecs,
+  checkSorting,
 } from '../../../cypress/utils/table';
 import { SORTING_ORDERS } from '../../../cypress/utils/globals';
 // TODO make more use of ../../../cypress/utils/components
@@ -451,54 +452,27 @@ describe('successful non-empty recommendations list table', () => {
     ).forEach(([category, label]) => {
       SORTING_ORDERS.forEach((order) => {
         it(`${order} by ${label}`, () => {
-          const col = `td[data-label="${label}"]`;
-          const header = `th[data-label="${label}"]`;
+          let sortingParameter = category;
+          // modify sortingParameters for certain values
 
-          cy.get(col).should('have.length', DEFAULT_DISPLAYED_SIZE);
-          if (order === 'ascending') {
-            cy.get(header)
-              .find('button')
-              .click()
-              .then(() =>
-                expect(window.location.search).to.contain(
-                  `sort=${columnName2UrlParam(category)}`
-                )
-              );
-          } else {
-            cy.get(header)
-              .find('button')
-              .click()
-              .click() // TODO dblclick fails for unknown reason
-              .then(() =>
-                expect(window.location.search).to.contain(
-                  `sort=-${columnName2UrlParam(category)}`
-                )
-              );
-          }
-          let orderIteratee = category;
           if (category === 'tags') {
-            orderIteratee = (it) =>
+            sortingParameter = (it) =>
               _.first(
                 it.tags.filter((string) =>
                   Object.keys(RULE_CATEGORIES).includes(string)
                 )
               );
           }
-          // add property name to clusters
-          let sortedData = _.map(
-            // all tables must preserve original ordering
-            _.orderBy(
-              _.cloneDeep(filterData(DEFAULT_FILTERS, dataUnsorted)),
-              [orderIteratee],
-              [order === 'ascending' ? 'asc' : 'desc']
-            ),
-            'description'
+          checkSorting(
+            filterData(DEFAULT_FILTERS, dataUnsorted),
+            sortingParameter,
+            label,
+            order,
+            'Name',
+            'description',
+            DEFAULT_DISPLAYED_SIZE,
+            category
           );
-          cy.get(`td[data-label="Name"]`)
-            .then(($els) => {
-              return _.map(Cypress.$.makeArray($els), 'innerText');
-            })
-            .should('deep.equal', sortedData.slice(0, DEFAULT_ROW_COUNT));
         });
       });
     });

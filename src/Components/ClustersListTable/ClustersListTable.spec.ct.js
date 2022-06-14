@@ -35,6 +35,7 @@ import {
   columnName2UrlParam,
   tableIsSortedBy,
   checkNoMatchingClusters,
+  checkSorting,
 } from '../../../cypress/utils/table';
 import { CLUSTERS_LIST_COLUMNS } from '../../AppConstants';
 import {
@@ -43,7 +44,6 @@ import {
   checkPaginationValues,
   changePagination,
 } from '../../../cypress/utils/pagination';
-import { compare } from 'semver';
 import { VERSION_COMBINATIONS } from '../../../cypress/utils/filters';
 
 // add property name to clusters
@@ -324,60 +324,30 @@ describe('clusters list table', () => {
     ).forEach(([category, label]) => {
       SORTING_ORDERS.forEach((order) => {
         it(`${order} by ${label}`, () => {
-          const col = `td[data-label="${label}"]`;
-          const header = `th[data-label="${label}"]`;
+          let sortingParameter = category;
+          // modify sortingParameters for certain values
 
-          cy.get(col).should('have.length', DEFAULT_DISPLAYED_SIZE);
-          if (order === 'ascending') {
-            cy.get(header)
-              .find('button')
-              .click()
-              .then(() =>
-                expect(window.location.search).to.contain(
-                  `sort=${columnName2UrlParam(label)}`
-                )
-              );
-          } else {
-            cy.get(header)
-              .find('button')
-              .dblclick()
-              .then(() =>
-                expect(window.location.search).to.contain(
-                  `sort=-${columnName2UrlParam(label)}`
-                )
-              );
-          }
-
-          // map missing last_check_at to old times
           if (category === 'last_checked_at') {
-            category = (it) => it.last_checked_at || '1970-01-01T01:00:00.001Z';
+            // map missing last_check_at to old times
+            sortingParameter = (it) =>
+              it.last_checked_at || '1970-01-01T01:00:00.001Z';
+          } else if (category === 'cluster_version') {
+            sortingParameter = (it) =>
+              (it.cluster_version || '0.0.0')
+                .split('.')
+                .map((n) => +n + 100000) // add padding
+                .join('.');
           }
-
-          // add property name to clusters
-          let sortedNames = _.map(
-            // all tables must preserve original ordering
-            category === 'cluster_version'
-              ? // use ... spread operator because sort modifies the array on place
-                [...dataUnsorted].sort(
-                  (a, b) =>
-                    (order === 'ascending' ? 1 : -1) *
-                    compare(
-                      a.cluster_version || '0.0.0',
-                      b.cluster_version || '0.0.0'
-                    )
-                )
-              : _.orderBy(
-                  _.cloneDeep(dataUnsorted),
-                  [category],
-                  [order === 'ascending' ? 'asc' : 'desc']
-                ),
-            'name'
+          checkSorting(
+            dataUnsorted,
+            sortingParameter,
+            label,
+            order,
+            'Name',
+            'name',
+            DEFAULT_DISPLAYED_SIZE,
+            label
           );
-          cy.get(`td[data-label="Name"]`)
-            .then(($els) => {
-              return _.map(Cypress.$.makeArray($els), 'innerText');
-            })
-            .should('deep.equal', sortedNames.slice(0, DEFAULT_ROW_COUNT));
         });
       });
     });
