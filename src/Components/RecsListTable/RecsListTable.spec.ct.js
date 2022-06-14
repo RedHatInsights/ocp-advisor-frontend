@@ -411,10 +411,10 @@ describe('successful non-empty recommendations list table', () => {
     it('can change page limit', () => {
       // FIXME: best way to make the loop
       cy.wrap(PAGINATION_VALUES).each((el) => {
-        changePagination(el).then(() =>
-          expect(window.location.search).to.contain(`limit=${el}`)
-        );
-        checkRowCounts(Math.min(el, filterData().length));
+        changePagination(el).then(() => {
+          expect(window.location.search).to.contain(`limit=${el}`);
+          checkRowCounts(Math.min(el, filterData().length));
+        });
       });
     });
     it('can iterate over pages', () => {

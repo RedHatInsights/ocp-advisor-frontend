@@ -280,11 +280,10 @@ describe('clusters list table', () => {
     it('can change page limit', () => {
       // FIXME: best way to make the loop
       cy.wrap(PAGINATION_VALUES).each((el) => {
-        changePagination(el).then(
-          () => expect(window.location.search).to.contain(`limit=${el}`)
-          // TODO should check below be nested here as well?
-        );
-        checkRowCounts(Math.min(el, data.length));
+        changePagination(el).then(() => {
+          expect(window.location.search).to.contain(`limit=${el}`);
+          checkRowCounts(Math.min(el, data.length));
+        });
       });
     });
     it('can iterate over pages', () => {
