@@ -700,16 +700,20 @@ describe('successful non-empty recommendations list table', () => {
   });
 
   describe('enabling/disabling', () => {
-    it('disabled rule has a label', () => {
-      cy.removeStatusFilter();
-      checkRowCounts(5);
-      cy.getRowByName('disabled rule with 2 impacted')
-        .children()
-        .eq(0)
-        .children()
-        .eq(1)
-        .find('span[class=pf-c-label__content]')
-        .should('have.text', 'Disabled');
+    it.only('disabled rule has a label', () => {
+      removeAllChips();
+      filterApply({ status: 'Disabled' });
+      // according to data specs there should be at least 1 disabled row
+      cy.get(`td[data-label="Name"]`)
+        .then(($els) => {
+          return _.map(Cypress.$.makeArray($els), 'innerText');
+        })
+        .each((it) => {
+          assert.isOk(
+            it.endsWith(' \nDisabled'),
+            'Disabled rule includes disabled label'
+          );
+        });
     });
 
     it('each row has a kebab', () => {
