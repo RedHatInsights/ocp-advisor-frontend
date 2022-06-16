@@ -22,11 +22,11 @@ import {
   checkNoMatchingRecs,
   checkTableHeaders,
   checkRowCounts,
+  checkFiltering,
   checkSorting,
 } from '../../../cypress/utils/table';
 import {
   CHIP_GROUP,
-  CHIP,
   ROW,
   TOOLBAR,
   TABLE,
@@ -260,44 +260,17 @@ describe('cluster rules table', () => {
       Object.entries(filtersConf).forEach(([k, v]) => {
         v.values.forEach((filterValues) => {
           it(`${k}: ${filterValues}`, () => {
-            const filters = {};
-            filters[k] = filterValues;
-            const sortedDescriptions = _.map(
-              filterData(filters),
-              'description'
-            ).sort();
-            filterApply(filters);
-            if (sortedDescriptions.length === 0) {
-              checkNoMatchingRecs();
-              checkTableHeaders(TABLE_HEADERS);
-            } else {
-              cy.get(`td[data-label="Description"]`)
-                .then(($els) => {
-                  return _.map(Cypress.$.makeArray($els), 'innerText').sort();
-                })
-                .should('deep.equal', sortedDescriptions);
-            }
-            // validate chips
-            cy.get(CHIP_GROUP).should(
-              'have.length',
-              Object.keys(filters).length
+            const filters = { [k]: filterValues };
+            checkFiltering(
+              filters,
+              filtersConf,
+              _.map(filterData(filters), 'description'),
+              'Description',
+              TABLE_HEADERS,
+              'No matching recommendations found',
+              false,
+              false
             );
-            // check chips
-            for (const [k, v] of Object.entries(filters)) {
-              let groupName = filtersConf[k].selectorText;
-              const nExpectedItems =
-                filtersConf[k].type === 'checkbox' ? v.length : 1;
-              cy.get(CHIP_GROUP)
-                .contains(groupName)
-                .parents(CHIP_GROUP)
-                .then((chipGroup) => {
-                  cy.wrap(chipGroup)
-                    .find(CHIP)
-                    .its('length')
-                    .should('be.eq', Math.min(3, nExpectedItems)); // limited to show 3
-                });
-            }
-            cy.get('button').contains('Reset filters').should('exist');
           });
         });
       });
@@ -305,38 +278,16 @@ describe('cluster rules table', () => {
     describe('combined filters', () => {
       filterCombos.forEach((filters) => {
         it(`${Object.keys(filters)}`, () => {
-          const sortedDescriptions = _.map(
-            filterData(filters),
-            'description'
-          ).sort();
-          filterApply(filters);
-          if (sortedDescriptions.length === 0) {
-            checkNoMatchingRecs();
-          } else {
-            cy.get(`td[data-label="Description"]`)
-              .then(($els) => {
-                return _.map(Cypress.$.makeArray($els), 'innerText');
-              })
-              .should('deep.equal', sortedDescriptions);
-          }
-          // validate chips
-          cy.get(CHIP_GROUP).should('have.length', Object.keys(filters).length);
-          // check chips
-          for (const [k, v] of Object.entries(filters)) {
-            let groupName = filtersConf[k].selectorText;
-            const nExpectedItems =
-              filtersConf[k].type === 'checkbox' ? v.length : 1;
-            cy.get(CHIP_GROUP)
-              .contains(groupName)
-              .parents(CHIP_GROUP)
-              .then((chipGroup) => {
-                cy.wrap(chipGroup)
-                  .find(CHIP)
-                  .its('length')
-                  .should('be.eq', Math.min(3, nExpectedItems)); // limited to show 3
-              });
-          }
-          cy.get('button').contains('Reset filters').should('exist');
+          checkFiltering(
+            filters,
+            filtersConf,
+            _.map(filterData(filters), 'description'),
+            'Description',
+            TABLE_HEADERS,
+            'No matching recommendations found',
+            false,
+            false
+          );
         });
       });
     });
