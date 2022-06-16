@@ -53,12 +53,13 @@ const BULK_SELECT = 'clusters-selector';
 const SEARCH_ITEMS = ['ff', 'CUSTOM', 'Foobar', 'Not existing cluster'];
 const TABLE_HEADERS = _.map(AFFECTED_CLUSTERS_COLUMNS, (it) => it.title);
 
-let data = _.cloneDeep(clusterDetailData.data['enabled']);
-data.forEach(
+let values = _.cloneDeep(clusterDetailData.data['enabled']);
+values.forEach(
   (it) => (it['name'] = it['cluster_name'] ? it['cluster_name'] : it['cluster'])
 );
+const dataUnsorted = _.cloneDeep(values);
 // default sorting
-data = _.orderBy(data, ['last_checked_at'], ['desc']);
+const data = _.orderBy(values, ['last_checked_at'], ['desc']);
 
 const filtersConf = {
   name: {
@@ -229,6 +230,33 @@ describe('non-empty successful affected clusters table', () => {
       cy.get(MODAL).should('have.length', 1);
     });
 
+    it('checkbox can be un-clicked and all row are unselected', () => {
+      cy.ouiaId(BULK_SELECT, 'input').dblclick().should('not.be.checked');
+      // contains right text
+      cy.get('#toggle-checkbox-text').should('not.exist');
+      // checks all rows
+      cy.get(TABLE)
+        .find(TBODY)
+        .find(ROW)
+        .each((row) => {
+          cy.wrap(row)
+            .find('td')
+            .first()
+            .find('input')
+            .should('not.be.checked');
+        });
+      // bulk disabling button is not enabled
+      cy.get(TOOLBAR)
+        .find('.pf-m-spacer-sm')
+        .find(DROPDOWN)
+        .within((el) => {
+          cy.wrap(el).click();
+          cy.get('button')
+            .contains('Disable recommendation for selected clusters')
+            .should('have.class', 'pf-m-disabled');
+        });
+    });
+
     it('checkbox is unselected when a row is unselected', () => {
       cy.ouiaId(BULK_SELECT).find('input').click().should('be.checked');
       // removing one row unselects it
@@ -253,26 +281,6 @@ describe('non-empty successful affected clusters table', () => {
           cy.get('button')
             .contains('Disable recommendation for selected clusters')
             .should('not.have.class', 'pf-m-disabled');
-        });
-    });
-
-    it('checkbox unchecking removes all checks from rows', () => {
-      cy.ouiaId(BULK_SELECT).find('input').click().should('be.checked');
-
-      cy.ouiaId(BULK_SELECT).find('input').click();
-      cy.ouiaId(BULK_SELECT)
-        .find('label.pf-c-dropdown__toggle-check')
-        .contains('selected')
-        .should('not.exist');
-      cy.get(TABLE)
-        .find(TBODY)
-        .find(ROW)
-        .each((row) => {
-          cy.wrap(row)
-            .find('td')
-            .first()
-            .find('input')
-            .should('not.be.checked');
         });
     });
 
@@ -313,9 +321,7 @@ describe('non-empty successful affected clusters table', () => {
 
       cy.ouiaId(BULK_SELECT).find('input').should('be.checked');
       // contains right text
-      cy.ouiaId(BULK_SELECT)
-        .find('label.pf-c-dropdown__toggle-check')
-        .contains(`${data.length} selected`);
+      cy.get('#toggle-checkbox-text').contains(`${data.length} selected`);
       // checks all rows
       cy.get(TABLE)
         .find(TBODY)
@@ -363,6 +369,23 @@ describe('non-empty successful affected clusters table', () => {
             .should('have.class', 'pf-m-disabled');
         });
       cy.get('#toggle-checkbox-text').should('not.exist');
+    });
+
+    it('text is updated according to the number of rows selected', () => {
+      let nSelectedRows = 0;
+      // select some rows
+      cy.get(TABLE)
+        .find(TBODY)
+        .find(ROW)
+        .each((row, index) => {
+          if (index % 2 == 0 && index < DEFAULT_ROW_COUNT) {
+            cy.wrap(row).find('td').first().find('input').click();
+            nSelectedRows += 1;
+          }
+        })
+        .then(() => {
+          cy.get('#toggle-checkbox-text').contains(`${nSelectedRows} selected`);
+        });
     });
   });
 
@@ -421,12 +444,7 @@ describe('non-empty successful affected clusters table', () => {
           }
 
           // add property name to clusters
-          let sortedClusters = _.cloneDeep(
-            clusterDetailData.data['enabled'].map((it) => ({
-              ...it,
-              name: it['cluster_name'] ? it['cluster_name'] : it['cluster'],
-            }))
-          );
+          let sortedClusters = _.cloneDeep(dataUnsorted);
           // convert N/A timestamps as really old ones
           sortedClusters.forEach((it) => {
             if (it['last_checked_at'] === '') {
@@ -730,9 +748,7 @@ describe('empty failed affected clusters table', () => {
   });
 
   it('renders error message', () => {
-    cy.get('[ouiaid="empty-state"]')
-      .find('h5')
-      .should('have.text', 'Something went wrong');
+    checkEmptyState('Something went wrong', true);
   });
 
   it('renders table header', () => {
