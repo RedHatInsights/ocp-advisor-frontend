@@ -63,7 +63,7 @@ function checkNoMatchingRecs() {
  *
  * @param {Object} data - following order from API response and complemented with any
  * modification needed
- * @param {*} field - key in the data to sort by, or function
+ * @param {*} sortingField - key in the data to sort by, or function
  * @param {string} label - identifier of the column
  * @param {string} order - ascending or descending
  * @param {string} columnField - identifier of the column to be used in the comparison with the data
