@@ -10,7 +10,7 @@ import { Recommendation } from './Recommendation';
 import rule from '../../../cypress/fixtures/api/insights-results-aggregator/v2/rule/external.rules.rule|ERROR_KEY.json';
 import ack from '../../../cypress/fixtures/api/insights-results-aggregator/v2/ack/external.rules.rule|ERROR_KEY.json';
 import clusterDetails from '../../../cypress/fixtures/api/insights-results-aggregator/v2/rule/external.rules.rule|ERROR_KEY/clusters_detail.json';
-import { TOTAL_RISK, CATEGORIES } from '../../../cypress/utils/globals';
+import { CATEGORIES } from '../../../cypress/utils/globals';
 
 const defaultPropsRule = {
   isError: false,
