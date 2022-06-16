@@ -64,6 +64,37 @@ describe('recommendation page for enabled recommendation with clusters enabled a
       .and('have.length', 1);
   });
 
+  it('header shows total risk', () => {
+    // TODO
+  });
+
+  it('shows info about some disabled clusters', () => {
+    cy.ouiaId('hosts-acked').within(() => {
+      cy.ouiaType('PF4/Title').should(
+        'include.text',
+        'Recommendation is disabled for some clusters'
+      );
+      cy.get('.pf-c-card__body').should(
+        'include.text',
+        `${clusterDetails.data.disabled.length} cluster`
+      );
+      cy.ouiaId('enable').should(
+        'have.text',
+        'Enable this recommendation for all clusters'
+      );
+    });
+  });
+
+  it('table is displayed', () => {
+    cy.get('#affected-list-table')
+      .within(() => {
+        cy.ouiaId('clusters').should('have.length', 1);
+      })
+      .parent()
+      .ouiaType('PF4/Title', 'h3')
+      .should('have.text', 'Affected clusters');
+  });
+
   it('category labels are displayed', () => {
     cy.get('.categoryLabels').should('have.length', 1);
   });
