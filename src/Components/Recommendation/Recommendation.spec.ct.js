@@ -59,13 +59,11 @@ describe('recommendation page for enabled recommendation with clusters enabled a
   });
 
   it('header shows description', () => {
+    // See https://github.com/RedHatInsights/frontend-components/blob/master/packages/advisor-components/src/RuleDetails/RuleDetails.spec.ct.js
+    // for further test on the header
     cy.ouiaType('PF4/Title', 'h1')
       .should(($el) => expect($el.text().trim()).to.equal(ruleDescription))
       .and('have.length', 1);
-  });
-
-  it('header shows total risk', () => {
-    // TODO
   });
 
   it('shows info about some disabled clusters', () => {
@@ -185,6 +183,7 @@ describe('category labels are displayed', () => {
             })
             .should('deep.equal', categories.sort());
 
+          // TODO we are not implementing this logic, so this might be already tested somewhere else
           // can click on show less
           if (categories.length > 1) {
             cy.get('.categoryLabels')
