@@ -1,6 +1,5 @@
 import { EmptyStateVariant } from '@patternfly/react-core/dist/js/components/EmptyState/EmptyState';
 
-import CubesIcon from '@patternfly/react-icons/dist/js/icons/cubes-icon';
 import {
   EmptyStateIcon,
   EmptyStateBody,
@@ -20,8 +19,14 @@ const MessageState = ({
   title,
   variant,
 }) => (
-  <EmptyState className={className} variant={variant}>
-    {icon !== 'none' && (
+  <EmptyState
+    className={className}
+    variant={variant}
+    data-ouia-component-id="empty-state"
+    data-ouia-component-type="PF4/EmptyState"
+    data-ouia-safe={true}
+  >
+    {icon && (
       <EmptyStateIcon className={iconClass} style={iconStyle} icon={icon} />
     )}
     <Title headingLevel="h5" size="lg">
@@ -44,7 +49,6 @@ MessageState.propTypes = {
 };
 
 MessageState.defaultProps = {
-  icon: CubesIcon,
   title: '',
   variant: EmptyStateVariant.full,
 };

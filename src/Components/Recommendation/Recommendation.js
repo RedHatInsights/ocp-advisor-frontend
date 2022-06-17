@@ -304,7 +304,7 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
               {(content?.hosts_acked_count ||
                 ackedClusters?.length > 0 ||
                 content?.disabled) && (
-                <Card className="cardOverride">
+                <Card className="cardOverride" ouiaId="hosts-acked">
                   <CardHeader>
                     <Title headingLevel="h4" size="xl">
                       <BellSlashIcon size="sm" />
@@ -394,7 +394,7 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
                               uuids: ackedClusters.map((c) => c.cluster_id),
                             })
                           }
-                          ouiaId="enable-all"
+                          ouiaId="enable"
                         >
                           {intl.formatMessage(messages.enableRuleForClusters)}
                         </Button>
@@ -406,7 +406,7 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
                         isInline
                         variant="link"
                         onClick={() => enableRule(rule)}
-                        ouiaId="rule"
+                        ouiaId="enable"
                       >
                         {intl.formatMessage(messages.enableRule)}
                       </Button>
