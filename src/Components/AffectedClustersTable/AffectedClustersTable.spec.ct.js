@@ -442,7 +442,7 @@ describe('non-empty successful affected clusters table', () => {
             sortingParameter = (it) =>
               (it.meta.cluster_version || '0.0.0')
                 .split('.')
-                .map((n) => +n + 100000) // add padding
+                .map((n) => parseInt(n) + 100000) // add padding
                 .join('.');
           }
 

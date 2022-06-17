@@ -334,7 +334,7 @@ describe('clusters list table', () => {
             sortingParameter = (it) =>
               (it.cluster_version || '0.0.0')
                 .split('.')
-                .map((n) => +n + 100000) // add padding
+                .map((n) => parseInt(n) + 100000) // add padding
                 .join('.');
           }
           checkSorting(
