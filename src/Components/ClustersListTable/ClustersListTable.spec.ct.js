@@ -13,8 +13,8 @@ import {
   PAGINATION,
   CHIP_GROUP,
   TBODY,
-  CHIP,
   TABLE,
+  ROW,
 } from '../../../cypress/utils/components';
 import {
   DEFAULT_ROW_COUNT,
@@ -33,6 +33,8 @@ import {
   checkRowCounts,
   columnName2UrlParam,
   tableIsSortedBy,
+  checkNoMatchingClusters,
+  checkFiltering,
 } from '../../../cypress/utils/table';
 import { CLUSTERS_LIST_COLUMNS } from '../../AppConstants';
 import {
@@ -45,22 +47,23 @@ import { compare } from 'semver';
 import { VERSION_COMBINATIONS } from '../../../cypress/utils/filters';
 
 // add property name to clusters
-let data = _.cloneDeep(clusters['data']);
-data.forEach(
+let values = _.cloneDeep(clusters['data']);
+values.forEach(
   (it) =>
     (it['name'] = it['cluster_name'] ? it['cluster_name'] : it['cluster_id'])
 );
 // fill possible missing values
-data.forEach((it) => {
+values.forEach((it) => {
   ['1', '2', '3', '4'].forEach((k) => {
     it['hits_by_total_risk'][k] = it['hits_by_total_risk'][k]
       ? it['hits_by_total_risk'][k]
       : 0;
   });
 });
+const dataUnsorted = _.cloneDeep(values);
 // default sorting
-let namedClustersDefaultSorting = _.orderBy(
-  data,
+const data = _.orderBy(
+  values,
   [(it) => it.last_checked_at || '1970-01-01T01:00:00.001Z'],
   ['desc']
 );
@@ -117,62 +120,56 @@ const filtersConf = {
 const DEFAULT_FILTERS = { risk: ['All clusters'] };
 
 // TODO invert parameters and make data optional as well
-const filterData = (data, filters = DEFAULT_FILTERS) => {
+const filterData = (filters = DEFAULT_FILTERS, values = data) => {
   if (!_.has(filters, 'risk')) {
     // absence of "risk" means there are only clusters that have at least 1 hit
     return filter(
       filtersConf,
-      _.filter(data, (it) => it.total_hit_count > 0),
+      _.filter(values, (it) => it.total_hit_count > 0),
       filters
     );
   }
-  return filter(filtersConf, data, filters);
+  return filter(filtersConf, values, filters);
 };
 const filterApply = (filters) => applyFilters(filters, filtersConf);
 
 // TODO add more combinations of filters for testing
 const filterCombos = [{ risk: ['Critical', 'Moderate'], name: 'foo' }];
 
-// TODO use filterData in all tests except of data or namedClusters or namedClustersDefaultSorting
+// TODO: when checking empty state, also check toolbar available and not disabled
 
 describe('data', () => {
   it('has values', () => {
-    expect(filterData(data)).to.have.length.gte(1);
+    expect(filterData()).to.have.length.gte(1);
   });
-  it('has more entried than default pagination', () => {
-    expect(filterData(data)).to.have.length.gt(DEFAULT_ROW_COUNT);
+  it('has more entries than default pagination', () => {
+    expect(filterData()).to.have.length.gt(DEFAULT_ROW_COUNT);
   });
   it('at least one cluster has cluster name', () => {
-    expect(
-      _.filter(filterData(data), (it) => it.cluster_name)
-    ).to.have.length.gte(1);
-  });
-  it('first cluster has name', () => {
-    expect(filterData(data)[0]['cluster_name']).to.not.be.empty;
+    expect(_.filter(filterData(), (it) => it.cluster_name)).to.have.length.gte(
+      1
+    );
   });
   it('first page items contains at least one cluster without name', () => {
     const itemsInFirstPage = DEFAULT_DISPLAYED_SIZE;
     expect(
-      _.filter(
-        filterData(data).slice(0, itemsInFirstPage),
-        (it) => it.cluster_name
-      )
+      _.filter(filterData().slice(0, itemsInFirstPage), (it) => it.cluster_name)
     ).to.have.length.lt(itemsInFirstPage);
   });
   it('at least one entry has last seen', () => {
     expect(
-      _.filter(filterData(data), (it) => it.last_checked_at)
+      _.filter(filterData(), (it) => it.last_checked_at)
     ).to.have.length.gte(1);
   });
   it('at least one entry does not have last seen', () => {
     expect(
-      _.filter(filterData(data), (it) => it.last_checked_at === undefined)
+      _.filter(filterData(), (it) => it.last_checked_at === undefined)
     ).to.have.length.gte(1);
   });
-  it('at least one entry does not have all values for total risk categories', () => {
+  it('at least one entry in the original data does not have all values for total risk categories', () => {
     expect(
       _.filter(
-        filterData(clusters['data']),
+        filterData(DEFAULT_FILTERS, clusters['data']),
         (it) => Object.keys(it['hits_by_total_risk']).length < 4
       )
     ).to.have.length.gte(1);
@@ -190,22 +187,19 @@ describe('data', () => {
       .should('be.gte', 1);
   });
   it('at least two clusters match foo for their names', () => {
-    expect(filterData(data, { name: 'foo' })).to.have.length.gt(1);
+    expect(filterData({ name: 'foo' })).to.have.length.gt(1);
   });
   it('only one cluster matches foo bar in the name', () => {
-    expect(filterData(data, { name: 'foo bar' })).to.have.lengthOf(1);
+    expect(filterData({ name: 'foo bar' })).to.have.lengthOf(1);
   });
   it('the first combo filter has less clusters hitting that the default and at least one', () => {
-    const filteredData = filterData(data, filterCombos[0]);
+    const filteredData = filterData(filterCombos[0]);
     expect(filteredData).to.have.length.gte(1);
-    expect(filteredData).to.have.length.lt(filterData(data, {}).length); // TODO can use namedCluster.length directly unless data is optional
+    expect(filteredData).to.have.length.lt(filterData({}).length); // TODO can use namedCluster.length directly unless data is optional
   });
 });
 
 describe('clusters list table', () => {
-  // TODO remove those commands and convert to functions or utilities
-  Cypress.Commands.add('getFirstRow', () => cy.get(TBODY).children().eq(0));
-
   beforeEach(() => {
     mount(
       <MemoryRouter initialEntries={['/clusters']} initialIndex={0}>
@@ -263,15 +257,9 @@ describe('clusters list table', () => {
       );
     });
 
-    // TODO use hasChip function
     it('applies total risk "All clusters" filter', () => {
-      cy.get(CHIP_GROUP)
-        .find('.pf-c-chip-group__label')
-        .should('have.text', 'Total risk');
-      cy.get(CHIP_GROUP)
-        .find('.pf-c-chip__text')
-        .should('have.length', 1)
-        .should('have.text', 'All clusters');
+      hasChip('Total risk', 'All clusters');
+      cy.get(CHIP_GROUP).find('.pf-c-chip__text').should('have.length', 1);
       expect(window.location.search).to.contain(`hits=all`);
     });
 
@@ -292,11 +280,10 @@ describe('clusters list table', () => {
     it('can change page limit', () => {
       // FIXME: best way to make the loop
       cy.wrap(PAGINATION_VALUES).each((el) => {
-        changePagination(el).then(
-          () => expect(window.location.search).to.contain(`limit=${el}`)
-          // TODO should check below be nested here as well?
-        );
-        checkRowCounts(Math.min(el, data.length));
+        changePagination(el).then(() => {
+          expect(window.location.search).to.contain(`limit=${el}`);
+          checkRowCounts(Math.min(el, data.length));
+        });
       });
     });
     it('can iterate over pages', () => {
@@ -370,7 +357,7 @@ describe('clusters list table', () => {
             // all tables must preserve original ordering
             category === 'cluster_version'
               ? // use ... spread operator because sort modifies the array on place
-                [...data].sort(
+                [...dataUnsorted].sort(
                   (a, b) =>
                     (order === 'ascending' ? 1 : -1) *
                     compare(
@@ -379,7 +366,7 @@ describe('clusters list table', () => {
                     )
                 )
               : _.orderBy(
-                  _.cloneDeep(data),
+                  _.cloneDeep(dataUnsorted),
                   [category],
                   [order === 'ascending' ? 'asc' : 'desc']
                 ),
@@ -419,65 +406,25 @@ describe('clusters list table', () => {
         name: 'Not existing clusters',
         risk: ['Critical', 'Moderate'],
       });
-      // TODO check empty table view
-      // TODO headers are displayed
+      checkNoMatchingClusters();
+      checkTableHeaders(TABLE_HEADERS);
     });
 
     describe('single filter', () => {
       Object.entries(filtersConf).forEach(([k, v]) => {
         v.values.forEach((filterValues) => {
           it(`${k}: ${filterValues}`, () => {
-            const filters = {};
-            filters[k] = filterValues;
-            let sortedNames = _.map(
-              filterData(namedClustersDefaultSorting, filters),
-              'name'
+            const filters = { [k]: filterValues };
+            checkFiltering(
+              filters,
+              filtersConf,
+              _.map(filterData(filters), 'name').slice(0, DEFAULT_ROW_COUNT),
+              'Name',
+              TABLE_HEADERS,
+              'No matching clusters found',
+              true,
+              true
             );
-            removeAllChips();
-            filterApply(filters);
-            if (sortedNames.length === 0) {
-              // TODO check empty table view
-              // TODO headers are displayed
-            } else {
-              cy.get(`td[data-label="Name"]`)
-                .then(($els) => {
-                  return _.map(Cypress.$.makeArray($els), 'innerText');
-                })
-                .should('deep.equal', sortedNames.slice(0, DEFAULT_ROW_COUNT));
-            }
-            // validate chips and url params
-            cy.get(CHIP_GROUP)
-              .should('have.length', Object.keys(filters).length)
-              .then(() => {
-                for (const [k, v] of Object.entries(filtersConf)) {
-                  if (k in filters) {
-                    const urlValue = v.urlValue(filters[k]);
-                    expect(window.location.search).to.contain(
-                      `${v.urlParam}=${urlValue}`
-                    );
-                  } else {
-                    expect(window.location.search).to.not.contain(
-                      `${v.urlParam}=`
-                    );
-                  }
-                }
-              });
-            // check chips
-            for (const [k, v] of Object.entries(filters)) {
-              let groupName = filtersConf[k].selectorText;
-              const nExpectedItems =
-                filtersConf[k].type === 'checkbox' ? v.length : 1;
-              cy.get(CHIP_GROUP)
-                .contains(groupName)
-                .parents(CHIP_GROUP)
-                .then((chipGroup) => {
-                  cy.wrap(chipGroup)
-                    .find(CHIP)
-                    .its('length')
-                    .should('be.eq', Math.min(3, nExpectedItems)); // limited to show 3
-                });
-            }
-            cy.get('button').contains('Reset filters').should('exist');
           });
         });
       });
@@ -486,61 +433,23 @@ describe('clusters list table', () => {
     describe('combined filters', () => {
       filterCombos.forEach((filters) => {
         it(`${Object.keys(filters)}`, () => {
-          let sortedNames = _.map(
-            filterData(namedClustersDefaultSorting, filters),
-            'name'
+          checkFiltering(
+            filters,
+            filtersConf,
+            _.map(filterData(filters), 'name').slice(0, DEFAULT_ROW_COUNT),
+            'Name',
+            TABLE_HEADERS,
+            'No matching clusters found',
+            true,
+            true
           );
-          removeAllChips();
-          filterApply(filters);
-          if (sortedNames.length === 0) {
-            // TODO check empty table view
-          } else {
-            cy.get(`td[data-label="Name"]`)
-              .then(($els) => {
-                return _.map(Cypress.$.makeArray($els), 'innerText');
-              })
-              .should('deep.equal', sortedNames.slice(0, DEFAULT_ROW_COUNT));
-          }
-          // validate chips and url params
-          cy.get(CHIP_GROUP)
-            .should('have.length', Object.keys(filters).length)
-            .then(() => {
-              for (const [k, v] of Object.entries(filtersConf)) {
-                if (k in filters) {
-                  const urlValue = v.urlValue(filters[k]);
-                  expect(window.location.search).to.contain(
-                    `${v.urlParam}=${urlValue}`
-                  );
-                } else {
-                  expect(window.location.search).to.not.contain(
-                    `${v.urlParam}=`
-                  );
-                }
-              }
-            });
-          // check chips
-          for (const [k, v] of Object.entries(filters)) {
-            let groupName = filtersConf[k].selectorText;
-            const nExpectedItems =
-              filtersConf[k].type === 'checkbox' ? v.length : 1;
-            cy.get(CHIP_GROUP)
-              .contains(groupName)
-              .parents(CHIP_GROUP)
-              .then((chipGroup) => {
-                cy.wrap(chipGroup)
-                  .find(CHIP)
-                  .its('length')
-                  .should('be.eq', Math.min(3, nExpectedItems)); // limited to show 3
-              });
-          }
-          cy.get('button').contains('Reset filters').should('exist');
         });
       });
     });
   });
 
   it('rows show cluster names instead uuids when available', () => {
-    const names = _.map(namedClustersDefaultSorting, 'name');
+    const names = _.map(data, 'name');
     cy.get(`td[data-label="Name"]`)
       .then(($els) => {
         return _.map(Cypress.$.makeArray($els), 'innerText');
@@ -554,19 +463,35 @@ describe('clusters list table', () => {
       .each(($el, index) => {
         cy.wrap($el)
           .find('td[data-label=Name]')
-          .find(
-            `a[href="/clusters/${namedClustersDefaultSorting[index]['cluster_id']}"]`
-          )
-          .should('have.text', namedClustersDefaultSorting[index]['name']);
+          .find(`a[href="/clusters/${data[index]['cluster_id']}"]`)
+          .should('have.text', data[index]['name']);
       });
   });
 
-  // TODO avoid hardcoded values
-  it('shows correct amount of each type of the rule hits', () => {
-    cy.getFirstRow().find('td[data-label=Critical]').should('have.text', 2);
-    cy.getFirstRow().find('td[data-label=Important]').should('have.text', 7);
-    cy.getFirstRow().find('td[data-label=Moderate]').should('have.text', 9);
-    cy.getFirstRow().find('td[data-label=Low]').should('have.text', 5);
+  it('total risk hits are mapped correctly', () => {
+    cy.get('table')
+      .find(TBODY)
+      .find(ROW)
+      .each(($el, index) => {
+        Object.keys(TOTAL_RISK).forEach((riskCategory) => {
+          cy.wrap($el)
+            .find(`td[data-label=${riskCategory}]`)
+            .should(($el) => {
+              const expectedNumber =
+                data[index].hits_by_total_risk[TOTAL_RISK_MAP[riskCategory]] ||
+                0;
+              expect($el.text()).to.eq(expectedNumber.toString());
+            });
+        });
+        cy.wrap($el)
+          .find(`td[data-label="Recommendations"]`)
+          .should(($el) => {
+            const totalHitsNumber = Object.values(
+              data[index].hits_by_total_risk
+            ).reduce((acc, it) => acc + it, 0);
+            expect($el.text()).to.eq(totalHitsNumber.toString());
+          });
+      });
   });
 });
 

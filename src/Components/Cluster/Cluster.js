@@ -10,6 +10,7 @@ import Breadcrumbs from '../Breadcrumbs';
 import Main from '@redhat-cloud-services/frontend-components/Main';
 
 export const Cluster = ({ cluster, match }) => {
+  // TODO: make breadcrumbs take display name from GET /cluster/id/info
   return (
     <React.Fragment>
       <PageHeader className="pf-m-light ins-inventory-detail">

@@ -246,7 +246,7 @@ export default defineMessages({
   noRecsError: {
     id: 'noRecsError',
     description: 'Recommendations table, cluster recommendations table',
-    defaultMessage: 'No recommendations available.',
+    defaultMessage: 'No recommendations available',
   },
   noRecsErrorDesc: {
     id: 'noRecsErrorDesc',
