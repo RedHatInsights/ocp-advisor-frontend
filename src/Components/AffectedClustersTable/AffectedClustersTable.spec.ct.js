@@ -113,6 +113,14 @@ describe('test data', () => {
   it(`has at least one cluster without a version`, () => {
     expect(filterData({ version: [''] })).to.have.length.gte(1);
   });
+  it('has at least three enabled clusters with the same impacted date', () => {
+    expect(
+      values.filter((v) => v.impacted === '2022-06-28T22:00:00.000Z')
+    ).to.have.length(3);
+  });
+  it('has at least one enabled cluster with unknown impacted date', () => {
+    expect(values.filter((v) => v.impacted === '').length).to.be.gte(1);
+  });
 });
 
 // TODO: when checking empty state, also check toolbar available and not disabled
@@ -425,7 +433,7 @@ describe('non-empty successful affected clusters table', () => {
 
   describe('sorting', () => {
     _.zip(
-      ['name', 'meta.cluster_version', 'last_checked_at'],
+      ['name', 'meta.cluster_version', 'last_checked_at', 'impacted'],
       TABLE_HEADERS
     ).forEach(([category, label]) => {
       SORTING_ORDERS.forEach((order) => {
@@ -449,6 +457,9 @@ describe('non-empty successful affected clusters table', () => {
           sortedClusters.forEach((it) => {
             if (it['last_checked_at'] === '') {
               it['last_checked_at'] = '1970-01-01T01:00:00.001Z';
+            }
+            if (it['impacted'] === '') {
+              it['impacted'] = '1970-01-01T01:00:00.001Z';
             }
             if (it.meta.cluster_version === '') {
               it.meta.cluster_version = '0.0.0';
