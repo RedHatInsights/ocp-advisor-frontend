@@ -637,7 +637,7 @@ describe('non-empty successful affected clusters table', () => {
         .find(ROW)
         .first()
         .find('td')
-        .eq(4)
+        .eq(AFFECTED_CLUSTERS_COLUMNS.length + 1)
         .click()
         .contains('Disable')
         .click();
