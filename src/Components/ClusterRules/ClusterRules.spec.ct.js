@@ -23,6 +23,7 @@ import {
   checkTableHeaders,
   checkRowCounts,
   checkFiltering,
+  checkSorting,
 } from '../../../cypress/utils/table';
 import {
   CHIP_GROUP,
@@ -208,28 +209,16 @@ describe('cluster rules table', () => {
       ([category, label]) => {
         SORTING_ORDERS.forEach((order) => {
           it(`${order} by ${label}`, () => {
-            const col = `td[data-label="${label}"]`;
-            const header = `th[data-label="${label}"]`;
-            cy.get(col).should('have.length', RULES_ENABLED);
-
-            if (order === 'ascending') {
-              cy.get(header).find('button').click();
-            } else {
-              cy.get(header).find('button').dblclick();
-            }
-            let sortedDescriptions = _.map(
-              _.orderBy(
-                data,
-                [category],
-                [order === 'descending' ? 'desc' : 'asc']
-              ),
-              'description'
+            checkSorting(
+              data,
+              category,
+              label,
+              order,
+              'Description',
+              'description',
+              RULES_ENABLED,
+              null
             );
-            cy.get(`td[data-label="Description"]`)
-              .then(($els) => {
-                return _.map(Cypress.$.makeArray($els), 'innerText');
-              })
-              .should('deep.equal', sortedDescriptions);
           });
         });
       }
