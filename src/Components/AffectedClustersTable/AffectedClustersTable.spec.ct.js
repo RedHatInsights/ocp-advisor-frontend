@@ -45,6 +45,7 @@ import {
   VERSION_COMBINATIONS,
   filter,
   applyFilters,
+  removeAllChips,
 } from '../../../cypress/utils/filters';
 
 // selectors
@@ -113,13 +114,13 @@ describe('test data', () => {
   it(`has at least one cluster without a version`, () => {
     expect(filterData({ version: [''] })).to.have.length.gte(1);
   });
-  it('has at least three enabled clusters with the same impacted date', () => {
+  it('has at least one enabled cluster with missing impacted date', () => {
     expect(
-      values.filter((v) => v.impacted === '2022-06-28T22:00:00.000Z')
-    ).to.have.length(3);
+      values.filter((v) => !Object.hasOwn(v, 'impacted')).length
+    ).to.be.gte(1);
   });
-  it('has at least one enabled cluster with unknown impacted date', () => {
-    expect(values.filter((v) => v.impacted === '').length).to.be.gte(1);
+  it('has at least one enabled cluster with empty impacted date', () => {
+    expect(values.filter((v) => v['impacted'] === '').length).to.be.gte(1);
   });
 });
 
@@ -458,7 +459,7 @@ describe('non-empty successful affected clusters table', () => {
             if (it['last_checked_at'] === '') {
               it['last_checked_at'] = '1970-01-01T01:00:00.001Z';
             }
-            if (it['impacted'] === '') {
+            if (it['impacted'] === undefined || it['impacted'] === '') {
               it['impacted'] = '1970-01-01T01:00:00.001Z';
             }
             if (it.meta.cluster_version === '') {
@@ -654,6 +655,14 @@ describe('non-empty successful affected clusters table', () => {
       cy.wait('@disableFeedbackRequest');
       // TODO check page is reloaded afterwards
     });
+  });
+
+  it('missing impacted date shown as N/A', () => {
+    filterApply({ name: 'e73ee8b2-f60f-4bb0-abc7-be3093debfe7' });
+    cy.get('[data-label="Impacted"]').should('contain', 'N/A');
+    removeAllChips();
+    filterApply({ name: 'custom cluster name 2' });
+    cy.get('[data-label="Impacted"]').should('contain', 'N/A');
   });
 });
 
