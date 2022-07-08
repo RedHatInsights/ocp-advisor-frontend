@@ -58,7 +58,7 @@ describe('recommendation page for enabled recommendation with clusters enabled a
     );
 
     cy.intercept('POST', '/api/insights-results-aggregator/v2/ack', {
-      statusCode: 204,
+      statusCode: 201,
     }).as('ackRequest');
   });
 
