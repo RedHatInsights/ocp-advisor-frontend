@@ -45,6 +45,7 @@ import {
   VERSION_COMBINATIONS,
   filter,
   applyFilters,
+  removeAllChips,
 } from '../../../cypress/utils/filters';
 
 // selectors
@@ -112,6 +113,14 @@ describe('test data', () => {
   );
   it(`has at least one cluster without a version`, () => {
     expect(filterData({ version: [''] })).to.have.length.gte(1);
+  });
+  it('has at least one enabled cluster with missing impacted date', () => {
+    expect(
+      values.filter((v) => !Object.hasOwn(v, 'impacted')).length
+    ).to.be.gte(1);
+  });
+  it('has at least one enabled cluster with empty impacted date', () => {
+    expect(values.filter((v) => v['impacted'] === '').length).to.be.gte(1);
   });
 });
 
@@ -425,7 +434,7 @@ describe('non-empty successful affected clusters table', () => {
 
   describe('sorting', () => {
     _.zip(
-      ['name', 'meta.cluster_version', 'last_checked_at'],
+      ['name', 'meta.cluster_version', 'last_checked_at', 'impacted'],
       TABLE_HEADERS
     ).forEach(([category, label]) => {
       SORTING_ORDERS.forEach((order) => {
@@ -438,6 +447,9 @@ describe('non-empty successful affected clusters table', () => {
           } else if (category === 'last_checked_at') {
             sortingParameter = (it) =>
               it.last_checked_at || '1970-01-01T01:00:00.001Z';
+          } else if (category === 'impacted') {
+            sortingParameter = (it) =>
+              it.impacted || '1970-01-01T01:00:00.001Z';
           } else if (category == 'meta.cluster_version') {
             sortingParameter = (it) =>
               (it.meta.cluster_version || '0.0.0')
@@ -603,7 +615,7 @@ describe('non-empty successful affected clusters table', () => {
         .find(ROW)
         .first()
         .find('td')
-        .eq(4)
+        .eq(AFFECTED_CLUSTERS_COLUMNS.length + 1)
         .click()
         .contains('Disable')
         .click();
@@ -620,6 +632,16 @@ describe('non-empty successful affected clusters table', () => {
       cy.wait('@disableFeedbackRequest');
       // TODO check page is reloaded afterwards
     });
+  });
+
+  it('missing impacted date shown as N/A', () => {
+    filterApply({
+      name: values.filter((v) => !Object.hasOwn(v, 'impacted'))[0].name,
+    });
+    cy.get('[data-label="Impacted"]').should('contain', 'N/A');
+    removeAllChips();
+    filterApply({ name: values.filter((v) => v['impacted'] === '')[0].name });
+    cy.get('[data-label="Impacted"]').should('contain', 'N/A');
   });
 });
 

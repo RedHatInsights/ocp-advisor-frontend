@@ -35,6 +35,7 @@
   "impact": "Impact",
   "impactDescription": "The impact of the problem would be {level} if it occurred.",
   "impactLevel": "{level} impact",
+  "impacted": "Impacted",
   "important": "Important",
   "insightsHeader": "Advisor",
   "justificationNote": "Justification note",
