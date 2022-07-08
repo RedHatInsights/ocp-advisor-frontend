@@ -56,6 +56,10 @@ describe('recommendation page for enabled recommendation with clusters enabled a
         </Intl>
       </MemoryRouter>
     );
+
+    cy.intercept('POST', '/api/insights-results-aggregator/v2/ack', {
+      statusCode: 201,
+    }).as('ackRequest');
   });
 
   it('header shows description', () => {
@@ -95,6 +99,85 @@ describe('recommendation page for enabled recommendation with clusters enabled a
 
   it('category labels are displayed', () => {
     cy.get('.categoryLabels').should('have.length', 1);
+  });
+
+  it('actions can ack recommendation', () => {
+    cy.ouiaId('actions')
+      .click()
+      .within(() => {
+        cy.get('a').should('have.text', 'Disable recommendation').click();
+      });
+    cy.ouiaId('recommendation-disable').should('exist');
+  });
+});
+
+// TODO check disabledRule with ack data undefined. Makes sense?
+describe('recommendation page for disabled recommendation', () => {
+  beforeEach(() => {
+    mount(
+      <MemoryRouter>
+        <Intl>
+          <Provider store={getStore()}>
+            <Recommendation
+              rule={{ ...defaultPropsRule, data: disabledRule }}
+              ack={{ ...defaultPropsAck }}
+              clusters={{ ...defaultPropsClusterDetails }}
+              match={{ params: { recommendationId: 'X' } }}
+            />
+          </Provider>
+        </Intl>
+      </MemoryRouter>
+    );
+
+    cy.intercept('DELETE', '/api/insights-results-aggregator/v2/ack/*', {
+      statusCode: 204,
+    }).as('deackRequest');
+  });
+
+  it('header shows disabled label', () => {
+    cy.ouiaType('PF4/Title', 'h1').should(($el) =>
+      expect($el.text().trim()).to.equal(ruleDescription + ' Disabled')
+    );
+  });
+
+  it('shows info about the recommendation being acked', () => {
+    cy.ouiaId('hosts-acked').within(() => {
+      cy.ouiaType('PF4/Title').should(
+        'include.text',
+        'Recommendation is disabled'
+      );
+      cy.get('.pf-c-card__body').should('include.text', `and has no results`);
+      cy.ouiaId('enable').should('have.text', 'Enable recommendation');
+    });
+  });
+
+  it('table is not displayed', () => {
+    cy.get('#affected-list-table').should('not.exist');
+    cy.ouiaId('empty-state').within(() => {
+      cy.ouiaType('PF4/Title').should(
+        'include.text',
+        'Recommendation is disabled'
+      );
+    });
+  });
+
+  it('actions button allow for enabling', () => {
+    cy.ouiaId('actions')
+      .click()
+      .within(() => {
+        cy.get('a')
+          .should('have.text', 'Enable recommendation')
+          .click()
+          .then(() => {
+            cy.wait('@deackRequest').then((xhr) =>
+              assert.isOk(
+                xhr.request.url.includes(
+                  encodeURIComponent(rule.content.rule_id)
+                )
+              )
+            );
+          });
+      });
   });
 });
 
