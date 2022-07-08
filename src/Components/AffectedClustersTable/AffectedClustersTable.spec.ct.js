@@ -635,10 +635,12 @@ describe('non-empty successful affected clusters table', () => {
   });
 
   it('missing impacted date shown as N/A', () => {
-    filterApply({ name: 'e73ee8b2-f60f-4bb0-abc7-be3093debfe7' });
+    filterApply({
+      name: values.filter((v) => !Object.hasOwn(v, 'impacted'))[0].name,
+    });
     cy.get('[data-label="Impacted"]').should('contain', 'N/A');
     removeAllChips();
-    filterApply({ name: 'custom cluster name 2' });
+    filterApply({ name: values.filter((v) => v['impacted'] === '')[0].name });
     cy.get('[data-label="Impacted"]').should('contain', 'N/A');
   });
 });
