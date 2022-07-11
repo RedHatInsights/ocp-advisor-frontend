@@ -605,10 +605,6 @@ export default defineMessages({
     id: 'filterByVersion',
     defaultMessage: 'Filter by version',
   },
-  notAvailable: {
-    id: 'notAvailable',
-    defaultMessage: 'Not available',
-  },
   impacted: {
     id: 'impacted',
     defaultMessage: 'Impacted',
