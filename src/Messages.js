@@ -609,4 +609,8 @@ export default defineMessages({
     id: 'notAvailable',
     defaultMessage: 'Not available',
   },
+  impacted: {
+    id: 'impacted',
+    defaultMessage: 'Impacted',
+  },
 });

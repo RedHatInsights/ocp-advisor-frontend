@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.4.10...v1.5.0) (2022-07-08)
+
+
+### Features
+
+* **Single recommendation page:** add Impacted column ([#340](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/340)) ([be12a3e](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/be12a3ecda82ac123a60af3ac021c24db260cf41))
+
 ## [1.4.10](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.4.9...v1.4.10) (2022-06-17)
 
 ## [1.4.9](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.4.8...v1.4.9) (2022-06-16)
