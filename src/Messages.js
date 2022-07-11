@@ -364,8 +364,8 @@ export default defineMessages({
   },
   nA: {
     id: 'nA',
-    description: 'Abreviated as N/A, text equivelent, not applicable',
-    defaultMessage: 'N/A',
+    description: 'Abreviated as not available, text equivelent, not applicable',
+    defaultMessage: 'Not available',
   },
   permsTitle: {
     id: 'permsTitle',
@@ -604,10 +604,6 @@ export default defineMessages({
   filterByVersion: {
     id: 'filterByVersion',
     defaultMessage: 'Filter by version',
-  },
-  notAvailable: {
-    id: 'notAvailable',
-    defaultMessage: 'Not available',
   },
   impacted: {
     id: 'impacted',

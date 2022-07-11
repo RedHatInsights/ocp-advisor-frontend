@@ -205,7 +205,7 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
           </span>,
           <span key={r.id}>
             {r.cells[AFFECTED_CLUSTERS_VERSION_CELL] ||
-              intl.formatMessage(messages.notAvailable)}
+              intl.formatMessage(messages.nA)}
           </span>,
           <span key={r.id}>
             {r.cells[AFFECTED_CLUSTERS_LAST_SEEN_CELL] ? (
