@@ -53,6 +53,7 @@ import { SORTING_ORDERS } from '../../../cypress/utils/globals';
 // selectors
 const ROOT = 'div[id=recs-list-table]';
 const ROW = 'tbody[role=rowgroup]'; // FIXME use ROW from components
+const EXPANDABLES = '[class="pf-c-table__expandable-row pf-m-expanded"]';
 // TODO refer to https://github.com/RedHatInsights/ocp-advisor-frontend/blob/master/src/Services/Filters.js#L13
 const DEFAULT_FILTERS = {
   impacting: ['1 or more'],
@@ -399,6 +400,13 @@ describe('successful non-empty recommendations list table', () => {
     it('reset filters button is displayed', () => {
       cy.get('button').contains('Reset filters').should('exist');
     });
+  });
+
+  it('expand all, collapse all', () => {
+    cy.get(ROWS_TOGGLER).click();
+    cy.get(EXPANDABLES).should('have.length', DEFAULT_DISPLAYED_SIZE);
+    cy.get(ROWS_TOGGLER).click();
+    cy.get(EXPANDABLES).should('have.length', 0);
   });
 
   describe('pagination', () => {
