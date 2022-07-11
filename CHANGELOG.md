@@ -1,3 +1,10 @@
+## [1.5.1](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.5.0...v1.5.1) (2022-07-11)
+
+
+### Bug Fixes
+
+* Change all "N/A" to "Not available" ([#346](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/346)) ([e89a6dd](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/e89a6ddf06726e8a7cf660ebb583901fd9b101dc))
+
 # [1.5.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.4.10...v1.5.0) (2022-07-08)
 
 
