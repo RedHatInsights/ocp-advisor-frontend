@@ -498,7 +498,7 @@ const RecsListTable = ({ query }) => {
         setDisableRuleOpen(true);
       } else {
         try {
-          await Delete(`${BASE_URL}/v2/ack/${rule.rule_id}/`);
+          await Delete(`${BASE_URL}/v2/ack/${rule.rule_id}`);
           notify({
             variant: 'success',
             timeout: true,
