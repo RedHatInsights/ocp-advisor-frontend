@@ -44,6 +44,8 @@ import {
   tableIsSortedBy,
   checkEmptyState,
   checkNoMatchingRecs,
+  checkFiltering,
+  checkSorting,
 } from '../../../cypress/utils/table';
 import { SORTING_ORDERS } from '../../../cypress/utils/globals';
 // TODO make more use of ../../../cypress/utils/components
@@ -51,6 +53,7 @@ import { SORTING_ORDERS } from '../../../cypress/utils/globals';
 // selectors
 const ROOT = 'div[id=recs-list-table]';
 const ROW = 'tbody[role=rowgroup]'; // FIXME use ROW from components
+const EXPANDABLES = '[class="pf-c-table__expandable-row pf-m-expanded"]';
 // TODO refer to https://github.com/RedHatInsights/ocp-advisor-frontend/blob/master/src/Services/Filters.js#L13
 const DEFAULT_FILTERS = {
   impacting: ['1 or more'],
@@ -399,6 +402,13 @@ describe('successful non-empty recommendations list table', () => {
     });
   });
 
+  it('expand all, collapse all', () => {
+    cy.get(ROWS_TOGGLER).click();
+    cy.get(EXPANDABLES).should('have.length', DEFAULT_DISPLAYED_SIZE);
+    cy.get(ROWS_TOGGLER).click();
+    cy.get(EXPANDABLES).should('have.length', 0);
+  });
+
   describe('pagination', () => {
     it('shows correct total number of recommendations', () => {
       checkPaginationTotal(filterData().length);
@@ -411,10 +421,10 @@ describe('successful non-empty recommendations list table', () => {
     it('can change page limit', () => {
       // FIXME: best way to make the loop
       cy.wrap(PAGINATION_VALUES).each((el) => {
-        changePagination(el).then(() =>
-          expect(window.location.search).to.contain(`limit=${el}`)
-        );
-        checkRowCounts(Math.min(el, filterData().length));
+        changePagination(el).then(() => {
+          expect(window.location.search).to.contain(`limit=${el}`);
+          checkRowCounts(Math.min(el, filterData().length));
+        });
       });
     });
     it('can iterate over pages', () => {
@@ -451,54 +461,27 @@ describe('successful non-empty recommendations list table', () => {
     ).forEach(([category, label]) => {
       SORTING_ORDERS.forEach((order) => {
         it(`${order} by ${label}`, () => {
-          const col = `td[data-label="${label}"]`;
-          const header = `th[data-label="${label}"]`;
+          let sortingParameter = category;
+          // modify sortingParameters for certain values
 
-          cy.get(col).should('have.length', DEFAULT_DISPLAYED_SIZE);
-          if (order === 'ascending') {
-            cy.get(header)
-              .find('button')
-              .click()
-              .then(() =>
-                expect(window.location.search).to.contain(
-                  `sort=${columnName2UrlParam(category)}`
-                )
-              );
-          } else {
-            cy.get(header)
-              .find('button')
-              .click()
-              .click() // TODO dblclick fails for unknown reason
-              .then(() =>
-                expect(window.location.search).to.contain(
-                  `sort=-${columnName2UrlParam(category)}`
-                )
-              );
-          }
-          let orderIteratee = category;
           if (category === 'tags') {
-            orderIteratee = (it) =>
+            sortingParameter = (it) =>
               _.first(
                 it.tags.filter((string) =>
                   Object.keys(RULE_CATEGORIES).includes(string)
                 )
               );
           }
-          // add property name to clusters
-          let sortedData = _.map(
-            // all tables must preserve original ordering
-            _.orderBy(
-              _.cloneDeep(filterData(DEFAULT_FILTERS, dataUnsorted)),
-              [orderIteratee],
-              [order === 'ascending' ? 'asc' : 'desc']
-            ),
-            'description'
+          checkSorting(
+            filterData(DEFAULT_FILTERS, dataUnsorted),
+            sortingParameter,
+            label,
+            order,
+            'Name',
+            'description',
+            DEFAULT_DISPLAYED_SIZE,
+            category
           );
-          cy.get(`td[data-label="Name"]`)
-            .then(($els) => {
-              return _.map(Cypress.$.makeArray($els), 'innerText');
-            })
-            .should('deep.equal', sortedData.slice(0, DEFAULT_ROW_COUNT));
         });
       });
     });
@@ -546,64 +529,27 @@ describe('successful non-empty recommendations list table', () => {
       Object.entries(filtersConf).forEach(([k, v]) => {
         v.values.forEach((filterValues) => {
           it(`${k}: ${filterValues}`, () => {
-            const filters = {};
-            filters[k] = filterValues;
-            let sortedNames = _.map(
-              _.orderBy(
-                _.cloneDeep(filterData(filters)),
-                ['total_risk'],
-                ['desc']
+            // disabled recommendations have Disabled in their names
+            let modifiedData = _.cloneDeep(data);
+            modifiedData.forEach((it) => {
+              if (it.disabled) {
+                it.description = it.description + ' \nDisabled';
+              }
+            });
+            const filters = { [k]: filterValues };
+            checkFiltering(
+              filters,
+              filtersConf,
+              _.map(filterData(filters, modifiedData), 'description').slice(
+                0,
+                DEFAULT_ROW_COUNT
               ),
-              'description'
+              'Name',
+              TABLE_HEADERS,
+              'No matching recommendations found',
+              true,
+              true
             );
-            removeAllChips();
-            filterApply(filters);
-            if (sortedNames.length === 0) {
-              checkNoMatchingRecs();
-              checkTableHeaders(TABLE_HEADERS);
-            } else {
-              cy.get(`td[data-label="Name"]`)
-                .then(($els) => {
-                  return _.map(
-                    _.map(Cypress.$.makeArray($els), 'innerText'),
-                    (it) => it.replace(' \nDisabled', '')
-                  );
-                })
-                .should('deep.equal', sortedNames.slice(0, DEFAULT_ROW_COUNT));
-            }
-            // validate chips and url params
-            cy.get(CHIP_GROUP)
-              .should('have.length', Object.keys(filters).length)
-              .then(() => {
-                for (const [k, v] of Object.entries(filtersConf)) {
-                  if (k in filters) {
-                    const urlValue = v.urlValue(filters[k]);
-                    expect(window.location.search).to.contain(
-                      `${v.urlParam}=${urlValue}`
-                    );
-                  } else {
-                    expect(window.location.search).to.not.contain(
-                      `${v.urlParam}=`
-                    );
-                  }
-                }
-              });
-            // check chips
-            for (const [k, v] of Object.entries(filters)) {
-              let groupName = filtersConf[k].selectorText;
-              const nExpectedItems =
-                filtersConf[k].type === 'checkbox' ? v.length : 1;
-              cy.get(CHIP_GROUP)
-                .contains(groupName)
-                .parents(CHIP_GROUP)
-                .then((chipGroup) => {
-                  cy.wrap(chipGroup)
-                    .find(CHIP)
-                    .its('length')
-                    .should('be.eq', Math.min(3, nExpectedItems)); // limited to show 3
-                });
-            }
-            cy.get('button').contains('Reset filters').should('exist');
           });
         });
       });
@@ -613,62 +559,26 @@ describe('successful non-empty recommendations list table', () => {
     describe('combined filters', () => {
       filterCombos.forEach((filters) => {
         it(`${Object.keys(filters)}`, () => {
-          let sortedNames = _.map(
-            _.orderBy(
-              _.cloneDeep(filterData(filters)),
-              ['total_risk'],
-              ['desc']
+          // disabled recommendations have Disabled in their names
+          let modifiedData = _.cloneDeep(data);
+          modifiedData.forEach((it) => {
+            if (it.disabled) {
+              it.description = it.description + ' \nDisabled';
+            }
+          });
+          checkFiltering(
+            filters,
+            filtersConf,
+            _.map(filterData(filters, modifiedData), 'description').slice(
+              0,
+              DEFAULT_ROW_COUNT
             ),
-            'description'
+            'Name',
+            TABLE_HEADERS,
+            'No matching recommendations found',
+            true,
+            true
           );
-          removeAllChips();
-          filterApply(filters);
-          if (sortedNames.length === 0) {
-            checkNoMatchingRecs();
-            checkTableHeaders(TABLE_HEADERS);
-          } else {
-            cy.get(`td[data-label="Name"]`)
-              .then(($els) => {
-                return _.map(
-                  _.map(Cypress.$.makeArray($els), 'innerText'),
-                  (it) => it.replace(' \nDisabled', '')
-                );
-              })
-              .should('deep.equal', sortedNames.slice(0, DEFAULT_ROW_COUNT));
-          }
-          // validate chips and url params
-          cy.get(CHIP_GROUP)
-            .should('have.length', Object.keys(filters).length)
-            .then(() => {
-              for (const [k, v] of Object.entries(filtersConf)) {
-                if (k in filters) {
-                  const urlValue = v.urlValue(filters[k]);
-                  expect(window.location.search).to.contain(
-                    `${v.urlParam}=${urlValue}`
-                  );
-                } else {
-                  expect(window.location.search).to.not.contain(
-                    `${v.urlParam}=`
-                  );
-                }
-              }
-            });
-          // check chips
-          for (const [k, v] of Object.entries(filters)) {
-            let groupName = filtersConf[k].selectorText;
-            const nExpectedItems =
-              filtersConf[k].type === 'checkbox' ? v.length : 1;
-            cy.get(CHIP_GROUP)
-              .contains(groupName)
-              .parents(CHIP_GROUP)
-              .then((chipGroup) => {
-                cy.wrap(chipGroup)
-                  .find(CHIP)
-                  .its('length')
-                  .should('be.eq', Math.min(3, nExpectedItems)); // limited to show 3
-              });
-          }
-          cy.get('button').contains('Reset filters').should('exist');
         });
       });
     });
@@ -701,15 +611,16 @@ describe('successful non-empty recommendations list table', () => {
 
   describe('enabling/disabling', () => {
     it('disabled rule has a label', () => {
-      cy.removeStatusFilter();
-      checkRowCounts(5);
-      cy.getRowByName('disabled rule with 2 impacted')
-        .children()
-        .eq(0)
-        .children()
-        .eq(1)
-        .find('span[class=pf-c-label__content]')
-        .should('have.text', 'Disabled');
+      removeAllChips();
+      filterApply({ status: 'Disabled' });
+      // according to data specs there should be at least 1 disabled row
+      cy.get(`td[data-label="Name"]`).then(($els) => {
+        cy.wrap($els).each(($el) => {
+          cy.wrap($el)
+            .find('span[class=pf-c-label__content]')
+            .should('have.text', 'Disabled');
+        });
+      });
     });
 
     it('each row has a kebab', () => {

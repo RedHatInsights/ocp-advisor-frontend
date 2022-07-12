@@ -215,10 +215,10 @@ export default defineMessages({
     defaultMessage:
       'Indicates this recommendation will not be shown for the cluster.',
   },
-  rulesDetailsPubishdate: {
+  rulesDetailsModifiedDate: {
     id: 'rulesdetails.publishdate',
-    description: 'Recommendationsdetails, publish date',
-    defaultMessage: 'Publish date: {date}',
+    description: 'Recommendationsdetails, modified date',
+    defaultMessage: 'Modified date: {date}',
   },
   knowledgebaseArticle: {
     id: 'knowledgebasearticle',
@@ -364,8 +364,8 @@ export default defineMessages({
   },
   nA: {
     id: 'nA',
-    description: 'Abreviated as N/A, text equivelent, not applicable',
-    defaultMessage: 'N/A',
+    description: 'Abreviated as not available, text equivelent, not applicable',
+    defaultMessage: 'Not available',
   },
   permsTitle: {
     id: 'permsTitle',
@@ -587,8 +587,8 @@ export default defineMessages({
     description: 'Asking the user if they find a recommendation helpful',
     defaultMessage: 'Is this recommendation helpful?',
   },
-  feedbackThankyou: {
-    id: 'feedbackThankyou',
+  feedbackThankYou: {
+    id: 'feedbackThankYou',
     description: 'Thanking user for feedback',
     defaultMessage: 'Thank you for your feedback!',
   },
@@ -605,8 +605,8 @@ export default defineMessages({
     id: 'filterByVersion',
     defaultMessage: 'Filter by version',
   },
-  notAvailable: {
-    id: 'notAvailable',
-    defaultMessage: 'Not available',
+  impacted: {
+    id: 'impacted',
+    defaultMessage: 'Impacted',
   },
 });

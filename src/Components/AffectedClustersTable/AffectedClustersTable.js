@@ -21,6 +21,7 @@ import {
 } from '../MessageState/EmptyStates';
 import {
   AFFECTED_CLUSTERS_COLUMNS,
+  AFFECTED_CLUSTERS_IMPACTED_CELL,
   AFFECTED_CLUSTERS_LAST_SEEN_CELL,
   AFFECTED_CLUSTERS_NAME_CELL,
   AFFECTED_CLUSTERS_VERSION_CELL,
@@ -148,6 +149,7 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
           r.cluster_name || r.cluster,
           r.meta.cluster_version,
           r.last_checked_at,
+          r.impacted,
         ],
       };
     });
@@ -182,6 +184,10 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
             fst = new Date(a.cells[AFFECTED_CLUSTERS_LAST_SEEN_CELL] || 0);
             snd = new Date(b.cells[AFFECTED_CLUSTERS_LAST_SEEN_CELL] || 0);
             return fst > snd ? d : snd > fst ? -d : 0;
+          case AFFECTED_CLUSTERS_IMPACTED_CELL:
+            fst = new Date(a.cells[AFFECTED_CLUSTERS_IMPACTED_CELL] || 0);
+            snd = new Date(b.cells[AFFECTED_CLUSTERS_IMPACTED_CELL] || 0);
+            return fst > snd ? d : snd > fst ? -d : 0;
         }
       });
   };
@@ -199,7 +205,7 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
           </span>,
           <span key={r.id}>
             {r.cells[AFFECTED_CLUSTERS_VERSION_CELL] ||
-              intl.formatMessage(messages.notAvailable)}
+              intl.formatMessage(messages.nA)}
           </span>,
           <span key={r.id}>
             {r.cells[AFFECTED_CLUSTERS_LAST_SEEN_CELL] ? (
@@ -214,6 +220,27 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
                 content={
                   <span>
                     {intl.formatMessage(messages.lastSeen) + ': '}
+                    {intl.formatMessage(messages.nA)}
+                  </span>
+                }
+              >
+                <span>{intl.formatMessage(messages.nA)}</span>
+              </Tooltip>
+            )}
+          </span>,
+          <span key={r.id}>
+            {r.cells[AFFECTED_CLUSTERS_IMPACTED_CELL] ? (
+              <DateFormat
+                extraTitle={`${intl.formatMessage(messages.impacted)}: `}
+                date={r.cells[AFFECTED_CLUSTERS_IMPACTED_CELL]}
+                variant="relative"
+              />
+            ) : (
+              <Tooltip
+                key={r.id}
+                content={
+                  <span>
+                    {intl.formatMessage(messages.impacted) + ': '}
                     {intl.formatMessage(messages.nA)}
                   </span>
                 }
