@@ -205,7 +205,7 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
                     }
                   />
                   <p>
-                    {intl.formatMessage(messages.rulesDetailsPubishdate, {
+                    {intl.formatMessage(messages.rulesDetailsModifiedDate, {
                       date: (
                         <DateFormat
                           date={new Date(content.publish_date)}
