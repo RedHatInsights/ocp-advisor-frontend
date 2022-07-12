@@ -1,3 +1,10 @@
+## [1.5.3](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.5.2...v1.5.3) (2022-07-12)
+
+
+### Bug Fixes
+
+* **Recommendation page:** fix missing thank you message on vote click ([#356](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/356)) ([1819a75](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/1819a759dfe96d82d1874f1a38ecd2c0f86b37fd))
+
 ## [1.5.2](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.5.1...v1.5.2) (2022-07-11)
 
 ## [1.5.1](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.5.0...v1.5.1) (2022-07-11)
