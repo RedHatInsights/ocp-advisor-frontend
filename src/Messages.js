@@ -215,10 +215,10 @@ export default defineMessages({
     defaultMessage:
       'Indicates this recommendation will not be shown for the cluster.',
   },
-  rulesDetailsPubishdate: {
+  rulesDetailsModifiedDate: {
     id: 'rulesdetails.publishdate',
-    description: 'Recommendationsdetails, publish date',
-    defaultMessage: 'Publish date: {date}',
+    description: 'Recommendationsdetails, modified date',
+    defaultMessage: 'Modified date: {date}',
   },
   knowledgebaseArticle: {
     id: 'knowledgebasearticle',
