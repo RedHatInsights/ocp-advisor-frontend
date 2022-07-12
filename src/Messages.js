@@ -587,8 +587,8 @@ export default defineMessages({
     description: 'Asking the user if they find a recommendation helpful',
     defaultMessage: 'Is this recommendation helpful?',
   },
-  feedbackThankyou: {
-    id: 'feedbackThankyou',
+  feedbackThankYou: {
+    id: 'feedbackThankYou',
     description: 'Thanking user for feedback',
     defaultMessage: 'Thank you for your feedback!',
   },

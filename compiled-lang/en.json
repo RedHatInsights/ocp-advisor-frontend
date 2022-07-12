@@ -27,7 +27,7 @@
   "errorStateBody": "There was a problem processing the request. Please try again.",
   "errorStateTitle": "Something went wrong",
   "faultTolerance": "Fault Tolerance",
-  "feedbackThankyou": "Thank you for your feedback!",
+  "feedbackThankYou": "Thank you for your feedback!",
   "filterByName": "Filter by name",
   "filterByVersion": "Filter by version",
   "high": "High",
