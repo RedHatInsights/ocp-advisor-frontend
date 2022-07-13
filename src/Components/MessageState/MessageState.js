@@ -19,7 +19,13 @@ const MessageState = ({
   title,
   variant,
 }) => (
-  <EmptyState className={className} variant={variant} ouiaId="empty-state">
+  <EmptyState
+    className={className}
+    variant={variant}
+    data-ouia-component-id="empty-state"
+    data-ouia-component-type="PF4/EmptyState"
+    data-ouia-safe={true}
+  >
     {icon && (
       <EmptyStateIcon className={iconClass} style={iconStyle} icon={icon} />
     )}

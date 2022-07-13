@@ -1,7 +1,5 @@
 const { resolve } = require('path');
 const config = require('@redhat-cloud-services/frontend-components-config');
-const BundleAnalyzerPlugin =
-  require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const { config: webpackConfig, plugins } = config({
   rootFolder: resolve(__dirname, '../'),
@@ -35,7 +33,6 @@ plugins.push(
     }
   )
 );
-plugins.push(new BundleAnalyzerPlugin());
 
 module.exports = {
   ...webpackConfig,

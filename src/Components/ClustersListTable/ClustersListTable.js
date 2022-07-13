@@ -146,7 +146,7 @@ const ClustersListTable = ({
               {it.cluster_name || it.cluster_id}
             </Link>
           </span>,
-          ver === '0.0.0' ? intl.formatMessage(messages.notAvailable) : ver,
+          ver === '0.0.0' ? intl.formatMessage(messages.nA) : ver,
           it.total_hit_count,
           it.hits_by_total_risk?.[4] || 0,
           it.hits_by_total_risk?.[3] || 0,

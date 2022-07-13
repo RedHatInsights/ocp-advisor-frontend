@@ -125,7 +125,7 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
 
   const enableRule = async (rule) => {
     try {
-      await Delete(`${BASE_URL}/v2/ack/${rule.data.content.rule_id}/`);
+      await Delete(`${BASE_URL}/v2/ack/${rule.data.content.rule_id}`);
       notify({
         variant: 'success',
         timeout: true,
@@ -205,7 +205,7 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
                     }
                   />
                   <p>
-                    {intl.formatMessage(messages.rulesDetailsPubishdate, {
+                    {intl.formatMessage(messages.rulesDetailsModifiedDate, {
                       date: (
                         <DateFormat
                           date={new Date(content.publish_date)}

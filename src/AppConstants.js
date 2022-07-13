@@ -259,18 +259,23 @@ export const RECS_LIST_COLUMNS_KEYS = [
 export const AFFECTED_CLUSTERS_NAME_CELL = 1;
 export const AFFECTED_CLUSTERS_VERSION_CELL = 2;
 export const AFFECTED_CLUSTERS_LAST_SEEN_CELL = 3;
+export const AFFECTED_CLUSTERS_IMPACTED_CELL = 4;
 export const AFFECTED_CLUSTERS_COLUMNS = [
   {
     title: intl.formatMessage(messages.name),
-    transforms: [sortable, cellWidth(70)],
+    transforms: [sortable, cellWidth(60)],
   },
   {
     title: intl.formatMessage(messages.version),
-    transforms: [sortable, cellWidth(15)],
+    transforms: [sortable],
   },
   {
     title: intl.formatMessage(messages.lastSeen),
-    transforms: [sortable, cellWidth(15)],
+    transforms: [sortable],
+  },
+  {
+    title: intl.formatMessage(messages.impacted),
+    transforms: [sortable],
   },
 ];
 // TODO: remove since unused

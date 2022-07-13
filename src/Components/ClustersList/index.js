@@ -1,13 +1,12 @@
 import React from 'react';
 import { useIntl } from 'react-intl';
 
-import PageHeader, {
-  PageHeaderTitle,
-} from '@redhat-cloud-services/frontend-components/PageHeader';
+import PageHeader from '@redhat-cloud-services/frontend-components/PageHeader';
 import Main from '@redhat-cloud-services/frontend-components/Main';
 
 import messages from '../../Messages';
 import ClustersListTable from '../ClustersListTable';
+import { Title } from '@patternfly/react-core';
 
 const ClustersList = () => {
   const intl = useIntl();
@@ -20,11 +19,11 @@ const ClustersList = () => {
   return (
     <React.Fragment>
       <PageHeader className="ins-c-clusters-header">
-        <PageHeaderTitle
-          title={`${intl.formatMessage(messages.insightsHeader)} ${intl
+        <Title headingLevel="h1" ouiaId="page-header">
+          {`${intl.formatMessage(messages.insightsHeader)} ${intl
             .formatMessage(messages.clusters)
             .toLowerCase()}`}
-        />
+        </Title>
       </PageHeader>
       <Main>
         <ClustersListTable />

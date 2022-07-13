@@ -1,3 +1,32 @@
+## [1.5.3](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.5.2...v1.5.3) (2022-07-12)
+
+
+### Bug Fixes
+
+* **Recommendation page:** fix missing thank you message on vote click ([#356](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/356)) ([1819a75](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/1819a759dfe96d82d1874f1a38ecd2c0f86b37fd))
+
+## [1.5.2](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.5.1...v1.5.2) (2022-07-11)
+
+## [1.5.1](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.5.0...v1.5.1) (2022-07-11)
+
+
+### Bug Fixes
+
+* Change all "N/A" to "Not available" ([#346](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/346)) ([e89a6dd](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/e89a6ddf06726e8a7cf660ebb583901fd9b101dc))
+
+# [1.5.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.4.10...v1.5.0) (2022-07-08)
+
+
+### Features
+
+* **Single recommendation page:** add Impacted column ([#340](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/340)) ([be12a3e](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/be12a3ecda82ac123a60af3ac021c24db260cf41))
+
+## [1.4.10](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.4.9...v1.4.10) (2022-06-17)
+
+## [1.4.9](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.4.8...v1.4.9) (2022-06-16)
+
+## [1.4.8](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.4.7...v1.4.8) (2022-06-14)
+
 ## [1.4.7](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.4.6...v1.4.7) (2022-06-13)
 
 
