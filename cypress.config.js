@@ -11,7 +11,6 @@ module.exports = defineConfig({
       bundler: 'webpack',
       webpackConfig,
     },
-    setupNodeEvents(on, config) {},
     specPattern: 'src/**/*.cy.{js,ts,jsx,tsx}',
   },
-})
+});
