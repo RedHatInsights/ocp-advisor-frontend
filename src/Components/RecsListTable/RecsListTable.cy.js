@@ -480,7 +480,7 @@ describe('successful non-empty recommendations list table', () => {
             'Name',
             'description',
             DEFAULT_DISPLAYED_SIZE,
-            category
+            label
           );
         });
       });
