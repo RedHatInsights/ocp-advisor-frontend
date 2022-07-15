@@ -1,3 +1,10 @@
+## [1.5.4](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.5.3...v1.5.4) (2022-07-15)
+
+
+### Bug Fixes
+
+* **Recommendations list:** map sorting parameters from column names in the recs list table ([#359](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/359)) ([9899306](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/989930633a979d2cd7851d8a722f0db532df1feb))
+
 ## [1.5.3](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.5.2...v1.5.3) (2022-07-12)
 
 
