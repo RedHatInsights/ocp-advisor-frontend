@@ -84,8 +84,6 @@ const RecsListTable = ({ query }) => {
   const [filterBuilding, setFilterBuilding] = useState(true);
   // helps to distinguish the state when the API data received but not yet filtered
   const [rowsFiltered, setRowsFiltered] = useState(false);
-  // helps to distinguish if the component safe to test
-  const testSafe = rowsFiltered && !(isFetching || isUninitialized);
   const updateFilters = (filters) => dispatch(updateRecsListFilters(filters));
   const searchText = filters?.text || '';
   const loadingState = isUninitialized || isFetching || !rowsFiltered;
@@ -577,7 +575,7 @@ const RecsListTable = ({ query }) => {
   };
 
   return (
-    <div id="recs-list-table" data-ouia-safe={testSafe}>
+    <div id="recs-list-table" data-ouia-safe={!loadingState}>
       {disableRuleOpen && (
         <DisableRule
           handleModalToggle={setDisableRuleOpen}
