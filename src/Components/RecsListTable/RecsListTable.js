@@ -649,7 +649,7 @@ const RecsListTable = ({ query }) => {
         onSort={onSort}
         actionResolver={actionResolver}
         isStickyHeader
-        ouiaSafe={testSafe}
+        ouiaSafe={!loadingState}
         canCollapseAll
       >
         <TableHeader />

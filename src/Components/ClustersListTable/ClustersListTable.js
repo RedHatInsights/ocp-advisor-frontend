@@ -331,6 +331,7 @@ const ClustersListTable = ({
           <Table
             aria-label="Table of clusters"
             ouiaId="clusters"
+            ouiaSafe={!loadingState}
             variant={TableVariant.compact}
             cells={CLUSTERS_LIST_COLUMNS}
             rows={

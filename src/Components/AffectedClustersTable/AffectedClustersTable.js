@@ -372,6 +372,7 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
       <Table
         aria-label="Table of affected clusters"
         ouiaId="clusters"
+        ouiaSafe={!loadingState}
         variant="compact"
         cells={AFFECTED_CLUSTERS_COLUMNS}
         rows={
