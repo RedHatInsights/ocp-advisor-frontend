@@ -123,6 +123,7 @@ const ClustersListTable = ({
   }, [filters, filterBuilding]);
 
   const buildFilteredRows = (items) => {
+    setRowsFiltered(false);
     const filtered = items.filter((it) => {
       return passFiltersCluster(it, filters);
     });
@@ -295,6 +296,7 @@ const ClustersListTable = ({
   };
 
   const onSort = (_e, index, direction) => {
+    setRowsFiltered(false);
     updateFilters({ ...filters, sortIndex: index, sortDirection: direction });
   };
 
@@ -303,19 +305,23 @@ const ClustersListTable = ({
       {isSuccess && clusters.length === 0 ? (
         <NoRecsForClusters /> // TODO: do not mix this logic in the table component
       ) : (
-        <div id="clusters-list-table">
+        <div id="clusters-list-table" data-ouia-safe={!loadingState}>
           <PrimaryToolbar
             pagination={{
               itemCount: filteredRows.length,
               page,
               perPage: filters.limit,
-              onSetPage: (_event, page) =>
-                updateFilters({
+              onSetPage: (_event, page) => {
+                setRowsFiltered(false);
+                return updateFilters({
                   ...filters,
                   offset: filters.limit * (page - 1),
-                }),
-              onPerPageSelect: (_event, perPage) =>
-                updateFilters({ ...filters, limit: perPage, offset: 0 }),
+                });
+              },
+              onPerPageSelect: (_event, perPage) => {
+                setRowsFiltered(false);
+                return updateFilters({ ...filters, limit: perPage, offset: 0 });
+              },
               isCompact: true,
               ouiaId: 'pager',
             }}
