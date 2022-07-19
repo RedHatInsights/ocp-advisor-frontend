@@ -278,7 +278,7 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
     const newDisplayedRows = buildDisplayedRows(newFilteredRows);
     setFilteredRows(newFilteredRows);
     setDisplayedRows(newDisplayedRows);
-    if (isSuccess && !rowsFiltered) {
+    if (isSuccess) {
       setRowsFiltered(true);
     }
   }, [query, filters]);

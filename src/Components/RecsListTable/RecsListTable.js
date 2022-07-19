@@ -101,7 +101,7 @@ const RecsListTable = ({ query }) => {
     setDisplayedRows(
       buildDisplayedRows(filteredRows, filters.sortIndex, filters.sortDirection)
     );
-    if (isSuccess && !rowsFiltered) {
+    if (isSuccess) {
       setRowsFiltered(true);
     }
   }, [
