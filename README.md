@@ -43,7 +43,7 @@ You can use the mocked version of Insights Results Aggregator (or Smart Proxy) A
 [Cypress](https://docs.cypress.io/guides/component-testing) and [Jest](https://jestjs.io/) are used as the testing frameworks.
 
 - Run `npm run test` to execute unit-test suite (Jest + Cypress component testing).
-- Run `npx cypress open-ct` to open Cypress in the component tesing mode.
+- Run `npx cypress open --component` to open Cypress in the component tesing mode.
 
 ## Deploying
 
