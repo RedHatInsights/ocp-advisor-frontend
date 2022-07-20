@@ -1,3 +1,5 @@
+## [1.5.5](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.5.4...v1.5.5) (2022-07-20)
+
 ## [1.5.4](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.5.3...v1.5.4) (2022-07-15)
 
 
