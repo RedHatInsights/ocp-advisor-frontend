@@ -178,17 +178,36 @@ const ClusterRules = ({ cluster }) => {
                 </div>
               ),
             },
-            {
-              title: (
-                <div key={key}>
-                  <DateFormat
-                    date={value.impacted}
-                    type="relative"
-                    tooltipProps={{ position: TooltipPosition.bottom }}
-                  />
-                </div>
-              ),
-            },
+            value.impacted
+              ? {
+                  title: (
+                    <div key={key}>
+                      <DateFormat
+                        extraTitle={`${intl.formatMessage(
+                          messages.impacted
+                        )}: `}
+                        date={value.impacted}
+                        type="relative"
+                        tooltipProps={{ position: TooltipPosition.bottom }}
+                      />
+                    </div>
+                  ),
+                }
+              : {
+                  title: (
+                    <Tooltip
+                      key={key}
+                      content={
+                        <span>
+                          {intl.formatMessage(messages.impacted) + ': '}
+                          {intl.formatMessage(messages.nA)}
+                        </span>
+                      }
+                    >
+                      <span>{intl.formatMessage(messages.nA)}</span>
+                    </Tooltip>
+                  ),
+                },
             {
               title: (
                 <div key={key} style={{ verticalAlign: 'top' }}>
