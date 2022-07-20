@@ -28,6 +28,7 @@ import {
   CLUSTER_RULES_COLUMNS_KEYS,
   FILTER_CATEGORIES,
   CLUSTER_RULES_COLUMNS,
+  CLUSTER_RULES_IMPACTED_CELL,
 } from '../../AppConstants';
 import { ReportDetails } from '@redhat-cloud-services/frontend-components-advisor-components';
 import RuleLabels from '../Labels/RuleLabels';
@@ -272,13 +273,12 @@ const ClusterRules = ({ cluster }) => {
     if (index >= 0 && !firstRule) {
       const d = direction === SortByDirection.asc ? 1 : -1;
       sortingRows = [...rows].sort((firstItem, secondItem) => {
-        const fst = firstItem[0].rule[CLUSTER_RULES_COLUMNS_KEYS[index]];
-        const snd = secondItem[0].rule[CLUSTER_RULES_COLUMNS_KEYS[index]];
-        if (index === 3) {
+        let fst = firstItem[0].rule[CLUSTER_RULES_COLUMNS_KEYS[index]];
+        let snd = secondItem[0].rule[CLUSTER_RULES_COLUMNS_KEYS[index]];
+        if (index === CLUSTER_RULES_IMPACTED_CELL) {
           //sorting for the impacted column
-          const firstDate = new Date(firstItem[0].rule.impacted || 0);
-          const secondDate = new Date(secondItem[0].rule.impacted || 0);
-          return firstDate > secondDate ? d : secondDate > firstDate ? -d : 0;
+          fst = new Date(firstItem[0].rule.impacted || 0);
+          snd = new Date(secondItem[0].rule.impacted || 0);
         }
         return fst > snd ? d : snd > fst ? -d : 0;
       });

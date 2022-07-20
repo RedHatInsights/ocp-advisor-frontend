@@ -256,6 +256,7 @@ export const RECS_LIST_COLUMNS_KEYS = [
   'total_risk',
   'clusters',
 ];
+export const CLUSTER_RULES_IMPACTED_CELL = 3;
 export const RECS_LIST_NAME_CELL = 1;
 export const RECS_LIST_MODIFIED_CELL = 2;
 export const RECS_LIST_CATEGORY_CELL = 3;
