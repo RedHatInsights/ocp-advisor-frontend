@@ -13,7 +13,7 @@
     "start": "webpack serve --config config/dev.webpack.config.js",
     "start:beta": "BETA=true npm start",
     "start:beta:mock": "BETA=true MOCK=true npm start",
-    "test:ct": "cypress run-ct",
+    "test:ct": "cypress run --component",
     "test:jest": "jest --verbose --passWithNoTests",
     "test": "npm run test:ct && npm run test:jest",
     "coverage": "bash coverage.sh",

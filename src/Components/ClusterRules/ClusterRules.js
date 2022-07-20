@@ -68,9 +68,9 @@ const ClusterRules = ({ cluster }) => {
   const [firstRule, setFirstRule] = useState(''); // show a particular rule first
   const results = filteredRows.length;
   const { search } = useLocation();
-  const [rowsUpdating, setRowsUpdating] = useState(true);
+  // helps to distinguish the state when the API data received but not yet filtered
   const [rowsFiltered, setRowsFiltered] = useState(false);
-  const loadingState = isUninitialized || isFetching || rowsUpdating;
+  const loadingState = isUninitialized || isFetching || !rowsFiltered;
   const errorState = isError;
   const successState = isSuccess;
   const noInput = successState && reports.length === 0;
@@ -105,13 +105,15 @@ const ClusterRules = ({ cluster }) => {
 
   useEffect(() => {
     setFilteredRows(buildFilteredRows(reports, filters));
+    if (isSuccess) {
+      setRowsFiltered(true);
+    }
   }, [data, filters]);
 
   useEffect(() => {
     setDisplayedRows(
       buildDisplayedRows(filteredRows, filters.sortIndex, filters.sortDirection)
     );
-    setRowsFiltered(true);
   }, [
     filteredRows,
     filters.limit,
@@ -119,12 +121,6 @@ const ClusterRules = ({ cluster }) => {
     filters.sortIndex,
     filters.sortDirection,
   ]);
-
-  useEffect(() => {
-    if (rowsFiltered) {
-      setRowsUpdating(false);
-    }
-  }, [rowsFiltered]);
 
   const handleOnCollapse = (_e, rowId, isOpen) => {
     if (rowId === undefined) {
@@ -146,6 +142,7 @@ const ClusterRules = ({ cluster }) => {
   };
 
   const buildFilteredRows = (allRows, filters) => {
+    setRowsFiltered(false);
     const expandedRowsSet = new Set(
       displayedRows
         .filter((ruleExpanded) => ruleExpanded?.isOpen)
@@ -269,6 +266,7 @@ const ClusterRules = ({ cluster }) => {
   };
 
   const onSort = (_e, index, direction) => {
+    setRowsFiltered(false);
     setExpandFirst(false);
     setFirstRule('');
     return updateFilters({
@@ -404,7 +402,7 @@ const ClusterRules = ({ cluster }) => {
   };
 
   return (
-    <div id="cluster-recs-list-table">
+    <div id="cluster-recs-list-table" data-ouia-safe={!loadingState}>
       <PrimaryToolbar
         filterConfig={{
           items: filterConfigItems,
@@ -426,6 +424,7 @@ const ClusterRules = ({ cluster }) => {
       <Table
         aria-label={'Cluster recommendations table'}
         ouiaId="recommendations"
+        ouiaSafe={!loadingState}
         onCollapse={handleOnCollapse} // TODO: set undefined when there is an empty state
         rows={
           errorState || loadingState || noMatch || noInput ? (
