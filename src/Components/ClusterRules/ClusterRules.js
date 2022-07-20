@@ -180,6 +180,17 @@ const ClusterRules = ({ cluster }) => {
             },
             {
               title: (
+                <div key={key}>
+                  <DateFormat
+                    date={value.impacted}
+                    type="relative"
+                    tooltipProps={{ position: TooltipPosition.bottom }}
+                  />
+                </div>
+              ),
+            },
+            {
+              title: (
                 <div key={key} style={{ verticalAlign: 'top' }}>
                   {value?.likelihood && value?.impact ? (
                     <Tooltip
@@ -244,6 +255,12 @@ const ClusterRules = ({ cluster }) => {
       sortingRows = [...rows].sort((firstItem, secondItem) => {
         const fst = firstItem[0].rule[CLUSTER_RULES_COLUMNS_KEYS[index]];
         const snd = secondItem[0].rule[CLUSTER_RULES_COLUMNS_KEYS[index]];
+        if (index === 3) {
+          //sorting for the impacted column
+          const firstDate = new Date(firstItem[0].rule.impacted || 0);
+          const secondDate = new Date(secondItem[0].rule.impacted || 0);
+          return firstDate > secondDate ? d : secondDate > firstDate ? -d : 0;
+        }
         return fst > snd ? d : snd > fst ? -d : 0;
       });
     } else if (firstRule) {

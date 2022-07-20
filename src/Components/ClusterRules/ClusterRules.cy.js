@@ -205,24 +205,25 @@ describe('cluster rules table', () => {
 
   describe('sorting', () => {
     // all tables must preserve original ordering
-    _.zip(['description', 'created_at', 'total_risk'], TABLE_HEADERS).forEach(
-      ([category, label]) => {
-        SORTING_ORDERS.forEach((order) => {
-          it(`${order} by ${label}`, () => {
-            checkSorting(
-              data,
-              category,
-              label,
-              order,
-              'Description',
-              'description',
-              RULES_ENABLED,
-              null
-            );
-          });
+    _.zip(
+      ['description', 'created_at', 'impacted', 'total_risk'],
+      TABLE_HEADERS
+    ).forEach(([category, label]) => {
+      SORTING_ORDERS.forEach((order) => {
+        it(`${order} by ${label}`, () => {
+          checkSorting(
+            data,
+            category,
+            label,
+            order,
+            'Description',
+            'description',
+            RULES_ENABLED,
+            null
+          );
         });
-      }
-    );
+      });
+    });
   });
 
   describe('filtering', () => {

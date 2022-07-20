@@ -289,6 +289,7 @@ export const CLUSTER_RULES_COLUMNS_KEYS = [
   '', // reserved for expand button
   'description',
   'created_at',
+  'impacted',
   'total_risk',
 ];
 export const CLUSTER_RULES_COLUMNS = [
@@ -298,6 +299,10 @@ export const CLUSTER_RULES_COLUMNS = [
   },
   {
     title: intl.formatMessage(messages.modified),
+    transforms: [sortable, cellWidth(15)],
+  },
+  {
+    title: intl.formatMessage(messages.impacted),
     transforms: [sortable, cellWidth(15)],
   },
   {
