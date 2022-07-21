@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.5.5...v1.6.0) (2022-07-21)
+
+
+### Features
+
+* **Single cluster page:** Add a new column Impacted ([#366](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/366)) ([2362508](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/2362508d4df2d1789539fc70a56d24d0de1fe6c5))
+
 ## [1.5.5](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.5.4...v1.5.5) (2022-07-20)
 
 ## [1.5.4](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.5.3...v1.5.4) (2022-07-15)
