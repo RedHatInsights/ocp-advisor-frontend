@@ -28,6 +28,7 @@ import {
   CLUSTER_RULES_COLUMNS_KEYS,
   FILTER_CATEGORIES,
   CLUSTER_RULES_COLUMNS,
+  CLUSTER_RULES_IMPACTED_CELL,
 } from '../../AppConstants';
 import { ReportDetails } from '@redhat-cloud-services/frontend-components-advisor-components';
 import RuleLabels from '../Labels/RuleLabels';
@@ -175,6 +176,36 @@ const ClusterRules = ({ cluster }) => {
                 </div>
               ),
             },
+            value.impacted
+              ? {
+                  title: (
+                    <div key={key}>
+                      <DateFormat
+                        extraTitle={`${intl.formatMessage(
+                          messages.impacted
+                        )}: `}
+                        date={value.impacted}
+                        type="relative"
+                        tooltipProps={{ position: TooltipPosition.bottom }}
+                      />
+                    </div>
+                  ),
+                }
+              : {
+                  title: (
+                    <Tooltip
+                      key={key}
+                      content={
+                        <span>
+                          {intl.formatMessage(messages.impacted) + ': '}
+                          {intl.formatMessage(messages.nA)}
+                        </span>
+                      }
+                    >
+                      <span>{intl.formatMessage(messages.nA)}</span>
+                    </Tooltip>
+                  ),
+                },
             {
               title: (
                 <div key={key} style={{ verticalAlign: 'top' }}>
@@ -239,8 +270,13 @@ const ClusterRules = ({ cluster }) => {
     if (index >= 0 && !firstRule) {
       const d = direction === SortByDirection.asc ? 1 : -1;
       sortingRows = [...rows].sort((firstItem, secondItem) => {
-        const fst = firstItem[0].rule[CLUSTER_RULES_COLUMNS_KEYS[index]];
-        const snd = secondItem[0].rule[CLUSTER_RULES_COLUMNS_KEYS[index]];
+        let fst = firstItem[0].rule[CLUSTER_RULES_COLUMNS_KEYS[index]];
+        let snd = secondItem[0].rule[CLUSTER_RULES_COLUMNS_KEYS[index]];
+        if (index === CLUSTER_RULES_IMPACTED_CELL) {
+          //sorting for the impacted column
+          fst = new Date(firstItem[0].rule.impacted || 0);
+          snd = new Date(secondItem[0].rule.impacted || 0);
+        }
         return fst > snd ? d : snd > fst ? -d : 0;
       });
     } else if (firstRule) {

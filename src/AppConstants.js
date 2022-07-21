@@ -256,6 +256,7 @@ export const RECS_LIST_COLUMNS_KEYS = [
   'total_risk',
   'clusters',
 ];
+export const CLUSTER_RULES_IMPACTED_CELL = 3;
 export const RECS_LIST_NAME_CELL = 1;
 export const RECS_LIST_MODIFIED_CELL = 2;
 export const RECS_LIST_CATEGORY_CELL = 3;
@@ -289,6 +290,7 @@ export const CLUSTER_RULES_COLUMNS_KEYS = [
   '', // reserved for expand button
   'description',
   'created_at',
+  'impacted',
   'total_risk',
 ];
 export const CLUSTER_RULES_COLUMNS = [
@@ -298,6 +300,10 @@ export const CLUSTER_RULES_COLUMNS = [
   },
   {
     title: intl.formatMessage(messages.modified),
+    transforms: [sortable, cellWidth(15)],
+  },
+  {
+    title: intl.formatMessage(messages.impacted),
     transforms: [sortable, cellWidth(15)],
   },
   {
