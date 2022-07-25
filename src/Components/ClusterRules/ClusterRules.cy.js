@@ -122,6 +122,9 @@ describe('test data', () => {
     expect(filteredData).to.have.length.gte(1);
     expect(filteredData).to.have.length.lt(RULES_ENABLED);
   });
+  it('has 1 rule without impacted field', () => {
+    expect(_.uniq(_.map(data, 'Not available'))).to.have.length.lengthOf(1);
+  });
 });
 
 describe('cluster rules table', () => {
@@ -211,9 +214,24 @@ describe('cluster rules table', () => {
     ).forEach(([category, label]) => {
       SORTING_ORDERS.forEach((order) => {
         it(`${order} by ${label}`, () => {
+          let sortingParameter = category;
+          // modify sortingParameters for certain values
+          if (category === 'description') {
+            // name sorting is case insensitive
+            sortingParameter = (it) => it.description.toLowerCase();
+          } else if (category === 'created_at') {
+            sortingParameter = (it) =>
+              it.created_at || '1970-01-01T01:00:00.001Z';
+          } else if (category === 'impacted') {
+            sortingParameter = (it) =>
+              it.impacted || '1970-01-01T01:00:00.001Z';
+          } else if (category === 'total_risk') {
+            sortingParameter = (it) => it.total_risk || 3;
+          }
+
           checkSorting(
             data,
-            category,
+            sortingParameter,
             label,
             order,
             'Description',
@@ -392,7 +410,7 @@ describe('cluster rules table testing the first query parameter', () => {
       if (order === 'ascending') {
         cy.get(header).find('button').click();
       } else {
-        cy.get(header).find('button').click().click();
+        cy.get(header).find('button').dblclick();
       }
       let sortedDescriptions = _.map(
         _.orderBy(
