@@ -271,7 +271,6 @@
         "disabled_at": "2021-09-14T12:48:22Z",
         "internal": false,
         "user_vote": 1,
-        "impacted": "2022-06-26T22:00:00.000Z",
         "extra_data": {
           "error_key": "ERROR_KEY_N6",
           "op": {

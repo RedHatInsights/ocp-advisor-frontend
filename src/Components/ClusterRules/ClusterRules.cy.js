@@ -122,6 +122,11 @@ describe('test data', () => {
     expect(filteredData).to.have.length.gte(1);
     expect(filteredData).to.have.length.lt(RULES_ENABLED);
   });
+  it('has at least 1 rule with missing impacted field', () => {
+    expect(
+      data.map((rule) => !Object.hasOwn(rule, 'impacted')).length
+    ).to.be.gte(1);
+  });
 });
 
 describe('cluster rules table', () => {
@@ -211,9 +216,16 @@ describe('cluster rules table', () => {
     ).forEach(([category, label]) => {
       SORTING_ORDERS.forEach((order) => {
         it(`${order} by ${label}`, () => {
+          let sortingParameter = category;
+          // modify sortingParameters for certain values
+          if (category === 'impacted') {
+            sortingParameter = (it) =>
+              it.impacted || '1970-01-01T01:00:00.001Z';
+          }
+
           checkSorting(
             data,
-            category,
+            sortingParameter,
             label,
             order,
             'Description',
