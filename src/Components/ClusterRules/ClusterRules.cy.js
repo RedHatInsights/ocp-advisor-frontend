@@ -122,8 +122,10 @@ describe('test data', () => {
     expect(filteredData).to.have.length.gte(1);
     expect(filteredData).to.have.length.lt(RULES_ENABLED);
   });
-  it('has 1 rule without impacted field', () => {
-    expect(_.uniq(data[5].impacted)).to.have.length.lengthOf(0);
+  it('has at least 1 rule with missing impacted field', () => {
+    expect(
+      data.map((rule) => !Object.hasOwn(rule, 'impacted')).length
+    ).to.be.gte(1);
   });
 });
 
@@ -206,7 +208,7 @@ describe('cluster rules table', () => {
     cy.get(EXPANDABLES).should('have.length', 2);
   });
 
-  describe.only('sorting', () => {
+  describe('sorting', () => {
     // all tables must preserve original ordering
     _.zip(
       ['description', 'created_at', 'impacted', 'total_risk'],
