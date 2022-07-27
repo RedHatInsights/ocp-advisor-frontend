@@ -11,6 +11,7 @@ import rule from '../../../cypress/fixtures/api/insights-results-aggregator/v2/r
 import ack from '../../../cypress/fixtures/api/insights-results-aggregator/v2/ack/external.rules.rule|ERROR_KEY.json';
 import clusterDetails from '../../../cypress/fixtures/api/insights-results-aggregator/v2/rule/external.rules.rule|ERROR_KEY/clusters_detail.json';
 import { CATEGORIES } from '../../../cypress/utils/globals';
+import { TBODY, ROW } from '../../../cypress/utils/components';
 
 const defaultPropsRule = {
   isError: false,
@@ -108,6 +109,29 @@ describe('recommendation page for enabled recommendation with clusters enabled a
         cy.get('a').should('have.text', 'Disable recommendation').click();
       });
     cy.ouiaId('recommendation-disable').should('exist');
+  });
+
+  describe.only('disabled clusters modal', () => {
+    it('can be displayed', () => {
+      cy.ouiaId('hosts-acked').ouiaId('view-clusters').click();
+      cy.ouiaId('hosts-disabled').should('exist');
+    });
+    it('has expected clusters', () => {
+      cy.ouiaId('hosts-acked').ouiaId('view-clusters').click();
+      cy.ouiaId('hosts-disabled')
+        .find(TBODY)
+        .find(ROW)
+        .should('have.length', clusterDetails.data.disabled.length);
+      const clusters = _.map(
+        clusterDetails.data.disabled,
+        (it) => it.cluster_name || it.cluster_id
+      );
+      cy.get(`td[data-label="Cluster name"]`)
+        .then(($els) => {
+          return _.map(Cypress.$.makeArray($els), 'innerText');
+        })
+        .should('deep.equal', clusters);
+    });
   });
 });
 
