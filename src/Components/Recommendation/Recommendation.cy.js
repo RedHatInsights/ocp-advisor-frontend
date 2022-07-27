@@ -111,6 +111,64 @@ describe('recommendation page for enabled recommendation with clusters enabled a
   });
 });
 
+describe('recommendation page for enabled recommendation without disabled clusters', () => {
+  let data = _.cloneDeep(clusterDetails.data);
+  data.disabled = [];
+  beforeEach(() => {
+    mount(
+      <MemoryRouter>
+        <Intl>
+          <Provider store={getStore()}>
+            <Recommendation
+              rule={{ ...defaultPropsRule }}
+              ack={{ ...defaultPropsAck, data: undefined }}
+              clusters={{ ...defaultPropsClusterDetails, data: data }}
+              match={{ params: { recommendationId: 'X' } }}
+            />
+          </Provider>
+        </Intl>
+      </MemoryRouter>
+    );
+
+    cy.intercept('POST', '/api/insights-results-aggregator/v2/ack', {
+      statusCode: 201,
+    }).as('ackRequest');
+  });
+
+  it('header shows description', () => {
+    cy.ouiaType('PF4/Title', 'h1')
+      .should(($el) => expect($el.text().trim()).to.equal(ruleDescription))
+      .and('have.length', 1);
+  });
+
+  it('does not show info about disabled clusters', () => {
+    cy.ouiaId('hosts-acked').should('not.exist');
+  });
+
+  it('table is displayed', () => {
+    cy.get('#affected-list-table')
+      .within(() => {
+        cy.ouiaId('clusters').should('have.length', 1);
+      })
+      .parent()
+      .ouiaType('PF4/Title', 'h3')
+      .should('have.text', 'Affected clusters');
+  });
+
+  it('category labels are displayed', () => {
+    cy.get('.categoryLabels').should('have.length', 1);
+  });
+
+  it('actions can ack recommendation', () => {
+    cy.ouiaId('actions')
+      .click()
+      .within(() => {
+        cy.get('a').should('have.text', 'Disable recommendation').click();
+      });
+    cy.ouiaId('recommendation-disable').should('exist');
+  });
+});
+
 // TODO check disabledRule with ack data undefined. Makes sense?
 describe('recommendation page for disabled recommendation', () => {
   beforeEach(() => {
