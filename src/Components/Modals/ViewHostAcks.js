@@ -111,6 +111,7 @@ const ViewHostAcks = ({
         unclean && afterFn();
         handleModalToggle(false);
       }}
+      ouiaId="hosts-disabled"
     >
       {!isFetching ? (
         <Table aria-label="host-ack-table" rows={rows} cells={columns}>
