@@ -119,7 +119,7 @@ describe('recommendation page for enabled recommendation with clusters enabled a
     cy.ouiaId('recommendation-disable').should('exist');
   });
 
-  it.only('all clusters can be enabled at once', () => {
+  it('all clusters can be enabled at once', () => {
     cy.ouiaId('hosts-acked')
       .ouiaId('enable')
       .click()
@@ -133,7 +133,7 @@ describe('recommendation page for enabled recommendation with clusters enabled a
       });
   });
 
-  describe.only('disabled clusters modal', () => {
+  describe('disabled clusters modal', () => {
     it('can be displayed', () => {
       cy.ouiaId('hosts-acked').ouiaId('view-clusters').click();
       cy.ouiaId('hosts-disabled').should('exist');
