@@ -215,7 +215,6 @@ describe('recommendation page for enabled recommendation without disabled cluste
   });
 });
 
-// TODO check disabledRule with ack data undefined. Makes sense?
 describe('recommendation page for disabled recommendation', () => {
   beforeEach(() => {
     mount(
