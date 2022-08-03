@@ -122,6 +122,11 @@ describe('test data', () => {
     expect(filteredData).to.have.length.gte(1);
     expect(filteredData).to.have.length.lt(RULES_ENABLED);
   });
+  it('has at least 1 rule with missing impacted field', () => {
+    expect(
+      data.map((rule) => !Object.hasOwn(rule, 'impacted')).length
+    ).to.be.gte(1);
+  });
 });
 
 describe('cluster rules table', () => {
@@ -205,24 +210,32 @@ describe('cluster rules table', () => {
 
   describe('sorting', () => {
     // all tables must preserve original ordering
-    _.zip(['description', 'created_at', 'total_risk'], TABLE_HEADERS).forEach(
-      ([category, label]) => {
-        SORTING_ORDERS.forEach((order) => {
-          it(`${order} by ${label}`, () => {
-            checkSorting(
-              data,
-              category,
-              label,
-              order,
-              'Description',
-              'description',
-              RULES_ENABLED,
-              null
-            );
-          });
+    _.zip(
+      ['description', 'created_at', 'impacted', 'total_risk'],
+      TABLE_HEADERS
+    ).forEach(([category, label]) => {
+      SORTING_ORDERS.forEach((order) => {
+        it(`${order} by ${label}`, () => {
+          let sortingParameter = category;
+          // modify sortingParameters for certain values
+          if (category === 'impacted') {
+            sortingParameter = (it) =>
+              it.impacted || '1970-01-01T01:00:00.001Z';
+          }
+
+          checkSorting(
+            data,
+            sortingParameter,
+            label,
+            order,
+            'Description',
+            'description',
+            RULES_ENABLED,
+            null
+          );
         });
-      }
-    );
+      });
+    });
   });
 
   describe('filtering', () => {
@@ -391,7 +404,7 @@ describe('cluster rules table testing the first query parameter', () => {
       if (order === 'ascending') {
         cy.get(header).find('button').click();
       } else {
-        cy.get(header).find('button').dblclick();
+        cy.get(header).find('button').click().click();
       }
       let sortedDescriptions = _.map(
         _.orderBy(

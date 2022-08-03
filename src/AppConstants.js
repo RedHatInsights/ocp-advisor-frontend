@@ -250,12 +250,18 @@ export const CLUSTERS_LIST_COLUMNS = [
 ];
 export const RECS_LIST_COLUMNS_KEYS = [
   '', // reserved for expand button
-  'description',
-  'publish_date',
-  'tags',
+  'name',
+  'modified',
+  'category',
   'total_risk',
-  'impacted_clusters_count',
+  'clusters',
 ];
+export const CLUSTER_RULES_IMPACTED_CELL = 3;
+export const RECS_LIST_NAME_CELL = 1;
+export const RECS_LIST_MODIFIED_CELL = 2;
+export const RECS_LIST_CATEGORY_CELL = 3;
+export const RECS_LIST_TOTAL_RISK_CELL = 4;
+export const RECS_LIST_CLUSTERS_CELL = 5;
 export const AFFECTED_CLUSTERS_NAME_CELL = 1;
 export const AFFECTED_CLUSTERS_VERSION_CELL = 2;
 export const AFFECTED_CLUSTERS_LAST_SEEN_CELL = 3;
@@ -284,6 +290,7 @@ export const CLUSTER_RULES_COLUMNS_KEYS = [
   '', // reserved for expand button
   'description',
   'created_at',
+  'impacted',
   'total_risk',
 ];
 export const CLUSTER_RULES_COLUMNS = [
@@ -293,6 +300,10 @@ export const CLUSTER_RULES_COLUMNS = [
   },
   {
     title: intl.formatMessage(messages.modified),
+    transforms: [sortable, cellWidth(15)],
+  },
+  {
+    title: intl.formatMessage(messages.impacted),
     transforms: [sortable, cellWidth(15)],
   },
   {

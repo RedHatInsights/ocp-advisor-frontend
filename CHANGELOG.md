@@ -1,3 +1,21 @@
+## [1.6.1](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.6.0...v1.6.1) (2022-07-26)
+
+# [1.6.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.5.5...v1.6.0) (2022-07-21)
+
+
+### Features
+
+* **Single cluster page:** Add a new column Impacted ([#366](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/366)) ([2362508](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/2362508d4df2d1789539fc70a56d24d0de1fe6c5))
+
+## [1.5.5](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.5.4...v1.5.5) (2022-07-20)
+
+## [1.5.4](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.5.3...v1.5.4) (2022-07-15)
+
+
+### Bug Fixes
+
+* **Recommendations list:** map sorting parameters from column names in the recs list table ([#359](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/359)) ([9899306](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/989930633a979d2cd7851d8a722f0db532df1feb))
+
 ## [1.5.3](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.5.2...v1.5.3) (2022-07-12)
 
 

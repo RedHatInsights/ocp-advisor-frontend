@@ -28,6 +28,7 @@ import {
   CLUSTER_RULES_COLUMNS_KEYS,
   FILTER_CATEGORIES,
   CLUSTER_RULES_COLUMNS,
+  CLUSTER_RULES_IMPACTED_CELL,
 } from '../../AppConstants';
 import { ReportDetails } from '@redhat-cloud-services/frontend-components-advisor-components';
 import RuleLabels from '../Labels/RuleLabels';
@@ -68,9 +69,9 @@ const ClusterRules = ({ cluster }) => {
   const [firstRule, setFirstRule] = useState(''); // show a particular rule first
   const results = filteredRows.length;
   const { search } = useLocation();
-  const [rowsUpdating, setRowsUpdating] = useState(true);
+  // helps to distinguish the state when the API data received but not yet filtered
   const [rowsFiltered, setRowsFiltered] = useState(false);
-  const loadingState = isUninitialized || isFetching || rowsUpdating;
+  const loadingState = isUninitialized || isFetching || !rowsFiltered;
   const errorState = isError;
   const successState = isSuccess;
   const noInput = successState && reports.length === 0;
@@ -105,13 +106,15 @@ const ClusterRules = ({ cluster }) => {
 
   useEffect(() => {
     setFilteredRows(buildFilteredRows(reports, filters));
+    if (isSuccess) {
+      setRowsFiltered(true);
+    }
   }, [data, filters]);
 
   useEffect(() => {
     setDisplayedRows(
       buildDisplayedRows(filteredRows, filters.sortIndex, filters.sortDirection)
     );
-    setRowsFiltered(true);
   }, [
     filteredRows,
     filters.limit,
@@ -119,12 +122,6 @@ const ClusterRules = ({ cluster }) => {
     filters.sortIndex,
     filters.sortDirection,
   ]);
-
-  useEffect(() => {
-    if (rowsFiltered) {
-      setRowsUpdating(false);
-    }
-  }, [rowsFiltered]);
 
   const handleOnCollapse = (_e, rowId, isOpen) => {
     if (rowId === undefined) {
@@ -146,6 +143,7 @@ const ClusterRules = ({ cluster }) => {
   };
 
   const buildFilteredRows = (allRows, filters) => {
+    setRowsFiltered(false);
     const expandedRowsSet = new Set(
       displayedRows
         .filter((ruleExpanded) => ruleExpanded?.isOpen)
@@ -178,6 +176,36 @@ const ClusterRules = ({ cluster }) => {
                 </div>
               ),
             },
+            value.impacted
+              ? {
+                  title: (
+                    <div key={key}>
+                      <DateFormat
+                        extraTitle={`${intl.formatMessage(
+                          messages.impacted
+                        )}: `}
+                        date={value.impacted}
+                        type="relative"
+                        tooltipProps={{ position: TooltipPosition.bottom }}
+                      />
+                    </div>
+                  ),
+                }
+              : {
+                  title: (
+                    <Tooltip
+                      key={key}
+                      content={
+                        <span>
+                          {intl.formatMessage(messages.impacted) + ': '}
+                          {intl.formatMessage(messages.nA)}
+                        </span>
+                      }
+                    >
+                      <span>{intl.formatMessage(messages.nA)}</span>
+                    </Tooltip>
+                  ),
+                },
             {
               title: (
                 <div key={key} style={{ verticalAlign: 'top' }}>
@@ -242,8 +270,13 @@ const ClusterRules = ({ cluster }) => {
     if (index >= 0 && !firstRule) {
       const d = direction === SortByDirection.asc ? 1 : -1;
       sortingRows = [...rows].sort((firstItem, secondItem) => {
-        const fst = firstItem[0].rule[CLUSTER_RULES_COLUMNS_KEYS[index]];
-        const snd = secondItem[0].rule[CLUSTER_RULES_COLUMNS_KEYS[index]];
+        let fst = firstItem[0].rule[CLUSTER_RULES_COLUMNS_KEYS[index]];
+        let snd = secondItem[0].rule[CLUSTER_RULES_COLUMNS_KEYS[index]];
+        if (index === CLUSTER_RULES_IMPACTED_CELL) {
+          //sorting for the impacted column
+          fst = new Date(firstItem[0].rule.impacted || 0);
+          snd = new Date(secondItem[0].rule.impacted || 0);
+        }
         return fst > snd ? d : snd > fst ? -d : 0;
       });
     } else if (firstRule) {
@@ -269,6 +302,7 @@ const ClusterRules = ({ cluster }) => {
   };
 
   const onSort = (_e, index, direction) => {
+    setRowsFiltered(false);
     setExpandFirst(false);
     setFirstRule('');
     return updateFilters({
@@ -404,7 +438,7 @@ const ClusterRules = ({ cluster }) => {
   };
 
   return (
-    <div id="cluster-recs-list-table">
+    <div id="cluster-recs-list-table" data-ouia-safe={!loadingState}>
       <PrimaryToolbar
         filterConfig={{
           items: filterConfigItems,
@@ -426,6 +460,7 @@ const ClusterRules = ({ cluster }) => {
       <Table
         aria-label={'Cluster recommendations table'}
         ouiaId="recommendations"
+        ouiaSafe={!loadingState}
         onCollapse={handleOnCollapse} // TODO: set undefined when there is an empty state
         rows={
           errorState || loadingState || noMatch || noInput ? (

@@ -25,8 +25,13 @@ import { addNotification } from '@redhat-cloud-services/frontend-components-noti
 
 import {
   FILTER_CATEGORIES,
+  RECS_LIST_CATEGORY_CELL,
+  RECS_LIST_CLUSTERS_CELL,
   RECS_LIST_COLUMNS,
   RECS_LIST_COLUMNS_KEYS,
+  RECS_LIST_MODIFIED_CELL,
+  RECS_LIST_NAME_CELL,
+  RECS_LIST_TOTAL_RISK_CELL,
   TOTAL_RISK_LABEL_LOWER,
 } from '../../AppConstants';
 import messages from '../../Messages';
@@ -79,8 +84,6 @@ const RecsListTable = ({ query }) => {
   const [filterBuilding, setFilterBuilding] = useState(true);
   // helps to distinguish the state when the API data received but not yet filtered
   const [rowsFiltered, setRowsFiltered] = useState(false);
-  // helps to distinguish if the component safe to test
-  const testSafe = rowsFiltered && !(isFetching || isUninitialized);
   const updateFilters = (filters) => dispatch(updateRecsListFilters(filters));
   const searchText = filters?.text || '';
   const loadingState = isUninitialized || isFetching || !rowsFiltered;
@@ -98,7 +101,7 @@ const RecsListTable = ({ query }) => {
     setDisplayedRows(
       buildDisplayedRows(filteredRows, filters.sortIndex, filters.sortDirection)
     );
-    if (isSuccess && !rowsFiltered) {
+    if (isSuccess) {
       setRowsFiltered(true);
     }
   }, [
@@ -247,15 +250,36 @@ const RecsListTable = ({ query }) => {
 */
   const buildDisplayedRows = (rows, index, direction) => {
     const sortingRows = [...rows].sort((firstItem, secondItem) => {
+      let fst = firstItem[0].rule,
+        snd = secondItem[0].rule;
       const d = direction === SortByDirection.asc ? 1 : -1;
-      const fst = firstItem[0].rule[RECS_LIST_COLUMNS_KEYS[index]];
-      const snd = secondItem[0].rule[RECS_LIST_COLUMNS_KEYS[index]];
-      if (index === 3) {
-        return (
-          d * extractCategories(fst)[0].localeCompare(extractCategories(snd)[0])
-        );
+      switch (index) {
+        case RECS_LIST_NAME_CELL:
+          fst = fst.description;
+          snd = snd.description;
+          return fst.localeCompare(snd) ? fst.localeCompare(snd) * d : 0;
+        case RECS_LIST_MODIFIED_CELL:
+          fst = new Date(fst.publish_date || 0);
+          snd = new Date(snd.publish_date || 0);
+          return fst > snd ? d : snd > fst ? -d : 0;
+        case RECS_LIST_CATEGORY_CELL:
+          return (
+            d *
+            extractCategories(fst.tags)[0].localeCompare(
+              extractCategories(snd.tags)[0]
+            )
+          );
+        case RECS_LIST_TOTAL_RISK_CELL:
+          fst = fst.total_risk;
+          snd = snd.total_risk;
+          return fst > snd ? d : snd > fst ? -d : 0;
+        case RECS_LIST_CLUSTERS_CELL:
+          fst = fst.impacted_clusters_count;
+          snd = snd.impacted_clusters_count;
+          return fst > snd ? d : snd > fst ? -d : 0;
+        default:
+          console.error('Incorrect sorting parameters received');
       }
-      return fst > snd ? d : snd > fst ? -d : 0;
     });
     return sortingRows
       .slice(
@@ -551,7 +575,7 @@ const RecsListTable = ({ query }) => {
   };
 
   return (
-    <div id="recs-list-table" data-ouia-safe={testSafe}>
+    <div id="recs-list-table" data-ouia-safe={!loadingState}>
       {disableRuleOpen && (
         <DisableRule
           handleModalToggle={setDisableRuleOpen}
@@ -625,7 +649,7 @@ const RecsListTable = ({ query }) => {
         onSort={onSort}
         actionResolver={actionResolver}
         isStickyHeader
-        ouiaSafe={testSafe}
+        ouiaSafe={!loadingState}
         canCollapseAll
       >
         <TableHeader />

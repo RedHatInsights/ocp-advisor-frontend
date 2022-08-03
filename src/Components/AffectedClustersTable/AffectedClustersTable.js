@@ -67,7 +67,9 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
   const page = filters.offset / filters.limit + 1;
   const allSelected =
     filteredRows.length !== 0 && selected.length === filteredRows.length;
-  const loadingState = isUninitialized || isFetching;
+  // helps to distinguish the state when the API data received but not yet filtered
+  const [rowsFiltered, setRowsFiltered] = useState(false);
+  const loadingState = isUninitialized || isFetching || !rowsFiltered;
   const errorState = isError;
   const successState = isSuccess;
   const noInput = successState && rows.length === 0;
@@ -121,20 +123,24 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
   };
 
   const onSort = (_e, index, direction) => {
+    setRowsFiltered(false);
     updateFilters({ ...filters, sortIndex: index, sortDirection: direction });
   };
 
   const onSetPage = (_e, pageNumber) => {
+    setRowsFiltered(false);
     const newOffset = pageNumber * filters.limit - filters.limit;
     updateFilters({ ...filters, offset: newOffset });
   };
 
   const onSetPerPage = (_e, perPage) => {
+    setRowsFiltered(false);
     updateFilters({ ...filters, limit: perPage });
   };
 
   // constructs array of rows (from the initial data) checking currently applied filters
   const buildFilteredRows = (allRows, filters) => {
+    setRowsFiltered(false);
     const rows = allRows.map((r) => {
       if (r.meta.cluster_version !== '' && !valid(r.meta.cluster_version)) {
         console.error(
@@ -272,6 +278,9 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
     const newDisplayedRows = buildDisplayedRows(newFilteredRows);
     setFilteredRows(newFilteredRows);
     setDisplayedRows(newDisplayedRows);
+    if (isSuccess) {
+      setRowsFiltered(true);
+    }
   }, [query, filters]);
 
   const handleModalToggle = (disableRuleModalOpen, host = undefined) => {
@@ -280,7 +289,7 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
   };
 
   return (
-    <div id="affected-list-table">
+    <div id="affected-list-table" data-ouia-safe={!loadingState}>
       {disableRuleModalOpen && (
         <DisableRule
           handleModalToggle={handleModalToggle}
@@ -363,6 +372,7 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
       <Table
         aria-label="Table of affected clusters"
         ouiaId="clusters"
+        ouiaSafe={!loadingState}
         variant="compact"
         cells={AFFECTED_CLUSTERS_COLUMNS}
         rows={
