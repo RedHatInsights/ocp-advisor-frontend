@@ -264,12 +264,12 @@ urlParamsList.forEach((urlParams, index) => {
       const urlSearchParameters = new URLSearchParams(urlParams);
       for (const [key, value] of urlSearchParameters) {
         if (key == 'text') {
-          hasChip('Name', value);
+          hasChip('Name', value, 'recommendation');
           cy.get('.pf-m-fill > .pf-c-form-control').should('have.value', value);
         } else {
           value.split(',').forEach((it) => {
             const [group, item] = urlParamConvert(key, it);
-            hasChip(group, item);
+            hasChip(group, item, 'recommendation');
           });
         }
       }
@@ -380,10 +380,10 @@ describe('successful non-empty recommendations list table', () => {
         const conf = filtersConf[key];
         if (conf.type === 'checkbox') {
           value.forEach((it) => {
-            hasChip(conf.selectorText, it);
+            hasChip(conf.selectorText, it, 'recommendation');
           });
         } else {
-          hasChip(conf.selectorText, value);
+          hasChip(conf.selectorText, value, 'recommendation');
         }
 
         expect(window.location.search).to.contain(
@@ -500,8 +500,8 @@ describe('successful non-empty recommendations list table', () => {
       // clear filters
       cy.get('button').contains('Reset filters').click();
       // check default filters
-      hasChip('Clusters impacted', '1 or more');
-      hasChip('Status', 'Enabled');
+      hasChip('Clusters impacted', '1 or more', 'recommendation');
+      hasChip('Status', 'Enabled', 'recommendation');
       cy.get(CHIP_GROUP).should(
         'have.length',
         Object.keys(DEFAULT_FILTERS).length

@@ -27,6 +27,7 @@ import {
   filter,
   hasChip,
   removeAllChips,
+  urlParamConvert,
 } from '../../../cypress/utils/filters';
 import {
   checkTableHeaders,
@@ -199,6 +200,61 @@ describe('data', () => {
   });
 });
 
+const urlParamsList = [
+  'text=test&version=4.9.0&hits=4',
+  'text=test&version=4.9.0&hits=3',
+  'text=test&version=4.10.0&hits=2',
+  'text=test&hits=1&version=4.2.35',
+];
+
+urlParamsList.forEach((urlParams, index) => {
+  describe(`pre-filled url search parameters ${index}`, () => {
+    beforeEach(() => {
+      mount(
+        <MemoryRouter
+          initialEntries={[`/clusters?${urlParams}`]}
+          initialIndex={0}
+        >
+          <Intl>
+            <Provider store={getStore()}>
+              <ClustersListTable
+                query={{
+                  isError: false,
+                  isFetching: false,
+                  isUninitialized: false,
+                  isSuccess: true,
+                  data: clusters,
+                  refetch: cy.stub(),
+                }}
+              />
+            </Provider>
+          </Intl>
+        </MemoryRouter>
+      );
+    });
+
+    it('recognizes all parameters', () => {
+      const urlSearchParameters = new URLSearchParams(urlParams);
+      for (const [key, value] of urlSearchParameters) {
+        if (key == 'text') {
+          hasChip('Name', value, 'cluster');
+          cy.get('.pf-m-fill > .pf-c-form-control').should('have.value', value);
+        } else {
+          value.split(',').forEach((it) => {
+            const [group, item] = urlParamConvert(key, it, 'cluster');
+            item ? hasChip(group, item, 'cluster') : undefined;
+          });
+        }
+      }
+      // do not get more chips than expected
+      cy.get(CHIP_GROUP).should(
+        'have.length',
+        Array.from(urlSearchParameters).length
+      );
+    });
+  });
+});
+
 describe('clusters list table', () => {
   beforeEach(() => {
     mount(
@@ -258,7 +314,7 @@ describe('clusters list table', () => {
     });
 
     it('applies total risk "All clusters" filter', () => {
-      hasChip('Total risk', 'All clusters');
+      hasChip('Total risk', 'All clusters', 'cluster');
       cy.get(CHIP_GROUP).find('.pf-c-chip__text').should('have.length', 1);
       expect(window.location.search).to.contain(`hits=all`);
     });
@@ -364,7 +420,7 @@ describe('clusters list table', () => {
       cy.get(CHIP_GROUP).should('exist');
       // clear filters
       cy.get('button').contains('Reset filters').click();
-      hasChip('Total risk', 'All clusters');
+      hasChip('Total risk', 'All clusters', 'cluster');
       cy.get(CHIP_GROUP).should('have.length', 1);
       cy.get('button').contains('Reset filters').should('exist');
       checkRowCounts(DEFAULT_DISPLAYED_SIZE);

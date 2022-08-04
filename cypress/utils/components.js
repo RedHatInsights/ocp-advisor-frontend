@@ -18,7 +18,6 @@ const TABLE = 'table';
 const TABLE_HEADER = 'thead';
 const ROWS_TOGGLER = `${TABLE_HEADER} .pf-c-table__toggle`;
 const TITLE = '[data-ouia-component-type="PF4/Title"]';
-
 const ouiaId = (id) => `[data-ouia-component-id="${id}"]`;
 
 export {

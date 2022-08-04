@@ -4,7 +4,10 @@ Utilities related to URL parameters passed for table filtering
 
 import _ from 'lodash';
 
-import { FILTER_CATEGORIES } from '../../src/AppConstants';
+import {
+  FILTER_CATEGORIES,
+  CLUSTER_FILTER_CATEGORIES,
+} from '../../src/AppConstants';
 
 import { CHIP_GROUP, CHIP } from './components';
 
@@ -75,21 +78,37 @@ function applyFilters(filters, filtersConf) {
   }
 }
 
-function urlParamConvert(key, value) {
-  const filterCategory = _.find(
-    _.values(FILTER_CATEGORIES),
-    (it) => it.urlParam === key
-  );
-  const title = _.capitalize(filterCategory.title);
-  const label = _.find(filterCategory.values, (it) => it.value === value).label
-    .props.children;
-  return [title, label];
+function urlParamConvert(key, value, type) {
+  if (type === 'recommendation') {
+    const filterCategory = _.find(
+      _.values(FILTER_CATEGORIES),
+      (it) => it.urlParam === key
+    );
+    const title = _.capitalize(filterCategory.title);
+    const label = _.find(filterCategory.values, (it) => it.value === value)
+      .label.props.children;
+    return [title, label];
+  } else if (type === 'cluster') {
+    const filterCategory = _.find(
+      _.values(CLUSTER_FILTER_CATEGORIES),
+      (it) => it.urlParam === 'hits'
+    );
+    const title = _.capitalize(filterCategory.title);
+    const label = _.find(filterCategory.values, (it) => it.value === value)
+      ?.label.props.children;
+    console.log(title);
+    console.log(label);
+    return [title, label];
+  }
 }
 
-function hasChip(name, value) {
-  cy.contains(CHIP_GROUP, name).parent().contains(CHIP, value);
+function hasChip(name, value, type) {
+  if (type === 'recommendation') {
+    cy.contains(CHIP_GROUP, name).parent().contains(CHIP, value);
+  } else if (type === 'cluster') {
+    cy.contains(CHIP_GROUP, name).parent().contains(CHIP, value);
+  }
 }
-
 /**
  * filter data given a set of filter values and their configuration
  * @param {@filtersConf} conf - Configuration of the filters
