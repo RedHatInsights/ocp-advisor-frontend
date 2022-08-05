@@ -88,7 +88,7 @@ const ClustersListTable = ({
 
   useEffect(() => {
     setFilteredRows(buildFilteredRows(clusters));
-    if (isSuccess) {
+    if (isSuccess || isError) {
       setRowsFiltered(true);
     }
   }, [data, filters]);

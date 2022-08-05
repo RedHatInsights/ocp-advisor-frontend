@@ -106,7 +106,7 @@ const ClusterRules = ({ cluster }) => {
 
   useEffect(() => {
     setFilteredRows(buildFilteredRows(reports, filters));
-    if (isSuccess) {
+    if (isSuccess || isError) {
       setRowsFiltered(true);
     }
   }, [data, filters]);
