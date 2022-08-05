@@ -131,9 +131,6 @@ describe('test data', () => {
 
 describe('cluster rules table', () => {
   beforeEach(() => {
-    // the flag tells not to fetch external federated modules
-    window.CYPRESS_RUN = true;
-
     mount(
       <IntlProvider locale="en">
         <Provider store={getStore()}>
@@ -309,9 +306,6 @@ describe('cluster rules table', () => {
 
 describe('empty cluster rules table', () => {
   beforeEach(() => {
-    // the flag tells not to fetch external federated modules
-    window.CYPRESS_RUN = true;
-
     mount(
       <IntlProvider locale="en">
         <Provider store={getStore()}>
@@ -344,7 +338,7 @@ describe('empty cluster rules table', () => {
       .should('be.disabled');
   });
 
-  it('renders no recommendation message', () => {
+  it('renders "the cluster is not affected" message', () => {
     checkEmptyState(
       'The cluster is not affected by any known recommendations',
       true
@@ -352,13 +346,103 @@ describe('empty cluster rules table', () => {
   });
 });
 
-// TODO what will happen if server fails to respond?
+describe('no rules cluster', () => {
+  beforeEach(() => {
+    mount(
+      <IntlProvider locale="en">
+        <Provider store={getStore()}>
+          <MemoryRouter
+            initialEntries={['/clusters/41c30565-b4c9-49f2-a4ce-3277ad22b258']}
+            initialIndex={0}
+          >
+            <Route path="/clusters/:clusterId">
+              <ClusterRules
+                cluster={{
+                  isError: true,
+                  isFetching: false,
+                  isUninitialized: false,
+                  isSuccess: false,
+                  error: { status: 404 },
+                }}
+              />
+            </Route>
+          </MemoryRouter>
+        </Provider>
+      </IntlProvider>
+    );
+  });
+
+  it('cannot add filters', () => {
+    cy.get('input[data-ouia-component-type="PF4/TextInput"]').type('some text');
+    cy.get(CHIP_GROUP).should('not.exist');
+    cy.get('div.ins-c-conditional-filter')
+      .find('button[data-ouia-component-type="PF4/DropdownToggle"]')
+      .should('be.disabled');
+  });
+
+  it('renders "no recommendation to display" message', () => {
+    checkEmptyState('No recommendations to display', true);
+  });
+
+  // TODO: incorporate this check in other tests
+  it('data-ouia-safe set to true', () => {
+    cy.get('#cluster-recs-list-table').should(
+      'have.attr',
+      'data-ouia-safe',
+      'true'
+    );
+  });
+});
+
+describe('error response other than 404', () => {
+  beforeEach(() => {
+    mount(
+      <IntlProvider locale="en">
+        <Provider store={getStore()}>
+          <MemoryRouter
+            initialEntries={['/clusters/41c30565-b4c9-49f2-a4ce-3277ad22b258']}
+            initialIndex={0}
+          >
+            <Route path="/clusters/:clusterId">
+              <ClusterRules
+                cluster={{
+                  isError: true,
+                  isFetching: false,
+                  isUninitialized: false,
+                  isSuccess: false,
+                  error: { status: 500 },
+                }}
+              />
+            </Route>
+          </MemoryRouter>
+        </Provider>
+      </IntlProvider>
+    );
+  });
+
+  it('cannot add filters', () => {
+    cy.get('input[data-ouia-component-type="PF4/TextInput"]').type('some text');
+    cy.get(CHIP_GROUP).should('not.exist');
+    cy.get('div.ins-c-conditional-filter')
+      .find('button[data-ouia-component-type="PF4/DropdownToggle"]')
+      .should('be.disabled');
+  });
+
+  it('renders "no recommendation to display" message', () => {
+    checkEmptyState('No recommendations available', true);
+  });
+
+  it('data-ouia-safe set to true', () => {
+    cy.get('#cluster-recs-list-table').should(
+      'have.attr',
+      'data-ouia-safe',
+      'true'
+    );
+  });
+});
 
 describe('cluster rules table testing the first query parameter', () => {
   beforeEach(() => {
-    // the flag tells not to fetch external federated modules
-    window.CYPRESS_RUN = true;
-
     mount(
       <IntlProvider locale="en">
         <Provider store={getStore()}>
