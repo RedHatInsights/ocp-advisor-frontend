@@ -1,3 +1,10 @@
+## [1.6.2](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.6.1...v1.6.2) (2022-08-05)
+
+
+### Bug Fixes
+
+* **Tables:** set data-ouia-safe to true even when there is an error requesting API ([6c3588e](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/6c3588e8abc3f24bec6887ce69a6c4566ae93358))
+
 ## [1.6.1](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.6.0...v1.6.1) (2022-07-26)
 
 # [1.6.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.5.5...v1.6.0) (2022-07-21)
