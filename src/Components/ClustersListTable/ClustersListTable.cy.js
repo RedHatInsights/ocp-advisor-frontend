@@ -8,6 +8,7 @@ import { Intl } from '../../Utilities/intlHelper';
 import getStore from '../../Store';
 import { ClustersListTable } from './ClustersListTable';
 import clusters from '../../../cypress/fixtures/api/insights-results-aggregator/v2/clusters.json';
+import { CLUSTER_FILTER_CATEGORIES } from '../../AppConstants';
 import {
   TOOLBAR,
   PAGINATION,
@@ -241,8 +242,12 @@ urlParamsList.forEach((urlParams, index) => {
           cy.get('.pf-m-fill > .pf-c-form-control').should('have.value', value);
         } else {
           value.split(',').forEach((it) => {
-            const [group, item] = urlParamConvert(key, it, 'cluster');
-            item ? hasChip(group, item, 'cluster') : undefined;
+            const [group, item] = urlParamConvert(
+              'hits',
+              it,
+              CLUSTER_FILTER_CATEGORIES
+            );
+            item ? hasChip(group, item) : undefined;
           });
         }
       }
