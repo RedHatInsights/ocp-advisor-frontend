@@ -206,7 +206,10 @@ const urlParamsList = [
   'text=test&version=4.9.0&hits=3',
   'text=test&version=4.10.0&hits=2',
   'text=test&hits=1&version=4.2.35',
+  'text=test&hits=1,2,3&version=4.2.35',
 ];
+//we can add more values to this array
+const clusterListFilterValues = ['hits'];
 
 urlParamsList.forEach((urlParams, index) => {
   describe(`pre-filled url search parameters ${index}`, () => {
@@ -243,7 +246,7 @@ urlParamsList.forEach((urlParams, index) => {
         } else {
           value.split(',').forEach((it) => {
             const [group, item] = urlParamConvert(
-              'hits',
+              _.find(clusterListFilterValues),
               it,
               CLUSTER_FILTER_CATEGORIES
             );
@@ -319,7 +322,7 @@ describe('clusters list table', () => {
     });
 
     it('applies total risk "All clusters" filter', () => {
-      hasChip('Total risk', 'All clusters', 'cluster');
+      hasChip('Total risk', 'All clusters');
       cy.get(CHIP_GROUP).find('.pf-c-chip__text').should('have.length', 1);
       expect(window.location.search).to.contain(`hits=all`);
     });
@@ -425,7 +428,7 @@ describe('clusters list table', () => {
       cy.get(CHIP_GROUP).should('exist');
       // clear filters
       cy.get('button').contains('Reset filters').click();
-      hasChip('Total risk', 'All clusters', 'cluster');
+      hasChip('Total risk', 'All clusters');
       cy.get(CHIP_GROUP).should('have.length', 1);
       cy.get('button').contains('Reset filters').should('exist');
       checkRowCounts(DEFAULT_DISPLAYED_SIZE);
