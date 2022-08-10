@@ -207,9 +207,8 @@ const urlParamsList = [
   'text=test&version=4.10.0&hits=2',
   'text=test&hits=1&version=4.2.35',
   'text=test&hits=1,2,3&version=4.2.35',
+  'text=test&hits=1,2,4&version=4.1.2',
 ];
-//we can add more values to this array
-const clusterListFilterValues = ['hits'];
 
 urlParamsList.forEach((urlParams, index) => {
   describe(`pre-filled url search parameters ${index}`, () => {
@@ -241,16 +240,16 @@ urlParamsList.forEach((urlParams, index) => {
       const urlSearchParameters = new URLSearchParams(urlParams);
       for (const [key, value] of urlSearchParameters) {
         if (key == 'text') {
-          hasChip('Name', value, 'cluster');
+          hasChip('Name', value);
           cy.get('.pf-m-fill > .pf-c-form-control').should('have.value', value);
         } else {
           value.split(',').forEach((it) => {
             const [group, item] = urlParamConvert(
-              _.find(clusterListFilterValues),
+              key,
               it,
               CLUSTER_FILTER_CATEGORIES
             );
-            item ? hasChip(group, item) : undefined;
+            item ? hasChip(group, item) : null;
           });
         }
       }

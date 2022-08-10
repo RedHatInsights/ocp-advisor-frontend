@@ -384,10 +384,10 @@ describe('successful non-empty recommendations list table', () => {
         const conf = filtersConf[key];
         if (conf.type === 'checkbox') {
           value.forEach((it) => {
-            hasChip(conf.selectorText, it, 'recommendation');
+            hasChip(conf.selectorText, it);
           });
         } else {
-          hasChip(conf.selectorText, value, 'recommendation');
+          hasChip(conf.selectorText, value);
         }
 
         expect(window.location.search).to.contain(
@@ -504,8 +504,8 @@ describe('successful non-empty recommendations list table', () => {
       // clear filters
       cy.get('button').contains('Reset filters').click();
       // check default filters
-      hasChip('Clusters impacted', '1 or more', 'recommendation');
-      hasChip('Status', 'Enabled', 'recommendation');
+      hasChip('Clusters impacted', '1 or more');
+      hasChip('Status', 'Enabled');
       cy.get(CHIP_GROUP).should(
         'have.length',
         Object.keys(DEFAULT_FILTERS).length

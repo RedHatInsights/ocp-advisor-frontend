@@ -74,10 +74,20 @@ function applyFilters(filters, filtersConf) {
 }
 
 function urlParamConvert(key, value, filters) {
-  const filterCategory = _.find(_.values(filters), (it) => it.urlParam === key);
-  const title = _.capitalize(filterCategory.title);
-  const label = _.find(filterCategory.values, (it) => it.value === value)?.label
-    .props.children;
+  const filterCategory = _.find(
+    _.values(filters),
+    (it) => it?.urlParam === key
+  );
+  let title;
+  let label;
+  if (filterCategory === undefined) {
+    title = _.capitalize(key);
+    label = value;
+  } else {
+    title = _.capitalize(filterCategory.title);
+    label = _.find(filterCategory.values, (it) => it.value === value)?.label
+      .props.children;
+  }
   return [title, label];
 }
 
