@@ -74,10 +74,7 @@ function applyFilters(filters, filtersConf) {
 }
 
 function urlParamConvert(key, value, filters) {
-  const filterCategory = _.find(
-    _.values(filters),
-    (it) => it?.urlParam === key
-  );
+  const filterCategory = _.find(_.values(filters), (it) => it.urlParam === key);
   let title;
   let label;
   if (filterCategory === undefined) {
