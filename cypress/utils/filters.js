@@ -85,7 +85,7 @@ function urlParamConvert(key, value, filters) {
     label = value;
   } else {
     title = _.capitalize(filterCategory.title);
-    label = _.find(filterCategory.values, (it) => it.value === value)?.label
+    label = _.find(filterCategory.values, (it) => it.value === value).label
       .props.children;
   }
   return [title, label];

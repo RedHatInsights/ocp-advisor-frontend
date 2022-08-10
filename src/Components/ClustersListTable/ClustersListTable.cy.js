@@ -249,7 +249,7 @@ urlParamsList.forEach((urlParams, index) => {
               it,
               CLUSTER_FILTER_CATEGORIES
             );
-            item ? hasChip(group, item) : null;
+            hasChip(group, item);
           });
         }
       }
