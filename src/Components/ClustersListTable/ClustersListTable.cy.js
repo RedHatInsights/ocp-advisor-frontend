@@ -8,6 +8,7 @@ import { Intl } from '../../Utilities/intlHelper';
 import getStore from '../../Store';
 import { ClustersListTable } from './ClustersListTable';
 import clusters from '../../../cypress/fixtures/api/insights-results-aggregator/v2/clusters.json';
+import { CLUSTER_FILTER_CATEGORIES } from '../../AppConstants';
 import {
   TOOLBAR,
   PAGINATION,
@@ -27,6 +28,7 @@ import {
   filter,
   hasChip,
   removeAllChips,
+  urlParamConvert,
 } from '../../../cypress/utils/filters';
 import {
   checkTableHeaders,
@@ -196,6 +198,67 @@ describe('data', () => {
     const filteredData = filterData(filterCombos[0]);
     expect(filteredData).to.have.length.gte(1);
     expect(filteredData).to.have.length.lt(filterData({}).length); // TODO can use namedCluster.length directly unless data is optional
+  });
+});
+
+const urlParamsList = [
+  'text=test&version=4.9.0&hits=4',
+  'text=test&version=4.9.0&hits=3',
+  'text=test&version=4.10.0&hits=2',
+  'text=test&hits=1&version=4.2.35',
+  'text=test&hits=1,2,3&version=4.2.35',
+  'text=test&hits=1,2,4&version=4.1.2',
+];
+
+urlParamsList.forEach((urlParams, index) => {
+  describe(`pre-filled url search parameters ${index}`, () => {
+    beforeEach(() => {
+      mount(
+        <MemoryRouter
+          initialEntries={[`/clusters?${urlParams}`]}
+          initialIndex={0}
+        >
+          <Intl>
+            <Provider store={getStore()}>
+              <ClustersListTable
+                query={{
+                  isError: false,
+                  isFetching: false,
+                  isUninitialized: false,
+                  isSuccess: true,
+                  data: clusters,
+                  refetch: cy.stub(),
+                }}
+              />
+            </Provider>
+          </Intl>
+        </MemoryRouter>
+      );
+    });
+
+    it('recognizes all parameters', () => {
+      const urlSearchParameters = new URLSearchParams(urlParams);
+      for (const [key, value] of urlSearchParameters) {
+        if (key == 'text') {
+          hasChip('Name', value);
+          cy.get('.pf-m-fill > .pf-c-form-control').should('have.value', value);
+        } else {
+          value.split(',').forEach((it) => {
+            const [group, item] = urlParamConvert(
+              key,
+              it,
+              CLUSTER_FILTER_CATEGORIES
+            );
+            hasChip(group, item);
+          });
+        }
+      }
+      // do not get more chips than expected
+      cy.get(CHIP_GROUP).should(
+        'have.length',
+        Array.from(urlSearchParameters).length
+      );
+    });
   });
 });
 

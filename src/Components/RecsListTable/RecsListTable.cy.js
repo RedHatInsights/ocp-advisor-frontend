@@ -36,7 +36,11 @@ import {
   itemsPerPage,
 } from '../../../cypress/utils/pagination';
 import { TOTAL_RISK, CATEGORIES } from '../../../cypress/utils/globals';
-import { RECS_LIST_COLUMNS, RULE_CATEGORIES } from '../../AppConstants';
+import {
+  FILTER_CATEGORIES,
+  RECS_LIST_COLUMNS,
+  RULE_CATEGORIES,
+} from '../../AppConstants';
 import {
   checkRowCounts,
   columnName2UrlParam,
@@ -268,7 +272,7 @@ urlParamsList.forEach((urlParams, index) => {
           cy.get('.pf-m-fill > .pf-c-form-control').should('have.value', value);
         } else {
           value.split(',').forEach((it) => {
-            const [group, item] = urlParamConvert(key, it);
+            const [group, item] = urlParamConvert(key, it, FILTER_CATEGORIES);
             hasChip(group, item);
           });
         }
