@@ -4,8 +4,6 @@ Utilities related to URL parameters passed for table filtering
 
 import _ from 'lodash';
 
-import { FILTER_CATEGORIES } from '../../src/AppConstants';
-
 import { CHIP_GROUP, CHIP } from './components';
 
 const FILTERS_DROPDOWN = 'ul[class=pf-c-dropdown__menu]';
@@ -75,21 +73,24 @@ function applyFilters(filters, filtersConf) {
   }
 }
 
-function urlParamConvert(key, value) {
-  const filterCategory = _.find(
-    _.values(FILTER_CATEGORIES),
-    (it) => it.urlParam === key
-  );
-  const title = _.capitalize(filterCategory.title);
-  const label = _.find(filterCategory.values, (it) => it.value === value).label
-    .props.children;
+function urlParamConvert(key, value, filters) {
+  const filterCategory = _.find(_.values(filters), (it) => it.urlParam === key);
+  let title;
+  let label;
+  if (filterCategory === undefined) {
+    title = _.capitalize(key);
+    label = value;
+  } else {
+    title = _.capitalize(filterCategory.title);
+    label = _.find(filterCategory.values, (it) => it.value === value).label
+      .props.children;
+  }
   return [title, label];
 }
 
 function hasChip(name, value) {
   cy.contains(CHIP_GROUP, name).parent().contains(CHIP, value);
 }
-
 /**
  * filter data given a set of filter values and their configuration
  * @param {@filtersConf} conf - Configuration of the filters
