@@ -274,14 +274,19 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
   };
 
   useEffect(() => {
-    const newFilteredRows = buildFilteredRows(rows, filters);
-    const newDisplayedRows = buildDisplayedRows(newFilteredRows);
-    setFilteredRows(newFilteredRows);
-    setDisplayedRows(newDisplayedRows);
-    if (isSuccess || isError) {
-      setRowsFiltered(true);
-    }
-  }, [query, filters]);
+    setFilteredRows(buildFilteredRows(rows, filters));
+  }, [
+    query,
+    filters.text,
+    filters.version,
+    filters.sortIndex,
+    filters.sortDirection,
+  ]);
+
+  useEffect(() => {
+    setDisplayedRows(buildDisplayedRows(filteredRows));
+    setRowsFiltered(true);
+  }, [filteredRows, filters.limit, filters.offset]);
 
   const handleModalToggle = (disableRuleModalOpen, host = undefined) => {
     setDisableRuleModalOpen(disableRuleModalOpen);
