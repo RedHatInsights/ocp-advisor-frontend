@@ -1,3 +1,10 @@
+## [1.6.3](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.6.2...v1.6.3) (2022-08-15)
+
+
+### Bug Fixes
+
+* **Tables:** reduce re-renders; fix the incorrect data-ouia-safe attribute ([#389](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/389)) ([eec645b](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/eec645b7e72a02b4a84015441d5c67237262e4c1))
+
 ## [1.6.2](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.6.1...v1.6.2) (2022-08-05)
 
 
