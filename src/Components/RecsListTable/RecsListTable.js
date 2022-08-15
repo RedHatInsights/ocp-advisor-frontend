@@ -101,9 +101,7 @@ const RecsListTable = ({ query }) => {
     setDisplayedRows(
       buildDisplayedRows(filteredRows, filters.sortIndex, filters.sortDirection)
     );
-    if (isSuccess || isError) {
-      setRowsFiltered(true);
-    }
+    setRowsFiltered(true);
   }, [
     filteredRows,
     filters.limit,
@@ -114,7 +112,16 @@ const RecsListTable = ({ query }) => {
 
   useEffect(() => {
     setFilteredRows(buildFilteredRows(recs, filters));
-  }, [data, filters]);
+  }, [
+    data,
+    filters.category,
+    filters.impact,
+    filters.impacting,
+    filters.total_risk,
+    filters.rule_status,
+    filters.likelihood,
+    searchText,
+  ]);
 
   useEffect(() => {
     if (search && filterBuilding) {

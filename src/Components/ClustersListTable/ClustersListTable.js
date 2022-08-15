@@ -84,14 +84,19 @@ const ClustersListTable = ({
 
   useEffect(() => {
     setDisplayedRows(buildDisplayedRows(filteredRows));
+    setRowsFiltered(true);
   }, [filteredRows, filters.limit, filters.offset]);
 
   useEffect(() => {
     setFilteredRows(buildFilteredRows(clusters));
-    if (isSuccess || isError) {
-      setRowsFiltered(true);
-    }
-  }, [data, filters]);
+  }, [
+    data,
+    filters.text,
+    filters.version,
+    filters.hits,
+    filters.sortDirection,
+    filters.sortIndex,
+  ]);
 
   useEffect(() => {
     if (search && filterBuilding) {
