@@ -106,22 +106,14 @@ const ClusterRules = ({ cluster }) => {
 
   useEffect(() => {
     setFilteredRows(buildFilteredRows(reports, filters));
-    if (isSuccess || isError) {
-      setRowsFiltered(true);
-    }
   }, [data, filters]);
 
   useEffect(() => {
     setDisplayedRows(
       buildDisplayedRows(filteredRows, filters.sortIndex, filters.sortDirection)
     );
-  }, [
-    filteredRows,
-    filters.limit,
-    filters.offset,
-    filters.sortIndex,
-    filters.sortDirection,
-  ]);
+    setRowsFiltered(true);
+  }, [filteredRows]);
 
   const handleOnCollapse = (_e, rowId, isOpen) => {
     if (rowId === undefined) {
@@ -409,8 +401,6 @@ const ClusterRules = ({ cluster }) => {
     const localFilters = { ...filters };
     delete localFilters.sortIndex;
     delete localFilters.sortDirection;
-    delete localFilters.offset;
-    delete localFilters.limit;
     return pruneFilters(localFilters, FILTER_CATEGORIES);
   };
 
