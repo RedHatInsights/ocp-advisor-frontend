@@ -284,6 +284,74 @@ describe('recommendation page for disabled recommendation', () => {
   });
 });
 
+describe.only('justification message', () => {
+  describe('when not provided', () => {
+    before(() => {
+      mount(
+        <MemoryRouter>
+          <Intl>
+            <Provider store={getStore()}>
+              <Recommendation
+                rule={{
+                  ...defaultPropsRule,
+                  data: disabledRule,
+                }}
+                ack={{
+                  ...defaultPropsAck,
+                  data: { ...ack, ...{ justification: '' } },
+                }}
+                clusters={{ ...defaultPropsClusterDetails }}
+                match={{ params: { recommendationId: 'X' } }}
+              />
+            </Provider>
+          </Intl>
+        </MemoryRouter>
+      );
+    });
+    it('should not display reason', () => {
+      cy.ouiaId('hosts-acked').within(() => {
+        cy.get('.pf-c-card__body')
+          .should('not.include.text', 'because')
+          .and('not.include.text', 'None');
+      });
+    });
+  });
+
+  describe('when provided', () => {
+    const justification = 'I would like to see it';
+    before(() => {
+      mount(
+        <MemoryRouter>
+          <Intl>
+            <Provider store={getStore()}>
+              <Recommendation
+                rule={{
+                  ...defaultPropsRule,
+                  data: disabledRule,
+                }}
+                ack={{
+                  ...defaultPropsAck,
+                  data: { ...ack, ...{ justification: justification } },
+                }}
+                clusters={{ ...defaultPropsClusterDetails }}
+                match={{ params: { recommendationId: 'X' } }}
+              />
+            </Provider>
+          </Intl>
+        </MemoryRouter>
+      );
+    });
+    it('should display reason', () => {
+      cy.ouiaId('hosts-acked').within(() => {
+        cy.get('.pf-c-card__body').should(
+          'include.text',
+          `because ${justification}`
+        );
+      });
+    });
+  });
+});
+
 describe('category labels are displayed', () => {
   const tagsCombinations = [
     ['fault_tolerance', 'openshift', 'sap'],
