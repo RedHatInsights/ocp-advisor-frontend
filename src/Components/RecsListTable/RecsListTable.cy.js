@@ -236,7 +236,7 @@ describe('data', () => {
       _.filter(filterData(), (it) => it.impacted_clusters_count === 1)
     ).to.have.length.gte(1);
   });
-  it('at least one recommendation in default list has only more than 1 cluster hit', () => {
+  it('at least one recommendation in default list has more than 1 cluster hit', () => {
     expect(
       _.filter(filterData(), (it) => it.impacted_clusters_count > 1)
     ).to.have.length.gte(1);
