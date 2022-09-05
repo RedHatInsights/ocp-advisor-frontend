@@ -681,8 +681,7 @@ describe('successful non-empty recommendations list table', () => {
         // contains link to the clusters
         const recommendationData = filterData()[index];
         cy.wrap(el)
-          .find('.ins-c-rule-details__view-affected')
-          .find('a')
+          .find('.ins-c-rule-details__view-affected a')
           .should(
             'have.attr',
             'href',
