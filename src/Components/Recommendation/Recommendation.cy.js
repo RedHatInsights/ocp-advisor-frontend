@@ -284,7 +284,7 @@ describe('recommendation page for disabled recommendation', () => {
   });
 });
 
-describe.only('justification message', () => {
+describe('justification message', () => {
   describe('when not provided', () => {
     before(() => {
       mount(
