@@ -231,6 +231,16 @@ describe('data', () => {
     const firstData = filterData({}).slice(0, DEFAULT_ROW_COUNT);
     expect(_.filter(firstData, (it) => it.disabled)).to.have.length.gte(1);
   });
+  it('at least one recommendation in default list has only 1 cluster hit', () => {
+    expect(
+      _.filter(filterData(), (it) => it.impacted_clusters_count === 1)
+    ).to.have.length.gte(1);
+  });
+  it('at least one recommendation in default list has more than 1 cluster hit', () => {
+    expect(
+      _.filter(filterData(), (it) => it.impacted_clusters_count > 1)
+    ).to.have.length.gte(1);
+  });
 });
 
 const urlParamsList = [
@@ -661,13 +671,32 @@ describe('successful non-empty recommendations list table', () => {
     cy.get(ROWS_TOGGLER).click();
     cy.get(TABLE)
       .find('.pf-c-table__expandable-row.pf-m-expanded')
-      .each((el) => {
+      .each((el, index) => {
         // contains description
         cy.wrap(el).contains(
           'Sed ut perspiciatis unde omnis iste natus error.'
         );
         // contain total risk label
         cy.wrap(el).find('.ins-c-rule-details__stack');
+        // contains link to the clusters
+        const recommendationData = filterData()[index];
+        cy.wrap(el)
+          .find('.ins-c-rule-details__view-affected a')
+          .should(
+            'have.attr',
+            'href',
+            `/recommendations/${recommendationData.rule_id}`
+          )
+          .and(($a) => {
+            if (recommendationData.impacted_clusters_count == 1) {
+              expect($a).to.contain('the affected cluster');
+            } else {
+              expect($a).to.contain(
+                // toLocaleString() method is used to put comma in the thousands
+                `${recommendationData.impacted_clusters_count.toLocaleString()} affected clusters`
+              );
+            }
+          });
       });
   });
 });
