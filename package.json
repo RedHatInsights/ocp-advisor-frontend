@@ -30,7 +30,7 @@
     "@redhat-cloud-services/frontend-components": "3.9.8",
     "@redhat-cloud-services/frontend-components-advisor-components": "^1.0.2",
     "@redhat-cloud-services/frontend-components-charts": "^3.2.2",
-    "@redhat-cloud-services/frontend-components-notifications": "3.2.9",
+    "@redhat-cloud-services/frontend-components-notifications": "3.2.10",
     "@redhat-cloud-services/frontend-components-translations": "3.2.4",
     "@redhat-cloud-services/frontend-components-utilities": "3.2.23",
     "@redhat-cloud-services/rule-components": "3.2.5",
