@@ -607,6 +607,6 @@ export default defineMessages({
   },
   impacted: {
     id: 'impacted',
-    defaultMessage: 'Impacted',
+    defaultMessage: 'First impacted',
   },
 });
