@@ -115,9 +115,9 @@ describe('test data', () => {
     expect(filterData({ version: [''] })).to.have.length.gte(1);
   });
   it('has at least one enabled cluster with missing impacted date', () => {
-    expect(
-      values.filter((v) => !Object.hasOwn(v, 'impacted')).length
-    ).to.be.gte(1);
+    expect(values.filter((v) => v['impacted'] === undefined).length).to.be.gte(
+      1
+    );
   });
   it('has at least one enabled cluster with empty impacted date', () => {
     expect(values.filter((v) => v['impacted'] === '').length).to.be.gte(1);
@@ -636,12 +636,12 @@ describe('non-empty successful affected clusters table', () => {
 
   it('missing impacted date shown as Not available', () => {
     filterApply({
-      name: values.filter((v) => !Object.hasOwn(v, 'impacted'))[0].name,
+      name: values.filter((v) => v['impacted'] === undefined)[0].name,
     });
-    cy.get('[data-label="Impacted"]').should('contain', 'Not available');
+    cy.get('[data-label="First impacted"]').should('contain', 'Not available');
     removeAllChips();
     filterApply({ name: values.filter((v) => v['impacted'] === '')[0].name });
-    cy.get('[data-label="Impacted"]').should('contain', 'Not available');
+    cy.get('[data-label="First impacted"]').should('contain', 'Not available');
   });
 });
 
