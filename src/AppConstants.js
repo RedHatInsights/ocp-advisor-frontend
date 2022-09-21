@@ -269,7 +269,7 @@ export const AFFECTED_CLUSTERS_IMPACTED_CELL = 4;
 export const AFFECTED_CLUSTERS_COLUMNS = [
   {
     title: intl.formatMessage(messages.name),
-    transforms: [sortable, cellWidth(60)],
+    transforms: [sortable, cellWidth(50)],
   },
   {
     title: intl.formatMessage(messages.version),
