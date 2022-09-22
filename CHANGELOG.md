@@ -1,3 +1,10 @@
+## [1.6.5](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.6.4...v1.6.5) (2022-09-22)
+
+
+### Bug Fixes
+
+* **AffectedClustersTable:** replace impacted label OCPADVISOR-52 ([99bdd6e](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/99bdd6ec644e5c943a3bf89c0f0d6722440f62ea))
+
 ## [1.6.4](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.6.3...v1.6.4) (2022-09-08)
 
 ## [1.6.3](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.6.2...v1.6.3) (2022-08-15)
