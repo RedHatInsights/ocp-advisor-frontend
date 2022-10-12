@@ -48,7 +48,7 @@
     "react-router-dom": "5.3.4",
     "redux": "4.2.0",
     "redux-logger": "3.0.6",
-    "semver": "^7.3.7"
+    "semver": "^7.3.8"
   },
   "devDependencies": {
     "@babel/core": "7.19.1",
