@@ -5,7 +5,6 @@ mkdir -p reports
 
 cp cypress-coverage/coverage-final.json reports/from-cypress.json
 cp jest-coverage/coverage-final.json reports/from-jest.json
-rm -rf cypress-coverage jest-coverage
 
 npx nyc merge reports .nyc_output/out.json
 npx nyc report --reporter json --report-dir coverage
