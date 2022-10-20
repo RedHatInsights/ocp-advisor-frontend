@@ -1,3 +1,13 @@
+## [1.6.2](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.6.1...v1.6.2) (2022-10-20)
+
+
+### Bug Fixes
+
+* **AffectedClustersTable:** replace impacted label OCPADVISOR-52 ([1c4acad](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/1c4acad100b6d8ae0a9115878df3ca76170166ff))
+* Fix cypress test coverage ([#434](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/434)) ([3190ca0](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/3190ca03255b0251328671a8dbd5f0eb63fa76bb))
+* **Tables:** reduce re-renders; fix the incorrect data-ouia-safe attribute ([#389](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/389)) ([c597913](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/c5979138a677188b6a72aad44992d94e621a5dab))
+* **Tables:** set data-ouia-safe to true even when there is an error requesting API ([b5dfa5c](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/b5dfa5ca10d1202f23080f7c5b7c0f9c451549c5))
+
 ## [1.6.2](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.6.1...v1.6.2) (2022-10-17)
 
 
