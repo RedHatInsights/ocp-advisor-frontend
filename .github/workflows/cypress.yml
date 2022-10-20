@@ -1,4 +1,4 @@
-name: example-basic
+name: cypress-tests-on-push
 on: [push]
 jobs:
 
@@ -12,6 +12,5 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v4
         with:
-          install: false
           component: true
-          spec: cypress/**/*.cy.js
+          spec: src/**/*.cy.js
