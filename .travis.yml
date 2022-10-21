@@ -9,7 +9,7 @@ jobs:
   - stage: Lint
     script: npm run lint
   - stage: Test
-    script: npm run test && npm run coverage
+    script: npm run test:jest && npm run coverage
   - stage: Deploy
     if: type = push AND fork = false
     script: npm run build && curl -sSL https://raw.githubusercontent.com/RedHatInsights/insights-frontend-builder-common/master/src/bootstrap.sh | bash -s
