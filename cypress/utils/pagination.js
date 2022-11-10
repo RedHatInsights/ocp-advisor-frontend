@@ -1,6 +1,7 @@
 import { DEFAULT_ROW_COUNT } from './defaults';
 import {
   TOOLBAR,
+  PAGINATION,
   PAGINATION_MENU,
   DROPDOWN_TOGGLE,
   DROPDOWN_ITEM,
@@ -25,6 +26,23 @@ function checkPaginationTotal(n) {
     .find('b')
     .eq(1)
     .should('have.text', n);
+}
+
+function checkCurrentPage(page) {
+  cy.get(PAGINATION)
+    .find('[aria-label="Current page"]')
+    .should('have.value', `${page}`);
+}
+
+function checkPaginationSelected(index) {
+  cy.get(TOOLBAR).find(PAGINATION_MENU).find(DROPDOWN_TOGGLE).click();
+  cy.get(TOOLBAR)
+    .find(PAGINATION_MENU)
+    .find('ul[class=pf-c-options-menu__menu]')
+    .children()
+    .eq(index)
+    .find('button')
+    .should('have.class', 'pf-m-selected pf-c-options-menu__menu-item');
 }
 
 function checkPaginationValues(expectedValues) {
@@ -52,6 +70,8 @@ function changePagination(textInItem) {
 export {
   itemsPerPage,
   checkPaginationTotal,
+  checkCurrentPage,
+  checkPaginationSelected,
   checkPaginationValues,
   changePagination,
 };

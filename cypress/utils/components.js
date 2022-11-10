@@ -4,6 +4,7 @@ const CHIP = '[data-ouia-component-type="PF4/Chip"]';
 const ROW =
   '[data-ouia-component-type="PF4/TableRow"]:not([class~="pf-c-table__expandable-row"])';
 const PAGINATION = 'div[data-ouia-component-type="PF4/Pagination"]';
+const PAGINATION_BOTTOM = '.pf-m-bottom';
 const PAGINATION_MENU =
   'div[data-ouia-component-type="PF4/PaginationOptionsMenu"]';
 const DROPDOWN = '[data-ouia-component-type="PF4/Dropdown"]';
@@ -27,6 +28,7 @@ export {
   CHIP,
   ROW,
   PAGINATION,
+  PAGINATION_BOTTOM,
   PAGINATION_MENU,
   DROPDOWN,
   MODAL,

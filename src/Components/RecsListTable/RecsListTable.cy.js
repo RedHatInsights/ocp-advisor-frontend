@@ -31,6 +31,8 @@ import {
 import { cumulativeCombinations } from '../../../cypress/utils/combine';
 import {
   checkPaginationTotal,
+  checkCurrentPage,
+  checkPaginationSelected,
   checkPaginationValues,
   changePagination,
   itemsPerPage,
@@ -620,6 +622,22 @@ describe('successful non-empty recommendations list table', () => {
           expect(window.location.search).to.not.contain('text=');
         });
       cy.get(TOOLBAR_FILTER).find('.pf-c-form-control').should('be.empty');
+    });
+
+    it('will reset filters but not pagination and sorting', () => {
+      filterApply({ name: '2' });
+      changePagination(PAGINATION_VALUES[0]);
+
+      cy.get('th[data-label="Name"]').find('button').click();
+      cy.get(TOOLBAR).find('button').contains('Reset filters').click();
+      cy.get(TOOLBAR)
+        .find(CHIP_GROUP)
+        .should('have.length', Object.keys(DEFAULT_FILTERS).length);
+      checkPaginationSelected(0);
+      checkCurrentPage(1);
+      cy.get('th[data-label="Name"]')
+        .should('have.attr', 'aria-sort')
+        .and('contain', 'ascending');
     });
   });
 

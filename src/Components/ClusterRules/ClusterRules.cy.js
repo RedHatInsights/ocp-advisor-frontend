@@ -251,6 +251,17 @@ describe('cluster rules table', () => {
         .should('have.length', RULES_ENABLED);
     });
 
+    it('will reset filters but not pagination and sorting', () => {
+      filterApply({ description: 'Lo' });
+
+      cy.get('th[data-label="Description"]').find('button').click();
+      cy.get(TOOLBAR).find('button').contains('Reset filters').click();
+      cy.get(TOOLBAR).find(CHIP_GROUP).should('not.exist');
+      cy.get('th[data-label="Description"]')
+        .should('have.attr', 'aria-sort')
+        .and('contain', 'ascending');
+    });
+
     it('chips can be cleared', () => {
       filterApply(filterCombos[0]);
       cy.get(CHIP_GROUP).should('exist');

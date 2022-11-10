@@ -37,8 +37,6 @@ export const CLUSTERS_LIST_INITIAL_STATE = {
 
 // single cluster page
 export const CLUSTER_RULES_INITIAL_STATE = {
-  limit: 20,
-  offset: 0,
   // default sorting by total risk
   // TODO: use a constant instead
   sortIndex: -1,
@@ -51,6 +49,17 @@ const filtersInitialState = {
   recsListState: RECS_LIST_INITIAL_STATE,
   clustersListState: CLUSTERS_LIST_INITIAL_STATE,
   clusterRulesState: CLUSTER_RULES_INITIAL_STATE,
+};
+
+export const resetFilters = (filters, initialState, updateFilters) => {
+  const { limit, offset, sortIndex, sortDirection } = filters;
+  updateFilters({
+    ...initialState,
+    ...(limit !== undefined && { limit }),
+    ...(limit !== undefined && { offset }),
+    sortIndex,
+    sortDirection,
+  });
 };
 
 const filters = createSlice({
@@ -79,8 +88,6 @@ const filters = createSlice({
 export const {
   updateAffectedClustersFilters,
   updateRecsListFilters,
-  updateRecsListSortIndex,
-  updateRecListSortDirection,
   updateClustersListFilters,
   updateClusterRulesFilters,
 } = filters.actions;

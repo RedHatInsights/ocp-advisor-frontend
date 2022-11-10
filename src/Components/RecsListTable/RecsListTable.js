@@ -37,6 +37,7 @@ import {
 import messages from '../../Messages';
 import {
   RECS_LIST_INITIAL_STATE,
+  resetFilters,
   updateRecsListFilters,
 } from '../../Services/Filters';
 import RuleLabels from '../Labels/RuleLabels';
@@ -111,7 +112,14 @@ const RecsListTable = ({ query }) => {
   ]);
 
   useEffect(() => {
-    setFilteredRows(buildFilteredRows(recs, filters));
+    let filteredRows = buildFilteredRows(recs, filters);
+    if (filteredRows.length && filteredRows.length <= filters.offset) {
+      updateFilters({
+        ...filters,
+        offset: 0,
+      });
+    }
+    setFilteredRows(filteredRows);
   }, [
     data,
     filters.category,
@@ -481,7 +489,7 @@ const RecsListTable = ({ query }) => {
         if (isEqual(filters, RECS_LIST_INITIAL_STATE)) {
           refetch();
         } else {
-          updateFilters(RECS_LIST_INITIAL_STATE);
+          resetFilters(filters, RECS_LIST_INITIAL_STATE, updateFilters);
         }
       } else {
         itemsToRemove.map((item) => {

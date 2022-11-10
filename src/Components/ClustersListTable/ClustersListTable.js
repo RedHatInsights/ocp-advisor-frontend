@@ -23,6 +23,7 @@ import { conditionalFilterType } from '@redhat-cloud-services/frontend-component
 
 import {
   CLUSTERS_LIST_INITIAL_STATE,
+  resetFilters,
   updateClustersListFilters,
 } from '../../Services/Filters';
 import {
@@ -281,7 +282,7 @@ const ClustersListTable = ({
         if (isEqual(filters, CLUSTERS_LIST_INITIAL_STATE)) {
           refetch();
         } else {
-          updateFilters(CLUSTERS_LIST_INITIAL_STATE);
+          resetFilters(filters, CLUSTERS_LIST_INITIAL_STATE, updateFilters);
         }
       } else {
         itemsToRemove.map((item) => {
