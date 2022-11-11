@@ -90,8 +90,8 @@ describe('test data', () => {
   it('has more enabled clusters than default rows', () => {
     expect(data).to.have.length.gt(DEFAULT_ROW_COUNT);
   });
-  it('has less data than 51', () => {
-    expect(data).to.have.length.lte(PAGINATION_VALUES[2]);
+  it('has less data than 101', () => {
+    expect(data).to.have.length.lte(PAGINATION_VALUES[3]);
   });
   it('has more than one enabled clusters with "custom" in name', () => {
     expect(filterData({ name: 'custom' })).to.have.length.gt(1);
@@ -189,7 +189,7 @@ describe('non-empty successful affected clusters table', () => {
       cy.get('.pf-c-options-menu__toggle-text')
         .find('b')
         .eq(0)
-        .should('have.text', '1 - 20');
+        .should('have.text', `1 - ${DEFAULT_ROW_COUNT}`);
     });
 
     it('bulk selection is disabled', () => {

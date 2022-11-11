@@ -3,7 +3,7 @@ import { CLUSTERS_TABLE_CELL_LAST_SEEN } from '../AppConstants';
 
 // single recommendation page
 export const AFFECTED_CLUSTERS_INITIAL_STATE = {
-  limit: 20,
+  limit: 50,
   offset: 0,
   text: '',
   // TODO: use a constant instead
@@ -14,7 +14,7 @@ export const AFFECTED_CLUSTERS_INITIAL_STATE = {
 
 // recommendations list page
 export const RECS_LIST_INITIAL_STATE = {
-  limit: 20,
+  limit: 50,
   offset: 0,
   impacting: ['true'],
   // default sorting by total risk
@@ -26,7 +26,7 @@ export const RECS_LIST_INITIAL_STATE = {
 
 // clusters list page
 export const CLUSTERS_LIST_INITIAL_STATE = {
-  limit: 20,
+  limit: 50,
   offset: 0,
   hits: ['all'],
   sortIndex: CLUSTERS_TABLE_CELL_LAST_SEEN,
