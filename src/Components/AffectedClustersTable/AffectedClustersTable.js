@@ -8,7 +8,6 @@ import uniqBy from 'lodash/uniqBy';
 
 import { conditionalFilterType } from '@redhat-cloud-services/frontend-components/ConditionalFilter/conditionalFilterConstants';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
-import { TableToolbar } from '@redhat-cloud-services/frontend-components/TableToolbar';
 import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
 import { Tooltip, Pagination } from '@patternfly/react-core';
 import { PaginationVariant } from '@patternfly/react-core/dist/js/components/Pagination/Pagination';
@@ -427,18 +426,16 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
         <TableHeader />
         <TableBody />
       </Table>
-      <TableToolbar isFooter className="ins-c-inventory__table--toolbar">
-        <Pagination
-          variant={PaginationVariant.bottom}
-          itemCount={filteredRows.length}
-          page={page}
-          perPage={perPage}
-          onSetPage={onSetPage}
-          onPerPageSelect={onSetPerPage}
-          onPageInput={onSetPage}
-          ouiaId="pager"
-        />
-      </TableToolbar>
+      <Pagination
+        variant={PaginationVariant.bottom}
+        itemCount={filteredRows.length}
+        page={page}
+        perPage={perPage}
+        onSetPage={onSetPage}
+        onPerPageSelect={onSetPerPage}
+        onPageInput={onSetPage}
+        ouiaId="pager"
+      />
     </div>
   );
 };
