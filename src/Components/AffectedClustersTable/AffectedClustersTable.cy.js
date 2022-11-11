@@ -152,7 +152,6 @@ describe('non-empty successful affected clusters table', () => {
     cy.get(ROOT).within(() => {
       cy.get(TOOLBAR).should('have.length', 1);
       cy.get(TABLE).should('have.length', 1);
-      cy.ouiaType('RHI/TableToolbar').should('have.length', 1);
     });
   });
 
