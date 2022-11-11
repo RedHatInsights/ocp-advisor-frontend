@@ -2,7 +2,7 @@ import { createIntl, createIntlCache } from 'react-intl';
 import intlHelper from '@redhat-cloud-services/frontend-components-translations/intlHelper';
 
 import messages from './Messages';
-import { cellWidth, sortable } from '@patternfly/react-table';
+import { fitContent, sortable } from '@patternfly/react-table';
 
 const cache = createIntlCache();
 const locale = navigator.language.slice(0, 2);
@@ -180,19 +180,19 @@ export const TOTAL_RISK_LABEL_LOWER = {
 export const RECS_LIST_COLUMNS = [
   {
     title: intl.formatMessage(messages.name),
-    transforms: [sortable, cellWidth(40)],
+    transforms: [sortable],
   },
   {
     title: intl.formatMessage(messages.modified),
-    transforms: [sortable, cellWidth(15)],
+    transforms: [sortable, fitContent],
   },
   {
     title: intl.formatMessage(messages.category),
-    transforms: [sortable, cellWidth(20)],
+    transforms: [sortable, fitContent],
   },
   {
     title: intl.formatMessage(messages.totalRisk),
-    transforms: [sortable, cellWidth(15)],
+    transforms: [sortable, fitContent],
   },
   /*{
     title: intl.formatMessage(messages.riskOfChange),
@@ -200,7 +200,7 @@ export const RECS_LIST_COLUMNS = [
   },*/
   {
     title: intl.formatMessage(messages.clusters),
-    transforms: [sortable, cellWidth(10)],
+    transforms: [sortable, fitContent],
   },
 ];
 export const CLUSTER_FILTER_CATEGORIES = {
@@ -217,35 +217,35 @@ export const CLUSTER_FILTER_CATEGORIES = {
 export const CLUSTERS_LIST_COLUMNS = [
   {
     title: intl.formatMessage(messages.name),
-    transforms: [sortable, cellWidth(30)],
+    transforms: [sortable],
   },
   {
     title: intl.formatMessage(messages.version),
-    transforms: [sortable],
+    transforms: [sortable, fitContent],
   },
   {
     title: intl.formatMessage(messages.recommendations),
-    transforms: [sortable, cellWidth(15)],
+    transforms: [sortable, fitContent],
   },
   {
     title: intl.formatMessage(messages.critical),
-    transforms: [sortable],
+    transforms: [sortable, fitContent],
   },
   {
     title: intl.formatMessage(messages.important),
-    transforms: [sortable],
+    transforms: [sortable, fitContent],
   },
   {
     title: intl.formatMessage(messages.moderate),
-    transforms: [sortable],
+    transforms: [sortable, fitContent],
   },
   {
     title: intl.formatMessage(messages.low),
-    transforms: [sortable],
+    transforms: [sortable, fitContent],
   },
   {
     title: intl.formatMessage(messages.lastSeen),
-    transforms: [sortable],
+    transforms: [sortable, fitContent],
   },
 ];
 export const RECS_LIST_COLUMNS_KEYS = [
@@ -269,19 +269,19 @@ export const AFFECTED_CLUSTERS_IMPACTED_CELL = 4;
 export const AFFECTED_CLUSTERS_COLUMNS = [
   {
     title: intl.formatMessage(messages.name),
-    transforms: [sortable, cellWidth(50)],
+    transforms: [sortable],
   },
   {
     title: intl.formatMessage(messages.version),
-    transforms: [sortable],
+    transforms: [sortable, fitContent],
   },
   {
     title: intl.formatMessage(messages.lastSeen),
-    transforms: [sortable],
+    transforms: [sortable, fitContent],
   },
   {
     title: intl.formatMessage(messages.impacted),
-    transforms: [sortable],
+    transforms: [sortable, fitContent],
   },
 ];
 // TODO: remove since unused
@@ -300,15 +300,15 @@ export const CLUSTER_RULES_COLUMNS = [
   },
   {
     title: intl.formatMessage(messages.modified),
-    transforms: [sortable, cellWidth(15)],
+    transforms: [sortable, fitContent],
   },
   {
     title: intl.formatMessage(messages.impacted),
-    transforms: [sortable, cellWidth(15)],
+    transforms: [sortable, fitContent],
   },
   {
     title: intl.formatMessage(messages.totalRisk),
-    transforms: [sortable, cellWidth(15)],
+    transforms: [sortable, fitContent],
   },
 ];
 export const IMPACT_LABEL_LOWER = {
