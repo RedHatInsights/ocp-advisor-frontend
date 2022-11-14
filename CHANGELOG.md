@@ -1,3 +1,10 @@
+## [1.8.1](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.8.0...v1.8.1) (2022-11-14)
+
+
+### Bug Fixes
+
+* **Tables:** Align columns to fit their content ([#451](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/451)) ([b112cf2](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/b112cf20090d64f134da0f9131bd3624d4679200))
+
 # [1.8.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.7.0...v1.8.0) (2022-11-14)
 
 
