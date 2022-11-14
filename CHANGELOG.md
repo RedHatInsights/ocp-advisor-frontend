@@ -1,3 +1,15 @@
+# [1.8.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.7.0...v1.8.0) (2022-11-14)
+
+
+### Bug Fixes
+
+* **Affected clusters list:** Remove extra margin ([85901e4](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/85901e4f3216ab19aeafbf9362acd7e479f2833d))
+
+
+### Features
+
+* **Tables:** Set default pagination to 50 items ([34e90a4](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/34e90a4fe42ca481c9903c850c58c59b6b2ae872))
+
 # [1.7.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.6.1...v1.7.0) (2022-10-21)
 
 
