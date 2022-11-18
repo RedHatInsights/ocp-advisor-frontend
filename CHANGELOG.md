@@ -1,3 +1,10 @@
+## [1.8.2](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.8.1...v1.8.2) (2022-11-18)
+
+
+### Bug Fixes
+
+* **Requests management:** Fix the loading bug ([#460](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/460)) ([7c25856](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/7c25856aff3d49bc49b741d2ae1a2164ac60cd94))
+
 ## [1.8.1](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.8.0...v1.8.1) (2022-11-14)
 
 
