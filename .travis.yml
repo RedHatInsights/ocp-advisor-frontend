@@ -9,10 +9,10 @@ jobs:
   - stage: Lint
     script: npm run lint
   - stage: Deploy
-    if: type = push AND fork = false
+    if: fork = false
     script: npm run build && curl -sSL https://raw.githubusercontent.com/RedHatInsights/insights-frontend-builder-common/master/src/bootstrap.sh | bash -s
   - stage: Release
-    if: type = push AND fork = false
+    if: fork = false
     script: npm run release
 env:
   global:
