@@ -29,6 +29,7 @@ import {
 import Loading from '../Loading/Loading';
 import {
   AFFECTED_CLUSTERS_INITIAL_STATE,
+  resetFilters,
   updateAffectedClustersFilters,
 } from '../../Services/Filters';
 import messages from '../../Messages';
@@ -322,7 +323,11 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
                 deleteTitle: intl.formatMessage(messages.resetFilters),
                 onDelete: (event, itemsToRemove, isAll) => {
                   if (isAll) {
-                    updateFilters(AFFECTED_CLUSTERS_INITIAL_STATE);
+                    resetFilters(
+                      filters,
+                      AFFECTED_CLUSTERS_INITIAL_STATE,
+                      updateFilters
+                    );
                   } else {
                     itemsToRemove.map((item) => {
                       const newFilter = {

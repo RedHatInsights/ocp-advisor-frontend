@@ -48,6 +48,7 @@ import {
 } from '../Common/Tables';
 import {
   CLUSTER_RULES_INITIAL_STATE,
+  resetFilters,
   updateClusterRulesFilters,
 } from '../../Services/Filters';
 import { getErrorKey, getPluginName } from '../../Utilities/Rule';
@@ -409,7 +410,7 @@ const ClusterRules = ({ cluster }) => {
     filters: buildFilterChips(),
     onDelete: (_event, itemsToRemove, isAll) => {
       if (isAll) {
-        updateFilters(CLUSTER_RULES_INITIAL_STATE);
+        resetFilters(filters, CLUSTER_RULES_INITIAL_STATE, updateFilters);
       } else {
         itemsToRemove.map((item) => {
           const newFilter = {

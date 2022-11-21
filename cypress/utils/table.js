@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import { ROW, TBODY, TABLE, TITLE, CHIP_GROUP, CHIP } from './components';
-import { removeAllChips, applyFilters, filter } from './filters';
+import { removeAllChips, applyFilters } from './filters';
 
 function checkTableHeaders(expectedHeaders) {
   /* patternfly/react-table-4.71.16, for some reason, renders extra empty `th` container;
@@ -130,7 +130,6 @@ function checkFiltering(
   }
   cy.get('button').contains('Reset filters').should('exist');
 }
-
 
 /**
  * A column is sorted and then data and a reference column (which can be different than the

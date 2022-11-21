@@ -36,8 +36,10 @@ import {
 import {
   itemsPerPage,
   checkPaginationTotal,
+  checkPaginationSelected,
   checkPaginationValues,
   changePagination,
+  checkCurrentPage,
 } from '../../../cypress/utils/pagination';
 import rule from '../../../cypress/fixtures/api/insights-results-aggregator/v2/rule/external.rules.rule|ERROR_KEY.json';
 import { AFFECTED_CLUSTERS_COLUMNS } from '../../AppConstants';
@@ -520,6 +522,26 @@ describe('non-empty successful affected clusters table', () => {
       cy.get(TOOLBAR).find('button').contains('Reset filters').click();
       cy.get(TOOLBAR).find(CHIP_GROUP).should('not.exist');
       checkRowCounts(Math.min(DEFAULT_ROW_COUNT, filterData({}).length));
+    });
+
+    it('will reset filters but not pagination and sorting', () => {
+      filterApply({ name: 'a' });
+      changePagination(PAGINATION_VALUES[0]);
+      cy.get(TOOLBAR)
+        .find(PAGINATION)
+        .find('button[data-action="next"]')
+        .then(($button) => {
+          cy.wrap($button).click();
+        });
+
+      cy.get('th[data-label="Name"]').find('button').click();
+      cy.get(TOOLBAR).find('button').contains('Reset filters').click();
+      cy.get(TOOLBAR).find(CHIP_GROUP).should('not.exist');
+      checkPaginationSelected(0);
+      checkCurrentPage(2);
+      cy.get('th[data-label="Name"]')
+        .should('have.attr', 'aria-sort')
+        .and('contain', 'ascending');
     });
 
     it('empty state is displayed when filters do not match any rule', () => {

@@ -43,6 +43,8 @@ import { CLUSTERS_LIST_COLUMNS } from '../../AppConstants';
 import {
   itemsPerPage,
   checkPaginationTotal,
+  checkCurrentPage,
+  checkPaginationSelected,
   checkPaginationValues,
   changePagination,
 } from '../../../cypress/utils/pagination';
@@ -431,6 +433,26 @@ describe('clusters list table', () => {
       cy.get(CHIP_GROUP).should('have.length', 1);
       cy.get('button').contains('Reset filters').should('exist');
       checkRowCounts(DEFAULT_DISPLAYED_SIZE);
+    });
+
+    it('will reset filters but not pagination and sorting', () => {
+      filterApply({ name: '0' });
+      changePagination(PAGINATION_VALUES[0]);
+      cy.get(TOOLBAR)
+        .find(PAGINATION)
+        .find('button[data-action="next"]')
+        .then(($button) => {
+          cy.wrap($button).click();
+        });
+
+      cy.get('th[data-label="Name"]').find('button').click();
+      cy.get(TOOLBAR).find('button').contains('Reset filters').click();
+      cy.get(CHIP_GROUP).should('have.length', 1);
+      checkPaginationSelected(0);
+      checkCurrentPage(2);
+      cy.get('th[data-label="Name"]')
+        .should('have.attr', 'aria-sort')
+        .and('contain', 'ascending');
     });
 
     it('empty state is displayed when filters do not match any rule', () => {
