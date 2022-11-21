@@ -1,3 +1,10 @@
+## [1.8.3](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.8.2...v1.8.3) (2022-11-21)
+
+
+### Bug Fixes
+
+* **Tables:** Reset filters resets only filters ([#450](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/450)) ([593664d](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/593664dee53552a638b0e23669b618dee02a2e18))
+
 ## [1.8.2](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.8.1...v1.8.2) (2022-11-18)
 
 
