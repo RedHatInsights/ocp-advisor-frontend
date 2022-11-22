@@ -6,7 +6,7 @@ objects:
   - apiVersion: cloud.redhat.com/v1alpha1
     kind: Frontend
     metadata:
-      name: ccx-data-pipeline
+      name: ocp-advisor
     spec:
       envName: ${ENV_NAME}
       title: OCP Advisor
