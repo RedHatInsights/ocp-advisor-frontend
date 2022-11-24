@@ -1,0 +1,22 @@
+name: Release to prod-stable
+on:
+  workflow_dispatch
+jobs:
+  candidatePromotion:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: prod-beta
+      - name: Reset promotion branch
+        run: |
+          git fetch origin prod-beta:prod-beta
+          git reset --hard prod-beta
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4
+        with:
+          branch: prod-stable-promotion
+          title: Release to stable (prod-stable)
+          delete-branch: true
+          labels: release/sync-up
+          reviewers: ikerreyes
