@@ -1,11 +1,12 @@
 import capitalize from 'lodash/capitalize';
 import cloneDeep from 'lodash/cloneDeep';
 import { useEffect, useState } from 'react';
-import { coerce, compare, valid } from 'semver';
+import { compare } from 'semver';
 import {
   CLUSTER_FILTER_CATEGORIES,
   FILTER_CATEGORIES,
   RULE_CATEGORIES,
+  versionRegExp,
 } from '../../AppConstants';
 
 export const passFilters = (rule, filters) =>
@@ -222,8 +223,7 @@ export const updateSearchParams = (filters = {}, columnMapping) => {
 // TODO: move to Utils.js
 export const compareSemVer = (v1, v2, d) => d * compare(v1, v2);
 export const toValidSemVer = (version) =>
-  coerce(version === undefined || !valid(coerce(version)) ? '0.0.0' : version)
-    .version;
+  version === undefined || !versionRegExp.test(version) ? '0.0.0' : version;
 
 export const removeFilterParam = (currentFilters, updateFilters, param) => {
   const { [param]: omitted, ...newFilters } = { ...currentFilters, offset: 0 };

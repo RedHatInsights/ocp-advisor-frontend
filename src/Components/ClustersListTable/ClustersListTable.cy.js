@@ -138,7 +138,17 @@ const filterData = (filters = DEFAULT_FILTERS, values = data) => {
 const filterApply = (filters) => applyFilters(filters, filtersConf);
 
 // TODO add more combinations of filters for testing
-const filterCombos = [{ risk: ['Critical', 'Moderate'], name: 'foo' }];
+const filterCombos = [
+  { risk: ['Critical', 'Moderate'], name: 'foo' },
+  {
+    name: 'knLii0R',
+    version: ['4.12.0-0.nightly-2022-11-15-150849'],
+  },
+  {
+    name: 'HgUiumXCLu',
+    version: ['4.12.0-ec.5'],
+  },
+];
 
 // TODO: when checking empty state, also check toolbar available and not disabled
 

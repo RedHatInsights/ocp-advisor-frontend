@@ -353,3 +353,5 @@ export const CLUSTERS_TABLE_CELL_IMPORTANT = 4;
 export const CLUSTERS_TABLE_CELL_MODERATE = 5;
 export const CLUSTERS_TABLE_CELL_LOW = 6;
 export const CLUSTERS_TABLE_CELL_LAST_SEEN = 7;
+export const versionRegExp =
+  /^((([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)$/;

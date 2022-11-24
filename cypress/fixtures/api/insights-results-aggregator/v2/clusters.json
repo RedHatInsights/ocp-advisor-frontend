@@ -502,17 +502,17 @@
     },
     {
       "cluster_id": "e97rdrqscq77w6on1bxd6m",
-      "cluster_name": "",
+      "cluster_name": "knLii0R",
       "total_hit_count": 11,
       "hits_by_total_risk": { "1": 5, "2": 2, "3": 0, "4": 4 },
-      "cluster_version": "7.17.3"
+      "cluster_version": "4.12.0-0.nightly-2022-11-15-150849"
     },
     {
       "cluster_id": "0s3t6sveu7ooosrg2lo46d",
-      "cluster_name": "",
+      "cluster_name": "HgUiumXCLu",
       "total_hit_count": 27,
       "hits_by_total_risk": { "1": 8, "2": 6, "3": 4, "4": 9 },
-      "cluster_version": "7.12.7"
+      "cluster_version": "4.12.0-ec.5"
     },
     {
       "cluster_id": "ioj6ajbgj7am7rkka35oc",

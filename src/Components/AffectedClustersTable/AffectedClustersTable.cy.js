@@ -83,7 +83,20 @@ const filtersConf = {
 const filterData = (filters) => filter(filtersConf, data, filters);
 const filterApply = (filters) => applyFilters(filters, filtersConf);
 
-const filterCombos = [{ name: 'foobar', version: ['4.18.12', '4.17.9'] }];
+const filterCombos = [
+  {
+    name: 'foobar',
+    version: ['4.18.12', '4.17.9'],
+  },
+  {
+    name: 'knLii0R',
+    version: ['4.12.0-0.nightly-2022-11-15-150849'],
+  },
+  {
+    name: 'HgUiumXCLu',
+    version: ['4.12.0-ec.5'],
+  },
+];
 
 describe('test data', () => {
   it('has enabled clusters', () => {
