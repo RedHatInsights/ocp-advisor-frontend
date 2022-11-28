@@ -538,7 +538,7 @@ describe('non-empty successful affected clusters table', () => {
       cy.get(TOOLBAR).find('button').contains('Reset filters').click();
       cy.get(TOOLBAR).find(CHIP_GROUP).should('not.exist');
       checkPaginationSelected(0);
-      checkCurrentPage(2);
+      checkCurrentPage(1);
       cy.get('th[data-label="Name"]')
         .should('have.attr', 'aria-sort')
         .and('contain', 'ascending');
