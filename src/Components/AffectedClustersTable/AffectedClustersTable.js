@@ -135,7 +135,7 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
 
   const onSetPerPage = (_e, perPage) => {
     setRowsFiltered(false);
-    updateFilters({ ...filters, limit: perPage });
+    updateFilters({ ...filters, limit: perPage, offset: 0 });
   };
 
   // constructs array of rows (from the initial data) checking currently applied filters
