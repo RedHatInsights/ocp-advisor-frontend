@@ -43,7 +43,7 @@ import {
   translateSortParams,
   updateSearchParams,
   compareSemVer,
-  toValidSemVer,
+  toValidSemVerRemoveNightly,
 } from '../Common/Tables';
 import Loading from '../Loading/Loading';
 import messages from '../../Messages';
@@ -143,7 +143,7 @@ const ClustersListTable = ({
           `Cluster version ${it.cluster_version} has invalid format!`
         );
       }
-      const ver = toValidSemVer(it.cluster_version);
+      const ver = toValidSemVerRemoveNightly(it.cluster_version);
 
       return {
         entity: it,
@@ -196,8 +196,8 @@ const ClustersListTable = ({
                 return fst.localeCompare(snd) ? fst.localeCompare(snd) * d : 0;
               case CLUSTERS_TABLE_CELL_VERSION:
                 return compareSemVer(
-                  toValidSemVer(a.entity.cluster_version),
-                  toValidSemVer(b.entity.cluster_version),
+                  toValidSemVerRemoveNightly(a.entity.cluster_version),
+                  toValidSemVerRemoveNightly(b.entity.cluster_version),
                   d
                 );
               case CLUSTERS_TABLE_CELL_LAST_SEEN:
@@ -244,12 +244,12 @@ const ClustersListTable = ({
               (c) => c.cluster_version !== undefined && c.cluster_version !== ''
             )
             .map((c) => ({
-              value: toValidSemVer(c.cluster_version),
+              value: toValidSemVerRemoveNightly(c.cluster_version),
             }))
             .sort((a, b) =>
               compareSemVer(
-                toValidSemVer(a.cluster_version),
-                toValidSemVer(b.cluster_version),
+                toValidSemVerRemoveNightly(a.cluster_version),
+                toValidSemVerRemoveNightly(b.cluster_version),
                 1
               )
             )

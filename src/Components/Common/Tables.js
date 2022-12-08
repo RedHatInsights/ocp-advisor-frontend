@@ -1,7 +1,7 @@
 import capitalize from 'lodash/capitalize';
 import cloneDeep from 'lodash/cloneDeep';
 import { useEffect, useState } from 'react';
-import { compare } from 'semver';
+import { coerce, compare, valid } from 'semver';
 import {
   CLUSTER_FILTER_CATEGORIES,
   FILTER_CATEGORIES,
@@ -67,7 +67,9 @@ export const passFiltersCluster = (cluster, filters) =>
       case 'version':
         return (
           filterValue.length === 0 ||
-          filterValue.includes(toValidSemVer(cluster.cluster_version))
+          filterValue.includes(
+            toValidSemVerKeepNightly(cluster.cluster_version)
+          )
         );
       default:
         return true;
@@ -222,7 +224,10 @@ export const updateSearchParams = (filters = {}, columnMapping) => {
 
 // TODO: move to Utils.js
 export const compareSemVer = (v1, v2, d) => d * compare(v1, v2);
-export const toValidSemVer = (version) =>
+export const toValidSemVerRemoveNightly = (version) =>
+  coerce(version === undefined || !valid(coerce(version)) ? '0.0.0' : version)
+    .version;
+export const toValidSemVerKeepNightly = (version) =>
   version === undefined || !versionRegExp.test(version) ? '0.0.0' : version;
 
 export const removeFilterParam = (currentFilters, updateFilters, param) => {
