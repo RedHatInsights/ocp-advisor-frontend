@@ -1,3 +1,10 @@
+## [1.8.5](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.8.4...v1.8.5) (2022-12-19)
+
+
+### Bug Fixes
+
+* **Shared dependencies:** Align versions of redux ([#483](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/483)) ([25ef8e3](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/25ef8e34c8fac683a8c8414ef57514f4575dea62))
+
 ## [1.8.4](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.8.3...v1.8.4) (2022-11-29)
 
 
