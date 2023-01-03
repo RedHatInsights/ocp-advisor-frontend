@@ -29,7 +29,7 @@
     "@patternfly/react-table": "^4.108.0",
     "@redhat-cloud-services/frontend-components": "^3.9.10",
     "@redhat-cloud-services/frontend-components-advisor-components": "^1.0.5",
-    "@redhat-cloud-services/frontend-components-charts": "^3.2.2",
+    "@redhat-cloud-services/frontend-components-charts": "^3.2.4",
     "@redhat-cloud-services/frontend-components-notifications": "^3.2.12",
     "@redhat-cloud-services/frontend-components-translations": "^3.2.4",
     "@redhat-cloud-services/frontend-components-utilities": "^3.3.9",
