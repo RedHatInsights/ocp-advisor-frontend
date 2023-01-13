@@ -1,7 +1,6 @@
 import React, { lazy, Suspense } from 'react';
 import { useIntl } from 'react-intl';
 
-import Main from '@redhat-cloud-services/frontend-components/Main';
 import PageHeader from '@redhat-cloud-services/frontend-components/PageHeader';
 
 import Loading from '../Loading/Loading';
@@ -29,11 +28,11 @@ const RecsList = () => {
             .toLowerCase()}`}
         </Title>
       </PageHeader>
-      <Main>
+      <section className="pf-l-page__main-section pf-c-page__main-section">
         <Suspense fallback={<Loading />}>
           <RecsListTable />
         </Suspense>
-      </Main>
+      </section>
     </React.Fragment>
   );
 };

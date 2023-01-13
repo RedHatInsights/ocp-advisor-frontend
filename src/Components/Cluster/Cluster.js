@@ -7,7 +7,6 @@ import PageHeader from '@redhat-cloud-services/frontend-components/PageHeader';
 import ClusterHeader from '../ClusterHeader';
 import ClusterRules from '../ClusterRules/ClusterRules';
 import Breadcrumbs from '../Breadcrumbs';
-import Main from '@redhat-cloud-services/frontend-components/Main';
 
 export const Cluster = ({ cluster, match }) => {
   // TODO: make breadcrumbs take display name from GET /cluster/id/info
@@ -22,9 +21,9 @@ export const Cluster = ({ cluster, match }) => {
         />
         <ClusterHeader />
       </PageHeader>
-      <Main>
+      <section className="pf-l-page__main-section pf-c-page__main-section">
         <ClusterRules cluster={cluster} />
-      </Main>
+      </section>
     </React.Fragment>
   );
 };
