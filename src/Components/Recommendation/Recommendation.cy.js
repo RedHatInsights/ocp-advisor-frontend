@@ -40,6 +40,10 @@ const ruleDescription = rule.content.description;
 
 const disabledRule = _.cloneDeep(rule);
 disabledRule.content.disabled = true;
+const nulledResolutionRisk = _.cloneDeep(rule);
+nulledResolutionRisk.content.resolution_risk = 0;
+
+// TODO: test data
 
 describe('recommendation page for enabled recommendation with clusters enabled and disabled', () => {
   beforeEach(() => {
@@ -153,6 +157,67 @@ describe('recommendation page for enabled recommendation with clusters enabled a
           return _.map(Cypress.$.makeArray($els), 'innerText');
         })
         .should('deep.equal', clusters);
+    });
+  });
+
+  describe('risk sections', () => {
+    it('total risk section is displayed', () => {
+      cy.get('.ins-c-rule-details__stack').within(() => {
+        cy.get('.ins-c-rule-details__total-risk').contains('Moderate');
+        cy.get('.ins-c-rule-details__total-risk')
+          .find('.pf-c-label__icon')
+          .should('have.length', 1); // contains an icon
+      });
+    });
+
+    it('contains 2 severity lines', () => {
+      cy.get('.ins-c-rule-details__stack').within(() => {
+        cy.get('.ins-c-severity-line').should('have.length', 2);
+        cy.get('.ins-c-severity-line')
+          .eq(0)
+          .find('.ins-l-title')
+          .contains('High likelihood');
+        cy.get('.ins-c-severity-line')
+          .eq(1)
+          .find('.ins-l-title')
+          .contains('Medium impact');
+      });
+    });
+
+    it('contains risk of change', () => {
+      cy.get('.ins-c-rule-details__stack').within(() => {
+        cy.get('.ins-c-rule-details__risk-of-ch-label')
+          .should('have.length', 1)
+          .contains('Low');
+        cy.get('.ins-c-rule-details__risk-of-ch-desc')
+          .should('have.length', 1)
+          .contains('The risk of change is very low');
+      });
+    });
+  });
+});
+
+describe('recommendation page for enabled recommedation with nulled resolution risk', () => {
+  beforeEach(() => {
+    mount(
+      <MemoryRouter>
+        <Intl>
+          <Provider store={getStore()}>
+            <Recommendation
+              rule={{ ...defaultPropsRule, data: nulledResolutionRisk }}
+              ack={{ ...defaultPropsAck, data: undefined }}
+              clusters={{ ...defaultPropsClusterDetails }}
+              match={{ params: { recommendationId: 'X' } }}
+            />
+          </Provider>
+        </Intl>
+      </MemoryRouter>
+    );
+  });
+
+  it('risk of change section is hidden', () => {
+    cy.get('.ins-c-rule-details__stack').within(() => {
+      cy.get('.ins-c-rule-details__risk-of-ch-label').should('have.length', 0);
     });
   });
 });

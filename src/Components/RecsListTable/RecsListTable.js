@@ -41,11 +41,8 @@ import {
   updateRecsListFilters,
 } from '../../Services/Filters';
 import RuleLabels from '../Labels/RuleLabels';
-import {
-  formatMessages,
-  mapContentToValues,
-  strong,
-} from '../../Utilities/intlHelper';
+import { formatMessages, mapContentToValues } from '../../Utilities/intlHelper';
+import { strong } from '../../Utilities/Helpers';
 import { ErrorState, NoMatchingRecs } from '../MessageState/EmptyStates';
 import {
   passFilters,

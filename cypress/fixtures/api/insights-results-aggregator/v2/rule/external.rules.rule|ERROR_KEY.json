@@ -18,7 +18,8 @@
       ],
       "rating": 0,
       "hosts_acked_count": 0,
-      "disabled": false
+      "disabled": false,
+      "resolution_risk": 1
     },
     "groups": [
       {

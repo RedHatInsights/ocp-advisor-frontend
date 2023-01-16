@@ -40,7 +40,11 @@ import {
 
 import Breadcrumbs from '../Breadcrumbs';
 import RuleLabels from '../Labels/RuleLabels';
-import { FILTER_CATEGORIES, RULE_CATEGORIES } from '../../AppConstants';
+import {
+  FILTER_CATEGORIES,
+  RISK_OF_CHANGE_DESC,
+  RULE_CATEGORIES,
+} from '../../AppConstants';
 import messages from '../../Messages';
 import Loading from '../Loading/Loading';
 import { adjustOCPRule } from '../../Utilities/Rule';
@@ -53,6 +57,7 @@ import ViewHostAcks from '../Modals/ViewHostAcks';
 import { OneLineLoader } from '../../Utilities/Loaders';
 import { enableRuleForCluster } from '../../Services/Acks';
 import { formatMessages, mapContentToValues } from '../../Utilities/intlHelper';
+import inRange from 'lodash/inRange';
 
 const Recommendation = ({ rule, ack, clusters, match }) => {
   const intl = useIntl();
@@ -248,6 +253,13 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
               onVoteClick={async (rule, rating) =>
                 await Post(`${BASE_URL}/v2/rating`, {}, { rule, rating })
               }
+              {...(inRange(content?.resolution_risk, 1, 5) // resolution risk can be 0 (not defined for particular rule)
+                ? {
+                    resolutionRisk: content?.resolution_risk,
+                    resolutionRiskDesc:
+                      RISK_OF_CHANGE_DESC[content?.resolution_risk],
+                  }
+                : {})}
             >
               <Flex>
                 <FlexItem align={{ default: 'alignRight' }}>
