@@ -33,6 +33,8 @@ import {
   RECS_LIST_NAME_CELL,
   RECS_LIST_TOTAL_RISK_CELL,
   TOTAL_RISK_LABEL_LOWER,
+  RISK_OF_CHANGE_LABEL,
+  RECS_LIST_RISK_OF_CHANGE_CELL,
 } from '../../AppConstants';
 import messages from '../../Messages';
 import {
@@ -63,6 +65,7 @@ import {
 } from '@redhat-cloud-services/frontend-components-advisor-components';
 import { adjustOCPRule } from '../../Utilities/Rule';
 import Loading from '../Loading/Loading';
+import { inRange } from 'lodash';
 
 const RecsListTable = ({ query }) => {
   const intl = useIntl();
@@ -125,6 +128,7 @@ const RecsListTable = ({ query }) => {
     filters.total_risk,
     filters.rule_status,
     filters.likelihood,
+    filters.res_risk,
     searchText,
   ]);
 
@@ -219,6 +223,18 @@ const RecsListTable = ({ query }) => {
               ),
             },
             {
+              title: inRange(value?.resolution_risk, 1, 5) ? (
+                <InsightsLabel
+                  value={value.resolution_risk}
+                  rest={{ isCompact: true }}
+                  text={RISK_OF_CHANGE_LABEL[value.resolution_risk]}
+                  hideIcon
+                />
+              ) : (
+                intl.formatMessage(messages.nA)
+              ),
+            },
+            {
               title: (
                 <div key={key}>{`${
                   value?.impacted_clusters_count !== undefined
@@ -284,6 +300,10 @@ const RecsListTable = ({ query }) => {
         case RECS_LIST_TOTAL_RISK_CELL:
           fst = fst.total_risk;
           snd = snd.total_risk;
+          return fst > snd ? d : snd > fst ? -d : 0;
+        case RECS_LIST_RISK_OF_CHANGE_CELL:
+          fst = fst.resolution_risk;
+          snd = snd.resolution_risk;
           return fst > snd ? d : snd > fst ? -d : 0;
         case RECS_LIST_CLUSTERS_CELL:
           fst = fst.impacted_clusters_count;
@@ -398,6 +418,19 @@ const RecsListTable = ({ query }) => {
           addFilterParam(FILTER_CATEGORIES.impacting.urlParam, values),
         value: filters.impacting,
         items: FILTER_CATEGORIES.impacting.values,
+      },
+    },
+    {
+      label: FILTER_CATEGORIES.res_risk.title,
+      type: FILTER_CATEGORIES.res_risk.type,
+      id: FILTER_CATEGORIES.res_risk.urlParam,
+      value: `checkbox-${FILTER_CATEGORIES.res_risk.urlParam}`,
+      filterValues: {
+        key: `${FILTER_CATEGORIES.res_risk.urlParam}-filter`,
+        onChange: (e, values) =>
+          addFilterParam(FILTER_CATEGORIES.res_risk.urlParam, values),
+        value: filters.res_risk,
+        items: FILTER_CATEGORIES.res_risk.values,
       },
     },
   ];
