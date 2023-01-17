@@ -112,7 +112,7 @@ const RecsListTable = ({ query }) => {
   ]);
 
   useEffect(() => {
-    let filteredRows = buildFilteredRows(recs, filters);
+    const filteredRows = buildFilteredRows(recs, filters);
     if (filteredRows.length && filteredRows.length <= filters.offset) {
       updateFilters({
         ...filters,
@@ -237,7 +237,7 @@ const RecsListTable = ({ query }) => {
           cells: [
             {
               title: (
-                <section className="pf-m-light pf-l-page__main-section pf-c-page__main-section">
+                <section className="pf-l-page__main-section pf-c-page__main-section pf-m-light">
                   <Stack hasGutter>
                     <RuleDetails
                       messages={formatMessages(
@@ -265,8 +265,8 @@ const RecsListTable = ({ query }) => {
 */
   const buildDisplayedRows = (rows, index, direction) => {
     const sortingRows = [...rows].sort((firstItem, secondItem) => {
-      let fst = firstItem[0].rule,
-        snd = secondItem[0].rule;
+      let fst = firstItem[0].rule;
+      let snd = secondItem[0].rule;
       const d = direction === SortByDirection.asc ? 1 : -1;
       switch (index) {
         case RECS_LIST_NAME_CELL:
@@ -515,7 +515,7 @@ const RecsListTable = ({ query }) => {
       setDisplayedRows(
         displayedRows.map((row) => ({
           ...row,
-          isOpen: isOpen,
+          isOpen,
         }))
       );
     } else {

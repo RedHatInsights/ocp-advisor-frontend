@@ -15,7 +15,6 @@ import {
   PageHeader,
   PageHeaderTitle,
 } from '@redhat-cloud-services/frontend-components/PageHeader';
-import { Main } from '@redhat-cloud-services/frontend-components/Main';
 import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
 import {
   Label,
@@ -174,18 +173,18 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
         <Breadcrumbs current={content?.description || recId} />
       </PageHeader>
       {(isUninitialized || isLoading || isFetching) && (
-        <Main>
+        <section className="pf-l-page__main-section pf-c-page__main-section pf-m-light pf-u-pt-sm">
           <Loading />
-        </Main>
+        </section>
       )}
       {isError && (
-        <Main>
+        <section className="pf-l-page__main-section pf-c-page__main-section pf-m-light pf-u-pt-sm">
           <ErrorState />
-        </Main>
+        </section>
       )}
       {!(isUninitialized || isLoading || isFetching) && isSuccess && (
         <React.Fragment>
-          <Main className="pf-m-light pf-u-pt-sm">
+          <section className="pf-l-page__main-section pf-c-page__main-section pf-m-light pf-u-pt-sm">
             <RuleDetails
               messages={formatMessages(
                 intl,
@@ -298,8 +297,8 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
                 </FlexItem>
               </Flex>
             </RuleDetails>
-          </Main>
-          <Main>
+          </section>
+          <section className="pf-l-page__main-section pf-c-page__main-section">
             <React.Fragment>
               {(content?.hosts_acked_count ||
                 ackedClusters?.length > 0 ||
@@ -434,7 +433,7 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
                 />
               )}
             </React.Fragment>
-          </Main>
+          </section>
         </React.Fragment>
       )}
     </React.Fragment>
