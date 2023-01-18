@@ -1,3 +1,10 @@
+# [1.10.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.9.0...v1.10.0) (2023-01-18)
+
+
+### Features
+
+* **Recs list:** Add risk of change column ([#504](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/504)) ([ca19d6f](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/ca19d6f97c97068510705afaf30666c0847ed17e))
+
 # [1.9.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.8.4...v1.9.0) (2023-01-17)
 
 
