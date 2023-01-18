@@ -65,7 +65,7 @@ import {
 } from '@redhat-cloud-services/frontend-components-advisor-components';
 import { adjustOCPRule } from '../../Utilities/Rule';
 import Loading from '../Loading/Loading';
-import { inRange } from 'lodash';
+import inRange from 'lodash/inRange';
 
 const RecsListTable = ({ query }) => {
   const intl = useIntl();
