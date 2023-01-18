@@ -42,6 +42,8 @@ export const passFilters = (rule, filters) =>
           (filterValue === 'disabled' && rule.disabled) ||
           (filterValue === 'enabled' && !rule.disabled)
         );
+      case FILTER_CATEGORIES.res_risk.urlParam:
+        return filterValue.includes(String(rule.resolution_risk));
       default:
         return true;
     }

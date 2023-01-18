@@ -11,7 +11,8 @@
       "tags": ["openshift", "etcd", "performance"],
       "disabled": false,
       "risk_of_change": 0,
-      "impacted_clusters_count": 1
+      "impacted_clusters_count": 1,
+      "resolution_risk": 4
     },
     {
       "rule_id": "external.rules.rule_n_two|ERROR_KEY_N42",
@@ -21,10 +22,16 @@
       "total_risk": 2,
       "impact": 2,
       "likelihood": 2,
-      "tags": ["openshift", "configuration", "service_availability", "performance"],
+      "tags": [
+        "openshift",
+        "configuration",
+        "service_availability",
+        "performance"
+      ],
       "disabled": false,
       "risk_of_change": 0,
-      "impacted_clusters_count": 42
+      "impacted_clusters_count": 42,
+      "resolution_risk": 2
     },
     {
       "rule_id": "external.rules.rule_n_three|ERROR_KEY_N11",
@@ -37,7 +44,8 @@
       "tags": ["openshift", "configuration", "service_availability"],
       "disabled": false,
       "risk_of_change": 0,
-      "impacted_clusters_count": 0
+      "impacted_clusters_count": 0,
+      "resolution_risk": 1
     },
     {
       "rule_id": "external.rules.rule_n_four|ERROR_KEY_1",
@@ -50,7 +58,8 @@
       "tags": ["service_availability", "vsphere", "disk", "security"],
       "disabled": false,
       "risk_of_change": 0,
-      "impacted_clusters_count": 0
+      "impacted_clusters_count": 0,
+      "resolution_risk": 1
     },
     {
       "rule_id": "external.rules.rule_n_42|ERROR_KEY_A1",
@@ -63,7 +72,8 @@
       "tags": ["openshift", "performance", "osd_customer"],
       "disabled": false,
       "risk_of_change": 0,
-      "impacted_clusters_count": 0
+      "impacted_clusters_count": 0,
+      "resolution_risk": 1
     },
     {
       "rule_id": "external.rules.rule_n244|ERROR_KEY3_N1",
@@ -76,7 +86,8 @@
       "tags": ["service_availability", "openshift", "operator"],
       "disabled": false,
       "risk_of_change": 0,
-      "impacted_clusters_count": 100
+      "impacted_clusters_count": 100,
+      "resolution_risk": 2
     },
     {
       "rule_id": "external.rules.rule123_n_one|ERROR_44KEY_N1",
@@ -89,7 +100,8 @@
       "tags": ["openshift", "service_availability"],
       "disabled": false,
       "risk_of_change": 0,
-      "impacted_clusters_count": 2003
+      "impacted_clusters_count": 2003,
+      "resolution_risk": 0
     },
     {
       "rule_id": "external.rules.ru123le_n_one|ERROR_321KEY_N1",
@@ -102,7 +114,8 @@
       "tags": ["openshift", "service_availability"],
       "disabled": true,
       "risk_of_change": 0,
-      "impacted_clusters_count": 2
+      "impacted_clusters_count": 2,
+      "resolution_risk": 3
     },
     {
       "rule_id": "external.rules.rules.rule_n_eleventh|ERROR_KEY_11",
@@ -115,7 +128,8 @@
       "tags": ["openshift", "service_availability"],
       "disabled": true,
       "risk_of_change": 0,
-      "impacted_clusters_count": 0
+      "impacted_clusters_count": 0,
+      "resolution_risk": 4
     }
   ],
   "status": "ok"

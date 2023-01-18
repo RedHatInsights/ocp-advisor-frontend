@@ -8,6 +8,7 @@ import { RecsListTable } from './RecsListTable';
 import getStore from '../../Store';
 import ruleResponse from '../../../cypress/fixtures/api/insights-results-aggregator/v2/rule.json';
 import { Intl } from '../../Utilities/intlHelper';
+// TODO: use cypress utils from FEC
 import {
   TOOLBAR,
   TOOLBAR_FILTER,
@@ -73,6 +74,7 @@ const data = _.orderBy(values, ['total_risk'], ['desc']);
 
 const IMPACT = { Low: 1, Medium: 2, High: 3, Critical: 4 };
 const LIKELIHOOD = { Low: 1, Medium: 2, High: 3, Critical: 4 };
+const RISK_OF_CHANGE = { 'Very Low': 1, Low: 2, Moderate: 3, High: 4 };
 const STATUS = ['All', 'Enabled', 'Disabled'];
 const IMPACTING = { '1 or more': 'true', None: 'false' };
 const CATEGORIES_MAP = {
@@ -120,6 +122,16 @@ const filtersConf = {
     urlParam: 'likelihood',
     urlValue: (it) =>
       encodeURIComponent(_.map(it, (x) => LIKELIHOOD[x]).join(',')),
+  },
+  res_risk: {
+    selectorText: 'Risk of change',
+    values: Array.from(cumulativeCombinations(Object.keys(RISK_OF_CHANGE))),
+    type: 'checkbox',
+    filterFunc: (it, value) =>
+      _.map(value, (x) => RISK_OF_CHANGE[x]).includes(it.resolution_risk),
+    urlParam: 'res_risk',
+    urlValue: (it) =>
+      encodeURIComponent(_.map(it, (x) => RISK_OF_CHANGE[x]).join(',')),
   },
   category: {
     selectorText: 'Category',
@@ -242,6 +254,13 @@ describe('data', () => {
     expect(
       _.filter(filterData(), (it) => it.impacted_clusters_count > 1)
     ).to.have.length.gte(1);
+  });
+  it('at least one recommendation in default list has resolution risk set to 0', () => {
+    expect(
+      filterData({
+        name: 'Super atomic nuclear cluster on the brink of the world destruction',
+      })[0].resolution_risk
+    ).to.eq(0);
   });
 });
 
@@ -471,6 +490,7 @@ describe('successful non-empty recommendations list table', () => {
         'publish_date',
         'tags',
         'total_risk',
+        'resolution_risk',
         'impacted_clusters_count',
       ],
       TABLE_HEADERS
@@ -488,6 +508,7 @@ describe('successful non-empty recommendations list table', () => {
                 )
               );
           }
+
           checkSorting(
             filterData(DEFAULT_FILTERS, dataUnsorted),
             sortingParameter,
@@ -496,7 +517,7 @@ describe('successful non-empty recommendations list table', () => {
             'Name',
             'description',
             DEFAULT_DISPLAYED_SIZE,
-            label
+            label === 'Risk of change' ? 'res_risk' : label
           );
         });
       });
@@ -638,6 +659,14 @@ describe('successful non-empty recommendations list table', () => {
       cy.get('th[data-label="Name"]')
         .should('have.attr', 'aria-sort')
         .and('contain', 'ascending');
+    });
+
+    it('absent resolution risk is shown as not available', () => {
+      cy.getRowByName(
+        'Super atomic nuclear cluster on the brink of the world destruction'
+      )
+        .find('[data-label="Risk of change"]')
+        .should('have.text', 'Not available');
     });
   });
 
