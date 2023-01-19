@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useRouteMatch } from 'react-router-dom';
 import { useIntl } from 'react-intl';
+import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 
 import { useGetClusterByIdQuery } from '../../Services/SmartProxy';
 import messages from '../../Messages';
@@ -13,6 +14,7 @@ const ClusterWrapper = () => {
     id: match.params.clusterId,
     includeDisabled: false,
   });
+  const chrome = useChrome();
 
   useEffect(() => {
     cluster.refetch();
@@ -22,7 +24,7 @@ const ClusterWrapper = () => {
     const subnav = `${
       cluster?.data?.report?.meta?.cluster_name || match.params.clusterId
     } - ${intl.formatMessage(messages.clusters)}`;
-    insights.chrome.updateDocumentTitle(
+    chrome.updateDocumentTitle(
       intl.formatMessage(messages.documentTitle, { subnav })
     );
   }, [cluster, match]);
