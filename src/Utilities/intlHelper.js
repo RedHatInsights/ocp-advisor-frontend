@@ -8,14 +8,14 @@ import {
   IMPACT_LABEL_LOWER,
   LIKELIHOOD_LABEL,
   LIKELIHOOD_LABEL_LOWER,
+  RISK_OF_CHANGE_LABEL,
   TOTAL_RISK_LABEL_LOWER,
 } from '../AppConstants';
+import { strong } from './Helpers';
 
 export const translations = {
   en: require('../../compiled-lang/en.json'),
 };
-
-export const strong = (str) => <strong>{str}</strong>;
 
 export const Intl = ({ children }) => (
   <IntlProvider
@@ -60,5 +60,8 @@ export const mapContentToValues = (intl, rule) => ({
   },
   likelihoodDescription: {
     level: LIKELIHOOD_LABEL_LOWER[rule.likelihood],
+  },
+  riskOfChangeLabel: {
+    level: RISK_OF_CHANGE_LABEL[rule.resolution_risk],
   },
 });

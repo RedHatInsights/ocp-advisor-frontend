@@ -2,15 +2,17 @@ import React from 'react';
 import { useIntl } from 'react-intl';
 
 import PageHeader from '@redhat-cloud-services/frontend-components/PageHeader';
-import Main from '@redhat-cloud-services/frontend-components/Main';
 
 import messages from '../../Messages';
 import ClustersListTable from '../ClustersListTable';
 import { Title } from '@patternfly/react-core';
+import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 
 const ClustersList = () => {
   const intl = useIntl();
-  insights.chrome.updateDocumentTitle(
+  const chrome = useChrome();
+
+  chrome.updateDocumentTitle(
     intl.formatMessage(messages.documentTitle, {
       subnav: intl.formatMessage(messages.clusters),
     })
@@ -25,9 +27,9 @@ const ClustersList = () => {
             .toLowerCase()}`}
         </Title>
       </PageHeader>
-      <Main>
+      <section className="pf-l-page__main-section pf-c-page__main-section">
         <ClustersListTable />
-      </Main>
+      </section>
     </React.Fragment>
   );
 };

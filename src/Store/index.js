@@ -4,14 +4,12 @@ import logger from 'redux-logger';
 import { notificationsMiddleware } from '@redhat-cloud-services/frontend-components-notifications/';
 import { notificationsReducer } from '@redhat-cloud-services/frontend-components-notifications/redux';
 
-import { AmsApi } from '../Services/AccountManagementService';
 import { SmartProxyApi } from '../Services/SmartProxy';
 import filters from '../Services/Filters';
 import { Acks } from '../Services/Acks';
 
 const reducer = {
   [SmartProxyApi.reducerPath]: SmartProxyApi.reducer,
-  [AmsApi.reducerPath]: AmsApi.reducer,
   filters,
   notifications: notificationsReducer,
   [Acks.reducerPath]: Acks.reducer,
@@ -23,7 +21,6 @@ const getStore = (useLogger) =>
     middleware: (getDefaultMiddleware) => {
       const middleware = getDefaultMiddleware().concat(
         SmartProxyApi.middleware,
-        AmsApi.middleware,
         Acks.middleware,
         notificationsMiddleware({
           errorTitleKey: ['message'],

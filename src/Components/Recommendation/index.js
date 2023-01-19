@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useParams, useRouteMatch } from 'react-router-dom';
 import { useIntl } from 'react-intl';
+import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 
 import { Recommendation } from './Recommendation';
 import {
@@ -14,9 +15,11 @@ const RecommendationWrapper = () => {
   const intl = useIntl();
   const rule = useGetRuleByIdQuery(useParams().recommendationId);
   const ack = useGetRecAcksQuery({ ruleId: useParams().recommendationId });
+  const chrome = useChrome();
+
   if (rule.isSuccess && rule.data?.content?.description) {
     const subnav = `${rule.data.content.description} - Recommendations`;
-    insights.chrome.updateDocumentTitle(
+    chrome.updateDocumentTitle(
       intl.formatMessage(messages.documentTitle, { subnav })
     );
   }

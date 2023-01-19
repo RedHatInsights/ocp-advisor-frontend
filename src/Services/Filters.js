@@ -52,11 +52,10 @@ const filtersInitialState = {
 };
 
 export const resetFilters = (filters, initialState, updateFilters) => {
-  const { limit, offset, sortIndex, sortDirection } = filters;
+  const { limit, sortIndex, sortDirection } = filters;
   updateFilters({
     ...initialState,
     ...(limit !== undefined && { limit }),
-    ...(limit !== undefined && { offset }),
     sortIndex,
     sortDirection,
   });

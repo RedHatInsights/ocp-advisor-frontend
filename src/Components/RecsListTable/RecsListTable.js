@@ -33,6 +33,9 @@ import {
   RECS_LIST_NAME_CELL,
   RECS_LIST_TOTAL_RISK_CELL,
   TOTAL_RISK_LABEL_LOWER,
+  RISK_OF_CHANGE_LABEL,
+  RECS_LIST_RISK_OF_CHANGE_CELL,
+  RISK_OF_CHANGE_DESC,
 } from '../../AppConstants';
 import messages from '../../Messages';
 import {
@@ -41,11 +44,8 @@ import {
   updateRecsListFilters,
 } from '../../Services/Filters';
 import RuleLabels from '../Labels/RuleLabels';
-import {
-  formatMessages,
-  mapContentToValues,
-  strong,
-} from '../../Utilities/intlHelper';
+import { formatMessages, mapContentToValues } from '../../Utilities/intlHelper';
+import { strong } from '../../Utilities/Helpers';
 import { ErrorState, NoMatchingRecs } from '../MessageState/EmptyStates';
 import {
   passFilters,
@@ -66,6 +66,7 @@ import {
 } from '@redhat-cloud-services/frontend-components-advisor-components';
 import { adjustOCPRule } from '../../Utilities/Rule';
 import Loading from '../Loading/Loading';
+import inRange from 'lodash/inRange';
 
 const RecsListTable = ({ query }) => {
   const intl = useIntl();
@@ -112,7 +113,7 @@ const RecsListTable = ({ query }) => {
   ]);
 
   useEffect(() => {
-    let filteredRows = buildFilteredRows(recs, filters);
+    const filteredRows = buildFilteredRows(recs, filters);
     if (filteredRows.length && filteredRows.length <= filters.offset) {
       updateFilters({
         ...filters,
@@ -128,6 +129,7 @@ const RecsListTable = ({ query }) => {
     filters.total_risk,
     filters.rule_status,
     filters.likelihood,
+    filters.res_risk,
     searchText,
   ]);
 
@@ -222,6 +224,18 @@ const RecsListTable = ({ query }) => {
               ),
             },
             {
+              title: inRange(value?.resolution_risk, 1, 5) ? (
+                <InsightsLabel
+                  value={value.resolution_risk}
+                  rest={{ isCompact: true }}
+                  text={RISK_OF_CHANGE_LABEL[value.resolution_risk]}
+                  hideIcon
+                />
+              ) : (
+                intl.formatMessage(messages.nA)
+              ),
+            },
+            {
               title: (
                 <div key={key}>{`${
                   value?.impacted_clusters_count !== undefined
@@ -237,7 +251,7 @@ const RecsListTable = ({ query }) => {
           cells: [
             {
               title: (
-                <section className="pf-m-light pf-l-page__main-section pf-c-page__main-section">
+                <section className="pf-l-page__main-section pf-c-page__main-section pf-m-light">
                   <Stack hasGutter>
                     <RuleDetails
                       messages={formatMessages(
@@ -250,6 +264,13 @@ const RecsListTable = ({ query }) => {
                       isDetailsPage={false}
                       showViewAffected
                       linkComponent={Link}
+                      {...(inRange(value?.resolution_risk, 1, 5) // resolution risk can be 0 (not defined for particular rule)
+                        ? {
+                            resolutionRisk: value?.resolution_risk,
+                            resolutionRiskDesc:
+                              RISK_OF_CHANGE_DESC[value?.resolution_risk],
+                          }
+                        : {})}
                     />
                   </Stack>
                 </section>
@@ -265,8 +286,8 @@ const RecsListTable = ({ query }) => {
 */
   const buildDisplayedRows = (rows, index, direction) => {
     const sortingRows = [...rows].sort((firstItem, secondItem) => {
-      let fst = firstItem[0].rule,
-        snd = secondItem[0].rule;
+      let fst = firstItem[0].rule;
+      let snd = secondItem[0].rule;
       const d = direction === SortByDirection.asc ? 1 : -1;
       switch (index) {
         case RECS_LIST_NAME_CELL:
@@ -287,6 +308,10 @@ const RecsListTable = ({ query }) => {
         case RECS_LIST_TOTAL_RISK_CELL:
           fst = fst.total_risk;
           snd = snd.total_risk;
+          return fst > snd ? d : snd > fst ? -d : 0;
+        case RECS_LIST_RISK_OF_CHANGE_CELL:
+          fst = fst.resolution_risk;
+          snd = snd.resolution_risk;
           return fst > snd ? d : snd > fst ? -d : 0;
         case RECS_LIST_CLUSTERS_CELL:
           fst = fst.impacted_clusters_count;
@@ -403,6 +428,19 @@ const RecsListTable = ({ query }) => {
         items: FILTER_CATEGORIES.impacting.values,
       },
     },
+    {
+      label: FILTER_CATEGORIES.res_risk.title,
+      type: FILTER_CATEGORIES.res_risk.type,
+      id: FILTER_CATEGORIES.res_risk.urlParam,
+      value: `checkbox-${FILTER_CATEGORIES.res_risk.urlParam}`,
+      filterValues: {
+        key: `${FILTER_CATEGORIES.res_risk.urlParam}-filter`,
+        onChange: (e, values) =>
+          addFilterParam(FILTER_CATEGORIES.res_risk.urlParam, values),
+        value: filters.res_risk,
+        items: FILTER_CATEGORIES.res_risk.values,
+      },
+    },
   ];
 
   const onSort = (_e, index, direction) => {
@@ -515,7 +553,7 @@ const RecsListTable = ({ query }) => {
       setDisplayedRows(
         displayedRows.map((row) => ({
           ...row,
-          isOpen: isOpen,
+          isOpen,
         }))
       );
     } else {

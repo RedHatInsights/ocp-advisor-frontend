@@ -3,6 +3,7 @@ import intlHelper from '@redhat-cloud-services/frontend-components-translations/
 
 import messages from './Messages';
 import { fitContent, sortable } from '@patternfly/react-table';
+import { strong } from './Utilities/Helpers';
 
 const cache = createIntlCache();
 const locale = navigator.language.slice(0, 2);
@@ -58,7 +59,6 @@ export const FILTER_CATEGORIES = {
       { label: TOTAL_RISK_LABEL[1], value: '1' },
     ],
   },
-  /* Not exposed by API yet
   res_risk: {
     type: 'checkbox',
     title: 'risk of change',
@@ -70,7 +70,6 @@ export const FILTER_CATEGORIES = {
       { label: RISK_OF_CHANGE_LABEL[1], value: '1' },
     ],
   },
-  */
   impact: {
     type: 'checkbox',
     title: 'impact',
@@ -194,10 +193,10 @@ export const RECS_LIST_COLUMNS = [
     title: intl.formatMessage(messages.totalRisk),
     transforms: [sortable, fitContent],
   },
-  /*{
+  {
     title: intl.formatMessage(messages.riskOfChange),
-    transforms: [cellWidth(15)],
-  },*/
+    transforms: [sortable, fitContent],
+  },
   {
     title: intl.formatMessage(messages.clusters),
     transforms: [sortable, fitContent],
@@ -254,6 +253,7 @@ export const RECS_LIST_COLUMNS_KEYS = [
   'modified',
   'category',
   'total_risk',
+  'res_risk',
   'clusters',
 ];
 export const CLUSTER_RULES_IMPACTED_CELL = 3;
@@ -261,7 +261,8 @@ export const RECS_LIST_NAME_CELL = 1;
 export const RECS_LIST_MODIFIED_CELL = 2;
 export const RECS_LIST_CATEGORY_CELL = 3;
 export const RECS_LIST_TOTAL_RISK_CELL = 4;
-export const RECS_LIST_CLUSTERS_CELL = 5;
+export const RECS_LIST_RISK_OF_CHANGE_CELL = 5;
+export const RECS_LIST_CLUSTERS_CELL = 6;
 export const AFFECTED_CLUSTERS_NAME_CELL = 1;
 export const AFFECTED_CLUSTERS_VERSION_CELL = 2;
 export const AFFECTED_CLUSTERS_LAST_SEEN_CELL = 3;
@@ -353,3 +354,22 @@ export const CLUSTERS_TABLE_CELL_IMPORTANT = 4;
 export const CLUSTERS_TABLE_CELL_MODERATE = 5;
 export const CLUSTERS_TABLE_CELL_LOW = 6;
 export const CLUSTERS_TABLE_CELL_LAST_SEEN = 7;
+
+export const RISK_OF_CHANGE_DESC = {
+  1: intlHelper(
+    intl.formatMessage(messages.riskOfChangeTextOne, { strong }),
+    intlSettings
+  ),
+  2: intlHelper(
+    intl.formatMessage(messages.riskOfChangeTextTwo, { strong }),
+    intlSettings
+  ),
+  3: intlHelper(
+    intl.formatMessage(messages.riskOfChangeTextThree, { strong }),
+    intlSettings
+  ),
+  4: intlHelper(
+    intl.formatMessage(messages.riskOfChangeTextFour, { strong }),
+    intlSettings
+  ),
+};

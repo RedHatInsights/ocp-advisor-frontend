@@ -449,7 +449,7 @@ describe('clusters list table', () => {
       cy.get(TOOLBAR).find('button').contains('Reset filters').click();
       cy.get(CHIP_GROUP).should('have.length', 1);
       checkPaginationSelected(0);
-      checkCurrentPage(2);
+      checkCurrentPage(1);
       cy.get('th[data-label="Name"]')
         .should('have.attr', 'aria-sort')
         .and('contain', 'ascending');

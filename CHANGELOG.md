@@ -1,3 +1,33 @@
+# [1.11.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.10.0...v1.11.0) (2023-01-19)
+
+
+### Features
+
+* **Recs list:** Risk of change details section ([#507](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/507)) ([8e541e8](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/8e541e8808af969ce633a5362ef96206eb077bd9))
+
+# [1.10.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.9.0...v1.10.0) (2023-01-18)
+
+
+### Features
+
+* **Recs list:** Add risk of change column ([#504](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/504)) ([ca19d6f](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/ca19d6f97c97068510705afaf30666c0847ed17e))
+
+# [1.9.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.8.4...v1.9.0) (2023-01-17)
+
+
+### Features
+
+* **Single rec page:** Show risk of change info ([#498](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/498)) ([39d546b](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/39d546bafa53b249c30353c8af99b67924acb8b4))
+
+## [1.8.5](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.8.4...v1.8.5) (2023-01-17)
+
+## [1.8.4](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.8.3...v1.8.4) (2022-11-29)
+
+
+### Bug Fixes
+
+* **Tables:** Reset page number on filter ([#477](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/477)) ([7315589](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/7315589e0eec3a2cab387c8b950f09ea97d17c94))
+
 ## [1.8.3](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.8.2...v1.8.3) (2022-11-21)
 
 

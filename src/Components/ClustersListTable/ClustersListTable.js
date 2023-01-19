@@ -224,7 +224,8 @@ const ClustersListTable = ({
       label: intl.formatMessage(messages.name).toLowerCase(),
       filterValues: {
         key: 'text-filter',
-        onChange: (_event, value) => updateFilters({ ...filters, text: value }),
+        onChange: (_event, value) =>
+          updateFilters({ ...filters, offset: 0, text: value }),
         value: filters.text,
         placeholder: intl.formatMessage(messages.filterByName),
       },
