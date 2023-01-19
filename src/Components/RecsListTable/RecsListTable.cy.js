@@ -255,12 +255,22 @@ describe('data', () => {
       _.filter(filterData(), (it) => it.impacted_clusters_count > 1)
     ).to.have.length.gte(1);
   });
+  it('at least one recommendation in default list has resolution risk set to non 0 value', () => {
+    expect(
+      filterData().filter(
+        ({ resolution_risk, description }) =>
+          resolution_risk >= 1 &&
+          description.includes('1Lorem ipsum dolor sit amet')
+      ).length
+    ).to.gte(1);
+  });
   it('at least one recommendation in default list has resolution risk set to 0', () => {
     expect(
-      filterData({
-        name: 'Super atomic nuclear cluster on the brink of the world destruction',
-      })[0].resolution_risk
-    ).to.eq(0);
+      filterData().filter(
+        ({ resolution_risk, description }) =>
+          resolution_risk === 0 && description.includes('Super atomic nuclear')
+      ).length
+    ).to.gte(1);
   });
 });
 
@@ -667,6 +677,34 @@ describe('successful non-empty recommendations list table', () => {
       )
         .find('[data-label="Risk of change"]')
         .should('have.text', 'Not available');
+    });
+
+    it('absent resolution risk is not shown in expanded details', () => {
+      cy.getRowByName(
+        'Super atomic nuclear cluster on the brink of the world destruction'
+      )
+        .find('.pf-c-table__toggle button')
+        .click();
+      cy.get(EXPANDABLES)
+        .eq(0)
+        .find('.pf-m-spacer-sm')
+        .contains('Risk of change')
+        .should('not.exist');
+    });
+
+    it('present resolution risk is shown in expanded details', () => {
+      cy.getRowByName('1Lorem ipsum dolor sit amet')
+        .find('.pf-c-table__toggle button')
+        .click();
+      cy.get(EXPANDABLES)
+        .eq(0)
+        .find('.pf-m-spacer-sm')
+        .contains('Risk of change')
+        .should('exist');
+      cy.get(EXPANDABLES)
+        .eq(0)
+        .find('.ins-c-rule-details__risk-of-ch-label')
+        .should('have.text', 'High');
     });
   });
 

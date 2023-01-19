@@ -35,6 +35,7 @@ import {
   TOTAL_RISK_LABEL_LOWER,
   RISK_OF_CHANGE_LABEL,
   RECS_LIST_RISK_OF_CHANGE_CELL,
+  RISK_OF_CHANGE_DESC,
 } from '../../AppConstants';
 import messages from '../../Messages';
 import {
@@ -263,6 +264,13 @@ const RecsListTable = ({ query }) => {
                       isDetailsPage={false}
                       showViewAffected
                       linkComponent={Link}
+                      {...(inRange(value?.resolution_risk, 1, 5) // resolution risk can be 0 (not defined for particular rule)
+                        ? {
+                            resolutionRisk: value?.resolution_risk,
+                            resolutionRiskDesc:
+                              RISK_OF_CHANGE_DESC[value?.resolution_risk],
+                          }
+                        : {})}
                     />
                   </Stack>
                 </section>
