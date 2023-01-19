@@ -1,3 +1,10 @@
+# [1.11.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.10.0...v1.11.0) (2023-01-19)
+
+
+### Features
+
+* **Recs list:** Risk of change details section ([#507](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/507)) ([8e541e8](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/8e541e8808af969ce633a5362ef96206eb077bd9))
+
 # [1.10.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.9.0...v1.10.0) (2023-01-18)
 
 
