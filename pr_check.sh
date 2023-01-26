@@ -33,16 +33,17 @@ IQE_FILTER_EXPRESSION="test_page"
 # some variables need to be exported after build because frontend-build overrides them
 # with values not suitable for other scripts
 export APP_NAME="ccx-data-pipeline"  # name of app-sre "application" folder this component lives in
-export COMPONENT_NAME="ocp-advisor-frontend"
 export REF_ENV="insights-stage"
-
+export COMPONENT_NAME="ocp-advisor-frontend"
+# no need for all components, only the ones that process archives
+export COMPONENTS="ccx-data-pipeline ccx-insights-results insights-content-service insights-results-smart-proxy"  # space-separated list of components to laod"
 export DEPLOY_FRONTENDS="true"
 export IQE_ENV="ephemeral"
 export IQE_SELENIUM="true"
 export IQE_CJI_TIMEOUT="30m"
 
 #COMPONENTS_W_RESOURCES=""
-#COMPONENTS="ccx-data-pipeline ccx-insights-results insights-content-service insights-results-smart-proxy"  # space-separated list of components to laod"
+
 
 
 
