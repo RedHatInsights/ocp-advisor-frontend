@@ -16,10 +16,22 @@ COMMON_BUILDER=https://raw.githubusercontent.com/RedHatInsights/insights-fronten
 # --------------------------------------------
 # Options that must be configured by app owner
 # --------------------------------------------
+
+set -exv
+# source is preferred to | bash -s in this case to avoid a subshell
+source <(curl -sSL $COMMON_BUILDER/src/frontend-build.sh)
+
+# Install bonfire repo/initialize
+CICD_URL=https://raw.githubusercontent.com/RedHatInsights/bonfire/master/cicd
+# shellcheck source=/dev/null
+curl -s $CICD_URL/bootstrap.sh > .cicd_bootstrap.sh && source .cicd_bootstrap.sh
+
 IQE_PLUGINS="ccx"
 IQE_MARKER_EXPRESSION="ui"
 IQE_FILTER_EXPRESSION="test_page"
 
+# some variables need to be exported after build because frontend-build overrides them
+# with values not suitable for other scripts
 export APP_NAME="ccx-data-pipeline"  # name of app-sre "application" folder this component lives in
 export COMPONENT_NAME="ocp-advisor-frontend"
 export REF_ENV="insights-stage"
@@ -33,14 +45,7 @@ export IQE_CJI_TIMEOUT="30m"
 #COMPONENTS="ccx-data-pipeline ccx-insights-results insights-content-service insights-results-smart-proxy"  # space-separated list of components to laod"
 
 
-set -exv
-# source is preferred to | bash -s in this case to avoid a subshell
-source <(curl -sSL $COMMON_BUILDER/src/frontend-build.sh)
 
-# Install bonfire repo/initialize
-CICD_URL=https://raw.githubusercontent.com/RedHatInsights/bonfire/master/cicd
-# shellcheck source=/dev/null
-curl -s $CICD_URL/bootstrap.sh > .cicd_bootstrap.sh && source .cicd_bootstrap.sh
 
 # Run smoke tests
 # shellcheck source=/dev/null
