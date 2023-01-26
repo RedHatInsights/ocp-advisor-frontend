@@ -34,7 +34,7 @@ IQE_FILTER_EXPRESSION="test_page"
 # with values not suitable for other scripts
 export APP_NAME="ccx-data-pipeline"  # name of app-sre "application" folder this component lives in
 export REF_ENV="insights-stage"
-export COMPONENT_NAME="ocp-advisor-frontend"
+export COMPONENT_NAME="ocp-advisor-frontend"  # name of app-sre "resourceTemplate" in deploy.yaml for this component
 # no need for all components, only the ones that process archives
 export COMPONENTS="ocp-advisor-frontend ccx-data-pipeline ccx-insights-results insights-content-service insights-results-smart-proxy"  # space-separated list of components to laod"
 export DEPLOY_FRONTENDS="true"
@@ -52,7 +52,7 @@ export IQE_CJI_TIMEOUT="30m"
 # shellcheck source=/dev/null
 source "${CICD_ROOT}/deploy_ephemeral_env.sh"
 # shellcheck source=/dev/null
-export COMPONENT_NAME="ocp-advisor"
+export COMPONENT_NAME="ccx-data-pipeline"  # component name needs to be re-export to match ClowdApp name (as bonfire requires for this)
 source "${CICD_ROOT}/cji_smoke_test.sh"
 # shellcheck source=/dev/null
 source "${CICD_ROOT}/post_test_results.sh"
