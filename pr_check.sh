@@ -27,7 +27,7 @@ export IQE_CJI_TIMEOUT="30m"
 
 REF_ENV="insights-production"
 #COMPONENTS_W_RESOURCES=""
-COMPONENT_NAME="ocp-advisor
+export COMPONENT_NAME="ocp-advisor
 #COMPONENTS="ccx-data-pipeline ccx-insights-results insights-content-service insights-results-smart-proxy"  # space-separated list of components to laod"
 
 
