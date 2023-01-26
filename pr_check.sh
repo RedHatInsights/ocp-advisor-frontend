@@ -18,20 +18,33 @@ COMMON_BUILDER=https://raw.githubusercontent.com/RedHatInsights/insights-fronten
 # --------------------------------------------
 IQE_PLUGINS="ccx"
 IQE_MARKER_EXPRESSION="ui"
-IQE_FILTER_EXPRESSION=""
+IQE_FILTER_EXPRESSION="test_page"
+
+export DEPLOY_FRONTENDS="true"
+export IQE_ENV="ephemeral"
+export IQE_SELENIUM="true"
+export IQE_CJI_TIMEOUT="30m"
+
+REF_ENV="insights-production"
+#COMPONENTS_W_RESOURCES=""
+COMPONENT_NAME="ocp-advisor
+#COMPONENTS="ccx-data-pipeline ccx-insights-results insights-content-service insights-results-smart-proxy"  # space-separated list of components to laod"
+
 
 set -exv
 # source is preferred to | bash -s in this case to avoid a subshell
 source <(curl -sSL $COMMON_BUILDER/src/frontend-build.sh)
-BUILD_RESULTS=$?
 
-# Stubbed out for now
-mkdir -p $WORKSPACE/artifacts
-cat << EOF > $WORKSPACE/artifacts/junit-dummy.xml
-<testsuite tests="1">
-    <testcase classname="dummy" name="dummytest"/>
-</testsuite>
-EOF
+# Install bonfire repo/initialize
+CICD_URL=https://raw.githubusercontent.com/RedHatInsights/bonfire/master/cicd
+# shellcheck source=/dev/null
+curl -s $CICD_URL/bootstrap.sh > .cicd_bootstrap.sh && source .cicd_bootstrap.sh
 
-# teardown_docker
-exit $BUILD_RESULTS
+# Run smoke tests
+# shellcheck source=/dev/null
+source "${CICD_ROOT}/deploy_ephemeral_env.sh"
+# shellcheck source=/dev/null
+#export COMPONENT_NAME="compliance"
+source "${CICD_ROOT}/cji_smoke_test.sh"
+# shellcheck source=/dev/null
+source "${CICD_ROOT}/post_test_results.sh"
