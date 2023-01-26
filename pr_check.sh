@@ -44,7 +44,7 @@ curl -s $CICD_URL/bootstrap.sh > .cicd_bootstrap.sh && source .cicd_bootstrap.sh
 # shellcheck source=/dev/null
 source "${CICD_ROOT}/deploy_ephemeral_env.sh"
 # shellcheck source=/dev/null
-#export COMPONENT_NAME="compliance"
+export COMPONENT_NAME="ocp-advisor"
 source "${CICD_ROOT}/cji_smoke_test.sh"
 # shellcheck source=/dev/null
 source "${CICD_ROOT}/post_test_results.sh"
