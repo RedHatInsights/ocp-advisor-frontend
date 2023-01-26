@@ -25,7 +25,7 @@ export IQE_ENV="ephemeral"
 export IQE_SELENIUM="true"
 export IQE_CJI_TIMEOUT="30m"
 
-REF_ENV="insights-production"
+REF_ENV="insights-stage"
 #COMPONENTS_W_RESOURCES=""
 export COMPONENT_NAME="ocp-advisor-frontend"
 #COMPONENTS="ccx-data-pipeline ccx-insights-results insights-content-service insights-results-smart-proxy"  # space-separated list of components to laod"
