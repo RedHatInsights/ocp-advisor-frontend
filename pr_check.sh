@@ -20,8 +20,9 @@ IQE_PLUGINS="ccx"
 IQE_MARKER_EXPRESSION="ui"
 IQE_FILTER_EXPRESSION="test_page"
 
-APP_NAME="ccx-data-pipeline"  # name of app-sre "application" folder this component lives in
-REF_ENV="insights-stage"
+export APP_NAME="ccx-data-pipeline"  # name of app-sre "application" folder this component lives in
+export COMPONENT_NAME="ocp-advisor-frontend"
+export REF_ENV="insights-stage"
 
 export DEPLOY_FRONTENDS="true"
 export IQE_ENV="ephemeral"
@@ -29,7 +30,6 @@ export IQE_SELENIUM="true"
 export IQE_CJI_TIMEOUT="30m"
 
 #COMPONENTS_W_RESOURCES=""
-export COMPONENT_NAME="ocp-advisor-frontend"
 #COMPONENTS="ccx-data-pipeline ccx-insights-results insights-content-service insights-results-smart-proxy"  # space-separated list of components to laod"
 
 
