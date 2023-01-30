@@ -62,7 +62,7 @@
     "@formatjs/cli": "^5.1.1",
     "@patternfly/patternfly": "^4.222.4",
     "@redhat-cloud-services/eslint-config-redhat-cloud-services": "^1.2.1",
-    "@redhat-cloud-services/frontend-components-config": "^4.6.39",
+    "@redhat-cloud-services/frontend-components-config": "^4.6.40",
     "@semantic-release/changelog": "^6.0.1",
     "@semantic-release/git": "^10.0.1",
     "babel-core": "7.0.0-bridge.0",
