@@ -16,8 +16,8 @@ const Breadcrumbs = ({ current }) => {
     <div>
       <Breadcrumb ouiaId="detail">
         <BreadcrumbItem className="breadcrumb-item">
-          <Link to={`/${splitUrl[1]}`}>
-            {`${intl.formatMessage(messages.insightsHeader)} ${splitUrl[1]}`}
+          <Link to={`..`} relative="path">
+            {`${intl.formatMessage(messages.insightsHeader)} ${splitUrl[4]}`}
           </Link>
         </BreadcrumbItem>
         <BreadcrumbItem className="breadcrumb-item" isActive>

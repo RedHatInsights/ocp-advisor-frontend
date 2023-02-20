@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { BrowserRouter as Router } from 'react-router-dom';
 
 import { getBaseName } from '@redhat-cloud-services/frontend-components-utilities/helpers/helpers';
 
@@ -11,9 +10,7 @@ const AppEntry = ({ useLogger }) => {
   const basename = getBaseName(window.location.pathname, 3);
   return (
     <Intl>
-      <Router basename={basename}>
-        <App useLogger={useLogger} basename={basename.replace('/beta/', '/')} />
-      </Router>
+      <App useLogger={useLogger} basename={basename.replace('/beta/', '/')} />
     </Intl>
   );
 };
