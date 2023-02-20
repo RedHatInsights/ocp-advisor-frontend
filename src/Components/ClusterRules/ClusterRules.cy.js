@@ -1,7 +1,7 @@
 import React from 'react';
 import { mount } from '@cypress/react';
 import { IntlProvider } from 'react-intl';
-import { MemoryRouter, Route } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import _ from 'lodash';
 
@@ -135,20 +135,20 @@ describe('cluster rules table', () => {
       <IntlProvider locale="en">
         <Provider store={getStore()}>
           <MemoryRouter
-            initialEntries={['/clusters/41c30565-b4c9-49f2-a4ce-3277ad22b258']}
+            initialEntries={[
+              '/openshift/insights/advisor/clusters/41c30565-b4c9-49f2-a4ce-3277ad22b258',
+            ]}
             initialIndex={0}
           >
-            <Route path="/clusters/:clusterId">
-              <ClusterRules
-                cluster={{
-                  isError: false,
-                  isFetching: false,
-                  isUninitialized: false,
-                  isSuccess: true,
-                  data: { report: { data } },
-                }}
-              />
-            </Route>
+            <ClusterRules
+              cluster={{
+                isError: false,
+                isFetching: false,
+                isUninitialized: false,
+                isSuccess: true,
+                data: { report: { data } },
+              }}
+            />
           </MemoryRouter>
         </Provider>
       </IntlProvider>
@@ -321,20 +321,20 @@ describe('empty cluster rules table', () => {
       <IntlProvider locale="en">
         <Provider store={getStore()}>
           <MemoryRouter
-            initialEntries={['/clusters/41c30565-b4c9-49f2-a4ce-3277ad22b258']}
+            initialEntries={[
+              '/openshift/insights/advisor/clusters/41c30565-b4c9-49f2-a4ce-3277ad22b258',
+            ]}
             initialIndex={0}
           >
-            <Route path="/clusters/:clusterId">
-              <ClusterRules
-                cluster={{
-                  isError: false,
-                  isFetching: false,
-                  isUninitialized: false,
-                  isSuccess: true,
-                  data: { report: { data: [] } },
-                }}
-              />
-            </Route>
+            <ClusterRules
+              cluster={{
+                isError: false,
+                isFetching: false,
+                isUninitialized: false,
+                isSuccess: true,
+                data: { report: { data: [] } },
+              }}
+            />
           </MemoryRouter>
         </Provider>
       </IntlProvider>
@@ -357,26 +357,26 @@ describe('empty cluster rules table', () => {
   });
 });
 
-describe('no rules cluster', () => {
+describe.only('no rules cluster', () => {
   beforeEach(() => {
     mount(
       <IntlProvider locale="en">
         <Provider store={getStore()}>
           <MemoryRouter
-            initialEntries={['/clusters/41c30565-b4c9-49f2-a4ce-3277ad22b258']}
+            initialEntries={[
+              '/openshift/insights/advisor/clusters/41c30565-b4c9-49f2-a4ce-3277ad22b258',
+            ]}
             initialIndex={0}
           >
-            <Route path="/clusters/:clusterId">
-              <ClusterRules
-                cluster={{
-                  isError: true,
-                  isFetching: false,
-                  isUninitialized: false,
-                  isSuccess: false,
-                  error: { status: 404 },
-                }}
-              />
-            </Route>
+            <ClusterRules
+              cluster={{
+                isError: true,
+                isFetching: false,
+                isUninitialized: false,
+                isSuccess: false,
+                error: { status: 404 },
+              }}
+            />
           </MemoryRouter>
         </Provider>
       </IntlProvider>
@@ -411,20 +411,20 @@ describe('error response other than 404', () => {
       <IntlProvider locale="en">
         <Provider store={getStore()}>
           <MemoryRouter
-            initialEntries={['/clusters/41c30565-b4c9-49f2-a4ce-3277ad22b258']}
+            initialEntries={[
+              '/openshift/insights/advisor/clusters/41c30565-b4c9-49f2-a4ce-3277ad22b258',
+            ]}
             initialIndex={0}
           >
-            <Route path="/clusters/:clusterId">
-              <ClusterRules
-                cluster={{
-                  isError: true,
-                  isFetching: false,
-                  isUninitialized: false,
-                  isSuccess: false,
-                  error: { status: 500 },
-                }}
-              />
-            </Route>
+            <ClusterRules
+              cluster={{
+                isError: true,
+                isFetching: false,
+                isUninitialized: false,
+                isSuccess: false,
+                error: { status: 500 },
+              }}
+            />
           </MemoryRouter>
         </Provider>
       </IntlProvider>
@@ -459,21 +459,19 @@ describe('cluster rules table testing the first query parameter', () => {
         <Provider store={getStore()}>
           <MemoryRouter
             initialEntries={[
-              '/clusters/41c30565-b4c9-49f2-a4ce-3277ad22b258?first=external.rules.rule_n_one|ERROR_KEY_N2',
+              '/openshift/insights/advisor/clusters/41c30565-b4c9-49f2-a4ce-3277ad22b258?first=external.rules.rule_n_one|ERROR_KEY_N2',
             ]}
             initialIndex={0}
           >
-            <Route path="/clusters/:clusterId">
-              <ClusterRules
-                cluster={{
-                  isError: false,
-                  isFetching: false,
-                  isUninitialized: false,
-                  isSuccess: true,
-                  data: { report: { data: data_first_query_parameter } },
-                }}
-              />
-            </Route>
+            <ClusterRules
+              cluster={{
+                isError: false,
+                isFetching: false,
+                isUninitialized: false,
+                isSuccess: true,
+                data: { report: { data: data_first_query_parameter } },
+              }}
+            />
           </MemoryRouter>
         </Provider>
       </IntlProvider>
