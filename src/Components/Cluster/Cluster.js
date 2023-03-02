@@ -8,16 +8,13 @@ import ClusterHeader from '../ClusterHeader';
 import ClusterRules from '../ClusterRules/ClusterRules';
 import Breadcrumbs from '../Breadcrumbs';
 
-export const Cluster = ({ cluster, match }) => {
+export const Cluster = ({ cluster, clusterId }) => {
   // TODO: make breadcrumbs take display name from GET /cluster/id/info
   return (
     <React.Fragment>
       <PageHeader className="pf-m-light ins-inventory-detail">
         <Breadcrumbs
-          current={
-            cluster?.data?.report.meta.cluster_name || match.params.clusterId
-          }
-          match={match}
+          current={cluster?.data?.report.meta.cluster_name || clusterId}
         />
         <ClusterHeader />
       </PageHeader>
@@ -31,5 +28,5 @@ export const Cluster = ({ cluster, match }) => {
 Cluster.propTypes = {
   cluster: PropTypes.object.isRequired,
   displayName: PropTypes.object.isRequired,
-  match: PropTypes.object.isRequired,
+  clusterId: PropTypes.string.isRequired,
 };

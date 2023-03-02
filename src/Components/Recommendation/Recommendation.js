@@ -58,11 +58,10 @@ import { enableRuleForCluster } from '../../Services/Acks';
 import { formatMessages, mapContentToValues } from '../../Utilities/intlHelper';
 import inRange from 'lodash/inRange';
 
-const Recommendation = ({ rule, ack, clusters, match }) => {
+const Recommendation = ({ rule, ack, clusters, recId }) => {
   const intl = useIntl();
   const dispatch = useDispatch();
   const notify = (data) => dispatch(addNotification(data));
-  const recId = match.params.recommendationId;
   const [disableRuleModalOpen, setDisableRuleModalOpen] = useState(false);
   const [actionsDropdownOpen, setActionsDropdownOpen] = useState(false);
   const [viewSystemsModalOpen, setViewSystemsModalOpen] = useState(false);
@@ -456,7 +455,7 @@ Recommendation.propTypes = {
   rule: PropTypes.object.isRequired,
   ack: PropTypes.object.isRequired,
   clusters: PropTypes.object.isRequired,
-  match: PropTypes.object.isRequired,
+  recId: PropTypes.string.isRequired,
 };
 
 export { Recommendation };

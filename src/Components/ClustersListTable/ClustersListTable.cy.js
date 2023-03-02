@@ -217,7 +217,7 @@ urlParamsList.forEach((urlParams, index) => {
     beforeEach(() => {
       mount(
         <MemoryRouter
-          initialEntries={[`/clusters?${urlParams}`]}
+          initialEntries={[`/openshift/insights/advisor/clusters?${urlParams}`]}
           initialIndex={0}
         >
           <Intl>
@@ -267,7 +267,10 @@ urlParamsList.forEach((urlParams, index) => {
 describe('clusters list table', () => {
   beforeEach(() => {
     mount(
-      <MemoryRouter initialEntries={['/clusters']} initialIndex={0}>
+      <MemoryRouter
+        initialEntries={['/openshift/insights/advisor/clusters']}
+        initialIndex={0}
+      >
         <Intl>
           <Provider store={getStore()}>
             <ClustersListTable
@@ -518,7 +521,9 @@ describe('clusters list table', () => {
       .each(($el, index) => {
         cy.wrap($el)
           .find('td[data-label=Name]')
-          .find(`a[href="/clusters/${data[index]['cluster_id']}"]`)
+          .find(
+            `a[href="/openshift/insights/advisor/clusters/${data[index]['cluster_id']}"]`
+          )
           .should('have.text', data[index]['name']);
       });
   });
@@ -553,7 +558,10 @@ describe('clusters list table', () => {
 describe('cluster list Empty state rendering', () => {
   beforeEach(() => {
     mount(
-      <MemoryRouter initialEntries={['/clusters']} initialIndex={0}>
+      <MemoryRouter
+        initialEntries={['/openshift/insights/advisor/clusters']}
+        initialIndex={0}
+      >
         <Intl>
           <Provider store={getStore()}>
             <ClustersListTable

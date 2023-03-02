@@ -1,5 +1,5 @@
 import React from 'react';
-import { useRouteMatch } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import {
   useGetClusterByIdQuery,
@@ -8,8 +8,7 @@ import {
 import { ClusterHeader } from './ClusterHeader';
 
 const ClusterHeaderWrapper = () => {
-  const match = useRouteMatch();
-  const clusterId = match.params.clusterId;
+  const { clusterId } = useParams();
   const clusterData = useGetClusterByIdQuery({
     id: clusterId,
     includeDisabled: false,

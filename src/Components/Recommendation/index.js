@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useParams, useRouteMatch } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useIntl } from 'react-intl';
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 
@@ -13,8 +13,9 @@ import messages from '../../Messages';
 
 const RecommendationWrapper = () => {
   const intl = useIntl();
-  const rule = useGetRuleByIdQuery(useParams().recommendationId);
-  const ack = useGetRecAcksQuery({ ruleId: useParams().recommendationId });
+  const { recommendationId } = useParams();
+  const rule = useGetRuleByIdQuery(recommendationId);
+  const ack = useGetRecAcksQuery({ ruleId: recommendationId });
   const chrome = useChrome();
 
   if (rule.isSuccess && rule.data?.content?.description) {
@@ -23,18 +24,18 @@ const RecommendationWrapper = () => {
       intl.formatMessage(messages.documentTitle, { subnav })
     );
   }
-  const clusters = useGetAffectedClustersQuery(useParams().recommendationId);
+  const clusters = useGetAffectedClustersQuery(recommendationId);
 
   useEffect(() => {
     rule.refetch();
-  }, [useParams().recommendationId]);
+  }, [recommendationId]);
 
   return (
     <Recommendation
       rule={rule}
       ack={ack}
       clusters={clusters}
-      match={useRouteMatch()}
+      recId={recommendationId}
     />
   );
 };
