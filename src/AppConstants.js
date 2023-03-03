@@ -2,7 +2,8 @@ import { createIntl, createIntlCache } from 'react-intl';
 import intlHelper from '@redhat-cloud-services/frontend-components-translations/intlHelper';
 
 import messages from './Messages';
-import { cellWidth, sortable } from '@patternfly/react-table';
+import { fitContent, sortable } from '@patternfly/react-table';
+import { strong } from './Utilities/Helpers';
 
 const cache = createIntlCache();
 const locale = navigator.language.slice(0, 2);
@@ -58,7 +59,6 @@ export const FILTER_CATEGORIES = {
       { label: TOTAL_RISK_LABEL[1], value: '1' },
     ],
   },
-  /* Not exposed by API yet
   res_risk: {
     type: 'checkbox',
     title: 'risk of change',
@@ -70,7 +70,6 @@ export const FILTER_CATEGORIES = {
       { label: RISK_OF_CHANGE_LABEL[1], value: '1' },
     ],
   },
-  */
   impact: {
     type: 'checkbox',
     title: 'impact',
@@ -180,33 +179,33 @@ export const TOTAL_RISK_LABEL_LOWER = {
 export const RECS_LIST_COLUMNS = [
   {
     title: intl.formatMessage(messages.name),
-    transforms: [sortable, cellWidth(40)],
+    transforms: [sortable],
   },
   {
-    title: intl.formatMessage(messages.added),
-    transforms: [sortable, cellWidth(15)],
+    title: intl.formatMessage(messages.modified),
+    transforms: [sortable, fitContent],
   },
   {
     title: intl.formatMessage(messages.category),
-    transforms: [sortable, cellWidth(20)],
+    transforms: [sortable, fitContent],
   },
   {
     title: intl.formatMessage(messages.totalRisk),
-    transforms: [sortable, cellWidth(15)],
+    transforms: [sortable, fitContent],
   },
-  /*{
+  {
     title: intl.formatMessage(messages.riskOfChange),
-    transforms: [cellWidth(15)],
-  },*/
+    transforms: [sortable, fitContent],
+  },
   {
     title: intl.formatMessage(messages.clusters),
-    transforms: [sortable, cellWidth(10)],
+    transforms: [sortable, fitContent],
   },
 ];
 export const CLUSTER_FILTER_CATEGORIES = {
   hits: {
     type: 'checkbox',
-    title: 'Total Risk',
+    title: 'Total risk',
     urlParam: 'hits',
     values: [
       { label: 'All clusters', text: 'All clusters', value: 'all' },
@@ -217,58 +216,82 @@ export const CLUSTER_FILTER_CATEGORIES = {
 export const CLUSTERS_LIST_COLUMNS = [
   {
     title: intl.formatMessage(messages.name),
-    transforms: [sortable, cellWidth(30)],
+    transforms: [sortable],
+  },
+  {
+    title: intl.formatMessage(messages.version),
+    transforms: [sortable, fitContent],
   },
   {
     title: intl.formatMessage(messages.recommendations),
-    transforms: [sortable, cellWidth(15)],
+    transforms: [sortable, fitContent],
   },
   {
     title: intl.formatMessage(messages.critical),
-    transforms: [sortable, cellWidth(10)],
+    transforms: [sortable, fitContent],
   },
   {
     title: intl.formatMessage(messages.important),
-    transforms: [sortable, cellWidth(10)],
+    transforms: [sortable, fitContent],
   },
   {
     title: intl.formatMessage(messages.moderate),
-    transforms: [sortable, cellWidth(10)],
+    transforms: [sortable, fitContent],
   },
   {
     title: intl.formatMessage(messages.low),
-    transforms: [sortable, cellWidth(10)],
+    transforms: [sortable, fitContent],
   },
   {
     title: intl.formatMessage(messages.lastSeen),
-    transforms: [sortable, cellWidth(15)],
+    transforms: [sortable, fitContent],
   },
 ];
-export const CLUSTER_NAME_CELL = 0;
-export const CLUSTER_LAST_CHECKED_CELL = 6;
 export const RECS_LIST_COLUMNS_KEYS = [
-  'description',
-  'publish_date',
-  'tags',
+  '', // reserved for expand button
+  'name',
+  'modified',
+  'category',
   'total_risk',
-  'impacted_clusters_count',
+  'res_risk',
+  'clusters',
 ];
+export const CLUSTER_RULES_IMPACTED_CELL = 3;
+export const RECS_LIST_NAME_CELL = 1;
+export const RECS_LIST_MODIFIED_CELL = 2;
+export const RECS_LIST_CATEGORY_CELL = 3;
+export const RECS_LIST_TOTAL_RISK_CELL = 4;
+export const RECS_LIST_RISK_OF_CHANGE_CELL = 5;
+export const RECS_LIST_CLUSTERS_CELL = 6;
 export const AFFECTED_CLUSTERS_NAME_CELL = 1;
-export const AFFECTED_CLUSTERS_LAST_SEEN = 2;
+export const AFFECTED_CLUSTERS_VERSION_CELL = 2;
+export const AFFECTED_CLUSTERS_LAST_SEEN_CELL = 3;
+export const AFFECTED_CLUSTERS_IMPACTED_CELL = 4;
 export const AFFECTED_CLUSTERS_COLUMNS = [
   {
     title: intl.formatMessage(messages.name),
-    transforms: [sortable, cellWidth(80)],
+    transforms: [sortable],
+  },
+  {
+    title: intl.formatMessage(messages.version),
+    transforms: [sortable, fitContent],
   },
   {
     title: intl.formatMessage(messages.lastSeen),
-    transforms: [sortable, cellWidth(20)],
+    transforms: [sortable, fitContent],
+  },
+  {
+    title: intl.formatMessage(messages.impacted),
+    transforms: [sortable, fitContent],
   },
 ];
+// TODO: remove since unused
 export const DEBOUNCE_DELAY = 600;
 export const CLUSTER_RULES_COLUMNS_KEYS = [
+  '', // reserved for expand button
   'description',
   'created_at',
+  'impacted',
   'total_risk',
 ];
 export const CLUSTER_RULES_COLUMNS = [
@@ -277,12 +300,16 @@ export const CLUSTER_RULES_COLUMNS = [
     transforms: [sortable],
   },
   {
-    title: intl.formatMessage(messages.added),
-    transforms: [sortable, cellWidth(15)],
+    title: intl.formatMessage(messages.modified),
+    transforms: [sortable, fitContent],
+  },
+  {
+    title: intl.formatMessage(messages.impacted),
+    transforms: [sortable, fitContent],
   },
   {
     title: intl.formatMessage(messages.totalRisk),
-    transforms: [sortable, cellWidth(15)],
+    transforms: [sortable, fitContent],
   },
 ];
 export const IMPACT_LABEL_LOWER = {
@@ -306,6 +333,43 @@ export const LIKELIHOOD_LABEL_LOWER = {
   3: intlHelper(intl.formatMessage(messages.high).toLowerCase(), intlSettings),
   4: intlHelper(
     intl.formatMessage(messages.critical).toLowerCase(),
+    intlSettings
+  ),
+};
+export const CLUSTERS_LIST_COLUMNS_KEYS = [
+  'name',
+  'version',
+  'recommendations',
+  'critical',
+  'important',
+  'moderate',
+  'low',
+  'last_seen',
+];
+export const CLUSTERS_TABLE_CELL_NAME = 0;
+export const CLUSTERS_TABLE_CELL_VERSION = 1;
+export const CLUSTERS_TABLE_CELL_RECOMMENDATIONS = 2;
+export const CLUSTERS_TABLE_CELL_CRITICAL = 3;
+export const CLUSTERS_TABLE_CELL_IMPORTANT = 4;
+export const CLUSTERS_TABLE_CELL_MODERATE = 5;
+export const CLUSTERS_TABLE_CELL_LOW = 6;
+export const CLUSTERS_TABLE_CELL_LAST_SEEN = 7;
+
+export const RISK_OF_CHANGE_DESC = {
+  1: intlHelper(
+    intl.formatMessage(messages.riskOfChangeTextOne, { strong }),
+    intlSettings
+  ),
+  2: intlHelper(
+    intl.formatMessage(messages.riskOfChangeTextTwo, { strong }),
+    intlSettings
+  ),
+  3: intlHelper(
+    intl.formatMessage(messages.riskOfChangeTextThree, { strong }),
+    intlSettings
+  ),
+  4: intlHelper(
+    intl.formatMessage(messages.riskOfChangeTextFour, { strong }),
     intlSettings
   ),
 };

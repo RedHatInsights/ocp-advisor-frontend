@@ -1,15 +1,29 @@
 import React from 'react';
-import { routerParams } from '@redhat-cloud-services/frontend-components-utilities/RouterParams/RouterParams';
+import { useParams } from 'react-router-dom';
 
-import { useGetClusterByIdQuery } from '../../Services/SmartProxy';
+import {
+  useGetClusterByIdQuery,
+  useGetClusterInfoQuery,
+} from '../../Services/SmartProxy';
 import { ClusterHeader } from './ClusterHeader';
 
-export default routerParams(({ match }) => {
-  const clusterId = match.params.clusterId;
+const ClusterHeaderWrapper = () => {
+  const { clusterId } = useParams();
   const clusterData = useGetClusterByIdQuery({
     id: clusterId,
     includeDisabled: false,
   });
+  const clusterInfo = useGetClusterInfoQuery({
+    id: clusterId,
+  });
 
-  return <ClusterHeader clusterId={clusterId} clusterData={clusterData} />;
-});
+  return (
+    <ClusterHeader
+      clusterId={clusterId}
+      clusterData={clusterData}
+      clusterInfo={clusterInfo}
+    />
+  );
+};
+
+export default ClusterHeaderWrapper;

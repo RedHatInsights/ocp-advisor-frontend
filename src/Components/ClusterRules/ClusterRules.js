@@ -7,7 +7,6 @@ import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import capitalize from 'lodash/capitalize';
 
-import CheckIcon from '@patternfly/react-icons/dist/js/icons/check-icon';
 import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat/DateFormat';
 import InsightsLabel from '@redhat-cloud-services/frontend-components/InsightsLabel';
 import {
@@ -17,15 +16,11 @@ import {
   TableHeader,
   TableVariant,
 } from '@patternfly/react-table';
-import { Card, CardBody } from '@patternfly/react-core/dist/js/components/Card';
-import {
-  Tooltip,
-  TooltipPosition,
-} from '@patternfly/react-core/dist/js/components/Tooltip';
+import { Tooltip } from '@patternfly/react-core';
+import { TooltipPosition } from '@patternfly/react-core/dist/js/components/Tooltip';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
 
 import messages from '../../Messages';
-import MessageState from '../MessageState/MessageState';
 import {
   IMPACT_LABEL,
   LIKELIHOOD_LABEL,
@@ -33,28 +28,41 @@ import {
   CLUSTER_RULES_COLUMNS_KEYS,
   FILTER_CATEGORIES,
   CLUSTER_RULES_COLUMNS,
+  CLUSTER_RULES_IMPACTED_CELL,
 } from '../../AppConstants';
-import ReportDetails from '../ReportDetails/ReportDetails';
+import { ReportDetails } from '@redhat-cloud-services/frontend-components-advisor-components';
 import RuleLabels from '../Labels/RuleLabels';
-import { NoMatchingRecs } from '../MessageState/EmptyStates';
+import {
+  ErrorState,
+  NoMatchingRecs,
+  NoRecsError,
+  NoInsightsResults,
+  NoRecsAffecting,
+} from '../MessageState/EmptyStates';
 import {
   paramParser,
   passFilters,
+  removeFilterParam as _removeFilterParam,
+  addFilterParam as _addFilterParam,
   translateSortParams,
 } from '../Common/Tables';
 import {
   CLUSTER_RULES_INITIAL_STATE,
+  resetFilters,
   updateClusterRulesFilters,
 } from '../../Services/Filters';
 import { getErrorKey, getPluginName } from '../../Utilities/Rule';
+import Loading from '../Loading/Loading';
 
-const ClusterRules = ({ reports }) => {
+const ClusterRules = ({ cluster }) => {
   const intl = useIntl();
   const dispatch = useDispatch();
   const updateFilters = (filters) =>
     dispatch(updateClusterRulesFilters(filters));
   const filters = useSelector(({ filters }) => filters.clusterRulesState);
-
+  const { isError, isUninitialized, isFetching, isSuccess, data, error } =
+    cluster;
+  const reports = data?.report?.data || [];
   const [filteredRows, setFilteredRows] = useState([]);
   const [displayedRows, setDisplayedRows] = useState([]);
   const [isAllExpanded, setIsAllExpanded] = useState(false);
@@ -62,28 +70,28 @@ const ClusterRules = ({ reports }) => {
   const [firstRule, setFirstRule] = useState(''); // show a particular rule first
   const results = filteredRows.length;
   const { search } = useLocation();
+  // helps to distinguish the state when the API data received but not yet filtered
+  const [rowsFiltered, setRowsFiltered] = useState(false);
+  const loadingState = isUninitialized || isFetching || !rowsFiltered;
+  const errorState = isError;
+  const successState = isSuccess;
+  const noInput = successState && reports.length === 0;
+  const noMatch = reports.length > 0 && filteredRows.length === 0;
 
-  useEffect(() => {
-    setDisplayedRows(
-      buildDisplayedRows(filteredRows, filters.sortIndex, filters.sortDirection)
-    );
-  }, [
-    filteredRows,
-    filters.limit,
-    filters.offset,
-    filters.sortIndex,
-    filters.sortDirection,
-  ]);
+  const removeFilterParam = (param) =>
+    _removeFilterParam(filters, updateFilters, param);
 
-  useEffect(() => {
-    setFilteredRows(buildFilteredRows(reports, filters));
-  }, [reports, filters]);
+  const addFilterParam = (param, values) => {
+    setExpandFirst(false);
+    setFirstRule('');
+    return _addFilterParam(filters, updateFilters, param, values);
+  };
 
   useEffect(() => {
     if (search) {
       const paramsObject = paramParser(search);
       if (paramsObject.sort) {
-        const sortObj = translateSortParams(paramsObject.sort[0]);
+        const sortObj = translateSortParams(paramsObject.sort);
         paramsObject.sortIndex = CLUSTER_RULES_COLUMNS_KEYS.indexOf(
           sortObj.name
         );
@@ -97,19 +105,50 @@ const ClusterRules = ({ reports }) => {
     }
   }, []);
 
+  useEffect(() => {
+    setFilteredRows(buildFilteredRows(reports, filters));
+  }, [data, filters]);
+
+  useEffect(() => {
+    setDisplayedRows(
+      buildDisplayedRows(filteredRows, filters.sortIndex, filters.sortDirection)
+    );
+    setRowsFiltered(true);
+  }, [filteredRows]);
+
   const handleOnCollapse = (_e, rowId, isOpen) => {
-    const collapseRows = [...displayedRows];
-    collapseRows[rowId] = { ...collapseRows[rowId], isOpen };
-    setDisplayedRows(collapseRows);
+    if (rowId === undefined) {
+      // if undefined, all rows are affected
+      setIsAllExpanded(isOpen);
+      setDisplayedRows(
+        displayedRows.map((row) => ({
+          ...row,
+          isOpen: isOpen,
+        }))
+      );
+    } else {
+      setDisplayedRows(
+        displayedRows.map((row, index) =>
+          index === rowId ? { ...row, isOpen } : row
+        )
+      );
+    }
   };
 
-  const buildFilteredRows = (allRows, filters) =>
-    allRows
+  const buildFilteredRows = (allRows, filters) => {
+    setRowsFiltered(false);
+    const expandedRowsSet = new Set(
+      displayedRows
+        .filter((ruleExpanded) => ruleExpanded?.isOpen)
+        .map((object) => object?.rule?.rule_id)
+    );
+
+    return allRows
       .filter((rule) => passFilters(rule, filters))
       .map((value, key) => [
         {
           rule: value,
-          isOpen: isAllExpanded,
+          isOpen: isAllExpanded || expandedRowsSet?.has(value?.rule_id),
           cells: [
             {
               title: (
@@ -130,6 +169,36 @@ const ClusterRules = ({ reports }) => {
                 </div>
               ),
             },
+            value.impacted
+              ? {
+                  title: (
+                    <div key={key}>
+                      <DateFormat
+                        extraTitle={`${intl.formatMessage(
+                          messages.impacted
+                        )}: `}
+                        date={value.impacted}
+                        type="relative"
+                        tooltipProps={{ position: TooltipPosition.bottom }}
+                      />
+                    </div>
+                  ),
+                }
+              : {
+                  title: (
+                    <Tooltip
+                      key={key}
+                      content={
+                        <span>
+                          {intl.formatMessage(messages.impacted) + ': '}
+                          {intl.formatMessage(messages.nA)}
+                        </span>
+                      }
+                    >
+                      <span>{intl.formatMessage(messages.nA)}</span>
+                    </Tooltip>
+                  ),
+                },
             {
               title: (
                 <div key={key} style={{ verticalAlign: 'top' }}>
@@ -153,10 +222,16 @@ const ClusterRules = ({ reports }) => {
                         </span>
                       }
                     >
-                      <InsightsLabel value={value.total_risk} />
+                      <InsightsLabel
+                        value={value.total_risk}
+                        rest={{ isCompact: true }}
+                      />
                     </Tooltip>
                   ) : (
-                    <InsightsLabel value={value.total_risk} />
+                    <InsightsLabel
+                      value={value.total_risk}
+                      rest={{ isCompact: true }}
+                    />
                   )}
                 </div>
               ),
@@ -167,23 +242,36 @@ const ClusterRules = ({ reports }) => {
           fullWidth: true,
           cells: [
             {
-              title: <ReportDetails key={`child-${key}`} report={value} />,
+              title: (
+                <ReportDetails
+                  key={`child-${key}`}
+                  report={{
+                    rule: value,
+                    resolution: value.resolution,
+                    details: value.extra_data,
+                  }}
+                />
+              ),
             },
           ],
         },
       ]);
+  };
 
   const buildDisplayedRows = (rows, index, direction) => {
     let sortingRows = [...rows];
-    if (index >= 0) {
+    if (index >= 0 && !firstRule) {
+      const d = direction === SortByDirection.asc ? 1 : -1;
       sortingRows = [...rows].sort((firstItem, secondItem) => {
-        const fst = firstItem[0].rule[CLUSTER_RULES_COLUMNS_KEYS[index - 1]];
-        const snd = secondItem[0].rule[CLUSTER_RULES_COLUMNS_KEYS[index - 1]];
-        return fst > snd ? 1 : snd > fst ? -1 : 0;
+        let fst = firstItem[0].rule[CLUSTER_RULES_COLUMNS_KEYS[index]];
+        let snd = secondItem[0].rule[CLUSTER_RULES_COLUMNS_KEYS[index]];
+        if (index === CLUSTER_RULES_IMPACTED_CELL) {
+          //sorting for the impacted column
+          fst = new Date(firstItem[0].rule.impacted || 0);
+          snd = new Date(secondItem[0].rule.impacted || 0);
+        }
+        return fst > snd ? d : snd > fst ? -d : 0;
       });
-      if (direction === SortByDirection.desc) {
-        sortingRows.reverse();
-      }
     } else if (firstRule) {
       const i = rows.findIndex((row) => {
         const rule = row[0].rule;
@@ -206,22 +294,15 @@ const ClusterRules = ({ reports }) => {
     });
   };
 
-  const onSort = (_e, index, direction) =>
-    updateFilters({ ...filters, sortIndex: index, sortDirection: direction });
-
-  const removeFilterParam = (param) => {
-    const filter = { ...filters, offset: 0 };
-    delete filter[param];
-    updateFilters({ ...filter, ...(param === 'text' ? { text: '' } : {}) });
-  };
-
-  // TODO: update URL when filters changed
-  const addFilterParam = (param, values) => {
+  const onSort = (_e, index, direction) => {
+    setRowsFiltered(false);
     setExpandFirst(false);
     setFirstRule('');
-    return values.length > 0
-      ? updateFilters({ ...filters, offset: 0, ...{ [param]: values } })
-      : removeFilterParam(param);
+    return updateFilters({
+      ...filters,
+      sortIndex: index,
+      sortDirection: direction,
+    });
   };
 
   const filterConfigItems = [
@@ -303,7 +384,7 @@ const ClusterRules = ({ reports }) => {
               ...(item[1].length > 0
                 ? [
                     {
-                      category: 'Name',
+                      category: intl.formatMessage(messages.description),
                       chips: [{ name: item[1], value: item[1] }],
                       urlParam: item[0],
                     },
@@ -321,8 +402,6 @@ const ClusterRules = ({ reports }) => {
     const localFilters = { ...filters };
     delete localFilters.sortIndex;
     delete localFilters.sortDirection;
-    delete localFilters.offset;
-    delete localFilters.limit;
     return pruneFilters(localFilters, FILTER_CATEGORIES);
   };
 
@@ -331,7 +410,7 @@ const ClusterRules = ({ reports }) => {
     filters: buildFilterChips(),
     onDelete: (_event, itemsToRemove, isAll) => {
       if (isAll) {
-        updateFilters(CLUSTER_RULES_INITIAL_STATE);
+        resetFilters(filters, CLUSTER_RULES_INITIAL_STATE, updateFilters);
       } else {
         itemsToRemove.map((item) => {
           const newFilter = {
@@ -349,27 +428,12 @@ const ClusterRules = ({ reports }) => {
     },
   };
 
-  //Responsible for the handling collapse for all the recommendations
-  //Used in the PrimaryToolbar
-  const collapseAll = (_e, isOpen) => {
-    setIsAllExpanded(isOpen);
-    setDisplayedRows(
-      displayedRows.map((row) => {
-        return {
-          ...row,
-          isOpen: isOpen,
-        };
-      })
-    );
-  };
-
   return (
-    <div id="cluster-recs-list-table">
+    <div id="cluster-recs-list-table" data-ouia-safe={!loadingState}>
       <PrimaryToolbar
-        expandAll={{ isAllExpanded, onClick: collapseAll }}
         filterConfig={{
           items: filterConfigItems,
-          isDisabled: reports.length === 0,
+          isDisabled: loadingState || errorState || reports.length === 0,
         }}
         pagination={
           <React.Fragment>
@@ -379,59 +443,76 @@ const ClusterRules = ({ reports }) => {
           </React.Fragment>
         }
         activeFiltersConfig={
-          reports.length === 0 ? undefined : activeFiltersConfig
+          loadingState || errorState || reports.length === 0
+            ? undefined
+            : activeFiltersConfig
         }
       />
-      {reports.length > 0 ? (
-        <React.Fragment>
-          <Table
-            aria-label={'Cluster recommendations table'}
-            ouiaId="recommendations"
-            onCollapse={handleOnCollapse}
-            rows={displayedRows}
-            cells={CLUSTER_RULES_COLUMNS}
-            sortBy={{
-              index: filters.sortIndex,
-              direction: filters.sortDirection,
-            }}
-            onSort={onSort}
-            variant={TableVariant.compact}
-            isStickyHeader
-          >
-            <TableHeader />
-            <TableBody />
-          </Table>
-          {results === 0 && (
-            <Card ouiaId="empty-state">
-              <CardBody>
-                <NoMatchingRecs />
-              </CardBody>
-            </Card>
-          )}
-        </React.Fragment>
-      ) : (
-        // ? Welcome to Insights feature for novice clusters with disabled Insights?
-        <Card ouiaId="no-recommendations">
-          <CardBody>
-            <MessageState
-              icon={CheckIcon}
-              iconClass="ins-c-insights__check"
-              title={intl.formatMessage(messages.noRecommendations)}
-              text={intl.formatMessage(messages.noRecommendationsDesc)}
-            />
-          </CardBody>
-        </Card>
-      )}
+      <Table
+        aria-label={'Cluster recommendations table'}
+        ouiaId="recommendations"
+        ouiaSafe={!loadingState}
+        onCollapse={handleOnCollapse} // TODO: set undefined when there is an empty state
+        rows={
+          errorState || loadingState || noMatch || noInput ? (
+            [
+              {
+                fullWidth: true,
+                cells: [
+                  {
+                    props: {
+                      colSpan: CLUSTER_RULES_COLUMNS.length + 1,
+                    },
+                    title: errorState ? (
+                      error?.status === 404 ? (
+                        <NoInsightsResults /> // no Insights results received yet
+                      ) : (
+                        <NoRecsError /> // any other problem
+                      )
+                    ) : loadingState ? (
+                      <Loading />
+                    ) : noInput ? (
+                      <NoRecsAffecting />
+                    ) : (
+                      <NoMatchingRecs />
+                    ),
+                  },
+                ],
+              },
+            ]
+          ) : successState ? (
+            displayedRows
+          ) : (
+            <ErrorState />
+          )
+        }
+        cells={CLUSTER_RULES_COLUMNS}
+        sortBy={{
+          index: filters.sortIndex,
+          direction: filters.sortDirection,
+        }}
+        onSort={onSort}
+        variant={TableVariant.compact}
+        isStickyHeader
+        canCollapseAll
+      >
+        <TableHeader />
+        <TableBody />
+      </Table>
     </div>
   );
 };
 
 ClusterRules.propTypes = {
-  reports: PropTypes.array.isRequired,
-};
-
-ClusterRules.defaultProps = {
-  reports: [],
+  cluster: PropTypes.shape({
+    isError: PropTypes.bool.isRequired,
+    isUninitialized: PropTypes.bool.isRequired,
+    isFetching: PropTypes.bool.isRequired,
+    isSuccess: PropTypes.bool.isRequired,
+    data: PropTypes.array,
+    refetch: PropTypes.func,
+    error: PropTypes.object,
+  }),
 };
 
 export default ClusterRules;

@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useIntl } from 'react-intl';
 import { Link, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import cloneDeep from 'lodash/cloneDeep';
 import capitalize from 'lodash/capitalize';
 import {
   SortByDirection,
@@ -14,16 +13,10 @@ import {
   TableHeader,
   TableVariant,
 } from '@patternfly/react-table';
-import { Card, CardBody } from '@patternfly/react-core/dist/js/components/Card';
-import {
-  Pagination,
-  PaginationVariant,
-} from '@patternfly/react-core/dist/js/components/Pagination';
-import { Stack } from '@patternfly/react-core/dist/js/layouts/Stack';
-import {
-  Tooltip,
-  TooltipPosition,
-} from '@patternfly/react-core/dist/js/components/Tooltip';
+import { Pagination, Stack, Tooltip } from '@patternfly/react-core';
+import { TooltipPosition } from '@patternfly/react-core/dist/js/components/Tooltip';
+import { PaginationVariant } from '@patternfly/react-core/dist/js/components/Pagination/Pagination';
+import isEqual from 'lodash/isEqual';
 
 import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
 import { InsightsLabel } from '@redhat-cloud-services/frontend-components/InsightsLabel';
@@ -31,32 +24,50 @@ import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryTo
 import { addNotification } from '@redhat-cloud-services/frontend-components-notifications/';
 
 import {
-  DEBOUNCE_DELAY,
   FILTER_CATEGORIES,
+  RECS_LIST_CATEGORY_CELL,
+  RECS_LIST_CLUSTERS_CELL,
   RECS_LIST_COLUMNS,
   RECS_LIST_COLUMNS_KEYS,
+  RECS_LIST_MODIFIED_CELL,
+  RECS_LIST_NAME_CELL,
+  RECS_LIST_TOTAL_RISK_CELL,
   TOTAL_RISK_LABEL_LOWER,
+  RISK_OF_CHANGE_LABEL,
+  RECS_LIST_RISK_OF_CHANGE_CELL,
+  RISK_OF_CHANGE_DESC,
 } from '../../AppConstants';
 import messages from '../../Messages';
 import {
   RECS_LIST_INITIAL_STATE,
+  resetFilters,
   updateRecsListFilters,
 } from '../../Services/Filters';
 import RuleLabels from '../Labels/RuleLabels';
-import { strong } from '../../Utilities/intlHelper';
-import Loading from '../Loading/Loading';
+import { formatMessages, mapContentToValues } from '../../Utilities/intlHelper';
+import { strong } from '../../Utilities/Helpers';
 import { ErrorState, NoMatchingRecs } from '../MessageState/EmptyStates';
-import RuleDetails from '../Recommendation/RuleDetails';
 import {
   passFilters,
   paramParser,
   translateSortParams,
-  debounce,
+  updateSearchParams,
+  removeFilterParam as _removeFilterParam,
+  addFilterParam as _addFilterParam,
 } from '../Common/Tables';
 import DisableRule from '../Modals/DisableRule';
 import { Delete } from '../../Utilities/Api';
 import { BASE_URL } from '../../Services/SmartProxy';
 import CategoryLabel, { extractCategories } from '../Labels/CategoryLabel';
+import {
+  AdvisorProduct,
+  RuleDetails,
+  RuleDetailsMessagesKeys,
+} from '@redhat-cloud-services/frontend-components-advisor-components';
+import { adjustOCPRule } from '../../Utilities/Rule';
+import Loading from '../Loading/Loading';
+import inRange from 'lodash/inRange';
+import { BASE_PATH } from '../../Routes';
 
 const RecsListTable = ({ query }) => {
   const intl = useIntl();
@@ -74,14 +85,26 @@ const RecsListTable = ({ query }) => {
   const notify = (data) => dispatch(addNotification(data));
   const { search } = useLocation();
   const [filterBuilding, setFilterBuilding] = useState(true);
+  // helps to distinguish the state when the API data received but not yet filtered
+  const [rowsFiltered, setRowsFiltered] = useState(false);
   const updateFilters = (filters) => dispatch(updateRecsListFilters(filters));
-  const [searchText, setSearchText] = useState(filters?.text || '');
-  const debouncedSearchText = debounce(searchText, DEBOUNCE_DELAY);
+  const searchText = filters?.text || '';
+  const loadingState = isUninitialized || isFetching || !rowsFiltered;
+  const errorState = isError || (isSuccess && recs.length === 0);
+  const successState = isSuccess && recs.length > 0;
+  const noMatch = recs.length > 0 && filteredRows.length === 0;
+
+  const removeFilterParam = (param) =>
+    _removeFilterParam(filters, updateFilters, param);
+
+  const addFilterParam = (param, values) =>
+    _addFilterParam(filters, updateFilters, param, values);
 
   useEffect(() => {
     setDisplayedRows(
       buildDisplayedRows(filteredRows, filters.sortIndex, filters.sortDirection)
     );
+    setRowsFiltered(true);
   }, [
     filteredRows,
     filters.limit,
@@ -91,18 +114,32 @@ const RecsListTable = ({ query }) => {
   ]);
 
   useEffect(() => {
-    setFilteredRows(buildFilteredRows(recs, filters));
-  }, [data, filters]);
+    const filteredRows = buildFilteredRows(recs, filters);
+    if (filteredRows.length && filteredRows.length <= filters.offset) {
+      updateFilters({
+        ...filters,
+        offset: 0,
+      });
+    }
+    setFilteredRows(filteredRows);
+  }, [
+    data,
+    filters.category,
+    filters.impact,
+    filters.impacting,
+    filters.total_risk,
+    filters.rule_status,
+    filters.likelihood,
+    filters.res_risk,
+    searchText,
+  ]);
 
   useEffect(() => {
     if (search && filterBuilding) {
       const paramsObject = paramParser(search);
 
-      paramsObject.text === undefined
-        ? setSearchText('')
-        : setSearchText(paramsObject.text);
       if (paramsObject.sort) {
-        const sortObj = translateSortParams(paramsObject.sort[0]);
+        const sortObj = translateSortParams(paramsObject.sort);
         paramsObject.sortIndex = RECS_LIST_COLUMNS_KEYS.indexOf(sortObj.name);
         paramsObject.sortDirection = sortObj.direction;
       }
@@ -119,16 +156,14 @@ const RecsListTable = ({ query }) => {
   }, []);
 
   useEffect(() => {
-    if (!filterBuilding && !isFetching && !isUninitialized) {
-      const updatedFilters = cloneDeep(filters);
-      const text = searchText.length ? { text: searchText } : {};
-      delete updatedFilters.text;
-      updateFilters({ ...updatedFilters, ...text, offset: 0 });
+    if (!filterBuilding) {
+      updateSearchParams(filters, RECS_LIST_COLUMNS_KEYS);
     }
-  }, [debouncedSearchText]);
+  }, [filters, filterBuilding]);
 
   // constructs array of rows (from the initial data) checking currently applied filters
   const buildFilteredRows = (allRows, filters) => {
+    setRowsFiltered(false);
     return allRows
       .filter((rule) => passFilters(rule, filters))
       .map((value, key) => [
@@ -141,12 +176,7 @@ const RecsListTable = ({ query }) => {
                 <span key={key}>
                   <Link
                     key={key}
-                    // https://github.com/RedHatInsights/ocp-advisor-frontend/issues/29
-                    to={`/recommendations/${
-                      process.env.NODE_ENV === 'development'
-                        ? value.rule_id.replaceAll('.', '%2E')
-                        : value.rule_id
-                    }`}
+                    to={`${BASE_PATH}/recommendations/${value.rule_id}`}
                   >
                     {' '}
                     {value?.description || value?.rule_id}{' '}
@@ -181,7 +211,7 @@ const RecsListTable = ({ query }) => {
                         risk:
                           TOTAL_RISK_LABEL_LOWER[value.total_risk] ||
                           intl.formatMessage(messages.undefined),
-                        strong: (str) => strong(str),
+                        strong,
                       }
                     )}
                   >
@@ -195,6 +225,18 @@ const RecsListTable = ({ query }) => {
                     )}
                   </Tooltip>
                 </div>
+              ),
+            },
+            {
+              title: inRange(value?.resolution_risk, 1, 5) ? (
+                <InsightsLabel
+                  value={value.resolution_risk}
+                  rest={{ isCompact: true }}
+                  text={RISK_OF_CHANGE_LABEL[value.resolution_risk]}
+                  hideIcon
+                />
+              ) : (
+                intl.formatMessage(messages.nA)
               ),
             },
             {
@@ -213,14 +255,26 @@ const RecsListTable = ({ query }) => {
           cells: [
             {
               title: (
-                <section className="pf-m-light pf-l-page__main-section pf-c-page__main-section">
+                <section className="pf-l-page__main-section pf-c-page__main-section pf-m-light">
                   <Stack hasGutter>
                     <RuleDetails
-                      rule={{
-                        ...value,
-                        impact: { impact: value.impact },
-                      }}
+                      messages={formatMessages(
+                        intl,
+                        RuleDetailsMessagesKeys,
+                        mapContentToValues(intl, adjustOCPRule(value))
+                      )}
+                      product={AdvisorProduct.ocp}
+                      rule={adjustOCPRule(value)}
                       isDetailsPage={false}
+                      showViewAffected
+                      linkComponent={Link}
+                      {...(inRange(value?.resolution_risk, 1, 5) // resolution risk can be 0 (not defined for particular rule)
+                        ? {
+                            resolutionRisk: value?.resolution_risk,
+                            resolutionRiskDesc:
+                              RISK_OF_CHANGE_DESC[value?.resolution_risk],
+                          }
+                        : {})}
                     />
                   </Stack>
                 </section>
@@ -230,21 +284,47 @@ const RecsListTable = ({ query }) => {
         },
       ]);
   };
-
+  /* the category sorting compares only the first element of the array.
+   Could be refactored later when we assign a priority numbers to each of the category
+   and sort them in the array based on the priority.
+*/
   const buildDisplayedRows = (rows, index, direction) => {
     const sortingRows = [...rows].sort((firstItem, secondItem) => {
-      const fst = firstItem[0].rule[RECS_LIST_COLUMNS_KEYS[index - 1]];
-      const snd = secondItem[0].rule[RECS_LIST_COLUMNS_KEYS[index - 1]];
-      if (index === 3) {
-        return extractCategories(fst)[0].localeCompare(
-          extractCategories(snd)[0]
-        );
+      let fst = firstItem[0].rule;
+      let snd = secondItem[0].rule;
+      const d = direction === SortByDirection.asc ? 1 : -1;
+      switch (index) {
+        case RECS_LIST_NAME_CELL:
+          fst = fst.description;
+          snd = snd.description;
+          return fst.localeCompare(snd) ? fst.localeCompare(snd) * d : 0;
+        case RECS_LIST_MODIFIED_CELL:
+          fst = new Date(fst.publish_date || 0);
+          snd = new Date(snd.publish_date || 0);
+          return fst > snd ? d : snd > fst ? -d : 0;
+        case RECS_LIST_CATEGORY_CELL:
+          return (
+            d *
+            extractCategories(fst.tags)[0].localeCompare(
+              extractCategories(snd.tags)[0]
+            )
+          );
+        case RECS_LIST_TOTAL_RISK_CELL:
+          fst = fst.total_risk;
+          snd = snd.total_risk;
+          return fst > snd ? d : snd > fst ? -d : 0;
+        case RECS_LIST_RISK_OF_CHANGE_CELL:
+          fst = fst.resolution_risk;
+          snd = snd.resolution_risk;
+          return fst > snd ? d : snd > fst ? -d : 0;
+        case RECS_LIST_CLUSTERS_CELL:
+          fst = fst.impacted_clusters_count;
+          snd = snd.impacted_clusters_count;
+          return fst > snd ? d : snd > fst ? -d : 0;
+        default:
+          console.error('Incorrect sorting parameters received');
       }
-      return fst > snd ? 1 : snd > fst ? -1 : 0;
     });
-    if (direction === SortByDirection.desc) {
-      sortingRows.reverse();
-    }
     return sortingRows
       .slice(
         filters.limit * (page - 1),
@@ -256,18 +336,6 @@ const RecsListTable = ({ query }) => {
         return updatedRow;
       });
   };
-
-  const removeFilterParam = (param) => {
-    const filter = { ...filters, offset: 0 };
-    delete filter[param];
-    updateFilters({ ...filter, ...(param === 'text' ? { text: '' } : {}) });
-  };
-
-  // TODO: update URL when filters changed
-  const addFilterParam = (param, values) =>
-    values.length > 0
-      ? updateFilters({ ...filters, offset: 0, ...{ [param]: values } })
-      : removeFilterParam(param);
 
   const toggleRulesDisabled = (rule_status) =>
     updateFilters({
@@ -281,9 +349,10 @@ const RecsListTable = ({ query }) => {
       label: intl.formatMessage(messages.name).toLowerCase(),
       filterValues: {
         key: 'text-filter',
-        onChange: (_event, value) => setSearchText(value),
+        onChange: (_event, value) =>
+          updateFilters({ ...filters, offset: 0, text: value }),
         value: searchText,
-        placeholder: intl.formatMessage(messages.filterBy),
+        placeholder: intl.formatMessage(messages.filterByName),
       },
     },
     {
@@ -363,10 +432,29 @@ const RecsListTable = ({ query }) => {
         items: FILTER_CATEGORIES.impacting.values,
       },
     },
+    {
+      label: FILTER_CATEGORIES.res_risk.title,
+      type: FILTER_CATEGORIES.res_risk.type,
+      id: FILTER_CATEGORIES.res_risk.urlParam,
+      value: `checkbox-${FILTER_CATEGORIES.res_risk.urlParam}`,
+      filterValues: {
+        key: `${FILTER_CATEGORIES.res_risk.urlParam}-filter`,
+        onChange: (e, values) =>
+          addFilterParam(FILTER_CATEGORIES.res_risk.urlParam, values),
+        value: filters.res_risk,
+        items: FILTER_CATEGORIES.res_risk.values,
+      },
+    },
   ];
 
-  const onSort = (_e, index, direction) =>
-    updateFilters({ ...filters, sortIndex: index, sortDirection: direction });
+  const onSort = (_e, index, direction) => {
+    setRowsFiltered(false);
+    return updateFilters({
+      ...filters,
+      sortIndex: index,
+      sortDirection: direction,
+    });
+  };
 
   const pruneFilters = (localFilters, filterCategories) => {
     const prunedFilters = Object.entries(localFilters);
@@ -424,6 +512,7 @@ const RecsListTable = ({ query }) => {
       : [];
   };
 
+  // TODO: use the function from Common/Tables.js
   const buildFilterChips = () => {
     const localFilters = { ...filters };
     delete localFilters.sortIndex;
@@ -434,11 +523,16 @@ const RecsListTable = ({ query }) => {
   };
 
   const activeFiltersConfig = {
+    showDeleteButton: true,
     deleteTitle: intl.formatMessage(messages.resetFilters),
     filters: buildFilterChips(),
     onDelete: (_event, itemsToRemove, isAll) => {
       if (isAll) {
-        updateFilters(RECS_LIST_INITIAL_STATE);
+        if (isEqual(filters, RECS_LIST_INITIAL_STATE)) {
+          refetch();
+        } else {
+          resetFilters(filters, RECS_LIST_INITIAL_STATE, updateFilters);
+        }
       } else {
         itemsToRemove.map((item) => {
           const newFilter = {
@@ -456,25 +550,23 @@ const RecsListTable = ({ query }) => {
     },
   };
 
-  //Responsible for the handling collapse for all the recommendations
-  //Used in the PrimaryToolbar
-  const collapseAll = (_e, isOpen) => {
-    setIsAllExpanded(isOpen);
-    setDisplayedRows(
-      displayedRows.map((row) => {
-        return {
-          ...row,
-          isOpen: isOpen,
-        };
-      })
-    );
-  };
-
-  //Responsible for handling collapse for single recommendation
   const handleOnCollapse = (_e, rowId, isOpen) => {
-    const collapseRows = [...displayedRows];
-    collapseRows[rowId] = { ...collapseRows[rowId], isOpen };
-    setDisplayedRows(collapseRows);
+    if (rowId === undefined) {
+      // if undefined, all rows are affected
+      setIsAllExpanded(isOpen);
+      setDisplayedRows(
+        displayedRows.map((row) => ({
+          ...row,
+          isOpen,
+        }))
+      );
+    } else {
+      setDisplayedRows(
+        displayedRows.map((row, index) =>
+          index === rowId ? { ...row, isOpen } : row
+        )
+      );
+    }
   };
 
   const ackRule = async (rowId) => {
@@ -487,7 +579,7 @@ const RecsListTable = ({ query }) => {
         setDisableRuleOpen(true);
       } else {
         try {
-          await Delete(`${BASE_URL}/v2/ack/${rule.rule_id}/`);
+          await Delete(`${BASE_URL}/v2/ack/${rule.rule_id}`);
           notify({
             variant: 'success',
             timeout: true,
@@ -517,7 +609,7 @@ const RecsListTable = ({ query }) => {
   };
 
   const actionResolver = (rowData, { rowIndex }) => {
-    const rule = displayedRows[rowIndex].rule
+    const rule = displayedRows?.[rowIndex]?.rule
       ? displayedRows[rowIndex].rule
       : null;
     if (rowIndex % 2 !== 0 || !rule) {
@@ -540,7 +632,7 @@ const RecsListTable = ({ query }) => {
   };
 
   return (
-    <div id="recs-list-table">
+    <div id="recs-list-table" data-ouia-safe={!loadingState}>
       {disableRuleOpen && (
         <DisableRule
           handleModalToggle={setDisableRuleOpen}
@@ -550,63 +642,76 @@ const RecsListTable = ({ query }) => {
         />
       )}
       <PrimaryToolbar
-        expandAll={{ isAllExpanded, onClick: collapseAll }}
         pagination={{
           itemCount: filteredRows.length,
           page: filters.offset / filters.limit + 1,
           perPage: Number(filters.limit),
           onSetPage(_event, page) {
+            setRowsFiltered(false);
             updateFilters({
               ...filters,
               offset: filters.limit * (page - 1),
             });
           },
           onPerPageSelect(_event, perPage) {
+            setRowsFiltered(false);
             updateFilters({ ...filters, limit: perPage, offset: 0 });
           },
           isCompact: true,
           ouiaId: 'pager',
         }}
-        filterConfig={{ items: filterConfigItems }}
-        activeFiltersConfig={activeFiltersConfig}
+        filterConfig={{
+          items: filterConfigItems,
+          isDisabled: loadingState || errorState,
+        }}
+        activeFiltersConfig={errorState ? undefined : activeFiltersConfig}
       />
-      {(isUninitialized || isFetching) && <Loading />}
-      {(isError || (isSuccess && recs.length === 0)) && (
-        <Card id="error-state-message" ouiaId="error-state">
-          <CardBody>
+      <Table
+        aria-label="Table of recommendations"
+        ouiaId="recommendations"
+        variant={TableVariant.compact}
+        cells={RECS_LIST_COLUMNS}
+        rows={
+          errorState || loadingState || noMatch ? (
+            [
+              {
+                fullWidth: true,
+                cells: [
+                  {
+                    props: {
+                      colSpan: RECS_LIST_COLUMNS.length + 1,
+                    },
+                    title: errorState ? (
+                      <ErrorState />
+                    ) : loadingState ? (
+                      <Loading />
+                    ) : (
+                      <NoMatchingRecs />
+                    ),
+                  },
+                ],
+              },
+            ]
+          ) : successState ? (
+            displayedRows
+          ) : (
             <ErrorState />
-          </CardBody>
-        </Card>
-      )}
-      {!(isUninitialized || isFetching) && isSuccess && recs.length > 0 && (
-        <React.Fragment>
-          <Table
-            aria-label="Table of recommendations"
-            ouiaId="recommendations"
-            variant={TableVariant.compact}
-            cells={RECS_LIST_COLUMNS}
-            rows={displayedRows}
-            onCollapse={handleOnCollapse}
-            sortBy={{
-              index: filters.sortIndex,
-              direction: filters.sortDirection,
-            }}
-            onSort={onSort}
-            actionResolver={actionResolver}
-            isStickyHeader
-          >
-            <TableHeader />
-            <TableBody />
-          </Table>
-          {recs.length > 0 && filteredRows.length === 0 && (
-            <Card ouiaId="empty-state">
-              <CardBody>
-                <NoMatchingRecs />
-              </CardBody>
-            </Card>
-          )}
-        </React.Fragment>
-      )}
+          )
+        }
+        onCollapse={handleOnCollapse} // TODO: set undefined when there is an empty state
+        sortBy={{
+          index: filters.sortIndex,
+          direction: filters.sortDirection,
+        }}
+        onSort={onSort}
+        actionResolver={actionResolver}
+        isStickyHeader
+        ouiaSafe={!loadingState}
+        canCollapseAll
+      >
+        <TableHeader />
+        <TableBody />
+      </Table>
       <Pagination
         ouiaId="pager"
         itemCount={filteredRows.length}
@@ -634,7 +739,7 @@ RecsListTable.propTypes = {
     isUninitialized: PropTypes.bool.isRequired,
     isFetching: PropTypes.bool.isRequired,
     isSuccess: PropTypes.bool.isRequired,
-    data: PropTypes.array,
+    data: PropTypes.object,
     refetch: PropTypes.func,
   }),
 };

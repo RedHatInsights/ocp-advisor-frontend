@@ -1,29 +1,34 @@
 import React, { useEffect } from 'react';
-import routerParams from '@redhat-cloud-services/frontend-components-utilities/RouterParams';
+import { useParams } from 'react-router-dom';
 import { useIntl } from 'react-intl';
+import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 
 import { useGetClusterByIdQuery } from '../../Services/SmartProxy';
 import messages from '../../Messages';
 import { Cluster } from './Cluster';
 
-export default routerParams(({ match }) => {
+const ClusterWrapper = () => {
   const intl = useIntl();
+  const { clusterId } = useParams();
   const cluster = useGetClusterByIdQuery({
-    id: match.params.clusterId,
+    id: clusterId,
     includeDisabled: false,
   });
+  const chrome = useChrome();
 
   useEffect(() => {
     cluster.refetch();
-  }, [match.params.clusterId]);
+  }, [clusterId]);
 
   useEffect(() => {
-    if (match.params.clusterId) {
-      const subnav = `${match.params.clusterId} - ${intl.formatMessage(
-        messages.clusters
-      )}`;
-      document.title = intl.formatMessage(messages.documentTitle, { subnav });
-    }
-  }, [match.params.clusterId]);
-  return <Cluster cluster={cluster} match={match} />;
-});
+    const subnav = `${
+      cluster?.data?.report?.meta?.cluster_name || clusterId
+    } - ${intl.formatMessage(messages.clusters)}`;
+    chrome.updateDocumentTitle(
+      intl.formatMessage(messages.documentTitle, { subnav })
+    );
+  }, [cluster, clusterId]);
+  return <Cluster cluster={cluster} clusterId={clusterId} />;
+};
+
+export default ClusterWrapper;

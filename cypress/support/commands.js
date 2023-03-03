@@ -25,10 +25,19 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 Cypress.Commands.add(
-  'byOuiaId',
+  'ouiaId',
   { prevSubject: 'optional' },
-  (subject, item) => {
-    const attr = `[data-ouia-component-id="${item}"]`;
+  (subject, item, el = '') => {
+    const attr = `${el}[data-ouia-component-id="${item}"]`;
+    return subject ? cy.wrap(subject).find(attr) : cy.get(attr);
+  }
+);
+
+Cypress.Commands.add(
+  'ouiaType',
+  { prevSubject: 'optional' },
+  (subject, item, el = '') => {
+    const attr = `${el}[data-ouia-component-type="${item}"]`;
     return subject ? cy.wrap(subject).find(attr) : cy.get(attr);
   }
 );

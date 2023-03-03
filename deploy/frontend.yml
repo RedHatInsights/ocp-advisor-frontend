@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: ocp-advisor-frontend
+objects:
+  - apiVersion: cloud.redhat.com/v1alpha1
+    kind: Frontend
+    metadata:
+      name: ocp-advisor
+    spec:
+      envName: ${ENV_NAME}
+      title: OCP Advisor
+      deploymentRepo: https://github.com/RedHatInsights/ocp-advisor-frontend
+      API:
+        versions:
+          - v1
+      frontend:
+        paths:
+          - /apps/ccx-data-pipeline
+      image: ${IMAGE}:${IMAGE_TAG}
+      navItems:
+        - title: Advisor
+          expandable: true
+          routes:
+            - appId: ocpAdvisor
+              title: Recommendations
+              href: /openshift/insights/advisor/recommendations
+              product: Red Hat OpenShift Cluster Manager
+            - appId: ocpAdvisor
+              title: Clusters
+              href: /openshift/insights/advisor/clusters
+              product: Red Hat OpenShift Cluster Manager
+      module:
+        manifestLocation: /apps/ocp-advisor/fed-mods.json
+        modules:
+          - id: ocp-advisor
+            module: ./RootApp
+            routes:
+              - pathname: /openshift/insights/advisor
+        moduleID: ocpAdvisor
+parameters:
+  - name: ENV_NAME
+    required: true
+  - name: IMAGE_TAG
+    required: true
+  - name: IMAGE
+    value: quay.io/cloudservices/ocp-advisor-frontend

@@ -1,6 +1,6 @@
 import './Recommendation.scss';
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
@@ -15,27 +15,36 @@ import {
   PageHeader,
   PageHeaderTitle,
 } from '@redhat-cloud-services/frontend-components/PageHeader';
-import { Main } from '@redhat-cloud-services/frontend-components/Main';
 import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
-import { Label } from '@patternfly/react-core/dist/js/components/Label/Label';
-import { Title } from '@patternfly/react-core/dist/js/components/Title/Title';
-import { LabelGroup } from '@patternfly/react-core/dist/js/components/LabelGroup';
+import {
+  Label,
+  Title,
+  LabelGroup,
+  Button,
+  Dropdown,
+  DropdownItem,
+  DropdownToggle,
+  Flex,
+  FlexItem,
+} from '@patternfly/react-core';
 import BellSlashIcon from '@patternfly/react-icons/dist/js/icons/bell-slash-icon';
 import CaretDownIcon from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
 import { addNotification } from '@redhat-cloud-services/frontend-components-notifications/';
-import { Button } from '@patternfly/react-core/dist/js/components/Button/Button';
-import { Dropdown } from '@patternfly/react-core/dist/js/components/Dropdown/Dropdown';
-import { DropdownItem } from '@patternfly/react-core/dist/js/components/Dropdown/DropdownItem';
-import { DropdownToggle } from '@patternfly/react-core/dist/js/components/Dropdown/DropdownToggle';
-import { Flex } from '@patternfly/react-core/dist/js/layouts/Flex/Flex';
-import { FlexItem } from '@patternfly/react-core/dist/js/layouts/Flex/FlexItem';
 import { ErrorState } from '@redhat-cloud-services/frontend-components/ErrorState';
+import {
+  AdvisorProduct,
+  RuleDetails,
+  RuleDetailsMessagesKeys,
+} from '@redhat-cloud-services/frontend-components-advisor-components';
 
 import Breadcrumbs from '../Breadcrumbs';
 import RuleLabels from '../Labels/RuleLabels';
-import { FILTER_CATEGORIES, RULE_CATEGORIES } from '../../AppConstants';
+import {
+  FILTER_CATEGORIES,
+  RISK_OF_CHANGE_DESC,
+  RULE_CATEGORIES,
+} from '../../AppConstants';
 import messages from '../../Messages';
-import RuleDetails from './RuleDetails';
 import Loading from '../Loading/Loading';
 import { adjustOCPRule } from '../../Utilities/Rule';
 import MessageState from '../MessageState/MessageState';
@@ -46,12 +55,13 @@ import DisableRule from '../Modals/DisableRule';
 import ViewHostAcks from '../Modals/ViewHostAcks';
 import { OneLineLoader } from '../../Utilities/Loaders';
 import { enableRuleForCluster } from '../../Services/Acks';
+import { formatMessages, mapContentToValues } from '../../Utilities/intlHelper';
+import inRange from 'lodash/inRange';
 
-const Recommendation = ({ rule, ack, clusters, match }) => {
+const Recommendation = ({ rule, ack, clusters, recId }) => {
   const intl = useIntl();
   const dispatch = useDispatch();
   const notify = (data) => dispatch(addNotification(data));
-  const recId = match.params.recommendationId;
   const [disableRuleModalOpen, setDisableRuleModalOpen] = useState(false);
   const [actionsDropdownOpen, setActionsDropdownOpen] = useState(false);
   const [viewSystemsModalOpen, setViewSystemsModalOpen] = useState(false);
@@ -118,7 +128,7 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
 
   const enableRule = async (rule) => {
     try {
-      await Delete(`${BASE_URL}/v2/ack/${rule.data.content.rule_id}/`);
+      await Delete(`${BASE_URL}/v2/ack/${rule.data.content.rule_id}`);
       notify({
         variant: 'success',
         timeout: true,
@@ -136,6 +146,11 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
       });
     }
   };
+
+  const messagesValues = useMemo(
+    () => (content ? mapContentToValues(intl, content) : {}),
+    [intl, content]
+  );
 
   return (
     <React.Fragment>
@@ -162,22 +177,27 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
         <Breadcrumbs current={content?.description || recId} />
       </PageHeader>
       {(isUninitialized || isLoading || isFetching) && (
-        <Main>
+        <section className="pf-l-page__main-section pf-c-page__main-section pf-m-light pf-u-pt-sm">
           <Loading />
-        </Main>
+        </section>
       )}
       {isError && (
-        <Main>
+        <section className="pf-l-page__main-section pf-c-page__main-section pf-m-light pf-u-pt-sm">
           <ErrorState />
-        </Main>
+        </section>
       )}
       {!(isUninitialized || isLoading || isFetching) && isSuccess && (
         <React.Fragment>
-          <Main className="pf-m-light pf-u-pt-sm">
+          <section className="pf-l-page__main-section pf-c-page__main-section pf-m-light pf-u-pt-sm">
             <RuleDetails
-              isOpenShift
-              isDetailsPage
+              messages={formatMessages(
+                intl,
+                RuleDetailsMessagesKeys,
+                messagesValues
+              )}
+              product={AdvisorProduct.ocp}
               rule={content}
+              isDetailsPage
               header={
                 <React.Fragment>
                   <PageHeaderTitle
@@ -188,7 +208,7 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
                     }
                   />
                   <p>
-                    {intl.formatMessage(messages.rulesDetailsPubishdate, {
+                    {intl.formatMessage(messages.rulesDetailsModifiedDate, {
                       date: (
                         <DateFormat
                           date={new Date(content.publish_date)}
@@ -228,9 +248,16 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
                   </p>
                 </React.Fragment>
               }
-              onFeedbackChanged={async (rule, rating) =>
+              onVoteClick={async (rule, rating) =>
                 await Post(`${BASE_URL}/v2/rating`, {}, { rule, rating })
               }
+              {...(inRange(content?.resolution_risk, 1, 5) // resolution risk can be 0 (not defined for particular rule)
+                ? {
+                    resolutionRisk: content?.resolution_risk,
+                    resolutionRiskDesc:
+                      RISK_OF_CHANGE_DESC[content?.resolution_risk],
+                  }
+                : {})}
             >
               <Flex>
                 <FlexItem align={{ default: 'alignRight' }}>
@@ -281,13 +308,13 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
                 </FlexItem>
               </Flex>
             </RuleDetails>
-          </Main>
-          <Main>
+          </section>
+          <section className="pf-l-page__main-section pf-c-page__main-section">
             <React.Fragment>
               {(content?.hosts_acked_count ||
                 ackedClusters?.length > 0 ||
                 content?.disabled) && (
-                <Card className="cardOverride">
+                <Card className="cardOverride" ouiaId="hosts-acked">
                   <CardHeader>
                     <Title headingLevel="h4" size="xl">
                       <BellSlashIcon size="sm" />
@@ -377,7 +404,7 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
                               uuids: ackedClusters.map((c) => c.cluster_id),
                             })
                           }
-                          ouiaId="enable-all"
+                          ouiaId="enable"
                         >
                           {intl.formatMessage(messages.enableRuleForClusters)}
                         </Button>
@@ -389,7 +416,7 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
                         isInline
                         variant="link"
                         onClick={() => enableRule(rule)}
-                        ouiaId="rule"
+                        ouiaId="enable"
                       >
                         {intl.formatMessage(messages.enableRule)}
                       </Button>
@@ -417,7 +444,7 @@ const Recommendation = ({ rule, ack, clusters, match }) => {
                 />
               )}
             </React.Fragment>
-          </Main>
+          </section>
         </React.Fragment>
       )}
     </React.Fragment>
@@ -428,7 +455,7 @@ Recommendation.propTypes = {
   rule: PropTypes.object.isRequired,
   ack: PropTypes.object.isRequired,
   clusters: PropTypes.object.isRequired,
-  match: PropTypes.object.isRequired,
+  recId: PropTypes.string.isRequired,
 };
 
 export { Recommendation };

@@ -1,0 +1,55 @@
+{
+    "content": {
+      "rule_id": "external.rules.rule|ERROR_KEY",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.",
+      "generic": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.",
+      "reason": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.",
+      "resolution": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.",
+      "more_info": "",
+      "total_risk": 2,
+      "risk_of_change": 0,
+      "impact": 2,
+      "likelihood": 3,
+      "publish_date": "2021-11-01T14:00:00Z",
+      "tags": [
+        "fault_tolerance",
+        "openshift",
+        "sap"
+      ],
+      "rating": 0,
+      "hosts_acked_count": 0,
+      "disabled": false,
+      "resolution_risk": 1
+    },
+    "groups": [
+      {
+        "title": "Fault Tolerance",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.",
+        "tags": [
+          "fault_tolerance"
+        ]
+      },
+      {
+        "title": "Performance",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.",
+        "tags": [
+          "performance"
+        ]
+      },
+      {
+        "title": "Service Availability",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.",
+        "tags": [
+          "service_availability"
+        ]
+      },
+      {
+        "title": "Security",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.",
+        "tags": [
+          "security"
+        ]
+      }
+    ],
+    "status": "ok"
+  }

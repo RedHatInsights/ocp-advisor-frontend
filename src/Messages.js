@@ -13,10 +13,10 @@ export default defineMessages({
       'Clusters title used in recommendation table column and clusters tab header',
     defaultMessage: 'Clusters',
   },
-  added: {
-    id: 'added',
+  modified: {
+    id: 'modified',
     description: 'Recommendation table column title',
-    defaultMessage: 'Added',
+    defaultMessage: 'Modified',
   },
   loading: {
     id: 'loading',
@@ -44,11 +44,6 @@ export default defineMessages({
     id: 'description',
     description: 'Used in the hitting rules table for the single cluster view',
     defaultMessage: 'Description',
-  },
-  filterBy: {
-    id: 'filterBy',
-    description: 'Filter by name',
-    defaultMessage: 'Filter by name',
   },
   totalRisk: {
     id: 'totalRisk',
@@ -189,6 +184,12 @@ export default defineMessages({
     description: 'Filter action, reset all filter chips',
     defaultMessage: 'Reset filters',
   },
+  clusterDetailsRedirect: {
+    id: 'clusterDetailsRedirect',
+    description:
+      'Dropdown on the single cluster page, redirects user to the OCM',
+    defaultMessage: 'View cluster details',
+  },
   noMatchingRecsTitle: {
     id: 'noMatchingRecommendationsTitle',
     defaultMessage: 'No matching recommendations found',
@@ -214,10 +215,10 @@ export default defineMessages({
     defaultMessage:
       'Indicates this recommendation will not be shown for the cluster.',
   },
-  rulesDetailsPubishdate: {
+  rulesDetailsModifiedDate: {
     id: 'rulesdetails.publishdate',
-    description: 'Recommendationsdetails, publish date',
-    defaultMessage: 'Publish date: {date}',
+    description: 'Recommendationsdetails, modified date',
+    defaultMessage: 'Modified date: {date}',
   },
   knowledgebaseArticle: {
     id: 'knowledgebasearticle',
@@ -245,7 +246,7 @@ export default defineMessages({
   noRecsError: {
     id: 'noRecsError',
     description: 'Recommendations table, cluster recommendations table',
-    defaultMessage: 'No recommendations available.',
+    defaultMessage: 'No recommendations available',
   },
   noRecsErrorDesc: {
     id: 'noRecsErrorDesc',
@@ -363,8 +364,8 @@ export default defineMessages({
   },
   nA: {
     id: 'nA',
-    description: 'Abreviated as N/A, text equivelent, not applicable',
-    defaultMessage: 'N/A',
+    description: 'Abreviated as not available, text equivelent, not applicable',
+    defaultMessage: 'Not available',
   },
   permsTitle: {
     id: 'permsTitle',
@@ -430,6 +431,11 @@ export default defineMessages({
     description:
       'Explaining the action of disabling a recommendation for a single cluster',
     defaultMessage: 'Disable only for this cluster',
+  },
+  dropDownActionSingleCluster: {
+    id: 'dropDownActionSingleCluster',
+    description: 'Default text for the dropdown on the single cluster page',
+    defaultMessage: 'Action',
   },
   disableRuleBody: {
     id: 'disableRuleBody',
@@ -581,9 +587,59 @@ export default defineMessages({
     description: 'Asking the user if they find a recommendation helpful',
     defaultMessage: 'Is this recommendation helpful?',
   },
-  feedbackThankyou: {
-    id: 'feedbackThankyou',
+  feedbackThankYou: {
+    id: 'feedbackThankYou',
     description: 'Thanking user for feedback',
     defaultMessage: 'Thank you for your feedback!',
+  },
+  version: {
+    id: 'version',
+    description: 'Version label name',
+    defaultMessage: 'Version',
+  },
+  filterByName: {
+    id: 'filterByName',
+    defaultMessage: 'Filter by name',
+  },
+  filterByVersion: {
+    id: 'filterByVersion',
+    defaultMessage: 'Filter by version',
+  },
+  impacted: {
+    id: 'impacted',
+    defaultMessage: 'First impacted',
+  },
+  riskOfChangeTextOne: {
+    id: 'riskOfChangeTextOne',
+    description: 'Risk of change text explaining a value one',
+    defaultMessage:
+      'The risk of change is <strong>very low</strong>, because the change takes very little time to implement and there is minimal impact to system operations.',
+  },
+  riskOfChangeTextTwo: {
+    id: 'riskOfChangeTextTwo',
+    description: 'Risk of change text explaining a value two',
+    defaultMessage:
+      'The risk of change is <strong>low</strong>, because the change does not require that a system be taken offline.',
+  },
+  riskOfChangeTextThree: {
+    id: 'riskOfChangeTextThree',
+    description: 'Risk of change text explaining a value three',
+    defaultMessage:
+      'The risk of change is <strong>moderate</strong>, because the change will likely require an outage window.',
+  },
+  riskOfChangeTextFour: {
+    id: 'riskOfChangeTextFour',
+    description: 'Risk of change text explaining a value four',
+    defaultMessage: `The risk of change is <strong>high</strong>, because the change takes a significant amount of time and planning to execute, and will impact the system and business operations of the host due to downtime.`,
+  },
+  riskOfChangeLabel: {
+    id: 'riskOfChangeLabel',
+    defaultMessage: '{level}',
+  },
+  riskOfChangeText: {
+    id: 'riskOfChangeText',
+    description: 'Risk of change text',
+    defaultMessage:
+      'The risk of change is <strong>{ level }</strong>, because the change takes very little time to implement and there is minimal impact to system operations.',
   },
 });

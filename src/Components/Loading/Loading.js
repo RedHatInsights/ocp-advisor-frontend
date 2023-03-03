@@ -1,9 +1,9 @@
-import { Card } from '@patternfly/react-core/dist/js/components/Card/Card';
-import { CardBody } from '@patternfly/react-core/dist/js/components/Card/CardBody';
-import { List } from 'react-content-loader';
 import React from 'react';
+import { Card, CardBody } from '@patternfly/react-core';
+import { List } from 'react-content-loader';
+
 const Loading = () => (
-  <Card>
+  <Card ouiaId="loading-skeleton">
     <CardBody>
       <List />
     </CardBody>

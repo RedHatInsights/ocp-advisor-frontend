@@ -1,20 +1,24 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { CLUSTERS_TABLE_CELL_LAST_SEEN } from '../AppConstants';
 
 // single recommendation page
 export const AFFECTED_CLUSTERS_INITIAL_STATE = {
-  limit: 20,
+  limit: 50,
   offset: 0,
   text: '',
-  sortIndex: -1,
+  // TODO: use a constant instead
+  sortIndex: 3,
   sortDirection: null,
+  version: [],
 };
 
 // recommendations list page
 export const RECS_LIST_INITIAL_STATE = {
-  limit: 20,
+  limit: 50,
   offset: 0,
   impacting: ['true'],
   // default sorting by total risk
+  // TODO: use a constant instead
   sortIndex: 4,
   sortDirection: 'desc',
   rule_status: 'enabled',
@@ -22,19 +26,19 @@ export const RECS_LIST_INITIAL_STATE = {
 
 // clusters list page
 export const CLUSTERS_LIST_INITIAL_STATE = {
-  limit: 20,
+  limit: 50,
   offset: 0,
   hits: ['all'],
-  sortIndex: 6,
+  sortIndex: CLUSTERS_TABLE_CELL_LAST_SEEN,
   sortDirection: 'desc',
   text: '',
+  version: [],
 };
 
 // single cluster page
 export const CLUSTER_RULES_INITIAL_STATE = {
-  limit: 20,
-  offset: 0,
   // default sorting by total risk
+  // TODO: use a constant instead
   sortIndex: -1,
   sortDirection: 'desc',
   text: '',
@@ -45,6 +49,16 @@ const filtersInitialState = {
   recsListState: RECS_LIST_INITIAL_STATE,
   clustersListState: CLUSTERS_LIST_INITIAL_STATE,
   clusterRulesState: CLUSTER_RULES_INITIAL_STATE,
+};
+
+export const resetFilters = (filters, initialState, updateFilters) => {
+  const { limit, sortIndex, sortDirection } = filters;
+  updateFilters({
+    ...initialState,
+    ...(limit !== undefined && { limit }),
+    sortIndex,
+    sortDirection,
+  });
 };
 
 const filters = createSlice({
@@ -73,8 +87,6 @@ const filters = createSlice({
 export const {
   updateAffectedClustersFilters,
   updateRecsListFilters,
-  updateRecsListSortIndex,
-  updateRecListSortDirection,
   updateClustersListFilters,
   updateClusterRulesFilters,
 } = filters.actions;

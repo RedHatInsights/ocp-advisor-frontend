@@ -2,81 +2,69 @@ import * as React from 'react';
 import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 
-import { Stack, StackItem } from '@patternfly/react-core/dist/js/layouts/Stack';
-import { Title } from '@patternfly/react-core/dist/js/components/Title';
+import { Title, Button, Stack, StackItem } from '@patternfly/react-core';
 import {
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateSecondaryActions,
 } from '@patternfly/react-core/dist/js/components/EmptyState';
-import { Button } from '@patternfly/react-core/dist/js/components/Button';
 import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import CheckCircleIcon from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 import PlusCircleIcon from '@patternfly/react-icons/dist/js/icons/plus-circle-icon';
 import { global_success_color_100 as globalSuccessColor100 } from '@patternfly/react-tokens/dist/js/global_success_color_100';
 import { global_danger_color_100 as globalDangerColor100 } from '@patternfly/react-tokens/dist/js/global_danger_color_100';
 import { InProgressIcon } from '@patternfly/react-icons/dist/esm/icons/in-progress-icon';
+import InfoCircleIcon from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
+import { global_info_color_100 as globalInfoColor100 } from '@patternfly/react-tokens/dist/js/global_info_color_100.js';
+import CheckIcon from '@patternfly/react-icons/dist/js/icons/check-icon';
 
 import DefaultErrorMessage from '@redhat-cloud-services/frontend-components/ErrorState/DefaultErrorMessage';
 
 import MessageState from './MessageState';
 import messages from '../../Messages';
+import { BASE_PATH } from '../../Routes';
 
 // Analogue for ErrorState from the frontend-components without the "Go to homepage" button
 // TODO: update ErrorState from the frontend-components and remove custom error here
 const ErrorState = () => {
   const intl = useIntl();
   return (
-    <EmptyState>
-      <EmptyStateIcon
-        icon={ExclamationCircleIcon}
-        color={globalDangerColor100.value}
-      />
-      <Title headingLevel="h4" size="lg">
-        {intl.formatMessage(messages.errorStateTitle)}
-      </Title>
-      <EmptyStateBody>
+    <MessageState
+      title={intl.formatMessage(messages.errorStateTitle)}
+      text={
         <Stack>
           <StackItem>{intl.formatMessage(messages.errorStateBody)}</StackItem>
           <StackItem>
             <DefaultErrorMessage />
           </StackItem>
         </Stack>
-      </EmptyStateBody>
-    </EmptyState>
+      }
+      icon={ExclamationCircleIcon}
+      iconStyle={{ color: globalDangerColor100.value }}
+    />
   );
 };
 
 const NoAffectedClusters = () => {
   const intl = useIntl();
   return (
-    <EmptyState>
-      <EmptyStateIcon
-        icon={CheckCircleIcon}
-        color={globalSuccessColor100.value}
-      />
-      <Title headingLevel="h4" size="lg">
-        {intl.formatMessage(messages.noAffectedClustersTitle)}
-      </Title>
-      <EmptyStateBody>
-        {intl.formatMessage(messages.noAffectedClustersBody)}
-      </EmptyStateBody>
-    </EmptyState>
+    <MessageState
+      title={intl.formatMessage(messages.noAffectedClustersTitle)}
+      text={intl.formatMessage(messages.noAffectedClustersBody)}
+      icon={CheckCircleIcon}
+      iconStyle={{ color: globalSuccessColor100.value }}
+    />
   );
 };
 
 const NoMatchingClusters = () => {
   const intl = useIntl();
   return (
-    <EmptyState>
-      <Title headingLevel="h5" size="lg">
-        {intl.formatMessage(messages.noMatchingClustersTitle)}
-      </Title>
-      <EmptyStateBody>
-        {intl.formatMessage(messages.noMatchingClustersBody)}
-      </EmptyStateBody>
-    </EmptyState>
+    <MessageState
+      title={intl.formatMessage(messages.noMatchingClustersTitle)}
+      text={intl.formatMessage(messages.noMatchingClustersBody)}
+    />
   );
 };
 // used in the recs list table: no filters match
@@ -86,8 +74,6 @@ const NoMatchingRecs = () => {
     <MessageState
       title={intl.formatMessage(messages.noMatchingRecsTitle)}
       text={intl.formatMessage(messages.noMatchingRecsBody)}
-      icon={CheckCircleIcon}
-      iconStyle={{ color: globalSuccessColor100.value }}
     />
   );
 };
@@ -105,7 +91,7 @@ const ComingSoon = () => {
       <EmptyStateBody>
         {intl.formatMessage(messages.comingSoonBody)}
       </EmptyStateBody>
-      <Link to="/recommendations">
+      <Link to={`${BASE_PATH}/recommendations`}>
         <Button variant="primary">Recommendations</Button>
       </Link>
     </EmptyState>
@@ -150,6 +136,57 @@ const NoRecsForClusters = () => {
   );
 };
 
+const NoInsightsResults = () => {
+  const intl = useIntl();
+  return (
+    <MessageState
+      title={intl.formatMessage(messages.noRecsFoundError)}
+      text={
+        <React.Fragment>
+          {intl.formatMessage(messages.noRecsFoundErrorDesc)}
+          <a href="https://docs.openshift.com/container-platform/latest/support/getting-support.html">
+            {' '}
+            OpenShift documentation.
+          </a>
+        </React.Fragment>
+      }
+      icon={InfoCircleIcon}
+      iconStyle={{
+        color: globalInfoColor100.value,
+      }}
+      variant="large"
+    />
+  );
+};
+
+const NoRecsError = () => {
+  const intl = useIntl();
+  return (
+    <MessageState
+      title={intl.formatMessage(messages.noRecsError)}
+      text={intl.formatMessage(messages.noRecsErrorDesc)}
+      icon={ExclamationCircleIcon}
+      iconStyle={{
+        color: globalDangerColor100.value,
+      }}
+    />
+  );
+};
+
+const NoRecsAffecting = () => {
+  const intl = useIntl();
+  return (
+    <MessageState
+      icon={CheckIcon}
+      iconStyle={{
+        color: globalSuccessColor100.value,
+      }}
+      title={intl.formatMessage(messages.noRecommendations)}
+      text={intl.formatMessage(messages.noRecommendationsDesc)}
+    />
+  );
+};
+
 export {
   ErrorState,
   NoAffectedClusters,
@@ -157,4 +194,7 @@ export {
   NoMatchingRecs,
   ComingSoon,
   NoRecsForClusters,
+  NoInsightsResults,
+  NoRecsError,
+  NoRecsAffecting,
 };

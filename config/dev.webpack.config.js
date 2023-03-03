@@ -9,7 +9,7 @@ const { config: webpackConfig, plugins } = config({
   appUrl: process.env.BETA
     ? ['/beta/openshift/insights/advisor']
     : ['/openshift/insights/advisor'],
-  env: process.env.BETA ? 'stage-beta' : 'qa-stable',
+  env: process.env.BETA ? 'stage-beta' : 'stage-stable',
   sassPrefix: '.ocp-advisor, .ocpAdvisor',
   ...(process.env.MOCK
     ? {
@@ -30,6 +30,11 @@ plugins.push(
       exposes: {
         './RootApp': resolve(__dirname, '../src/AppEntry'),
       },
+      shared: [
+        {
+          'react-router-dom': { singleton: true, requiredVersion: '*' },
+        },
+      ],
     }
   )
 );
