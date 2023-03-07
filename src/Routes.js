@@ -1,4 +1,4 @@
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import React, { Suspense, lazy } from 'react';
 
 import {
@@ -25,34 +25,9 @@ const ClustersList = lazy(() =>
   import(/* webpackChunkName: "ClustersList" */ './Components/ClustersList')
 );
 
-const paths = [
-  {
-    title: 'Clusters',
-    path: '/clusters/:clusterId',
-    component: Cluster,
-  },
-  { title: 'Clusters', path: '/clusters', component: ClustersList },
-  {
-    title: 'Recommendations',
-    path: '/recommendations/:recommendationId',
-    component: Recommendation,
-  },
-  {
-    title: 'Recommendations',
-    path: '/recommendations',
-    component: RecsList,
-  },
-];
+export const BASE_PATH = '/openshift/insights/advisor';
 
-/**
- * the Switch component changes routes depending on the path.
- *
- * Route properties:
- *      exact - path must match exactly,
- *      path - https://prod.foo.redhat.com:1337/insights/advisor/rules
- *      component - component to be rendered when a route has been chosen.
- */
-export const Routes = () => (
+export const AppRoutes = () => (
   <Suspense
     fallback={
       <Bullseye>
@@ -60,22 +35,28 @@ export const Routes = () => (
       </Bullseye>
     }
   >
-    <Switch>
-      {paths.map((path) => (
-        <Route key={path.title} path={path.path} component={path.component} />
-      ))}
-      <Redirect exact from="/" to="/recommendations" />
-      {/* Finally, catch all unmatched routes */}
+    <Routes>
+      <Route path="/clusters/:clusterId" element={<Cluster />} />
+      <Route path="/clusters" element={<ClustersList />} />
+      <Route
+        path="/recommendations/:recommendationId"
+        element={<Recommendation />}
+      />
+      <Route path="/recommendations" element={<RecsList />} />
+      <Route
+        path="/"
+        element={<Navigate to={`${BASE_PATH}/recommendations`} replace />}
+      />
       <Route
         path="*"
-        component={() => (
+        element={
           <EmptyState>
             <EmptyStateBody>
               <InvalidObject />
             </EmptyStateBody>
           </EmptyState>
-        )}
+        }
       />
-    </Switch>
+    </Routes>
   </Suspense>
 );

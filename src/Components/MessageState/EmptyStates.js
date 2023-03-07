@@ -23,6 +23,7 @@ import DefaultErrorMessage from '@redhat-cloud-services/frontend-components/Erro
 
 import MessageState from './MessageState';
 import messages from '../../Messages';
+import { BASE_PATH } from '../../Routes';
 
 // Analogue for ErrorState from the frontend-components without the "Go to homepage" button
 // TODO: update ErrorState from the frontend-components and remove custom error here
@@ -90,7 +91,7 @@ const ComingSoon = () => {
       <EmptyStateBody>
         {intl.formatMessage(messages.comingSoonBody)}
       </EmptyStateBody>
-      <Link to="/recommendations">
+      <Link to={`${BASE_PATH}/recommendations`}>
         <Button variant="primary">Recommendations</Button>
       </Link>
     </EmptyState>

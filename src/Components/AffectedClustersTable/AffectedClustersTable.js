@@ -40,6 +40,7 @@ import {
   removeFilterParam as _removeFilterParam,
   addFilterParam as _addFilterParam,
 } from '../Common/Tables';
+import { BASE_PATH } from '../../Routes';
 
 const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
   const intl = useIntl();
@@ -205,7 +206,7 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
         ...r,
         cells: [
           <span key={r.id}>
-            <Link to={`/clusters/${r.id}?first=${rule.rule_id}`}>
+            <Link to={`${BASE_PATH}/clusters/${r.id}?first=${rule.rule_id}`}>
               {r.cells[AFFECTED_CLUSTERS_NAME_CELL]}
             </Link>
           </span>,

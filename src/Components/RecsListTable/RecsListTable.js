@@ -67,6 +67,7 @@ import {
 import { adjustOCPRule } from '../../Utilities/Rule';
 import Loading from '../Loading/Loading';
 import inRange from 'lodash/inRange';
+import { BASE_PATH } from '../../Routes';
 
 const RecsListTable = ({ query }) => {
   const intl = useIntl();
@@ -173,7 +174,10 @@ const RecsListTable = ({ query }) => {
             {
               title: (
                 <span key={key}>
-                  <Link key={key} to={`/recommendations/${value.rule_id}`}>
+                  <Link
+                    key={key}
+                    to={`${BASE_PATH}/recommendations/${value.rule_id}`}
+                  >
                     {' '}
                     {value?.description || value?.rule_id}{' '}
                   </Link>

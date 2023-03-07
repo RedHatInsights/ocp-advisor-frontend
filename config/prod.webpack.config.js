@@ -16,6 +16,11 @@ plugins.push(
       exposes: {
         './RootApp': resolve(__dirname, '../src/AppEntry'),
       },
+      shared: [
+        {
+          'react-router-dom': { singleton: true, requiredVersion: '*' },
+        },
+      ],
     }
   )
 );

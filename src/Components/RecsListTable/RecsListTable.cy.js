@@ -285,7 +285,9 @@ urlParamsList.forEach((urlParams, index) => {
     beforeEach(() => {
       mount(
         <MemoryRouter
-          initialEntries={[`/recommendations?${urlParams}`]}
+          initialEntries={[
+            `/openshift/insights/advisor/recommendations?${urlParams}`,
+          ]}
           initialIndex={0}
         >
           <Intl>
@@ -330,7 +332,10 @@ urlParamsList.forEach((urlParams, index) => {
 describe('successful non-empty recommendations list table', () => {
   beforeEach(() => {
     mount(
-      <MemoryRouter initialEntries={['/recommendations']} initialIndex={0}>
+      <MemoryRouter
+        initialEntries={['/openshift/insights/advisor/recommendations']}
+        initialIndex={0}
+      >
         <Intl>
           <Provider store={getStore()}>
             <RecsListTable
@@ -789,7 +794,10 @@ describe('successful non-empty recommendations list table', () => {
 describe('empty recommendations list table', () => {
   beforeEach(() => {
     mount(
-      <MemoryRouter initialEntries={['/recommendations']} initialIndex={0}>
+      <MemoryRouter
+        initialEntries={['/openshift/insights/advisor/recommendations']}
+        initialIndex={0}
+      >
         <Intl>
           <Provider store={getStore()}>
             <RecsListTable
@@ -815,7 +823,10 @@ describe('empty recommendations list table', () => {
 describe('error recommendations list table', () => {
   beforeEach(() => {
     mount(
-      <MemoryRouter initialEntries={['/recommendations']} initialIndex={0}>
+      <MemoryRouter
+        initialEntries={['/openshift/insights/advisor/recommendations']}
+        initialIndex={0}
+      >
         <Intl>
           <Provider store={getStore()}>
             <RecsListTable

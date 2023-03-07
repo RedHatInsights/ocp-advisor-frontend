@@ -36,12 +36,7 @@ describe('cluster page', () => {
       displayName: {
         data: singleClusterPageReport.report.meta.cluster_name,
       },
-      match: {
-        params: {
-          clusterId: 'foobar',
-        },
-        url: 'foobar',
-      },
+      clusterId: 'foobar',
     };
   });
 
@@ -179,12 +174,7 @@ describe('Cluster page display name test №1', () => {
         isSuccess: true,
         data: singleClusterPageReport,
       },
-      match: {
-        params: {
-          clusterId: 'Cluster Id',
-        },
-        url: 'foobar',
-      },
+      clusterId: 'Cluster Id',
     };
   });
 

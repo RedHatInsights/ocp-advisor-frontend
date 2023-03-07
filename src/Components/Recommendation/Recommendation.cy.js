@@ -55,7 +55,7 @@ describe('recommendation page for enabled recommendation with clusters enabled a
               rule={{ ...defaultPropsRule }}
               ack={{ ...defaultPropsAck, data: undefined }}
               clusters={{ ...defaultPropsClusterDetails }}
-              match={{ params: { recommendationId: 'X' } }}
+              recId="X"
             />
           </Provider>
         </Intl>
@@ -207,7 +207,7 @@ describe('recommendation page for enabled recommedation with nulled resolution r
               rule={{ ...defaultPropsRule, data: nulledResolutionRisk }}
               ack={{ ...defaultPropsAck, data: undefined }}
               clusters={{ ...defaultPropsClusterDetails }}
-              match={{ params: { recommendationId: 'X' } }}
+              recId="X"
             />
           </Provider>
         </Intl>
@@ -234,7 +234,7 @@ describe('recommendation page for enabled recommendation without disabled cluste
               rule={{ ...defaultPropsRule }}
               ack={{ ...defaultPropsAck, data: undefined }}
               clusters={{ ...defaultPropsClusterDetails, data: data }}
-              match={{ params: { recommendationId: 'X' } }}
+              recId="X"
             />
           </Provider>
         </Intl>
@@ -290,7 +290,7 @@ describe('recommendation page for disabled recommendation', () => {
               rule={{ ...defaultPropsRule, data: disabledRule }}
               ack={{ ...defaultPropsAck }}
               clusters={{ ...defaultPropsClusterDetails }}
-              match={{ params: { recommendationId: 'X' } }}
+              recId="X"
             />
           </Provider>
         </Intl>
@@ -366,7 +366,7 @@ describe('justification message', () => {
                   data: { ...ack, ...{ justification: '' } },
                 }}
                 clusters={{ ...defaultPropsClusterDetails }}
-                match={{ params: { recommendationId: 'X' } }}
+                recId="X"
               />
             </Provider>
           </Intl>
@@ -399,7 +399,7 @@ describe('justification message', () => {
                   data: { ...ack, ...{ justification: justification } },
                 }}
                 clusters={{ ...defaultPropsClusterDetails }}
-                match={{ params: { recommendationId: 'X' } }}
+                recId="X"
               />
             </Provider>
           </Intl>
@@ -473,7 +473,7 @@ describe('category labels are displayed', () => {
                   rule={{ ...defaultPropsRule, data: taggedRule }}
                   ack={{ ...defaultPropsAck, data: undefined }}
                   clusters={{ ...defaultPropsClusterDetails }}
-                  match={{ params: { recommendationId: 'X' } }}
+                  recId="X"
                 />
               </Provider>
             </Intl>

@@ -53,6 +53,7 @@ import {
   NoRecsForClusters,
 } from '../MessageState/EmptyStates';
 import { coerce } from 'semver';
+import { BASE_PATH } from '../../Routes';
 
 const ClustersListTable = ({
   query: { isError, isUninitialized, isFetching, isSuccess, data, refetch },
@@ -149,7 +150,7 @@ const ClustersListTable = ({
         entity: it,
         cells: [
           <span key={index}>
-            <Link to={`clusters/${it.cluster_id}`}>
+            <Link to={`${BASE_PATH}/clusters/${it.cluster_id}`}>
               {it.cluster_name || it.cluster_id}
             </Link>
           </span>,

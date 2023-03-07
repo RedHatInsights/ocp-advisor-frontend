@@ -15,7 +15,9 @@ describe('breadcrumbs', () => {
     };
     mount(
       <MemoryRouter
-        initialEntries={['/recommendations/ccxdev.external.123|ERROR_KEY']}
+        initialEntries={[
+          '/openshift/insights/advisor/recommendations/ccxdev.external.123|ERROR_KEY',
+        ]}
         initialIndex={0}
       >
         <IntlProvider locale="en">
@@ -30,7 +32,11 @@ describe('breadcrumbs', () => {
     cy.get(BREADCRUMB_ITEM)
       .eq(0)
       .find('a')
-      .should('have.attr', 'href', '/recommendations');
+      .should(
+        'have.attr',
+        'href',
+        '/openshift/insights/advisor/recommendations'
+      );
     cy.get(BREADCRUMB_ITEM)
       .eq(1)
       .should(
@@ -46,7 +52,9 @@ describe('breadcrumbs', () => {
     };
     mount(
       <MemoryRouter
-        initialEntries={['/clusters/d6964a24-a78c-4bdc-8100-17e797efe3d3']}
+        initialEntries={[
+          '/openshift/insights/advisor/clusters/d6964a24-a78c-4bdc-8100-17e797efe3d3',
+        ]}
         initialIndex={0}
       >
         <IntlProvider locale="en">
@@ -59,7 +67,7 @@ describe('breadcrumbs', () => {
     cy.get(BREADCRUMB_ITEM)
       .eq(0)
       .find('a')
-      .should('have.attr', 'href', '/clusters');
+      .should('have.attr', 'href', '/openshift/insights/advisor/clusters');
     cy.get(BREADCRUMB_ITEM).eq(1).should('have.text', 'Cluster with issues');
     cy.get(BREADCRUMB_ITEM).eq(1).find('span').should('have.length', 1);
   });
