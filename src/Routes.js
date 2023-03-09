@@ -37,12 +37,32 @@ export const AppRoutes = () => (
   >
     <Routes>
       <Route path="/clusters/:clusterId" element={<Cluster />} />
-      <Route path="/clusters" element={<ClustersList />} />
+      <Route
+        path="/clusters"
+        element={
+          <ClustersList
+            /**
+             * Generate random `key` to force component re-render,
+             * temporary workaround for https://issues.redhat.com/browse/OCPADVISOR-59
+             */ key={Math.random()}
+          />
+        }
+      />
       <Route
         path="/recommendations/:recommendationId"
         element={<Recommendation />}
       />
-      <Route path="/recommendations" element={<RecsList />} />
+      <Route
+        path="/recommendations"
+        element={
+          <RecsList
+            /**
+             * Generate random `key` to force component re-render,
+             * temporary workaround for https://issues.redhat.com/browse/OCPADVISOR-59
+             */ key={Math.random()}
+          />
+        }
+      />
       <Route
         path="/"
         element={<Navigate to={`${BASE_PATH}/recommendations`} replace />}
