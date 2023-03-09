@@ -1,3 +1,10 @@
+## [1.11.2](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.11.1...v1.11.2) (2023-03-09)
+
+
+### Bug Fixes
+
+* **OCPADVISOR-59:** Fix not loading pages (part 2) ([#529](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/529)) ([6b18f07](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/6b18f07edebdcb0f28ff31e197aebf7f4a2bbab3))
+
 ## [1.11.1](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.11.0...v1.11.1) (2023-03-09)
 
 
