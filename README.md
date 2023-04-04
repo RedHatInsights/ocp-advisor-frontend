@@ -14,13 +14,13 @@
 
 1. Install dependencies with `npm install`.
 2. Run development server with `npm run start:beta` (`npm run start` for the non-beta release).
-3. Local version of the application is available at https://stage.foo.redhat.com:1337/beta/openshift/insights/advisor (https://stage.foo.redhat.com:1337/openshift/insights/advisor for the non-beta release).
+3. Local version of the application is available at https://stage.foo.redhat.com:1337/preview/openshift/insights/advisor (https://stage.foo.redhat.com:1337/openshift/insights/advisor for the non-beta release).
 
 ### Running in the production environment
 
 1. Set the `env` field in [dev.webpack.config.js](https://github.com/RedHatInsights/ocp-advisor-frontend/blob/master/config/dev.webpack.config.js) to `process.env.BETA ? 'prod-beta' : 'prod-stable'`.
 2. Run development server with `npm run start:beta` (`npm run start` for the non-beta release).
-3. Local version of the application is available at https://prod.foo.redhat.com:1337/beta/openshift/insights/advisor (https://prod.foo.redhat.com:1337/openshift/insights/advisor for the non-beta release).
+3. Local version of the application is available at https://prod.foo.redhat.com:1337/preview/openshift/insights/advisor (https://prod.foo.redhat.com:1337/openshift/insights/advisor for the non-beta release).
 
 ### Using insights-results-aggregator-mock
 
@@ -51,9 +51,9 @@ Any push to the following branches will trigger a build in [ocp-advisor-frontend
 
 | Push to branch in this repo  | Updated branch in build repo  | Environment       | Available at
 | :--------------------------- | :---------------------------- | :---------------- | :-----------
-| master                       | qa-beta                       | stage beta        | https://console.stage.redhat.com/beta
+| master                       | qa-beta                       | stage beta        | https://console.stage.redhat.com/preview
 | master-stable                | qa-stable                     | stage stable      | https://console.stage.redhat.com
-| prod-beta                    | prod-beta                     | production beta   | https://console.redhat.com/beta 
+| prod-beta                    | prod-beta                     | production beta   | https://console.redhat.com/preview
 | prod-stable                  | prod-stable                   | production stable | https://console.redhat.com
 
 ### Deployment workflow
