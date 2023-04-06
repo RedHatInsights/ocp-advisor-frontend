@@ -1,3 +1,10 @@
+# [1.12.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.11.2...v1.12.0) (2023-04-06)
+
+
+### Features
+
+* **OCPADVISOR-70:** Enable "Upgrade Risks" tab on the cluster details view ([#541](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/541)) ([c47ac72](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/c47ac720d1280a80089cd9db8bdfd36c1234cd77))
+
 ## [1.11.2](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.11.1...v1.11.2) (2023-03-09)
 
 
