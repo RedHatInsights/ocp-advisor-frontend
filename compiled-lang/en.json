@@ -115,6 +115,7 @@
   "unableToConnectDesc": "There was an error retrieving data. Check your connection and try again.",
   "undefined": "Undefined",
   "unknown": "Unknown",
+  "upgradeRisks": "Upgrade risks",
   "version": "Version",
   "veryLow": "Very Low",
   "viewAffectedClusters": "View {clusters, plural, one {the affected cluster} other {# affected clusters}}",

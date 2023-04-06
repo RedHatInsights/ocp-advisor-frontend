@@ -1,0 +1,64 @@
+import { Card, CardBody, Tab, Tabs } from '@patternfly/react-core';
+import PropTypes from 'prop-types';
+import React, { useState } from 'react';
+
+import { useIntl } from 'react-intl';
+import { useSearchParams } from 'react-router-dom';
+import messages from '../../Messages';
+import { setSearchParameter } from '../../Utilities/Helpers';
+import { useUpgradeRisksFeatureFlag } from '../../Utilities/useFeatureFlag';
+import ClusterRules from '../ClusterRules/ClusterRules';
+import { ComingSoon } from '../MessageState/EmptyStates';
+
+const CLUSTER_TABS = ['recommendations', 'upgrade_risks'];
+
+const ClusterTabs = ({ cluster }) => {
+  const intl = useIntl();
+  const upgradeRisksEnabled = useUpgradeRisksFeatureFlag();
+  const [searchParams] = useSearchParams();
+
+  const [activeKey, setActiveKey] = useState(() => {
+    const activeTab = searchParams.get('active_tab');
+    return upgradeRisksEnabled
+      ? CLUSTER_TABS.includes(activeTab)
+        ? activeTab
+        : 'recommendations'
+      : 'recommendations';
+  });
+
+  return (
+    <Card isCompact>
+      <CardBody>
+        <Tabs
+          activeKey={activeKey}
+          onSelect={(event, key) => {
+            setSearchParameter('active_tab', key);
+            setActiveKey(key);
+          }}
+          aria-label="Cluster tabs"
+        >
+          <Tab
+            eventKey="recommendations"
+            title={intl.formatMessage(messages.recommendations)}
+          >
+            <ClusterRules cluster={cluster} />
+          </Tab>
+          {upgradeRisksEnabled && (
+            <Tab
+              eventKey="upgrade_risks"
+              title={intl.formatMessage(messages.upgradeRisks)}
+            >
+              <ComingSoon />
+            </Tab>
+          )}
+        </Tabs>
+      </CardBody>
+    </Card>
+  );
+};
+
+ClusterTabs.propTypes = {
+  cluster: PropTypes.object,
+};
+
+export default ClusterTabs;

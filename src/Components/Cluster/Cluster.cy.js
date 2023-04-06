@@ -11,6 +11,7 @@ import {
   checkNoMatchingRecs,
   checkRowCounts,
 } from '../../../cypress/utils/table';
+import FlagProvider from '@unleash/proxy-client-react';
 
 // selectors
 const CLUSTER_HEADER = '#cluster-header';
@@ -42,13 +43,15 @@ describe('cluster page', () => {
 
   it('cluster page in the successful state', () => {
     mount(
-      <MemoryRouter>
-        <Intl>
-          <Provider store={getStore()}>
-            <Cluster {...props} />
-          </Provider>
-        </Intl>
-      </MemoryRouter>
+      <FlagProvider>
+        <MemoryRouter>
+          <Intl>
+            <Provider store={getStore()}>
+              <Cluster {...props} />
+            </Provider>
+          </Intl>
+        </MemoryRouter>
+      </FlagProvider>
     );
     // renders breadcrumbs
     cy.get(BREADCRUMBS)
@@ -74,13 +77,15 @@ describe('cluster page', () => {
       },
     };
     mount(
-      <MemoryRouter>
-        <Intl>
-          <Provider store={getStore()}>
-            <Cluster {...props} />
-          </Provider>
-        </Intl>
-      </MemoryRouter>
+      <FlagProvider>
+        <MemoryRouter>
+          <Intl>
+            <Provider store={getStore()}>
+              <Cluster {...props} />
+            </Provider>
+          </Intl>
+        </MemoryRouter>
+      </FlagProvider>
     );
     // renders breadcrumbs
     cy.get(BREADCRUMBS).should('have.length', 1);
@@ -103,13 +108,15 @@ describe('cluster page', () => {
       },
     };
     mount(
-      <MemoryRouter>
-        <Intl>
-          <Provider store={getStore()}>
-            <Cluster {...props} />
-          </Provider>
-        </Intl>
-      </MemoryRouter>
+      <FlagProvider>
+        <MemoryRouter>
+          <Intl>
+            <Provider store={getStore()}>
+              <Cluster {...props} />
+            </Provider>
+          </Intl>
+        </MemoryRouter>
+      </FlagProvider>
     );
     // renders breadcrumbs
     cy.get(BREADCRUMBS).should('have.length', 1);
@@ -122,13 +129,17 @@ describe('cluster page', () => {
 
   it('adds additional filters passed by the query parameters №1', () => {
     mount(
-      <MemoryRouter initialEntries={['?total_risk=1&text=foo+bar&category=2']}>
-        <Intl>
-          <Provider store={getStore()}>
-            <Cluster {...props} />
-          </Provider>
-        </Intl>
-      </MemoryRouter>
+      <FlagProvider>
+        <MemoryRouter
+          initialEntries={['?total_risk=1&text=foo+bar&category=2']}
+        >
+          <Intl>
+            <Provider store={getStore()}>
+              <Cluster {...props} />
+            </Provider>
+          </Intl>
+        </MemoryRouter>
+      </FlagProvider>
     );
     cy.get(BREADCRUMBS);
     cy.get(CLUSTER_HEADER);
@@ -141,13 +152,15 @@ describe('cluster page', () => {
 
   it('adds additional filters passed by the query parameters №2', () => {
     mount(
-      <MemoryRouter initialEntries={['?total_risk=2&text=foo&category=1']}>
-        <Intl>
-          <Provider store={getStore()}>
-            <Cluster {...props} />
-          </Provider>
-        </Intl>
-      </MemoryRouter>
+      <FlagProvider>
+        <MemoryRouter initialEntries={['?total_risk=2&text=foo&category=1']}>
+          <Intl>
+            <Provider store={getStore()}>
+              <Cluster {...props} />
+            </Provider>
+          </Intl>
+        </MemoryRouter>
+      </FlagProvider>
     );
     cy.get(BREADCRUMBS);
     cy.get(CLUSTER_HEADER);
@@ -180,13 +193,15 @@ describe('Cluster page display name test №1', () => {
 
   it('Cluster breadcrumbs name should be Cluster With Issues', () => {
     mount(
-      <MemoryRouter>
-        <Intl>
-          <Provider store={getStore()}>
-            <Cluster {...props} />
-          </Provider>
-        </Intl>
-      </MemoryRouter>
+      <FlagProvider>
+        <MemoryRouter>
+          <Intl>
+            <Provider store={getStore()}>
+              <Cluster {...props} />
+            </Provider>
+          </Intl>
+        </MemoryRouter>
+      </FlagProvider>
     );
     cy.get(BREADCRUMBS)
       .should('have.length', 1)
@@ -196,15 +211,17 @@ describe('Cluster page display name test №1', () => {
 
   it('Cluster breadcrumbs name should be = Cluster Id', () => {
     mount(
-      <MemoryRouter>
-        <Intl>
-          <Provider store={getStore()}>
-            <Cluster
-              {...{ ...props, cluster: { ...props.cluster, data: null } }}
-            />
-          </Provider>
-        </Intl>
-      </MemoryRouter>
+      <FlagProvider>
+        <MemoryRouter>
+          <Intl>
+            <Provider store={getStore()}>
+              <Cluster
+                {...{ ...props, cluster: { ...props.cluster, data: null } }}
+              />
+            </Provider>
+          </Intl>
+        </MemoryRouter>
+      </FlagProvider>
     );
     cy.get(BREADCRUMBS)
       .should('have.length', 1)

@@ -5,8 +5,9 @@ import PropTypes from 'prop-types';
 
 import PageHeader from '@redhat-cloud-services/frontend-components/PageHeader';
 import ClusterHeader from '../ClusterHeader';
-import ClusterRules from '../ClusterRules/ClusterRules';
 import Breadcrumbs from '../Breadcrumbs';
+import ClusterTabs from '../ClusterTabs/ClusterTabs';
+import { PageSection } from '@patternfly/react-core';
 
 export const Cluster = ({ cluster, clusterId }) => {
   // TODO: make breadcrumbs take display name from GET /cluster/id/info
@@ -18,9 +19,9 @@ export const Cluster = ({ cluster, clusterId }) => {
         />
         <ClusterHeader />
       </PageHeader>
-      <section className="pf-l-page__main-section pf-c-page__main-section">
-        <ClusterRules cluster={cluster} />
-      </section>
+      <PageSection>
+        <ClusterTabs cluster={cluster} />
+      </PageSection>
     </React.Fragment>
   );
 };
