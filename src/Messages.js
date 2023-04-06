@@ -642,4 +642,9 @@ export default defineMessages({
     defaultMessage:
       'The risk of change is <strong>{ level }</strong>, because the change takes very little time to implement and there is minimal impact to system operations.',
   },
+  upgradeRisks: {
+    id: 'upgradeRisks',
+    description: 'Upgrade risks text',
+    defaultMessage: 'Upgrade risks',
+  },
 });
