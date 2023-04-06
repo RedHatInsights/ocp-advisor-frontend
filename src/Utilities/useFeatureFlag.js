@@ -16,5 +16,5 @@ export const useUpgradeRisksFeatureFlag = () => {
   const upgradeRisksEnabled = useFeatureFlag(UPGRADE_RISKS_ENABLE_FLAG);
   const chrome = useChrome();
 
-  return chrome.isBeta() || upgradeRisksEnabled;
+  return chrome?.isBeta?.() || upgradeRisksEnabled;
 };
