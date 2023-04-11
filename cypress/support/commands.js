@@ -24,6 +24,14 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
+import { mount } from '@cypress/react';
+import FlagProvider from '@unleash/proxy-client-react';
+import React from 'react';
+import { Provider } from 'react-redux';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import getStore from '../../src/Store';
+import { Intl } from '../../src/Utilities/intlHelper';
+
 Cypress.Commands.add(
   'ouiaId',
   { prevSubject: 'optional' },
@@ -41,3 +49,25 @@ Cypress.Commands.add(
     return subject ? cy.wrap(subject).find(attr) : cy.get(attr);
   }
 );
+
+Cypress.Commands.add('mountWithContext', (component, options = {}) => {
+  const { path, routerProps = { initialEntries: ['/'] } } = options;
+
+  return mount(
+    <FlagProvider>
+      <Intl>
+        <Provider store={getStore()}>
+          <MemoryRouter {...routerProps}>
+            {path ? (
+              <Routes>
+                <Route path={options.path} element={component} />
+              </Routes>
+            ) : (
+              component
+            )}
+          </MemoryRouter>
+        </Provider>
+      </Intl>
+    </FlagProvider>
+  );
+});
