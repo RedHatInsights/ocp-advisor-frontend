@@ -41,7 +41,7 @@ const ClusterTabs = ({ cluster }) => {
             eventKey="recommendations"
             title={intl.formatMessage(messages.recommendations)}
           >
-            <ClusterRules cluster={cluster} />
+            <ClusterRules />
           </Tab>
           {upgradeRisksEnabled && (
             <Tab

@@ -3,7 +3,7 @@ import './_ClusterRules.scss';
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import capitalize from 'lodash/capitalize';
 
@@ -53,15 +53,21 @@ import {
 } from '../../Services/Filters';
 import { getErrorKey, getPluginName } from '../../Utilities/Rule';
 import Loading from '../Loading/Loading';
+import { useGetClusterByIdQuery } from '../../Services/SmartProxy';
 
-const ClusterRules = ({ cluster }) => {
+const ClusterRules = () => {
   const intl = useIntl();
   const dispatch = useDispatch();
   const updateFilters = (filters) =>
     dispatch(updateClusterRulesFilters(filters));
   const filters = useSelector(({ filters }) => filters.clusterRulesState);
+  const { clusterId } = useParams();
+
   const { isError, isUninitialized, isFetching, isSuccess, data, error } =
-    cluster;
+    useGetClusterByIdQuery({
+      id: clusterId,
+      includeDisabled: false,
+    });
   const reports = data?.report?.data || [];
   const [filteredRows, setFilteredRows] = useState([]);
   const [displayedRows, setDisplayedRows] = useState([]);
