@@ -1,7 +1,6 @@
 import './_ClusterRules.scss';
 
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
 import { useLocation, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -507,18 +506,6 @@ const ClusterRules = () => {
       </Table>
     </div>
   );
-};
-
-ClusterRules.propTypes = {
-  cluster: PropTypes.shape({
-    isError: PropTypes.bool.isRequired,
-    isUninitialized: PropTypes.bool.isRequired,
-    isFetching: PropTypes.bool.isRequired,
-    isSuccess: PropTypes.bool.isRequired,
-    data: PropTypes.array,
-    refetch: PropTypes.func,
-    error: PropTypes.object,
-  }),
 };
 
 export default ClusterRules;
