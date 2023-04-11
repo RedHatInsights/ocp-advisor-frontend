@@ -1,3 +1,5 @@
+// TODO: replace utils with the utils library from FEC
+
 import _ from 'lodash';
 
 import { ROW, TBODY, TABLE, TITLE, CHIP_GROUP, CHIP } from './components';
