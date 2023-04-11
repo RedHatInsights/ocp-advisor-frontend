@@ -15,6 +15,7 @@
     "start:proxy:beta": "npm run start:beta",
     "start:beta:mock": "BETA=true MOCK=true npm start",
     "test:ct": "BABEL_ENV=component cypress run --component",
+    "test:openct": "BABEL_ENV=component cypress open --component",
     "test:jest": "TZ=UTC jest --verbose --passWithNoTests --no-cache",
     "test": "npm run test:jest",
     "translations": "npm-run-all translations:*",
