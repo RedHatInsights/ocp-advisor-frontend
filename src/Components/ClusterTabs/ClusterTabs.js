@@ -7,7 +7,7 @@ import messages from '../../Messages';
 import { setSearchParameter } from '../../Utilities/Helpers';
 import { useUpgradeRisksFeatureFlag } from '../../Utilities/useFeatureFlag';
 import ClusterRules from '../ClusterRules/ClusterRules';
-import { ComingSoon } from '../MessageState/EmptyStates';
+import { UpgradeRisksTable } from '../UpgradeRisksTable';
 
 const CLUSTER_TABS = ['recommendations', 'upgrade_risks'];
 
@@ -47,7 +47,7 @@ const ClusterTabs = () => {
               eventKey="upgrade_risks"
               title={intl.formatMessage(messages.upgradeRisks)}
             >
-              <ComingSoon />
+              <UpgradeRisksTable />
             </Tab>
           )}
         </Tabs>
