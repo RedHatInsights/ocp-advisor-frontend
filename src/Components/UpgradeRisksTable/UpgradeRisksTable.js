@@ -8,15 +8,24 @@ import {
   Thead,
   Tr,
 } from '@patternfly/react-table';
-import ExclamationCircleIcon from '@patternfly/react-icons/dist/esm/icons/exclamation-circle-icon';
-import InfoCircleIcon from '@patternfly/react-icons/dist/esm/icons/info-circle-icon';
 import ExclamationTriangleIcon from '@patternfly/react-icons/dist/esm/icons/exclamation-triangle-icon';
 
 import React, { useState } from 'react';
+import { useGetUpgradeRisksQuery } from '../../Services/SmartProxy';
+import { useParams } from 'react-router-dom';
+import AlertsList, {
+  ALERTS_SEVERITY_ICONS,
+  ALERTS_SEVERITY_ORDER,
+} from './AlertsList';
+import ClusterOperatorsList from './ClusterOperatorsList';
 
 const UpgradeRisksTable = () => {
+  const { clusterId } = useParams();
   const [alertsExpanded, setAlertsExpanded] = useState(true);
   const [operatorsExpanded, setOperatorsExpanded] = useState(true);
+  const { data } = useGetUpgradeRisksQuery({ id: clusterId });
+  const { alerts = [], operator_conditions: conditions = [] } =
+    data?.upgrade_recommendation?.upgrade_risks_predictors || {};
 
   return (
     <TableComposable
@@ -41,10 +50,15 @@ const UpgradeRisksTable = () => {
           />
           <Td>
             <Flex alignItems={{ default: 'alignItemsCenter' }}>
-              <Icon status="warning">
-                <ExclamationTriangleIcon />
-              </Icon>{' '}
-              <b>Alerts firing</b> <Label isCompact>4 upgrade risks</Label>
+              {
+                ALERTS_SEVERITY_ICONS[ // this algorithm helps to decide which icon (the most severe) to show
+                  ALERTS_SEVERITY_ORDER.filter((s) =>
+                    alerts.some(({ severity }) => s === severity)
+                  )[0]
+                ]
+              }
+              <b>Alerts firing</b>
+              <Label isCompact>{alerts.length} upgrade risks</Label>
             </Flex>
           </Td>
         </Tr>
@@ -53,46 +67,7 @@ const UpgradeRisksTable = () => {
           <Td>
             <ExpandableRowContent>
               Learn how to resolve your alert firing risks.
-              <TableComposable
-                aria-label="Alerts firing table"
-                variant="compact"
-                borders={false}
-              >
-                <Thead>
-                  <Tr>
-                    <Th>Name</Th>
-                    <Th>Status</Th>
-                    <Th>Namespace</Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  <Tr>
-                    <Td>ClusterOperatorDown</Td>
-                    <Td>
-                      {' '}
-                      <Flex alignItems={{ default: 'alignItemsCenter' }}>
-                        <Icon status="danger">
-                          <ExclamationCircleIcon />
-                        </Icon>{' '}
-                        <b>Critical</b>
-                      </Flex>
-                    </Td>
-                    <Td>openshift-monitoring</Td>
-                  </Tr>
-                  <Tr>
-                    <Td>ClusterOperatorDown</Td>
-                    <Td>
-                      <Flex alignItems={{ default: 'alignItemsCenter' }}>
-                        <Icon status="info">
-                          <InfoCircleIcon />
-                        </Icon>{' '}
-                        <b>Info</b>
-                      </Flex>
-                    </Td>
-                    <Td>openshift-monitoring</Td>
-                  </Tr>
-                </Tbody>
-              </TableComposable>
+              <AlertsList />
             </ExpandableRowContent>
           </Td>
         </Tr>
@@ -108,10 +83,11 @@ const UpgradeRisksTable = () => {
           />
           <Td>
             <Flex alignItems={{ default: 'alignItemsCenter' }}>
-              <Icon status="danger">
-                <ExclamationCircleIcon />
-              </Icon>{' '}
-              <b>Cluster opertors</b> <Label isCompact>3 upgrade risks</Label>
+              <Icon status="warning">
+                <ExclamationTriangleIcon />
+              </Icon>
+              <b>Cluster opertors</b>
+              <Label isCompact>{conditions.length} upgrade risks</Label>
             </Flex>
           </Td>
         </Tr>
@@ -120,34 +96,7 @@ const UpgradeRisksTable = () => {
           <Td>
             <ExpandableRowContent>
               Learn how to resolve your cluster operator risks.
-              <TableComposable
-                aria-label="Alerts firing table"
-                variant="compact"
-                borders={false}
-              >
-                <Thead>
-                  <Tr>
-                    <Th>Name</Th>
-                    <Th>Status</Th>
-                    <Th>Message</Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  <Tr>
-                    <Td>ClusterOperatorDown</Td>
-                    <Td>
-                      {' '}
-                      <Flex alignItems={{ default: 'alignItemsCenter' }}>
-                        <Icon status="warning">
-                          <ExclamationTriangleIcon />
-                        </Icon>{' '}
-                        <b>Warning</b>
-                      </Flex>
-                    </Td>
-                    <Td>openshift-monitoring</Td>
-                  </Tr>
-                </Tbody>
-              </TableComposable>
+              <ClusterOperatorsList />
             </ExpandableRowContent>
           </Td>
         </Tr>
