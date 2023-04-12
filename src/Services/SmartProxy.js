@@ -37,6 +37,9 @@ export const SmartProxyApi = createApi({
       query: ({ id }) => `v2/cluster/${id}/info`,
       transformResponse: (response) => response?.cluster,
     }),
+    getUpgradeRisks: builder.query({
+      query: ({ id }) => `v1/cluster/${id}/upgrade-risks-prediction`,
+    }),
   }),
 });
 
@@ -50,4 +53,5 @@ export const {
   useLazyGetRecsQuery,
   useGetClustersQuery,
   useGetClusterInfoQuery,
+  useGetUpgradeRisksQuery,
 } = SmartProxyApi;
