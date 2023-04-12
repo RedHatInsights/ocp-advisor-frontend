@@ -1,3 +1,5 @@
+// TODO: replace utils with the utils library from FEC
+
 import { DEFAULT_ROW_COUNT } from './defaults';
 import {
   TOOLBAR,

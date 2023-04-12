@@ -1,5 +1,4 @@
 import { Card, CardBody, Tab, Tabs } from '@patternfly/react-core';
-import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
 import { useIntl } from 'react-intl';
@@ -12,7 +11,7 @@ import { ComingSoon } from '../MessageState/EmptyStates';
 
 const CLUSTER_TABS = ['recommendations', 'upgrade_risks'];
 
-const ClusterTabs = ({ cluster }) => {
+const ClusterTabs = () => {
   const intl = useIntl();
   const upgradeRisksEnabled = useUpgradeRisksFeatureFlag();
   const [searchParams] = useSearchParams();
@@ -41,7 +40,7 @@ const ClusterTabs = ({ cluster }) => {
             eventKey="recommendations"
             title={intl.formatMessage(messages.recommendations)}
           >
-            <ClusterRules cluster={cluster} />
+            <ClusterRules />
           </Tab>
           {upgradeRisksEnabled && (
             <Tab
@@ -55,10 +54,6 @@ const ClusterTabs = ({ cluster }) => {
       </CardBody>
     </Card>
   );
-};
-
-ClusterTabs.propTypes = {
-  cluster: PropTypes.object,
 };
 
 export default ClusterTabs;

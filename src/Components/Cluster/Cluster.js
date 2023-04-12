@@ -28,6 +28,5 @@ export const Cluster = ({ cluster, clusterId }) => {
 
 Cluster.propTypes = {
   cluster: PropTypes.object.isRequired,
-  displayName: PropTypes.object.isRequired,
   clusterId: PropTypes.string.isRequired,
 };

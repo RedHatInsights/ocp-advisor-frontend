@@ -1,11 +1,6 @@
 import React from 'react';
-import { mount } from '@cypress/react';
-import { IntlProvider } from 'react-intl';
-import { MemoryRouter } from 'react-router-dom';
-import { Provider } from 'react-redux';
 import _ from 'lodash';
 
-import getStore from '../../Store';
 import ClusterRules from './ClusterRules';
 import { CLUSTER_RULES_COLUMNS } from '../../AppConstants';
 import singleClusterPageReport from '../../../cypress/fixtures/api/insights-results-aggregator/v2/cluster/dcb95bbf-8673-4f3a-a63c-12d4a530aa6f/reports-disabled-false.json';
@@ -32,6 +27,7 @@ import {
   TABLE,
   ROWS_TOGGLER,
 } from '../../../cypress/utils/components';
+import { interceptors } from '../Cluster/Cluster.cy';
 
 const data = singleClusterPageReport.report.data;
 
@@ -80,6 +76,18 @@ const filterCombos = [
 ];
 
 // TODO: when checking empty state, also check toolbar available and not disabled
+
+const mount = (initialEntries = ['/clusters/123']) => {
+  cy.mountWithContext(<ClusterRules />, {
+    path: '/clusters/:clusterId',
+    routerProps: { initialEntries },
+  });
+};
+
+const waitTableReady = () =>
+  cy
+    .get('#cluster-recs-list-table')
+    .should('have.attr', 'data-ouia-safe', 'true');
 
 describe('test data', () => {
   it('has rules', () => {
@@ -131,28 +139,9 @@ describe('test data', () => {
 
 describe('cluster rules table', () => {
   beforeEach(() => {
-    mount(
-      <IntlProvider locale="en">
-        <Provider store={getStore()}>
-          <MemoryRouter
-            initialEntries={[
-              '/openshift/insights/advisor/clusters/41c30565-b4c9-49f2-a4ce-3277ad22b258',
-            ]}
-            initialIndex={0}
-          >
-            <ClusterRules
-              cluster={{
-                isError: false,
-                isFetching: false,
-                isUninitialized: false,
-                isSuccess: true,
-                data: { report: { data } },
-              }}
-            />
-          </MemoryRouter>
-        </Provider>
-      </IntlProvider>
-    );
+    interceptors.successful();
+    mount();
+    waitTableReady();
   });
 
   it('renders table', () => {
@@ -317,28 +306,9 @@ describe('cluster rules table', () => {
 
 describe('empty cluster rules table', () => {
   beforeEach(() => {
-    mount(
-      <IntlProvider locale="en">
-        <Provider store={getStore()}>
-          <MemoryRouter
-            initialEntries={[
-              '/openshift/insights/advisor/clusters/41c30565-b4c9-49f2-a4ce-3277ad22b258',
-            ]}
-            initialIndex={0}
-          >
-            <ClusterRules
-              cluster={{
-                isError: false,
-                isFetching: false,
-                isUninitialized: false,
-                isSuccess: true,
-                data: { report: { data: [] } },
-              }}
-            />
-          </MemoryRouter>
-        </Provider>
-      </IntlProvider>
-    );
+    interceptors['successful, no rules']();
+    mount();
+    waitTableReady();
   });
 
   it('cannot add filters', () => {
@@ -357,30 +327,11 @@ describe('empty cluster rules table', () => {
   });
 });
 
-describe.only('no rules cluster', () => {
+describe('no rules cluster', () => {
   beforeEach(() => {
-    mount(
-      <IntlProvider locale="en">
-        <Provider store={getStore()}>
-          <MemoryRouter
-            initialEntries={[
-              '/openshift/insights/advisor/clusters/41c30565-b4c9-49f2-a4ce-3277ad22b258',
-            ]}
-            initialIndex={0}
-          >
-            <ClusterRules
-              cluster={{
-                isError: true,
-                isFetching: false,
-                isUninitialized: false,
-                isSuccess: false,
-                error: { status: 404 },
-              }}
-            />
-          </MemoryRouter>
-        </Provider>
-      </IntlProvider>
-    );
+    interceptors['successful, not connected']();
+    mount();
+    waitTableReady();
   });
 
   it('cannot add filters', () => {
@@ -394,41 +345,13 @@ describe.only('no rules cluster', () => {
   it('renders "no recommendation to display" message', () => {
     checkEmptyState('No recommendations to display', true);
   });
-
-  // TODO: incorporate this check in other tests
-  it('data-ouia-safe set to true', () => {
-    cy.get('#cluster-recs-list-table').should(
-      'have.attr',
-      'data-ouia-safe',
-      'true'
-    );
-  });
 });
 
 describe('error response other than 404', () => {
   beforeEach(() => {
-    mount(
-      <IntlProvider locale="en">
-        <Provider store={getStore()}>
-          <MemoryRouter
-            initialEntries={[
-              '/openshift/insights/advisor/clusters/41c30565-b4c9-49f2-a4ce-3277ad22b258',
-            ]}
-            initialIndex={0}
-          >
-            <ClusterRules
-              cluster={{
-                isError: true,
-                isFetching: false,
-                isUninitialized: false,
-                isSuccess: false,
-                error: { status: 500 },
-              }}
-            />
-          </MemoryRouter>
-        </Provider>
-      </IntlProvider>
-    );
+    interceptors['server error']();
+    mount();
+    waitTableReady();
   });
 
   it('cannot add filters', () => {
@@ -454,28 +377,17 @@ describe('error response other than 404', () => {
 
 describe('cluster rules table testing the first query parameter', () => {
   beforeEach(() => {
-    mount(
-      <IntlProvider locale="en">
-        <Provider store={getStore()}>
-          <MemoryRouter
-            initialEntries={[
-              '/openshift/insights/advisor/clusters/41c30565-b4c9-49f2-a4ce-3277ad22b258?first=external.rules.rule_n_one|ERROR_KEY_N2',
-            ]}
-            initialIndex={0}
-          >
-            <ClusterRules
-              cluster={{
-                isError: false,
-                isFetching: false,
-                isUninitialized: false,
-                isSuccess: true,
-                data: { report: { data: data_first_query_parameter } },
-              }}
-            />
-          </MemoryRouter>
-        </Provider>
-      </IntlProvider>
+    const report = singleClusterPageReport;
+    report.report.data = data_first_query_parameter;
+    cy.intercept(
+      '/api/insights-results-aggregator/v2/cluster/123/reports?get_disabled=false',
+      {
+        statusCode: 200,
+        body: report,
+      }
     );
+    mount(['/clusters/123?first=external.rules.rule_n_one|ERROR_KEY_N2']);
+    waitTableReady();
   });
 
   it('show the rule from the "first" search parameter', () => {
