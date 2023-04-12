@@ -20,7 +20,10 @@ import ErrorState from '@redhat-cloud-services/frontend-components/ErrorState';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useGetUpgradeRisksQuery } from '../../Services/SmartProxy';
-import { UpgradeRisksNotAvailable } from '../MessageState/EmptyStates';
+import {
+  NoUpgradeRisks,
+  UpgradeRisksNotAvailable,
+} from '../MessageState/EmptyStates';
 import AlertsList, {
   ALERTS_SEVERITY_ICONS,
   ALERTS_SEVERITY_ORDER,
@@ -29,7 +32,7 @@ import ClusterOperatorsList from './ClusterOperatorsList';
 
 const UpgradeRisksTable = () => {
   const { clusterId } = useParams();
-  const { isUninitialized, isFetching, isSuccess, data } =
+  const { isError, isUninitialized, isFetching, isSuccess, data, error } =
     useGetUpgradeRisksQuery({ id: clusterId });
   const { alerts = [], operator_conditions: conditions = [] } =
     data?.upgrade_recommendation?.upgrade_risks_predictors || {};
@@ -47,8 +50,6 @@ const UpgradeRisksTable = () => {
 
   const hasRisks = isSuccess && (alerts.length > 0 || conditions.length > 0);
   const noRisks = isSuccess && alerts.length === 0 && conditions.length === 0;
-
-  // TODO: check 204 response
 
   return isUninitialized || isFetching ? (
     <EmptyState>
@@ -139,9 +140,11 @@ const UpgradeRisksTable = () => {
       </Tbody>
     </TableComposable>
   ) : noRisks ? (
-    <UpgradeRisksNotAvailable />
+    <NoUpgradeRisks />
+  ) : isError && error.status === 503 ? (
+    <UpgradeRisksNotAvailable /> // back end is temporarily not available
   ) : (
-    <ErrorState />
+    <ErrorState /> // default state for unexpected errors
   );
 };
 
