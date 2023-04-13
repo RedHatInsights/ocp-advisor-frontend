@@ -26,7 +26,7 @@ const ClusterTabs = () => {
   });
 
   return (
-    <Card isCompact>
+    <Card isCompact isPlain>
       <CardBody>
         <Tabs
           activeKey={activeKey}

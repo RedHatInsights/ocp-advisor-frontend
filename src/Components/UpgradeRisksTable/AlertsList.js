@@ -74,9 +74,11 @@ const AlertsList = () => {
       <Tbody>
         {alerts.map(({ name, namespace, severity }) => (
           <Tr key={name}>
-            <Td>{name}</Td>
-            <Td>{ALERTS_SEVERITY_LABEL[severity]}</Td>
-            <Td>{namespace}</Td>
+            <Td className="alerts__name">{name}</Td>
+            <Td className="alerts__severity">
+              {ALERTS_SEVERITY_LABEL[severity]}
+            </Td>
+            <Td className="alerts__namespace">{namespace}</Td>
           </Tr>
         ))}
       </Tbody>

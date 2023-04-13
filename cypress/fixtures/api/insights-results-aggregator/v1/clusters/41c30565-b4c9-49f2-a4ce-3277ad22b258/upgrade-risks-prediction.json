@@ -1,0 +1,35 @@
+{
+  "status": "ok",
+  "upgrade_recommendation": {
+    "upgrade_risks_predictors": {
+      "alerts": [
+        {
+          "name": "ClusterOperatorDown",
+          "namespace": "openshift-monitoring",
+          "severity": "critical"
+        },
+        {
+          "name": "PostDisruptionBudgetLimit",
+          "namespace": "openshift-etcd",
+          "severity": "warning"
+        },
+        {
+          "name": "Cluster operators",
+          "namespace": "openshift-kube-apiserver",
+          "severity": "info"
+        }
+      ],
+      "operator_conditions": [
+        {
+          "name": "Version",
+          "condition": "failing"
+        },
+        {
+          "name": "Node-tuning",
+          "condition": "degraded",
+          "reason": "Multiple tasks failed"
+        }
+      ]
+    }
+  }
+}

@@ -118,7 +118,7 @@
   "undefined": "Undefined",
   "unknown": "Unknown",
   "upgradeRisks": "Upgrade risks",
-  "upgradeRisksNotAvailable": "Upgrade Risks are not available",
+  "upgradeRisksNotAvailable": "Upgrade risks are not available",
   "upgradeRisksNotAvailableDesc": "This cluster has gone more than two hours without sending metrics. Check the cluster's web console if you think that this is incorrect.",
   "version": "Version",
   "veryLow": "Very Low",

@@ -41,8 +41,8 @@ const ClusterOperatorsList = () => {
       <Tbody>
         {conditions.map(({ name, condition, reason }) => (
           <Tr key={name}>
-            <Td>{name}</Td>
-            <Td>
+            <Td class="operators__name">{name}</Td>
+            <Td class="operators__status">
               <Flex alignItems={{ default: 'alignItemsCenter' }}>
                 <Icon status="warning">
                   <ExclamationTriangleIcon />
@@ -50,7 +50,7 @@ const ClusterOperatorsList = () => {
                 <b>{CLUSTER_OPERATOR_LABEL[condition]}</b>
               </Flex>
             </Td>
-            <Td>{reason || '-'}</Td>
+            <Td class="operators__message">{reason || '-'}</Td>
           </Tr>
         ))}
       </Tbody>

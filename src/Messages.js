@@ -657,7 +657,7 @@ export default defineMessages({
   },
   upgradeRisksNotAvailable: {
     id: 'upgradeRisksNotAvailable',
-    defaultMessage: 'Upgrade Risks are not available',
+    defaultMessage: 'Upgrade risks are not available',
   },
   upgradeRisksNotAvailableDesc: {
     id: 'upgradeRisksNotAvailableDesc',

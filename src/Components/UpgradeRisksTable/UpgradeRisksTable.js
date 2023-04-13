@@ -55,11 +55,12 @@ const UpgradeRisksTable = () => {
     <EmptyState>
       <EmptyStateIcon variant="container" component={Spinner} />
     </EmptyState>
-  ) : hasRisks ? (
+  ) : (
     <TableComposable
       aria-label="Upgrade risks table"
       isExpandable
       variant="compact"
+      id="upgrade-risks-table"
     >
       <Thead>
         <Tr>
@@ -67,84 +68,113 @@ const UpgradeRisksTable = () => {
           <Th>Name</Th>
         </Tr>
       </Thead>
-      <Tbody isExpanded={alertsExpanded}>
-        <Tr>
-          <Td
-            expand={
-              alertsDisabled
-                ? {}
-                : {
-                    rowIndex: 0,
-                    isExpanded: alertsExpanded,
-                    onToggle: () => setAlertsExpanded(!alertsExpanded),
-                  }
-            }
-          />
-          <Td>
-            <Flex alignItems={{ default: 'alignItemsCenter' }}>
-              {!alertsDisabled &&
-                ALERTS_SEVERITY_ICONS[ // this algorithm helps to decide which icon (the most severe) to show
-                  ALERTS_SEVERITY_ORDER.filter((s) =>
-                    alerts.some(({ severity }) => s === severity)
-                  )[0]
-                ]}
-              <b>Alerts firing</b>
-              <Label isCompact>{alerts.length} upgrade risks</Label>
-            </Flex>
-          </Td>
-        </Tr>
-        <Tr isExpanded={alertsExpanded}>
-          <Td />
-          <Td>
-            <ExpandableRowContent>
-              Learn how to resolve your alert firing risks.
-              <AlertsList />
-            </ExpandableRowContent>
-          </Td>
-        </Tr>
-      </Tbody>
-      <Tbody isExpanded={operatorsExpanded}>
-        <Tr>
-          <Td
-            expand={
-              conditionsDisabled
-                ? undefined
-                : {
-                    rowIndex: 1,
-                    isExpanded: operatorsExpanded,
-                    onToggle: () => setOperatorsExpanded(!operatorsExpanded),
-                  }
-            }
-          />
-          <Td>
-            <Flex alignItems={{ default: 'alignItemsCenter' }}>
-              {!conditionsDisabled && (
-                <Icon status="warning">
-                  <ExclamationTriangleIcon />
-                </Icon>
-              )}
-              <b>Cluster opertors</b>
-              <Label isCompact>{conditions.length} upgrade risks</Label>
-            </Flex>
-          </Td>
-        </Tr>
-        <Tr isExpanded={operatorsExpanded}>
-          <Td />
-          <Td>
-            <ExpandableRowContent>
-              Learn how to resolve your cluster operator risks.
-              <ClusterOperatorsList />
-            </ExpandableRowContent>
-          </Td>
-        </Tr>
-      </Tbody>
+      {hasRisks ? (
+        <>
+          <Tbody isExpanded={alertsExpanded}>
+            <Tr className="alerts__header">
+              <Td
+                expand={
+                  alertsDisabled
+                    ? {}
+                    : {
+                        rowIndex: 0,
+                        isExpanded: alertsExpanded,
+                        onToggle: () => setAlertsExpanded(!alertsExpanded),
+                      }
+                }
+              />
+              <Td>
+                <Flex alignItems={{ default: 'alignItemsCenter' }}>
+                  {!alertsDisabled &&
+                    ALERTS_SEVERITY_ICONS[ // this algorithm helps to decide which icon (the most severe) to show
+                      ALERTS_SEVERITY_ORDER.filter((s) =>
+                        alerts.some(({ severity }) => s === severity)
+                      )[0]
+                    ]}
+                  <b>Alerts firing</b>
+                  <Label isCompact id="alerts-label">
+                    {alerts.length} upgrade risks
+                  </Label>
+                </Flex>
+              </Td>
+            </Tr>
+            <Tr isExpanded={alertsExpanded} className="alerts__content">
+              <Td />
+              <Td>
+                <ExpandableRowContent>
+                  Learn how to resolve your alert firing risks.
+                  <AlertsList />
+                </ExpandableRowContent>
+              </Td>
+            </Tr>
+          </Tbody>
+          <Tbody isExpanded={operatorsExpanded}>
+            <Tr className="operators__header">
+              <Td
+                expand={
+                  conditionsDisabled
+                    ? undefined
+                    : {
+                        rowIndex: 1,
+                        isExpanded: operatorsExpanded,
+                        onToggle: () =>
+                          setOperatorsExpanded(!operatorsExpanded),
+                      }
+                }
+              />
+              <Td>
+                <Flex alignItems={{ default: 'alignItemsCenter' }}>
+                  {!conditionsDisabled && (
+                    <Icon status="warning">
+                      <ExclamationTriangleIcon />
+                    </Icon>
+                  )}
+                  <b>Cluster opertors</b>
+                  <Label isCompact id="operator-conditions-label">
+                    {conditions.length} upgrade risks
+                  </Label>
+                </Flex>
+              </Td>
+            </Tr>
+            <Tr isExpanded={operatorsExpanded} className="operators__content">
+              <Td />
+              <Td>
+                <ExpandableRowContent>
+                  Learn how to resolve your cluster operator risks.
+                  <ClusterOperatorsList />
+                </ExpandableRowContent>
+              </Td>
+            </Tr>
+          </Tbody>
+        </>
+      ) : noRisks ? (
+        <Tbody>
+          <Tr>
+            <Td colSpan={2}>
+              <NoUpgradeRisks />
+            </Td>
+          </Tr>
+        </Tbody>
+      ) : isError && error.status === 503 ? (
+        <Tbody>
+          <Tr>
+            <Td colSpan={2}>
+              <UpgradeRisksNotAvailable />
+              {/* back end is temporarily not available */}
+            </Td>
+          </Tr>
+        </Tbody>
+      ) : (
+        <Tbody>
+          <Tr>
+            <Td colSpan={2}>
+              <ErrorState />
+              {/* default state for unexpected errors */}
+            </Td>
+          </Tr>
+        </Tbody>
+      )}
     </TableComposable>
-  ) : noRisks ? (
-    <NoUpgradeRisks />
-  ) : isError && error.status === 503 ? (
-    <UpgradeRisksNotAvailable /> // back end is temporarily not available
-  ) : (
-    <ErrorState /> // default state for unexpected errors
   );
 };
 
