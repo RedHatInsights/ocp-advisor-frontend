@@ -40,16 +40,16 @@ const ClusterTabs = () => {
             eventKey="recommendations"
             title={intl.formatMessage(messages.recommendations)}
           >
-            <ClusterRules />
+            {activeKey === 'recommendations' && <ClusterRules />}
           </Tab>
-          {upgradeRisksEnabled && (
-            <Tab
-              eventKey="upgrade_risks"
-              title={intl.formatMessage(messages.upgradeRisks)}
-            >
+          <Tab
+            eventKey="upgrade_risks"
+            title={intl.formatMessage(messages.upgradeRisks)}
+          >
+            {upgradeRisksEnabled && activeKey === 'upgrade_risks' && (
               <UpgradeRisksTable />
-            </Tab>
-          )}
+            )}
+          </Tab>
         </Tabs>
       </CardBody>
     </Card>
