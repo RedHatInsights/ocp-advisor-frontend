@@ -61,6 +61,7 @@ const UpgradeRisksTable = () => {
       isExpandable
       variant="compact"
       id="upgrade-risks-table"
+      borders={hasRisks}
     >
       <Thead>
         <Tr>
