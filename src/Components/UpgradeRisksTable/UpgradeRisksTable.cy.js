@@ -30,7 +30,7 @@ const interceptors = {
   successful: () =>
     cy.intercept(
       'GET',
-      /\/api\/insights-results-aggregator\/v1\/cluster\/.*\/upgrade-risks-prediction/,
+      /\/api\/insights-results-aggregator\/v2\/cluster\/.*\/upgrade-risks-prediction/,
       {
         statusCode: 200,
         body: upgradeRisksFixtures,
@@ -41,7 +41,7 @@ const interceptors = {
     fixtures.upgrade_recommendation.upgrade_risks_predictors.alerts = [];
     cy.intercept(
       'GET',
-      /\/api\/insights-results-aggregator\/v1\/cluster\/.*\/upgrade-risks-prediction/,
+      /\/api\/insights-results-aggregator\/v2\/cluster\/.*\/upgrade-risks-prediction/,
       {
         statusCode: 200,
         body: fixtures,
@@ -56,7 +56,7 @@ const interceptors = {
     };
     cy.intercept(
       'GET',
-      /\/api\/insights-results-aggregator\/v1\/cluster\/.*\/upgrade-risks-prediction/,
+      /\/api\/insights-results-aggregator\/v2\/cluster\/.*\/upgrade-risks-prediction/,
       {
         statusCode: 200,
         body: fixtures,
@@ -66,7 +66,7 @@ const interceptors = {
   'error, not available': () =>
     cy.intercept(
       'GET',
-      /\/api\/insights-results-aggregator\/v1\/cluster\/.*\/upgrade-risks-prediction/,
+      /\/api\/insights-results-aggregator\/v2\/cluster\/.*\/upgrade-risks-prediction/,
       {
         statusCode: 503,
       }
@@ -74,7 +74,7 @@ const interceptors = {
   'error, other': () =>
     cy.intercept(
       'GET',
-      /\/api\/insights-results-aggregator\/v1\/cluster\/.*\/upgrade-risks-prediction/,
+      /\/api\/insights-results-aggregator\/v2\/cluster\/.*\/upgrade-risks-prediction/,
       {
         statusCode: 500,
       }
@@ -82,7 +82,7 @@ const interceptors = {
   'long responding': () =>
     cy.intercept(
       'GET',
-      /\/api\/insights-results-aggregator\/v1\/cluster\/.*\/upgrade-risks-prediction/,
+      /\/api\/insights-results-aggregator\/v2\/cluster\/.*\/upgrade-risks-prediction/,
       {
         delay: 420000,
       }
