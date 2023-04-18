@@ -32,7 +32,9 @@ const MessageState = ({
     <Title headingLevel="h5" size="lg">
       {title}
     </Title>
-    <EmptyStateBody style={{ marginBottom: '16px' }}>{text}</EmptyStateBody>
+    <EmptyStateBody style={{ marginBottom: '16px', maxWidth: '400px' }}>
+      {text}
+    </EmptyStateBody>
     {children}
   </EmptyState>
 );

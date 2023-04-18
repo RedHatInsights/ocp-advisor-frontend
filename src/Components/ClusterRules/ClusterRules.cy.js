@@ -27,7 +27,7 @@ import {
   TABLE,
   ROWS_TOGGLER,
 } from '../../../cypress/utils/components';
-import { interceptors } from '../Cluster/Cluster.cy';
+import { clusterReportsInterceptors as interceptors } from '../../../cypress/utils/interceptors';
 
 const data = singleClusterPageReport.report.data;
 

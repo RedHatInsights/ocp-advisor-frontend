@@ -647,4 +647,21 @@ export default defineMessages({
     description: 'Upgrade risks text',
     defaultMessage: 'Upgrade risks',
   },
+  noUpgradeRisksFound: {
+    id: 'noUpgradeRisksFound',
+    defaultMessage: 'No upgrade risks found for this cluster',
+  },
+  noUpgradeRisksFoundDesc: {
+    id: 'noUpgradeRisksFoundDesc',
+    defaultMessage: 'There are no known update risks that affect this cluster.',
+  },
+  upgradeRisksNotAvailable: {
+    id: 'upgradeRisksNotAvailable',
+    defaultMessage: 'Upgrade risks are not available',
+  },
+  upgradeRisksNotAvailableDesc: {
+    id: 'upgradeRisksNotAvailableDesc',
+    defaultMessage:
+      "This cluster has gone more than two hours without sending metrics. Check the cluster's web console if you think that this is incorrect.",
+  },
 });
