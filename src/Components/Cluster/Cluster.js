@@ -7,17 +7,23 @@ import PageHeader from '@redhat-cloud-services/frontend-components/PageHeader';
 import ClusterHeader from '../ClusterHeader';
 import Breadcrumbs from '../Breadcrumbs';
 import ClusterTabs from '../ClusterTabs/ClusterTabs';
-import { PageSection } from '@patternfly/react-core';
+import { Flex, FlexItem, PageSection } from '@patternfly/react-core';
+import { UpgradeRisksAlert } from '../UpgradeRisksAlert';
 
 export const Cluster = ({ cluster, clusterId }) => {
   // TODO: make breadcrumbs take display name from GET /cluster/id/info
   return (
     <React.Fragment>
       <PageHeader className="pf-m-light ins-inventory-detail">
-        <Breadcrumbs
-          current={cluster?.data?.report.meta.cluster_name || clusterId}
-        />
-        <ClusterHeader />
+        <Flex direction={{ default: 'column' }}>
+          <FlexItem>
+            <Breadcrumbs
+              current={cluster?.data?.report.meta.cluster_name || clusterId}
+            />
+            <ClusterHeader />
+          </FlexItem>
+          <UpgradeRisksAlert />
+        </Flex>
       </PageHeader>
       <PageSection>
         <ClusterTabs cluster={cluster} />

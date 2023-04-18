@@ -664,4 +664,21 @@ export default defineMessages({
     defaultMessage:
       "This cluster has gone more than two hours without sending metrics. Check the cluster's web console if you think that this is incorrect.",
   },
+  resolveUpgradeRisks: {
+    id: 'resolveUpgradeRisks',
+    defaultMessage: 'Resolve upgrade risks',
+  },
+  resolveUpgradeRisksDesc: {
+    id: 'resolveUpgradeRisksDesc',
+    defaultMessage:
+      'There are risks present that could impact the success of your cluster upgrade. For the best performance, resolve these risks in the <strong>Upgrade risks</strong> tab before upgrading.',
+  },
+  noKnownUpgradeRisks: {
+    id: 'noKnownUpgradeRisks',
+    defaultMessage: 'No known upgrade risks identified for this cluster.',
+  },
+  upgradeRisksNotCurrentlyAvailable: {
+    id: 'upgradeRisksNotCurrentlyAvailable',
+    defaultMessage: 'Upgrade risks are not currently available.',
+  },
 });

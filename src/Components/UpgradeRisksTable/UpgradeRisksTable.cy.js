@@ -6,6 +6,7 @@ import {
   checkTableHeaders,
 } from '../../../cypress/utils/table';
 import UpgradeRisksTable from './UpgradeRisksTable';
+import { upgradeRisksInterceptors as interceptors } from '../../../cypress/utils/interceptors';
 
 const SEVERITY_MAPPING = {
   critical: 'Critical',
@@ -24,69 +25,6 @@ export const CLUSTER_OPERATOR_LABEL_MAPPING = {
   failing: 'Failing',
   available: 'Not Available',
   upgradeable: 'Not Upgradeable',
-};
-
-const interceptors = {
-  successful: () =>
-    cy.intercept(
-      'GET',
-      /\/api\/insights-results-aggregator\/v2\/cluster\/.*\/upgrade-risks-prediction/,
-      {
-        statusCode: 200,
-        body: upgradeRisksFixtures,
-      }
-    ),
-  'successful, alerts empty': () => {
-    const fixtures = upgradeRisksFixtures;
-    fixtures.upgrade_recommendation.upgrade_risks_predictors.alerts = [];
-    cy.intercept(
-      'GET',
-      /\/api\/insights-results-aggregator\/v2\/cluster\/.*\/upgrade-risks-prediction/,
-      {
-        statusCode: 200,
-        body: fixtures,
-      }
-    );
-  },
-  'successful, empty': () => {
-    const fixtures = upgradeRisksFixtures;
-    fixtures.upgrade_recommendation.upgrade_risks_predictors = {
-      alerts: [],
-      operator_conditions: [],
-    };
-    cy.intercept(
-      'GET',
-      /\/api\/insights-results-aggregator\/v2\/cluster\/.*\/upgrade-risks-prediction/,
-      {
-        statusCode: 200,
-        body: fixtures,
-      }
-    );
-  },
-  'error, not available': () =>
-    cy.intercept(
-      'GET',
-      /\/api\/insights-results-aggregator\/v2\/cluster\/.*\/upgrade-risks-prediction/,
-      {
-        statusCode: 503,
-      }
-    ),
-  'error, other': () =>
-    cy.intercept(
-      'GET',
-      /\/api\/insights-results-aggregator\/v2\/cluster\/.*\/upgrade-risks-prediction/,
-      {
-        statusCode: 500,
-      }
-    ),
-  'long responding': () =>
-    cy.intercept(
-      'GET',
-      /\/api\/insights-results-aggregator\/v2\/cluster\/.*\/upgrade-risks-prediction/,
-      {
-        delay: 420000,
-      }
-    ),
 };
 
 const CLUSTER_ID = '41c30565-b4c9-49f2-a4ce-3277ad22b258';
