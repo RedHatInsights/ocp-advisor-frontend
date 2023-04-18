@@ -1,3 +1,10 @@
+# [1.13.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.12.1...v1.13.0) (2023-04-18)
+
+
+### Features
+
+* **OCPADVISOR-71:** Show upgrade risks table ([#547](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/547)) ([f9e3031](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/f9e3031cd6086752e66c3ebb27d218f15e345661))
+
 ## [1.12.1](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.12.0...v1.12.1) (2023-04-12)
 
 # [1.12.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.11.2...v1.12.0) (2023-04-06)
