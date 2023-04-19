@@ -5,13 +5,17 @@ import {
   checkNoMatchingRecs,
   checkRowCounts,
 } from '../../../cypress/utils/table';
-import { clusterReportsInterceptors as interceptors } from '../../../cypress/utils/interceptors';
+import {
+  clusterReportsInterceptors as interceptors,
+  upgradeRisksInterceptors,
+} from '../../../cypress/utils/interceptors';
 
 // selectors
 const CLUSTER_HEADER = '#cluster-header';
 const BREADCRUMBS = 'nav[class=pf-c-breadcrumb]';
 const RULES_TABLE = '#cluster-recs-list-table';
 const FILTER_CHIPS = 'li[class=pf-c-chip-group__list-item]';
+const ALERT = '[data-ouia-component-type="PF4/Alert"]';
 
 const CLUSTER_ID = '123';
 const CLUSTER_NAME = 'Cluster With Issues';
@@ -126,5 +130,57 @@ describe('cluster page', () => {
       cy.get(RULES_TABLE).should('have.length', 1);
       cy.get('.pf-c-empty-state').should('have.length', 1);
     });
+  });
+});
+
+describe('upgrade risks banner', () => {
+  it('has some upgrade risks', () => {
+    upgradeRisksInterceptors.successful();
+    mount();
+
+    cy.get(ALERT).should('have.class', 'pf-m-warning');
+    cy.get(ALERT).within(() => {
+      cy.get('h4').should('contain.text', 'Resolve upgrade risks');
+    });
+  });
+
+  it('has no upgrade risks', () => {
+    upgradeRisksInterceptors['successful, empty']();
+    mount();
+
+    cy.get(ALERT).should('have.class', 'pf-m-success');
+    cy.get(ALERT).within(() => {
+      cy.get('h4').should(
+        'contain.text',
+        'No known upgrade risks identified for this cluster.'
+      );
+    });
+  });
+
+  it('upgrade risks service not available', () => {
+    upgradeRisksInterceptors['error, not available']();
+    mount();
+
+    cy.get(ALERT).should('have.class', 'pf-m-warning');
+    cy.get(ALERT).within(() => {
+      cy.get('h4').should(
+        'contain.text',
+        'Upgrade risks are not currently available.'
+      );
+    });
+  });
+
+  it('should not render alert in other error', () => {
+    upgradeRisksInterceptors['error, other']();
+    mount();
+
+    cy.get(ALERT).should('not.exist');
+  });
+
+  it('should not render alert in the loading state', () => {
+    upgradeRisksInterceptors['long responding']();
+    mount();
+
+    cy.get(ALERT).should('not.exist');
   });
 });
