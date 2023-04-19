@@ -1,3 +1,10 @@
+# [1.14.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.13.0...v1.14.0) (2023-04-19)
+
+
+### Features
+
+* **OCPADVISOR-72:** Render banner to show status of upgrade risks ([#549](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/549)) ([cdda357](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/cdda3572b402fc3178aa27e570b2865e6a7dda7a))
+
 # [1.13.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.12.1...v1.13.0) (2023-04-18)
 
 
