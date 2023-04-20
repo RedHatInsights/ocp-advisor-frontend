@@ -147,11 +147,15 @@ describe('successful, only cluster operators', () => {
   });
 
   it('shows 0 alert risks', () => {
-    cy.get('#alerts-label').should('have.text', `0 upgrade risks`);
+    cy.get('#alerts-label')
+      .should('have.text', `0 upgrade risks`)
+      .and('have.class', 'pf-m-green');
   });
 
-  it('does not show icon for alerts', () => {
-    cy.get('.alerts__header').find('.pf-c-icon__content').should('not.exist');
+  it('shows check icon', () => {
+    cy.get('.alerts__header')
+      .find('.pf-c-icon__content')
+      .should('have.class', 'pf-m-success');
   });
 });
 
