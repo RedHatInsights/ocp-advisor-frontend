@@ -104,6 +104,14 @@ export const upgradeRisksInterceptors = {
         statusCode: 503,
       }
     ),
+  'error, not found': () =>
+    cy.intercept(
+      'GET',
+      /\/api\/insights-results-aggregator\/v2\/cluster\/.*\/upgrade-risks-prediction/,
+      {
+        statusCode: 404,
+      }
+    ),
   'error, other': () =>
     cy.intercept(
       'GET',
