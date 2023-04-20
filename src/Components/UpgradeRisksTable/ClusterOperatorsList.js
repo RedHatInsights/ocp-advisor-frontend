@@ -39,9 +39,11 @@ const ClusterOperatorsList = () => {
         </Tr>
       </Thead>
       <Tbody>
-        {conditions.map(({ name, condition, reason }) => (
+        {conditions.map(({ name, condition, reason, url = '' }) => (
           <Tr key={name}>
-            <Td class="operators__name">{name}</Td>
+            <Td class="operators__name">
+              {url === '' ? name : <a href={url}>{name}</a>}
+            </Td>
             <Td class="operators__status">
               <Flex alignItems={{ default: 'alignItemsCenter' }}>
                 <Icon status="warning">

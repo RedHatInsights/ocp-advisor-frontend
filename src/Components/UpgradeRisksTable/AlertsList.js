@@ -72,9 +72,11 @@ const AlertsList = () => {
         </Tr>
       </Thead>
       <Tbody>
-        {alerts.map(({ name, namespace, severity }) => (
+        {alerts.map(({ name, namespace, severity, url = '' }) => (
           <Tr key={name}>
-            <Td className="alerts__name">{name}</Td>
+            <Td className="alerts__name">
+              {url === '' ? name : <a href={url}>{name}</a>}
+            </Td>
             <Td className="alerts__severity">
               {ALERTS_SEVERITY_LABEL[severity]}
             </Td>
