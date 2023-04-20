@@ -33,7 +33,7 @@ const UpgradeRisksAlert = () => {
       isInline
       title={intl.formatMessage(messages.noKnownUpgradeRisks)}
     />
-  ) : isError && error.status === 503 ? (
+  ) : isError && error.status === 404 ? (
     <Alert
       variant="warning"
       isInline
