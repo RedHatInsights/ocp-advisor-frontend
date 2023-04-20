@@ -1,3 +1,40 @@
+# [1.14.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.13.0...v1.14.0) (2023-04-19)
+
+
+### Features
+
+* **OCPADVISOR-72:** Render banner to show status of upgrade risks ([#549](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/549)) ([cdda357](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/cdda3572b402fc3178aa27e570b2865e6a7dda7a))
+
+# [1.13.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.12.1...v1.13.0) (2023-04-18)
+
+
+### Features
+
+* **OCPADVISOR-71:** Show upgrade risks table ([#547](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/547)) ([f9e3031](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/f9e3031cd6086752e66c3ebb27d218f15e345661))
+
+## [1.12.1](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.12.0...v1.12.1) (2023-04-12)
+
+# [1.12.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.11.2...v1.12.0) (2023-04-06)
+
+
+### Features
+
+* **OCPADVISOR-70:** Enable "Upgrade Risks" tab on the cluster details view ([#541](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/541)) ([c47ac72](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/c47ac720d1280a80089cd9db8bdfd36c1234cd77))
+
+## [1.11.2](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.11.1...v1.11.2) (2023-03-09)
+
+
+### Bug Fixes
+
+* **OCPADVISOR-59:** Fix not loading pages (part 2) ([#529](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/529)) ([6b18f07](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/6b18f07edebdcb0f28ff31e197aebf7f4a2bbab3))
+
+## [1.11.1](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.11.0...v1.11.1) (2023-03-09)
+
+
+### Bug Fixes
+
+* **OCPADVISOR-59:** Fix not loading pages ([#528](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/528)) ([970267c](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/970267c0e1746afe7d5d3b31006633ddceca78c1))
+
 # [1.11.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.10.0...v1.11.0) (2023-01-19)
 
 

@@ -18,6 +18,7 @@ import { InProgressIcon } from '@patternfly/react-icons/dist/esm/icons/in-progre
 import InfoCircleIcon from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import { global_info_color_100 as globalInfoColor100 } from '@patternfly/react-tokens/dist/js/global_info_color_100.js';
 import CheckIcon from '@patternfly/react-icons/dist/js/icons/check-icon';
+import ExclamationTriangleIcon from '@patternfly/react-icons/dist/esm/icons/exclamation-triangle-icon';
 
 import DefaultErrorMessage from '@redhat-cloud-services/frontend-components/ErrorState/DefaultErrorMessage';
 
@@ -187,6 +188,31 @@ const NoRecsAffecting = () => {
   );
 };
 
+const NoUpgradeRisks = () => {
+  const intl = useIntl();
+  return (
+    <MessageState
+      icon={CheckCircleIcon}
+      iconStyle={{
+        color: globalSuccessColor100.value,
+      }}
+      title={intl.formatMessage(messages.noUpgradeRisksFound)}
+      text={intl.formatMessage(messages.noUpgradeRisksFoundDesc)}
+    />
+  );
+};
+
+const UpgradeRisksNotAvailable = () => {
+  const intl = useIntl();
+  return (
+    <MessageState
+      icon={ExclamationTriangleIcon}
+      title={intl.formatMessage(messages.upgradeRisksNotAvailable)}
+      text={intl.formatMessage(messages.upgradeRisksNotAvailableDesc)}
+    />
+  );
+};
+
 export {
   ErrorState,
   NoAffectedClusters,
@@ -197,4 +223,6 @@ export {
   NoInsightsResults,
   NoRecsError,
   NoRecsAffecting,
+  NoUpgradeRisks,
+  UpgradeRisksNotAvailable,
 };

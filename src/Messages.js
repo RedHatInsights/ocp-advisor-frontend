@@ -642,4 +642,43 @@ export default defineMessages({
     defaultMessage:
       'The risk of change is <strong>{ level }</strong>, because the change takes very little time to implement and there is minimal impact to system operations.',
   },
+  upgradeRisks: {
+    id: 'upgradeRisks',
+    description: 'Upgrade risks text',
+    defaultMessage: 'Upgrade risks',
+  },
+  noUpgradeRisksFound: {
+    id: 'noUpgradeRisksFound',
+    defaultMessage: 'No upgrade risks found for this cluster',
+  },
+  noUpgradeRisksFoundDesc: {
+    id: 'noUpgradeRisksFoundDesc',
+    defaultMessage: 'There are no known update risks that affect this cluster.',
+  },
+  upgradeRisksNotAvailable: {
+    id: 'upgradeRisksNotAvailable',
+    defaultMessage: 'Upgrade risks are not available',
+  },
+  upgradeRisksNotAvailableDesc: {
+    id: 'upgradeRisksNotAvailableDesc',
+    defaultMessage:
+      "This cluster has gone more than two hours without sending metrics. Check the cluster's web console if you think that this is incorrect.",
+  },
+  resolveUpgradeRisks: {
+    id: 'resolveUpgradeRisks',
+    defaultMessage: 'Resolve upgrade risks',
+  },
+  resolveUpgradeRisksDesc: {
+    id: 'resolveUpgradeRisksDesc',
+    defaultMessage:
+      'There are risks present that could impact the success of your cluster upgrade. For the best performance, resolve these risks in the <strong>Upgrade risks</strong> tab before upgrading.',
+  },
+  noKnownUpgradeRisks: {
+    id: 'noKnownUpgradeRisks',
+    defaultMessage: 'No known upgrade risks identified for this cluster.',
+  },
+  upgradeRisksNotCurrentlyAvailable: {
+    id: 'upgradeRisksNotCurrentlyAvailable',
+    defaultMessage: 'Upgrade risks are not currently available.',
+  },
 });
