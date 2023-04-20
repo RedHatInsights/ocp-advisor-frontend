@@ -1,3 +1,15 @@
+# [1.15.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.14.1...v1.15.0) (2023-04-20)
+
+
+### Bug Fixes
+
+* **OCPADVISOR-85:** Render check icon if no risks ([#553](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/553)) ([791f7fe](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/791f7fe9980999e8d0da04fd4ea2c5d0ee464144))
+
+
+### Features
+
+* **OCPADVISOR-86:** Render risks with links ([#552](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/552)) ([d2afdff](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/d2afdff7e77d5b7773b432f4b4567aaf40a527d7))
+
 ## [1.14.1](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.14.0...v1.14.1) (2023-04-20)
 
 
