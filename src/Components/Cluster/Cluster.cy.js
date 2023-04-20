@@ -157,8 +157,8 @@ describe('upgrade risks banner', () => {
     });
   });
 
-  it('upgrade risks service not available', () => {
-    upgradeRisksInterceptors['error, not available']();
+  it('upgrade risks not found', () => {
+    upgradeRisksInterceptors['error, not found']();
     mount();
 
     cy.get(ALERT).should('have.class', 'pf-m-warning');

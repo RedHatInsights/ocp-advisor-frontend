@@ -1,3 +1,10 @@
+## [1.14.1](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.14.0...v1.14.1) (2023-04-20)
+
+
+### Bug Fixes
+
+* Use correct empty state for 404 upgrade risks ([#551](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/551)) ([9d97587](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/9d97587c57a4ddd030768521bd85336895649fa2))
+
 # [1.14.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.13.0...v1.14.0) (2023-04-19)
 
 

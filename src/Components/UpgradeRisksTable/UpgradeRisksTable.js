@@ -148,29 +148,17 @@ const UpgradeRisksTable = () => {
             </Tr>
           </Tbody>
         </>
-      ) : noRisks ? (
-        <Tbody>
-          <Tr>
-            <Td colSpan={2}>
-              <NoUpgradeRisks />
-            </Td>
-          </Tr>
-        </Tbody>
-      ) : isError && error.status === 503 ? (
-        <Tbody>
-          <Tr>
-            <Td colSpan={2}>
-              <UpgradeRisksNotAvailable />
-              {/* back end is temporarily not available */}
-            </Td>
-          </Tr>
-        </Tbody>
       ) : (
         <Tbody>
           <Tr>
             <Td colSpan={2}>
-              <ErrorState />
-              {/* default state for unexpected errors */}
+              {noRisks ? (
+                <NoUpgradeRisks />
+              ) : isError && error.status === 404 ? (
+                <UpgradeRisksNotAvailable />
+              ) : (
+                <ErrorState />
+              )}
             </Td>
           </Tr>
         </Tbody>
