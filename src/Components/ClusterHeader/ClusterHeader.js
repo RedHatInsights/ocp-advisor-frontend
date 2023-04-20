@@ -36,7 +36,7 @@ export const ClusterHeader = ({ clusterId, clusterData, clusterInfo }) => {
   const redirectOCM = (clusterId) => {
     location.assign(
       location.origin +
-        (location.pathname.includes('beta') ? `/beta` : '') +
+        (location.pathname.includes('preview') ? `/preview` : '') +
         `/openshift/details/${clusterId}`
     );
   };

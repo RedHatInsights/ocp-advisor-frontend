@@ -1,3 +1,33 @@
+## [1.14.1](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.14.0...v1.14.1) (2023-04-20)
+
+
+### Bug Fixes
+
+* Use correct empty state for 404 upgrade risks ([#551](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/551)) ([9d97587](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/9d97587c57a4ddd030768521bd85336895649fa2))
+
+# [1.14.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.13.0...v1.14.0) (2023-04-19)
+
+
+### Features
+
+* **OCPADVISOR-72:** Render banner to show status of upgrade risks ([#549](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/549)) ([cdda357](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/cdda3572b402fc3178aa27e570b2865e6a7dda7a))
+
+# [1.13.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.12.1...v1.13.0) (2023-04-18)
+
+
+### Features
+
+* **OCPADVISOR-71:** Show upgrade risks table ([#547](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/547)) ([f9e3031](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/f9e3031cd6086752e66c3ebb27d218f15e345661))
+
+## [1.12.1](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.12.0...v1.12.1) (2023-04-12)
+
+# [1.12.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.11.2...v1.12.0) (2023-04-06)
+
+
+### Features
+
+* **OCPADVISOR-70:** Enable "Upgrade Risks" tab on the cluster details view ([#541](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/541)) ([c47ac72](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/c47ac720d1280a80089cd9db8bdfd36c1234cd77))
+
 ## [1.11.2](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.11.1...v1.11.2) (2023-03-09)
 
 

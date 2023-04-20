@@ -5,28 +5,34 @@ import PropTypes from 'prop-types';
 
 import PageHeader from '@redhat-cloud-services/frontend-components/PageHeader';
 import ClusterHeader from '../ClusterHeader';
-import ClusterRules from '../ClusterRules/ClusterRules';
 import Breadcrumbs from '../Breadcrumbs';
+import ClusterTabs from '../ClusterTabs/ClusterTabs';
+import { Flex, FlexItem, PageSection } from '@patternfly/react-core';
+import { UpgradeRisksAlert } from '../UpgradeRisksAlert';
 
 export const Cluster = ({ cluster, clusterId }) => {
   // TODO: make breadcrumbs take display name from GET /cluster/id/info
   return (
     <React.Fragment>
       <PageHeader className="pf-m-light ins-inventory-detail">
-        <Breadcrumbs
-          current={cluster?.data?.report.meta.cluster_name || clusterId}
-        />
-        <ClusterHeader />
+        <Flex direction={{ default: 'column' }}>
+          <FlexItem>
+            <Breadcrumbs
+              current={cluster?.data?.report.meta.cluster_name || clusterId}
+            />
+            <ClusterHeader />
+          </FlexItem>
+          <UpgradeRisksAlert />
+        </Flex>
       </PageHeader>
-      <section className="pf-l-page__main-section pf-c-page__main-section">
-        <ClusterRules cluster={cluster} />
-      </section>
+      <PageSection>
+        <ClusterTabs cluster={cluster} />
+      </PageSection>
     </React.Fragment>
   );
 };
 
 Cluster.propTypes = {
   cluster: PropTypes.object.isRequired,
-  displayName: PropTypes.object.isRequired,
   clusterId: PropTypes.string.isRequired,
 };

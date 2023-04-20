@@ -1,3 +1,5 @@
+// TODO: replace utils with the utils library from FEC
+
 const TOOLBAR = 'div[id="ins-primary-data-toolbar"]';
 const CHIP_GROUP = 'div[data-ouia-component-type="PF4/ChipGroup"]';
 const CHIP = '[data-ouia-component-type="PF4/Chip"]';

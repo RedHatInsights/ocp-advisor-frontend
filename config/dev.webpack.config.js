@@ -7,7 +7,10 @@ const { config: webpackConfig, plugins } = config({
   deployment: process.env.BETA ? 'beta/apps' : 'apps',
   useProxy: true,
   appUrl: process.env.BETA
-    ? ['/beta/openshift/insights/advisor']
+    ? [
+        '/beta/openshift/insights/advisor',
+        '/preview/openshift/insights/advisor',
+      ]
     : ['/openshift/insights/advisor'],
   env: process.env.BETA ? 'stage-beta' : 'stage-stable',
   sassPrefix: '.ocp-advisor, .ocpAdvisor',
