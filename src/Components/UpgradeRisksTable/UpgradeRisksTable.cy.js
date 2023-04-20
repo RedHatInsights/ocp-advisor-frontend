@@ -81,7 +81,14 @@ describe('successful with some risks', () => {
           const alert =
             upgradeRisksFixtures.upgrade_recommendation.upgrade_risks_predictors
               .alerts[index];
-          cy.get($row).find('.alerts__name').should('have.text', alert.name);
+          if (alert.url) {
+            cy.get($row)
+              .find('.alerts__name a')
+              .should('have.text', alert.name)
+              .and('have.attr', 'href', alert.url);
+          } else {
+            cy.get($row).find('.alerts__name').should('have.text', alert.name);
+          }
           cy.get($row)
             .find('.alerts__severity')
             .should('contain.text', SEVERITY_MAPPING[alert.severity]);
@@ -108,6 +115,16 @@ describe('successful with some risks', () => {
           const condition =
             upgradeRisksFixtures.upgrade_recommendation.upgrade_risks_predictors
               .operator_conditions[index];
+          if (condition.url) {
+            cy.get($row)
+              .find('.operators__name a')
+              .should('have.text', condition.name)
+              .and('have.attr', 'href', condition.url);
+          } else {
+            cy.get($row)
+              .find('.operators__name')
+              .should('have.text', condition.name);
+          }
           cy.get($row)
             .find('.operators__name')
             .should('have.text', condition.name);
