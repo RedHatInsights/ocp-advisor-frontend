@@ -45,6 +45,9 @@ export const SmartProxyApi = createApi({
 
 // Export hooks for usage in functional components
 export const {
+  endpoints: {
+    getUpgradeRisks: { useQueryState: useGetUpgradeRisksState },
+  },
   useGetClusterByIdQuery,
   useLazyGetClusterByIdQuery,
   useGetRuleByIdQuery,
