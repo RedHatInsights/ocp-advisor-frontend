@@ -1,3 +1,10 @@
+## [1.15.1](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.15.0...v1.15.1) (2023-04-21)
+
+
+### Bug Fixes
+
+* Fix upgrade risks language ([f963a0a](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/f963a0a17044e4cbe41591ae9295ede96777c48e))
+
 # [1.15.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.14.1...v1.15.0) (2023-04-20)
 
 
