@@ -2,6 +2,7 @@ import { Flex, Icon } from '@patternfly/react-core';
 import ExclamationCircleIcon from '@patternfly/react-icons/dist/esm/icons/exclamation-circle-icon';
 import InfoCircleIcon from '@patternfly/react-icons/dist/esm/icons/info-circle-icon';
 import ExclamationTriangleIcon from '@patternfly/react-icons/dist/esm/icons/exclamation-triangle-icon';
+import CheckCircleIcon from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 import {
   TableComposable,
   Tbody,
@@ -28,6 +29,11 @@ export const ALERTS_SEVERITY_ICONS = {
   info: (
     <Icon status="info">
       <InfoCircleIcon />
+    </Icon>
+  ),
+  success: (
+    <Icon status="success">
+      <CheckCircleIcon />
     </Icon>
   ),
 };
@@ -72,9 +78,11 @@ const AlertsList = () => {
         </Tr>
       </Thead>
       <Tbody>
-        {alerts.map(({ name, namespace, severity }) => (
+        {alerts.map(({ name, namespace, severity, url = '' }) => (
           <Tr key={name}>
-            <Td className="alerts__name">{name}</Td>
+            <Td className="alerts__name">
+              {url === '' ? name : <a href={url}>{name}</a>}
+            </Td>
             <Td className="alerts__severity">
               {ALERTS_SEVERITY_LABEL[severity]}
             </Td>

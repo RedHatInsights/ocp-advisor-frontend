@@ -86,14 +86,19 @@ const UpgradeRisksTable = () => {
               />
               <Td>
                 <Flex alignItems={{ default: 'alignItemsCenter' }}>
-                  {!alertsDisabled &&
-                    ALERTS_SEVERITY_ICONS[ // this algorithm helps to decide which icon (the most severe) to show
-                      ALERTS_SEVERITY_ORDER.filter((s) =>
-                        alerts.some(({ severity }) => s === severity)
-                      )[0]
-                    ]}
+                  {alertsDisabled
+                    ? ALERTS_SEVERITY_ICONS['success']
+                    : ALERTS_SEVERITY_ICONS[ // this algorithm helps to decide which icon (the most severe) to show
+                        ALERTS_SEVERITY_ORDER.filter((s) =>
+                          alerts.some(({ severity }) => s === severity)
+                        )[0]
+                      ]}
                   <b>Alerts firing</b>
-                  <Label isCompact id="alerts-label">
+                  <Label
+                    isCompact
+                    id="alerts-label"
+                    color={alertsDisabled ? 'green' : 'grey'}
+                  >
                     {alerts.length} upgrade risks
                   </Label>
                 </Flex>
@@ -125,13 +130,19 @@ const UpgradeRisksTable = () => {
               />
               <Td>
                 <Flex alignItems={{ default: 'alignItemsCenter' }}>
-                  {!conditionsDisabled && (
+                  {conditionsDisabled ? (
+                    ALERTS_SEVERITY_ICONS['success']
+                  ) : (
                     <Icon status="warning">
                       <ExclamationTriangleIcon />
                     </Icon>
                   )}
-                  <b>Cluster opertors</b>
-                  <Label isCompact id="operator-conditions-label">
+                  <b>Cluster operators</b>
+                  <Label
+                    isCompact
+                    id="operator-conditions-label"
+                    color={conditionsDisabled ? 'green' : 'grey'}
+                  >
                     {conditions.length} upgrade risks
                   </Label>
                 </Flex>

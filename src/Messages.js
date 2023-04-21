@@ -653,7 +653,8 @@ export default defineMessages({
   },
   noUpgradeRisksFoundDesc: {
     id: 'noUpgradeRisksFoundDesc',
-    defaultMessage: 'There are no known update risks that affect this cluster.',
+    defaultMessage:
+      'There are no known upgrade risks that affect this cluster.',
   },
   upgradeRisksNotAvailable: {
     id: 'upgradeRisksNotAvailable',
