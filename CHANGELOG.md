@@ -1,3 +1,10 @@
+## [1.15.2](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.15.1...v1.15.2) (2023-04-21)
+
+
+### Bug Fixes
+
+* **OCPADVISOR-87:** Don't map cluster operator conditions ([#556](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/556)) ([8e18c5c](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/8e18c5c03aa2de9b81204bb4321975bea636905a))
+
 ## [1.15.1](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.15.0...v1.15.1) (2023-04-21)
 
 

@@ -12,13 +12,6 @@ import { useGetUpgradeRisksQuery } from '../../Services/SmartProxy';
 import { Flex, Icon } from '@patternfly/react-core';
 import ExclamationTriangleIcon from '@patternfly/react-icons/dist/esm/icons/exclamation-triangle-icon';
 
-export const CLUSTER_OPERATOR_LABEL = {
-  degraded: 'Degraded',
-  failing: 'Failing',
-  available: 'Not Available',
-  upgradeable: 'Not Upgradeable',
-};
-
 const ClusterOperatorsList = () => {
   const { clusterId } = useParams();
   const { data } = useGetUpgradeRisksQuery({ id: clusterId });
@@ -49,7 +42,7 @@ const ClusterOperatorsList = () => {
                 <Icon status="warning">
                   <ExclamationTriangleIcon />
                 </Icon>
-                <b>{CLUSTER_OPERATOR_LABEL[condition]}</b>
+                <b>{condition}</b>
               </Flex>
             </Td>
             <Td class="operators__message">{reason || '-'}</Td>
