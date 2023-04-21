@@ -8,6 +8,7 @@ import { setSearchParameter } from '../../Utilities/Helpers';
 import { useUpgradeRisksFeatureFlag } from '../../Utilities/useFeatureFlag';
 import ClusterRules from '../ClusterRules/ClusterRules';
 import { UpgradeRisksTable } from '../UpgradeRisksTable';
+import { UpgradeRisksTracker } from '../UpgradeRisksTracker';
 
 const CLUSTER_TABS = ['recommendations', 'upgrade_risks'];
 
@@ -47,7 +48,10 @@ const ClusterTabs = () => {
             title={intl.formatMessage(messages.upgradeRisks)}
           >
             {upgradeRisksEnabled && activeKey === 'upgrade_risks' && (
-              <UpgradeRisksTable />
+              <>
+                <UpgradeRisksTracker />
+                <UpgradeRisksTable />
+              </>
             )}
           </Tab>
         </Tabs>
