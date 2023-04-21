@@ -20,13 +20,6 @@ const SEVERITY_ICON_CLASS_MAPPING = {
   info: 'info',
 };
 
-export const CLUSTER_OPERATOR_LABEL_MAPPING = {
-  degraded: 'Degraded',
-  failing: 'Failing',
-  available: 'Not Available',
-  upgradeable: 'Not Upgradeable',
-};
-
 const CLUSTER_ID = '41c30565-b4c9-49f2-a4ce-3277ad22b258';
 
 const mount = (initialEntries = [`/clusters/${CLUSTER_ID}`]) => {
@@ -130,10 +123,7 @@ describe('successful with some risks', () => {
             .should('have.text', condition.name);
           cy.get($row)
             .find('.operators__status')
-            .should(
-              'contain.text',
-              CLUSTER_OPERATOR_LABEL_MAPPING[condition.condition]
-            );
+            .should('contain.text', condition.condition);
           cy.get($row)
             .find('.operators__status .pf-c-icon__content')
             .should('have.class', `pf-m-warning`);
