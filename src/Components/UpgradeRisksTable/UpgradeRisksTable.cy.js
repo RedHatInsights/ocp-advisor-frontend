@@ -81,7 +81,14 @@ describe('successful with some risks', () => {
           const alert =
             upgradeRisksFixtures.upgrade_recommendation.upgrade_risks_predictors
               .alerts[index];
-          cy.get($row).find('.alerts__name').should('have.text', alert.name);
+          if (alert.url) {
+            cy.get($row)
+              .find('.alerts__name a')
+              .should('have.text', alert.name)
+              .and('have.attr', 'href', alert.url);
+          } else {
+            cy.get($row).find('.alerts__name').should('have.text', alert.name);
+          }
           cy.get($row)
             .find('.alerts__severity')
             .should('contain.text', SEVERITY_MAPPING[alert.severity]);
@@ -108,6 +115,16 @@ describe('successful with some risks', () => {
           const condition =
             upgradeRisksFixtures.upgrade_recommendation.upgrade_risks_predictors
               .operator_conditions[index];
+          if (condition.url) {
+            cy.get($row)
+              .find('.operators__name a')
+              .should('have.text', condition.name)
+              .and('have.attr', 'href', condition.url);
+          } else {
+            cy.get($row)
+              .find('.operators__name')
+              .should('have.text', condition.name);
+          }
           cy.get($row)
             .find('.operators__name')
             .should('have.text', condition.name);
@@ -147,11 +164,15 @@ describe('successful, only cluster operators', () => {
   });
 
   it('shows 0 alert risks', () => {
-    cy.get('#alerts-label').should('have.text', `0 upgrade risks`);
+    cy.get('#alerts-label')
+      .should('have.text', `0 upgrade risks`)
+      .and('have.class', 'pf-m-green');
   });
 
-  it('does not show icon for alerts', () => {
-    cy.get('.alerts__header').find('.pf-c-icon__content').should('not.exist');
+  it('shows check icon', () => {
+    cy.get('.alerts__header')
+      .find('.pf-c-icon__content')
+      .should('have.class', 'pf-m-success');
   });
 });
 

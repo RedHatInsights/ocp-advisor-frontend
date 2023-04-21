@@ -69,7 +69,7 @@
   "noRecsFoundError": "No recommendations to display",
   "noRecsFoundErrorDesc": "Insights identifies and prioritizes risks to security, performance, availability, and stability of your clusters. This feature uses the Remote Health functionality of OpenShift Container Platform. For further details about Insights, see the",
   "noUpgradeRisksFound": "No upgrade risks found for this cluster",
-  "noUpgradeRisksFoundDesc": "There are no known update risks that affect this cluster.",
+  "noUpgradeRisksFoundDesc": "There are no known upgrade risks that affect this cluster.",
   "none": "None",
   "oneOrMore": "1 or more",
   "performance": "Performance",

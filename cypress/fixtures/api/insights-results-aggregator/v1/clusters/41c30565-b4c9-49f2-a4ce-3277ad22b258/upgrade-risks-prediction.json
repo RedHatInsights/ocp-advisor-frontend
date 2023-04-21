@@ -6,12 +6,14 @@
         {
           "name": "ClusterOperatorDown",
           "namespace": "openshift-monitoring",
-          "severity": "critical"
+          "severity": "critical",
+          "url": "https://redhat.com/alert1"
         },
         {
           "name": "PostDisruptionBudgetLimit",
           "namespace": "openshift-etcd",
-          "severity": "warning"
+          "severity": "warning",
+          "url": "https://redhat.com/alert2"
         },
         {
           "name": "Cluster operators",
@@ -22,12 +24,14 @@
       "operator_conditions": [
         {
           "name": "Version",
-          "condition": "failing"
+          "condition": "failing",
+          "url": "https://redhat.com/oc1"
         },
         {
           "name": "Node-tuning",
           "condition": "degraded",
-          "reason": "Multiple tasks failed"
+          "reason": "Multiple tasks failed",
+          "url": "https://redhat.com/oc2"
         }
       ]
     }
