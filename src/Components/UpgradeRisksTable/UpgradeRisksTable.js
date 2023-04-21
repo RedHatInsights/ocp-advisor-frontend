@@ -137,7 +137,7 @@ const UpgradeRisksTable = () => {
                       <ExclamationTriangleIcon />
                     </Icon>
                   )}
-                  <b>Cluster opertors</b>
+                  <b>Cluster operators</b>
                   <Label
                     isCompact
                     id="operator-conditions-label"
