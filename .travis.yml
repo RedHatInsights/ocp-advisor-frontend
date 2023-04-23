@@ -4,6 +4,10 @@ notifications:
 sudo: required
 node_js:
   - "16"
+cache:
+  # cache both npm modules and Cypress binary
+  directories:
+    - ~/.cache/Cypress
 install:
   - npm ci
 jobs:
