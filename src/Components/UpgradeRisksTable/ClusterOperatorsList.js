@@ -8,13 +8,13 @@ import {
   Tr,
 } from '@patternfly/react-table';
 import { useParams } from 'react-router-dom';
-import { useGetUpgradeRisksQuery } from '../../Services/SmartProxy';
+import { useGetUpgradeRisksState } from '../../Services/SmartProxy';
 import { Flex, Icon } from '@patternfly/react-core';
 import ExclamationTriangleIcon from '@patternfly/react-icons/dist/esm/icons/exclamation-triangle-icon';
 
 const ClusterOperatorsList = () => {
   const { clusterId } = useParams();
-  const { data } = useGetUpgradeRisksQuery({ id: clusterId });
+  const { data } = useGetUpgradeRisksState({ id: clusterId });
   const { operator_conditions: conditions = [] } =
     data?.upgrade_recommendation?.upgrade_risks_predictors || {};
 

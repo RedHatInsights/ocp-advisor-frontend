@@ -16,6 +16,7 @@ const BREADCRUMBS = 'nav[class=pf-c-breadcrumb]';
 const RULES_TABLE = '#cluster-recs-list-table';
 const FILTER_CHIPS = 'li[class=pf-c-chip-group__list-item]';
 const ALERT = '[data-ouia-component-type="PF4/Alert"]';
+const TAB_BUTTON = '[data-ouia-component-type="PF4/TabButton"]';
 
 const CLUSTER_ID = '123';
 const CLUSTER_NAME = 'Cluster With Issues';
@@ -133,7 +134,33 @@ describe('cluster page', () => {
   });
 });
 
-describe('upgrade risks banner', () => {
+describe('upgrade risks', () => {
+  beforeEach(() => {
+    cy.intercept('/feature_flags*', {
+      statusCode: 200,
+      body: {
+        toggles: [
+          {
+            name: 'ocp-advisor.upgrade-risks.enable-in-stable',
+            enabled: true,
+            variant: {
+              name: 'disabled',
+              enabled: true,
+            },
+          },
+        ],
+      },
+    }).as('featureFlags');
+  });
+
+  it('renders two tabs', () => {
+    mount();
+
+    cy.get(TAB_BUTTON)
+      .should('have.length', 2)
+      .and('have.text', 'RecommendationsUpgrade risks');
+  });
+
   it('has some upgrade risks', () => {
     upgradeRisksInterceptors.successful();
     mount();
@@ -182,5 +209,22 @@ describe('upgrade risks banner', () => {
     mount();
 
     cy.get(ALERT).should('not.exist');
+  });
+
+  describe('analytics tracking', () => {
+    beforeEach(() => {
+      cy.intercept('/analytics/track').as('track');
+    });
+
+    it('should track click on upgrade risks tab', () => {
+      mount();
+      cy.ouiaId('upgrade-risks-tab').click();
+      cy.wait('@track');
+    });
+
+    it('should track when open with upgrade risks tab', () => {
+      mount(['/clusters/123?active_tab=upgrade_risks']);
+      cy.wait('@track');
+    });
   });
 });
