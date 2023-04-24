@@ -1,3 +1,10 @@
+## [1.16.1](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.16.0...v1.16.1) (2023-04-24)
+
+
+### Bug Fixes
+
+* **Upgrade risks:** Improve texts ([f14b367](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/f14b3673b13424dc12bc02c44fbff0cccdd6ee13))
+
 # [1.16.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.15.2...v1.16.0) (2023-04-24)
 
 
