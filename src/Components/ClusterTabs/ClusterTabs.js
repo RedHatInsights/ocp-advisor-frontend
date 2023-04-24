@@ -1,5 +1,5 @@
 import { Card, CardBody, Tab, Tabs } from '@patternfly/react-core';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useIntl } from 'react-intl';
 import { useSearchParams } from 'react-router-dom';
@@ -26,6 +26,15 @@ const ClusterTabs = () => {
       : 'recommendations';
   });
 
+  useEffect(() => {
+    if (
+      upgradeRisksEnabled &&
+      searchParams.get('active_tab') === 'upgrade_risks'
+    ) {
+      setActiveKey('upgrade_risks');
+    }
+  }, [upgradeRisksEnabled]);
+
   return (
     <Card isCompact>
       <CardBody>
@@ -43,17 +52,20 @@ const ClusterTabs = () => {
           >
             {activeKey === 'recommendations' && <ClusterRules />}
           </Tab>
-          <Tab
-            eventKey="upgrade_risks"
-            title={intl.formatMessage(messages.upgradeRisks)}
-          >
-            {upgradeRisksEnabled && activeKey === 'upgrade_risks' && (
-              <>
-                <UpgradeRisksTracker />
-                <UpgradeRisksTable />
-              </>
-            )}
-          </Tab>
+          {upgradeRisksEnabled && (
+            <Tab
+              eventKey="upgrade_risks"
+              title={intl.formatMessage(messages.upgradeRisks)}
+              ouiaId="upgrade-risks-tab"
+            >
+              {activeKey === 'upgrade_risks' && (
+                <>
+                  <UpgradeRisksTracker />
+                  <UpgradeRisksTable />
+                </>
+              )}
+            </Tab>
+          )}
         </Tabs>
       </CardBody>
     </Card>
