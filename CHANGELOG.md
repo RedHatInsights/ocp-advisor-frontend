@@ -1,3 +1,10 @@
+# [1.16.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.15.2...v1.16.0) (2023-04-24)
+
+
+### Features
+
+* **OCPADVISOR-73:** Track clicks on the Upgrade risks tab ([#557](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/557)) ([468e0cc](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/468e0cc6f990f8f27b194d9a355ef6dd9d53f6c6))
+
 ## [1.15.2](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.15.1...v1.15.2) (2023-04-21)
 
 
