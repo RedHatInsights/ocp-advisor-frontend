@@ -38,7 +38,9 @@ const UpgradeRisksAlert = () => {
       variant="warning"
       isInline
       title={intl.formatMessage(messages.upgradeRisksNotCurrentlyAvailable)}
-    />
+    >
+      {intl.formatMessage(messages.upgradeRisksNotAvailableDesc)}
+    </Alert>
   ) : (
     <></>
   );
