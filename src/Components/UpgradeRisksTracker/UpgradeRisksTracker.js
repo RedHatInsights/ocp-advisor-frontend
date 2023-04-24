@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useGetUpgradeRisksState } from '../../Services/SmartProxy';
 
-const UPGRADE_RISKS_TRACK_EVENT_ID = 'test.foobar';
+const UPGRADE_RISKS_TRACK_EVENT_ID = 'ocp-upgrade-risks-viewed';
 
 const UpgradeRisksTracker = () => {
   const { analytics } = useChrome();
