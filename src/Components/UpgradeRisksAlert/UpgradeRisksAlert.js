@@ -3,14 +3,14 @@ import React from 'react';
 import { useIntl } from 'react-intl';
 import { useParams } from 'react-router-dom';
 import messages from '../../Messages';
-import { useGetUpgradeRisksState } from '../../Services/SmartProxy';
+import { useGetUpgradeRisksQuery } from '../../Services/SmartProxy';
 import { strong } from '../../Utilities/Helpers';
 
 const UpgradeRisksAlert = () => {
   const intl = useIntl();
   const { clusterId } = useParams();
   const { isError, isUninitialized, isFetching, isSuccess, data, error } =
-    useGetUpgradeRisksState({ id: clusterId });
+    useGetUpgradeRisksQuery({ id: clusterId });
   const { alerts = [], operator_conditions: conditions = [] } =
     data?.upgrade_recommendation?.upgrade_risks_predictors || {};
 
