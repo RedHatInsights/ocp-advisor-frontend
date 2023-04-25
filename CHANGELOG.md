@@ -1,3 +1,10 @@
+## [1.16.2](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.16.1...v1.16.2) (2023-04-25)
+
+
+### Bug Fixes
+
+* Align circle icons between empty states ([bfa0b5f](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/bfa0b5fdaac79e1b79c6bfb9ff2261ef2d843e56))
+
 ## [1.16.1](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.16.0...v1.16.1) (2023-04-24)
 
 
