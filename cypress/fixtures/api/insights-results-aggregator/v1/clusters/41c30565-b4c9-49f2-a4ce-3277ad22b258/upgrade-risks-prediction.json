@@ -1,6 +1,7 @@
 {
   "status": "ok",
   "upgrade_recommendation": {
+    "upgrade_recommended": false,
     "upgrade_risks_predictors": {
       "alerts": [
         {

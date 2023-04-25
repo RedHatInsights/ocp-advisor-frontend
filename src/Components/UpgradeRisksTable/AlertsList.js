@@ -13,7 +13,7 @@ import {
 } from '@patternfly/react-table';
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { useGetUpgradeRisksQuery } from '../../Services/SmartProxy';
+import { useGetUpgradeRisksState } from '../../Services/SmartProxy';
 
 export const ALERTS_SEVERITY_ICONS = {
   critical: (
@@ -60,7 +60,7 @@ export const ALERTS_SEVERITY_ORDER = ['critical', 'warning', 'info'];
 
 const AlertsList = () => {
   const { clusterId } = useParams();
-  const { data } = useGetUpgradeRisksQuery({ id: clusterId });
+  const { data } = useGetUpgradeRisksState({ id: clusterId });
   const { alerts = [] } =
     data?.upgrade_recommendation?.upgrade_risks_predictors || {};
 

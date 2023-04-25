@@ -108,7 +108,6 @@ const UpgradeRisksTable = () => {
               <Td />
               <Td>
                 <ExpandableRowContent>
-                  Learn how to resolve your alert firing risks.
                   <AlertsList />
                 </ExpandableRowContent>
               </Td>
@@ -152,7 +151,6 @@ const UpgradeRisksTable = () => {
               <Td />
               <Td>
                 <ExpandableRowContent>
-                  Learn how to resolve your cluster operator risks.
                   <ClusterOperatorsList />
                 </ExpandableRowContent>
               </Td>

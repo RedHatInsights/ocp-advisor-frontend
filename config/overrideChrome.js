@@ -1,4 +1,7 @@
 export default () => ({
   updateDocumentTitle: () => undefined,
-  isBeta: () => true,
+  isBeta: () => false,
+  analytics: {
+    track: () => fetch('/analytics/track'),
+  },
 });

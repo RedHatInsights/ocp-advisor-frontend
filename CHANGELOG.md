@@ -1,3 +1,31 @@
+# [1.17.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.16.2...v1.17.0) (2023-04-25)
+
+
+### Features
+
+* **OCPADVISOR-88:** Hide upgrade risks for managed clusters ([#560](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/560)) ([084cccf](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/084cccfcd612c788df7633429cd29eb0bd1ffbc1))
+
+## [1.16.2](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.16.1...v1.16.2) (2023-04-25)
+
+
+### Bug Fixes
+
+* Align circle icons between empty states ([bfa0b5f](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/bfa0b5fdaac79e1b79c6bfb9ff2261ef2d843e56))
+
+## [1.16.1](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.16.0...v1.16.1) (2023-04-24)
+
+
+### Bug Fixes
+
+* **Upgrade risks:** Improve texts ([f14b367](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/f14b3673b13424dc12bc02c44fbff0cccdd6ee13))
+
+# [1.16.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.15.2...v1.16.0) (2023-04-24)
+
+
+### Features
+
+* **OCPADVISOR-73:** Track clicks on the Upgrade risks tab ([#557](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/557)) ([468e0cc](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/468e0cc6f990f8f27b194d9a355ef6dd9d53f6c6))
+
 ## [1.15.2](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.15.1...v1.15.2) (2023-04-21)
 
 
