@@ -1,3 +1,10 @@
+# [1.17.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.16.2...v1.17.0) (2023-04-25)
+
+
+### Features
+
+* **OCPADVISOR-88:** Hide upgrade risks for managed clusters ([#560](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/560)) ([084cccf](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/084cccfcd612c788df7633429cd29eb0bd1ffbc1))
+
 ## [1.16.2](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.16.1...v1.16.2) (2023-04-25)
 
 
