@@ -17,11 +17,10 @@ const MessageState = ({
   iconStyle,
   text,
   title,
-  variant,
 }) => (
   <EmptyState
     className={className}
-    variant={variant}
+    variant="large"
     data-ouia-component-id="empty-state"
     data-ouia-component-type="PF4/EmptyState"
     data-ouia-safe={true}
@@ -32,9 +31,7 @@ const MessageState = ({
     <Title headingLevel="h5" size="lg">
       {title}
     </Title>
-    <EmptyStateBody style={{ marginBottom: '16px', maxWidth: '400px' }}>
-      {text}
-    </EmptyStateBody>
+    <EmptyStateBody>{text}</EmptyStateBody>
     {children}
   </EmptyState>
 );

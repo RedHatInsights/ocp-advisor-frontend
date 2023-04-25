@@ -1,13 +1,15 @@
 import { Card, CardBody, Tab, Tabs } from '@patternfly/react-core';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useIntl } from 'react-intl';
-import { useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import messages from '../../Messages';
 import { setSearchParameter } from '../../Utilities/Helpers';
 import { useUpgradeRisksFeatureFlag } from '../../Utilities/useFeatureFlag';
 import ClusterRules from '../ClusterRules/ClusterRules';
 import { UpgradeRisksTable } from '../UpgradeRisksTable';
+import { UpgradeRisksTracker } from '../UpgradeRisksTracker';
+import useUpgradeRisksFeature from '../UpgradeRisksTable/useUpgradeRisksFeature';
 
 const CLUSTER_TABS = ['recommendations', 'upgrade_risks'];
 
@@ -16,14 +18,26 @@ const ClusterTabs = () => {
   const upgradeRisksEnabled = useUpgradeRisksFeatureFlag();
   const [searchParams] = useSearchParams();
 
+  const { clusterId } = useParams();
+  const areUpgradeRisksEnabled = useUpgradeRisksFeature(clusterId);
+
   const [activeKey, setActiveKey] = useState(() => {
     const activeTab = searchParams.get('active_tab');
-    return upgradeRisksEnabled
+    return areUpgradeRisksEnabled
       ? CLUSTER_TABS.includes(activeTab)
         ? activeTab
         : 'recommendations'
       : 'recommendations';
   });
+
+  useEffect(() => {
+    if (
+      areUpgradeRisksEnabled &&
+      searchParams.get('active_tab') === 'upgrade_risks'
+    ) {
+      setActiveKey('upgrade_risks');
+    }
+  }, [upgradeRisksEnabled]);
 
   return (
     <Card isCompact>
@@ -39,17 +53,24 @@ const ClusterTabs = () => {
           <Tab
             eventKey="recommendations"
             title={intl.formatMessage(messages.recommendations)}
+            ouiaId="recommendations-tab"
           >
             {activeKey === 'recommendations' && <ClusterRules />}
           </Tab>
-          <Tab
-            eventKey="upgrade_risks"
-            title={intl.formatMessage(messages.upgradeRisks)}
-          >
-            {upgradeRisksEnabled && activeKey === 'upgrade_risks' && (
-              <UpgradeRisksTable />
-            )}
-          </Tab>
+          {areUpgradeRisksEnabled && (
+            <Tab
+              eventKey="upgrade_risks"
+              title={intl.formatMessage(messages.upgradeRisks)}
+              ouiaId="upgrade-risks-tab"
+            >
+              {activeKey === 'upgrade_risks' && (
+                <>
+                  <UpgradeRisksTracker />
+                  <UpgradeRisksTable />
+                </>
+              )}
+            </Tab>
+          )}
         </Tabs>
       </CardBody>
     </Card>

@@ -15,7 +15,7 @@ const ClusterHeaderWrapper = () => {
   });
   const clusterInfo = useGetClusterInfoQuery({
     id: clusterId,
-  });
+  }); // TODO: improve cache handling: do network request only when cache is empty
 
   return (
     <ClusterHeader

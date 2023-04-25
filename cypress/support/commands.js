@@ -54,7 +54,13 @@ Cypress.Commands.add('mountWithContext', (component, options = {}) => {
   const { path, routerProps = { initialEntries: ['/'] } } = options;
 
   return mount(
-    <FlagProvider>
+    <FlagProvider
+      config={{
+        url: 'http://localhost:8002/feature_flags',
+        clientKey: 'abc',
+        appName: 'abc',
+      }}
+    >
       <Intl>
         <Provider store={getStore()}>
           <MemoryRouter {...routerProps}>

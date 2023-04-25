@@ -24,6 +24,7 @@ const UpgradeRisksAlert = () => {
       variant="warning"
       isInline
       title={intl.formatMessage(messages.resolveUpgradeRisks)}
+      ouiaId="upgrade-risks-alert"
     >
       {intl.formatMessage(messages.resolveUpgradeRisksDesc, { strong })}
     </Alert>
@@ -32,13 +33,17 @@ const UpgradeRisksAlert = () => {
       variant="success"
       isInline
       title={intl.formatMessage(messages.noKnownUpgradeRisks)}
+      ouiaId="upgrade-risks-alert"
     />
   ) : isError && error.status === 404 ? (
     <Alert
       variant="warning"
       isInline
       title={intl.formatMessage(messages.upgradeRisksNotCurrentlyAvailable)}
-    />
+      ouiaId="upgrade-risks-alert"
+    >
+      {intl.formatMessage(messages.upgradeRisksNotAvailableDesc)}
+    </Alert>
   ) : (
     <></>
   );

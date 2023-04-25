@@ -6,6 +6,7 @@ import {
   checkRowCounts,
 } from '../../../cypress/utils/table';
 import {
+  clusterInfoInterceptors,
   clusterReportsInterceptors as interceptors,
   upgradeRisksInterceptors,
 } from '../../../cypress/utils/interceptors';
@@ -15,7 +16,7 @@ const CLUSTER_HEADER = '#cluster-header';
 const BREADCRUMBS = 'nav[class=pf-c-breadcrumb]';
 const RULES_TABLE = '#cluster-recs-list-table';
 const FILTER_CHIPS = 'li[class=pf-c-chip-group__list-item]';
-const ALERT = '[data-ouia-component-type="PF4/Alert"]';
+const TAB_BUTTON = '[data-ouia-component-type="PF4/TabButton"]'; // TODO: move to utils
 
 const CLUSTER_ID = '123';
 const CLUSTER_NAME = 'Cluster With Issues';
@@ -133,23 +134,69 @@ describe('cluster page', () => {
   });
 });
 
-describe('upgrade risks banner', () => {
-  it('has some upgrade risks', () => {
+describe('upgrade risks', () => {
+  beforeEach(() => {
     upgradeRisksInterceptors.successful();
+    clusterInfoInterceptors.successful();
+    cy.intercept('/feature_flags*', {
+      statusCode: 200,
+      body: {
+        toggles: [
+          {
+            name: 'ocp-advisor.upgrade-risks.enable-in-stable',
+            enabled: true,
+            variant: {
+              name: 'disabled',
+              enabled: true,
+            },
+          },
+        ],
+      },
+    }).as('featureFlags');
+  });
+
+  it('renders two tabs', () => {
     mount();
 
-    cy.get(ALERT).should('have.class', 'pf-m-warning');
-    cy.get(ALERT).within(() => {
+    cy.get(TAB_BUTTON)
+      .should('have.length', 2)
+      .and('have.text', 'RecommendationsUpgrade risks');
+  });
+
+  describe('managed clusters', () => {
+    it('does not render banner and tab', () => {
+      clusterInfoInterceptors['successful, managed'](); // override interceptor
+      mount();
+
+      cy.ouiaId('recommendations').should(
+        'have.attr',
+        'data-ouia-safe',
+        'true'
+      );
+      cy.wait('@clusterInfo');
+
+      cy.ouiaId('upgrade-risks-alert').should('not.exist');
+      cy.get(TAB_BUTTON)
+        .should('have.length', 1)
+        .and('have.text', 'Recommendations');
+    });
+  });
+
+  it('has some upgrade risks', () => {
+    mount();
+
+    cy.ouiaId('upgrade-risks-alert').should('have.class', 'pf-m-warning');
+    cy.ouiaId('upgrade-risks-alert').within(() => {
       cy.get('h4').should('contain.text', 'Resolve upgrade risks');
     });
   });
 
   it('has no upgrade risks', () => {
-    upgradeRisksInterceptors['successful, empty']();
+    upgradeRisksInterceptors['successful, empty'](); // override interceptor
     mount();
 
-    cy.get(ALERT).should('have.class', 'pf-m-success');
-    cy.get(ALERT).within(() => {
+    cy.ouiaId('upgrade-risks-alert').should('have.class', 'pf-m-success');
+    cy.ouiaId('upgrade-risks-alert').within(() => {
       cy.get('h4').should(
         'contain.text',
         'No known upgrade risks identified for this cluster.'
@@ -158,11 +205,11 @@ describe('upgrade risks banner', () => {
   });
 
   it('upgrade risks not found', () => {
-    upgradeRisksInterceptors['error, not found']();
+    upgradeRisksInterceptors['error, not found'](); // override interceptor
     mount();
 
-    cy.get(ALERT).should('have.class', 'pf-m-warning');
-    cy.get(ALERT).within(() => {
+    cy.ouiaId('upgrade-risks-alert').should('have.class', 'pf-m-warning');
+    cy.ouiaId('upgrade-risks-alert').within(() => {
       cy.get('h4').should(
         'contain.text',
         'Upgrade risks are not currently available.'
@@ -171,16 +218,54 @@ describe('upgrade risks banner', () => {
   });
 
   it('should not render alert in other error', () => {
-    upgradeRisksInterceptors['error, other']();
+    upgradeRisksInterceptors['error, other'](); // override interceptor
     mount();
 
-    cy.get(ALERT).should('not.exist');
+    cy.ouiaId('upgrade-risks-alert').should('not.exist');
   });
 
   it('should not render alert in the loading state', () => {
-    upgradeRisksInterceptors['long responding']();
+    upgradeRisksInterceptors['long responding'](); // override interceptor
     mount();
 
-    cy.get(ALERT).should('not.exist');
+    cy.ouiaId('upgrade-risks-alert').should('not.exist');
+  });
+
+  describe('active_tab search parameter', () => {
+    it('opens upgrade risks tab', () => {
+      mount(['/clusters/123?active_tab=upgrade_risks']);
+      cy.ouiaId('upgrade-risks-tab').should(
+        'have.attr',
+        'aria-selected',
+        'true'
+      );
+    });
+
+    it('opens recommendations tab', () => {
+      mount(['/clusters/123?active_tab=recommendations']);
+      cy.ouiaId('recommendations-tab').should(
+        'have.attr',
+        'aria-selected',
+        'true'
+      );
+    });
+  });
+
+  describe('analytics tracking', () => {
+    beforeEach(() => {
+      cy.intercept('/analytics/track').as('track');
+      clusterInfoInterceptors.successful(); // override interceptor
+    });
+
+    it('should track click on upgrade risks tab', () => {
+      mount();
+      cy.ouiaId('upgrade-risks-tab').click();
+      cy.wait('@track');
+    });
+
+    it('should track when open with upgrade risks tab', () => {
+      mount(['/clusters/123?active_tab=upgrade_risks']);
+      cy.wait('@track');
+    });
   });
 });
