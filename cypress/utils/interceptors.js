@@ -1,5 +1,7 @@
 import singleClusterPageReport from '../fixtures/api/insights-results-aggregator/v2/cluster/dcb95bbf-8673-4f3a-a63c-12d4a530aa6f/reports-disabled-false.json';
 import upgradeRisksFixtures from '../fixtures/api/insights-results-aggregator/v1/clusters/41c30565-b4c9-49f2-a4ce-3277ad22b258/upgrade-risks-prediction.json';
+import clusterInfoFixtures from '../fixtures/api/insights-results-aggregator/v2/cluster/dcb95bbf-8673-4f3a-a63c-12d4a530aa6f/info.json';
+import _ from 'lodash';
 
 export const clusterReportsInterceptors = {
   successful: () =>
@@ -27,7 +29,7 @@ export const clusterReportsInterceptors = {
       }
     ),
   'successful, cluster name is null': () => {
-    const report = singleClusterPageReport;
+    const report = _.cloneDeep(singleClusterPageReport);
     report.report.meta.cluster_name = '';
 
     cy.intercept(
@@ -39,7 +41,7 @@ export const clusterReportsInterceptors = {
     );
   },
   'successful, no rules': () => {
-    const report = singleClusterPageReport;
+    const report = _.cloneDeep(singleClusterPageReport);
     report.report.data = [];
 
     cy.intercept(
@@ -70,7 +72,7 @@ export const upgradeRisksInterceptors = {
       }
     ),
   'successful, alerts empty': () => {
-    const fixtures = upgradeRisksFixtures;
+    const fixtures = _.cloneDeep(upgradeRisksFixtures);
     fixtures.upgrade_recommendation.upgrade_risks_predictors.alerts = [];
     cy.intercept(
       'GET',
@@ -82,7 +84,7 @@ export const upgradeRisksInterceptors = {
     );
   },
   'successful, empty': () => {
-    const fixtures = upgradeRisksFixtures;
+    const fixtures = _.cloneDeep(upgradeRisksFixtures);
     fixtures.upgrade_recommendation.upgrade_risks_predictors = {
       alerts: [],
       operator_conditions: [],
@@ -128,4 +130,33 @@ export const upgradeRisksInterceptors = {
         delay: 420000,
       }
     ),
+};
+
+export const clusterInfoInterceptors = {
+  successful: () =>
+    cy
+      .intercept(
+        'GET',
+        /\/api\/insights-results-aggregator\/v2\/cluster\/.*\/info/,
+        {
+          statusCode: 200,
+          body: clusterInfoFixtures,
+        }
+      )
+      .as('clusterInfo'),
+  'successful, managed': () => {
+    const fixtures = _.cloneDeep(clusterInfoFixtures);
+    fixtures.cluster.managed = true;
+
+    return cy
+      .intercept(
+        'GET',
+        /\/api\/insights-results-aggregator\/v2\/cluster\/.*\/info/,
+        {
+          statusCode: 200,
+          body: fixtures,
+        }
+      )
+      .as('clusterInfo');
+  },
 };

@@ -47,6 +47,7 @@ export const SmartProxyApi = createApi({
 export const {
   endpoints: {
     getUpgradeRisks: { useQueryState: useGetUpgradeRisksState },
+    getClusterInfo: { useQueryState: useGetClusterInfoState },
   },
   useGetClusterByIdQuery,
   useLazyGetClusterByIdQuery,

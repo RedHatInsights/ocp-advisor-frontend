@@ -2,13 +2,14 @@ import { Card, CardBody, Tab, Tabs } from '@patternfly/react-core';
 import React, { useEffect, useState } from 'react';
 
 import { useIntl } from 'react-intl';
-import { useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import messages from '../../Messages';
 import { setSearchParameter } from '../../Utilities/Helpers';
 import { useUpgradeRisksFeatureFlag } from '../../Utilities/useFeatureFlag';
 import ClusterRules from '../ClusterRules/ClusterRules';
 import { UpgradeRisksTable } from '../UpgradeRisksTable';
 import { UpgradeRisksTracker } from '../UpgradeRisksTracker';
+import useUpgradeRisksFeature from '../UpgradeRisksTable/useUpgradeRisksFeature';
 
 const CLUSTER_TABS = ['recommendations', 'upgrade_risks'];
 
@@ -17,9 +18,12 @@ const ClusterTabs = () => {
   const upgradeRisksEnabled = useUpgradeRisksFeatureFlag();
   const [searchParams] = useSearchParams();
 
+  const { clusterId } = useParams();
+  const areUpgradeRisksEnabled = useUpgradeRisksFeature(clusterId);
+
   const [activeKey, setActiveKey] = useState(() => {
     const activeTab = searchParams.get('active_tab');
-    return upgradeRisksEnabled
+    return areUpgradeRisksEnabled
       ? CLUSTER_TABS.includes(activeTab)
         ? activeTab
         : 'recommendations'
@@ -28,7 +32,7 @@ const ClusterTabs = () => {
 
   useEffect(() => {
     if (
-      upgradeRisksEnabled &&
+      areUpgradeRisksEnabled &&
       searchParams.get('active_tab') === 'upgrade_risks'
     ) {
       setActiveKey('upgrade_risks');
@@ -49,10 +53,11 @@ const ClusterTabs = () => {
           <Tab
             eventKey="recommendations"
             title={intl.formatMessage(messages.recommendations)}
+            ouiaId="recommendations-tab"
           >
             {activeKey === 'recommendations' && <ClusterRules />}
           </Tab>
-          {upgradeRisksEnabled && (
+          {areUpgradeRisksEnabled && (
             <Tab
               eventKey="upgrade_risks"
               title={intl.formatMessage(messages.upgradeRisks)}
