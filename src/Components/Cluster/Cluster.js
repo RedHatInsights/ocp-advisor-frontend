@@ -2,7 +2,6 @@ import './_Cluster.scss';
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import get from 'lodash/get';
 
 import PageHeader from '@redhat-cloud-services/frontend-components/PageHeader';
 import ClusterHeader from '../ClusterHeader';
@@ -10,15 +9,10 @@ import Breadcrumbs from '../Breadcrumbs';
 import ClusterTabs from '../ClusterTabs/ClusterTabs';
 import { Flex, FlexItem, PageSection } from '@patternfly/react-core';
 import { UpgradeRisksAlert } from '../UpgradeRisksAlert';
-import { useUpgradeRisksFeatureFlag } from '../../Utilities/useFeatureFlag';
-import { useGetClusterInfoQuery } from '../../Services/SmartProxy';
+import useUpgradeRisksFeature from '../UpgradeRisksTable/useUpgradeRisksFeature';
 
 export const Cluster = ({ cluster, clusterId }) => {
-  const upgradeRisksEnabled = useUpgradeRisksFeatureFlag();
-  const clusterInfo = useGetClusterInfoQuery({
-    id: clusterId,
-  });
-  const isManaged = get(clusterInfo, 'data.managed', true);
+  const areUpgradeRisksEnabled = useUpgradeRisksFeature(clusterId);
 
   // TODO: make breadcrumbs take display name from GET /cluster/id/info
   return (
@@ -31,7 +25,7 @@ export const Cluster = ({ cluster, clusterId }) => {
             />
             <ClusterHeader />
           </FlexItem>
-          {upgradeRisksEnabled && !isManaged && <UpgradeRisksAlert />}
+          {areUpgradeRisksEnabled && <UpgradeRisksAlert />}
         </Flex>
       </PageHeader>
       <PageSection>

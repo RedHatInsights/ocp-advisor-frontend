@@ -137,6 +137,7 @@ describe('cluster page', () => {
 describe('upgrade risks', () => {
   beforeEach(() => {
     upgradeRisksInterceptors.successful();
+    clusterInfoInterceptors.successful();
     cy.intercept('/feature_flags*', {
       statusCode: 200,
       body: {
@@ -163,12 +164,16 @@ describe('upgrade risks', () => {
   });
 
   describe('managed clusters', () => {
-    beforeEach(() => {
-      clusterInfoInterceptors['successful, managed']();
-    });
-
     it('does not render banner and tab', () => {
+      clusterInfoInterceptors['successful, managed'](); // override interceptor
       mount();
+
+      cy.ouiaId('recommendations').should(
+        'have.attr',
+        'data-ouia-safe',
+        'true'
+      );
+      cy.wait('@clusterInfo');
 
       cy.ouiaId('upgrade-risks-alert').should('not.exist');
       cy.get(TAB_BUTTON)
@@ -229,6 +234,7 @@ describe('upgrade risks', () => {
   describe('analytics tracking', () => {
     beforeEach(() => {
       cy.intercept('/analytics/track').as('track');
+      clusterInfoInterceptors.successful(); // override interceptor
     });
 
     it('should track click on upgrade risks tab', () => {

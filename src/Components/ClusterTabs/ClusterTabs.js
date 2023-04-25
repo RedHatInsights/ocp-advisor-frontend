@@ -1,6 +1,5 @@
 import { Card, CardBody, Tab, Tabs } from '@patternfly/react-core';
 import React, { useEffect, useState } from 'react';
-import get from 'lodash/get';
 
 import { useIntl } from 'react-intl';
 import { useParams, useSearchParams } from 'react-router-dom';
@@ -10,7 +9,7 @@ import { useUpgradeRisksFeatureFlag } from '../../Utilities/useFeatureFlag';
 import ClusterRules from '../ClusterRules/ClusterRules';
 import { UpgradeRisksTable } from '../UpgradeRisksTable';
 import { UpgradeRisksTracker } from '../UpgradeRisksTracker';
-import { useGetClusterInfoState } from '../../Services/SmartProxy';
+import useUpgradeRisksFeature from '../UpgradeRisksTable/useUpgradeRisksFeature';
 
 const CLUSTER_TABS = ['recommendations', 'upgrade_risks'];
 
@@ -20,14 +19,11 @@ const ClusterTabs = () => {
   const [searchParams] = useSearchParams();
 
   const { clusterId } = useParams();
-  const clusterInfo = useGetClusterInfoState({
-    id: clusterId,
-  });
-  const isManaged = get(clusterInfo, 'data.managed', true);
+  const areUpgradeRisksEnabled = useUpgradeRisksFeature(clusterId);
 
   const [activeKey, setActiveKey] = useState(() => {
     const activeTab = searchParams.get('active_tab');
-    return upgradeRisksEnabled
+    return areUpgradeRisksEnabled
       ? CLUSTER_TABS.includes(activeTab)
         ? activeTab
         : 'recommendations'
@@ -36,7 +32,7 @@ const ClusterTabs = () => {
 
   useEffect(() => {
     if (
-      upgradeRisksEnabled &&
+      areUpgradeRisksEnabled &&
       searchParams.get('active_tab') === 'upgrade_risks'
     ) {
       setActiveKey('upgrade_risks');
@@ -60,7 +56,7 @@ const ClusterTabs = () => {
           >
             {activeKey === 'recommendations' && <ClusterRules />}
           </Tab>
-          {upgradeRisksEnabled && !isManaged && (
+          {areUpgradeRisksEnabled && (
             <Tab
               eventKey="upgrade_risks"
               title={intl.formatMessage(messages.upgradeRisks)}

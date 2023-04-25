@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 
 import {
   useGetClusterByIdQuery,
-  useGetClusterInfoState,
+  useGetClusterInfoQuery,
 } from '../../Services/SmartProxy';
 import { ClusterHeader } from './ClusterHeader';
 
@@ -13,9 +13,9 @@ const ClusterHeaderWrapper = () => {
     id: clusterId,
     includeDisabled: false,
   });
-  const clusterInfo = useGetClusterInfoState({
+  const clusterInfo = useGetClusterInfoQuery({
     id: clusterId,
-  });
+  }); // TODO: improve cache handling: do network request only when cache is empty
 
   return (
     <ClusterHeader
