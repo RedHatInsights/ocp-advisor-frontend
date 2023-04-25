@@ -53,6 +53,7 @@ const ClusterTabs = () => {
           <Tab
             eventKey="recommendations"
             title={intl.formatMessage(messages.recommendations)}
+            ouiaId="recommendations-tab"
           >
             {activeKey === 'recommendations' && <ClusterRules />}
           </Tab>

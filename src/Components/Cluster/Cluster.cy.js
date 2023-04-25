@@ -231,6 +231,26 @@ describe('upgrade risks', () => {
     cy.ouiaId('upgrade-risks-alert').should('not.exist');
   });
 
+  describe('active_tab search parameter', () => {
+    it('opens upgrade risks tab', () => {
+      mount(['/clusters/123?active_tab=upgrade_risks']);
+      cy.ouiaId('upgrade-risks-tab').should(
+        'have.attr',
+        'aria-selected',
+        'true'
+      );
+    });
+
+    it('opens recommendations tab', () => {
+      mount(['/clusters/123?active_tab=recommendations']);
+      cy.ouiaId('recommendations-tab').should(
+        'have.attr',
+        'aria-selected',
+        'true'
+      );
+    });
+  });
+
   describe('analytics tracking', () => {
     beforeEach(() => {
       cy.intercept('/analytics/track').as('track');
