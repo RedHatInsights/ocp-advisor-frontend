@@ -23,7 +23,7 @@ const ClusterTabs = () => {
   const clusterInfo = useGetClusterInfoState({
     id: clusterId,
   });
-  const isManaged = get(clusterInfo, 'data.managed', false);
+  const isManaged = get(clusterInfo, 'data.managed', true);
 
   const [activeKey, setActiveKey] = useState(() => {
     const activeTab = searchParams.get('active_tab');

@@ -18,7 +18,7 @@ export const Cluster = ({ cluster, clusterId }) => {
   const clusterInfo = useGetClusterInfoQuery({
     id: clusterId,
   });
-  const isManaged = get(clusterInfo, 'data.managed', false);
+  const isManaged = get(clusterInfo, 'data.managed', true);
 
   // TODO: make breadcrumbs take display name from GET /cluster/id/info
   return (
