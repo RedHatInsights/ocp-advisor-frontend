@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 
 import {
   useGetClusterByIdQuery,
-  useGetClusterInfoQuery,
+  useGetClusterInfoState,
 } from '../../Services/SmartProxy';
 import { ClusterHeader } from './ClusterHeader';
 
@@ -13,7 +13,7 @@ const ClusterHeaderWrapper = () => {
     id: clusterId,
     includeDisabled: false,
   });
-  const clusterInfo = useGetClusterInfoQuery({
+  const clusterInfo = useGetClusterInfoState({
     id: clusterId,
   });
 

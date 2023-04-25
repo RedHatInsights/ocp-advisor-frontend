@@ -1,5 +1,6 @@
 import singleClusterPageReport from '../fixtures/api/insights-results-aggregator/v2/cluster/dcb95bbf-8673-4f3a-a63c-12d4a530aa6f/reports-disabled-false.json';
 import upgradeRisksFixtures from '../fixtures/api/insights-results-aggregator/v1/clusters/41c30565-b4c9-49f2-a4ce-3277ad22b258/upgrade-risks-prediction.json';
+import clusterInfoFixtures from '../fixtures/api/insights-results-aggregator/v2/cluster/dcb95bbf-8673-4f3a-a63c-12d4a530aa6f/info.json';
 
 export const clusterReportsInterceptors = {
   successful: () =>
@@ -128,4 +129,29 @@ export const upgradeRisksInterceptors = {
         delay: 420000,
       }
     ),
+};
+
+export const clusterInfoInterceptors = {
+  successful: () =>
+    cy.intercept(
+      'GET',
+      /\/api\/insights-results-aggregator\/v2\/cluster\/.*\/info/,
+      {
+        statusCode: 200,
+        body: clusterInfoFixtures,
+      }
+    ),
+  'successful, managed': () => {
+    const fixtures = clusterInfoFixtures;
+    fixtures.cluster.managed = true;
+
+    return cy.intercept(
+      'GET',
+      /\/api\/insights-results-aggregator\/v2\/cluster\/.*\/info/,
+      {
+        statusCode: 200,
+        body: fixtures,
+      }
+    );
+  },
 };

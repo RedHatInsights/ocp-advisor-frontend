@@ -6,6 +6,7 @@ import {
   checkRowCounts,
 } from '../../../cypress/utils/table';
 import {
+  clusterInfoInterceptors,
   clusterReportsInterceptors as interceptors,
   upgradeRisksInterceptors,
 } from '../../../cypress/utils/interceptors';
@@ -15,8 +16,7 @@ const CLUSTER_HEADER = '#cluster-header';
 const BREADCRUMBS = 'nav[class=pf-c-breadcrumb]';
 const RULES_TABLE = '#cluster-recs-list-table';
 const FILTER_CHIPS = 'li[class=pf-c-chip-group__list-item]';
-const ALERT = '[data-ouia-component-type="PF4/Alert"]';
-const TAB_BUTTON = '[data-ouia-component-type="PF4/TabButton"]';
+const TAB_BUTTON = '[data-ouia-component-type="PF4/TabButton"]'; // TODO: move to utils
 
 const CLUSTER_ID = '123';
 const CLUSTER_NAME = 'Cluster With Issues';
@@ -136,6 +136,7 @@ describe('cluster page', () => {
 
 describe('upgrade risks', () => {
   beforeEach(() => {
+    upgradeRisksInterceptors.successful();
     cy.intercept('/feature_flags*', {
       statusCode: 200,
       body: {
@@ -161,22 +162,36 @@ describe('upgrade risks', () => {
       .and('have.text', 'RecommendationsUpgrade risks');
   });
 
+  describe('managed clusters', () => {
+    beforeEach(() => {
+      clusterInfoInterceptors['successful, managed']();
+    });
+
+    it('does not render banner and tab', () => {
+      mount();
+
+      cy.ouiaId('upgrade-risks-alert').should('not.exist');
+      cy.get(TAB_BUTTON)
+        .should('have.length', 1)
+        .and('have.text', 'Recommendations');
+    });
+  });
+
   it('has some upgrade risks', () => {
-    upgradeRisksInterceptors.successful();
     mount();
 
-    cy.get(ALERT).should('have.class', 'pf-m-warning');
-    cy.get(ALERT).within(() => {
+    cy.ouiaId('upgrade-risks-alert').should('have.class', 'pf-m-warning');
+    cy.ouiaId('upgrade-risks-alert').within(() => {
       cy.get('h4').should('contain.text', 'Resolve upgrade risks');
     });
   });
 
   it('has no upgrade risks', () => {
-    upgradeRisksInterceptors['successful, empty']();
+    upgradeRisksInterceptors['successful, empty'](); // override interceptor
     mount();
 
-    cy.get(ALERT).should('have.class', 'pf-m-success');
-    cy.get(ALERT).within(() => {
+    cy.ouiaId('upgrade-risks-alert').should('have.class', 'pf-m-success');
+    cy.ouiaId('upgrade-risks-alert').within(() => {
       cy.get('h4').should(
         'contain.text',
         'No known upgrade risks identified for this cluster.'
@@ -185,11 +200,11 @@ describe('upgrade risks', () => {
   });
 
   it('upgrade risks not found', () => {
-    upgradeRisksInterceptors['error, not found']();
+    upgradeRisksInterceptors['error, not found'](); // override interceptor
     mount();
 
-    cy.get(ALERT).should('have.class', 'pf-m-warning');
-    cy.get(ALERT).within(() => {
+    cy.ouiaId('upgrade-risks-alert').should('have.class', 'pf-m-warning');
+    cy.ouiaId('upgrade-risks-alert').within(() => {
       cy.get('h4').should(
         'contain.text',
         'Upgrade risks are not currently available.'
@@ -198,17 +213,17 @@ describe('upgrade risks', () => {
   });
 
   it('should not render alert in other error', () => {
-    upgradeRisksInterceptors['error, other']();
+    upgradeRisksInterceptors['error, other'](); // override interceptor
     mount();
 
-    cy.get(ALERT).should('not.exist');
+    cy.ouiaId('upgrade-risks-alert').should('not.exist');
   });
 
   it('should not render alert in the loading state', () => {
-    upgradeRisksInterceptors['long responding']();
+    upgradeRisksInterceptors['long responding'](); // override interceptor
     mount();
 
-    cy.get(ALERT).should('not.exist');
+    cy.ouiaId('upgrade-risks-alert').should('not.exist');
   });
 
   describe('analytics tracking', () => {
