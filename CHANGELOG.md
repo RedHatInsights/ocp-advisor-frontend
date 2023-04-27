@@ -1,3 +1,10 @@
+## [1.17.1](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.17.0...v1.17.1) (2023-04-27)
+
+
+### Bug Fixes
+
+* **OCPADVISOR-82:** Fix "affected clusters" link ([#561](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/561)) ([7a74b7c](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/7a74b7c77cfdabe58657f6b69131682fccac499e))
+
 # [1.17.0](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.16.2...v1.17.0) (2023-04-25)
 
 
