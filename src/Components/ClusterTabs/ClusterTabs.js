@@ -5,7 +5,6 @@ import { useIntl } from 'react-intl';
 import { useParams, useSearchParams } from 'react-router-dom';
 import messages from '../../Messages';
 import { setSearchParameter } from '../../Utilities/Helpers';
-import { useUpgradeRisksFeatureFlag } from '../../Utilities/useFeatureFlag';
 import ClusterRules from '../ClusterRules/ClusterRules';
 import { UpgradeRisksTable } from '../UpgradeRisksTable';
 import { UpgradeRisksTracker } from '../UpgradeRisksTracker';
@@ -15,28 +14,19 @@ const CLUSTER_TABS = ['recommendations', 'upgrade_risks'];
 
 const ClusterTabs = () => {
   const intl = useIntl();
-  const upgradeRisksEnabled = useUpgradeRisksFeatureFlag();
   const [searchParams] = useSearchParams();
-
   const { clusterId } = useParams();
-  const areUpgradeRisksEnabled = useUpgradeRisksFeature(clusterId);
+  const upgradeRisksEnabled = useUpgradeRisksFeature(clusterId);
 
-  const [activeKey, setActiveKey] = useState(() => {
-    const activeTab = searchParams.get('active_tab');
-    return areUpgradeRisksEnabled
-      ? CLUSTER_TABS.includes(activeTab)
-        ? activeTab
-        : 'recommendations'
-      : 'recommendations';
-  });
+  const [activeKey, setActiveKey] = useState('recommendations');
 
   useEffect(() => {
-    if (
-      areUpgradeRisksEnabled &&
-      searchParams.get('active_tab') === 'upgrade_risks'
-    ) {
-      setActiveKey('upgrade_risks');
-    }
+    const tabKey = searchParams.get('active_tab');
+    setActiveKey(
+      upgradeRisksEnabled && CLUSTER_TABS.includes(tabKey)
+        ? tabKey
+        : 'recommendations'
+    );
   }, [upgradeRisksEnabled]);
 
   return (
@@ -57,7 +47,7 @@ const ClusterTabs = () => {
           >
             {activeKey === 'recommendations' && <ClusterRules />}
           </Tab>
-          {areUpgradeRisksEnabled && (
+          {upgradeRisksEnabled && (
             <Tab
               eventKey="upgrade_risks"
               title={intl.formatMessage(messages.upgradeRisks)}
