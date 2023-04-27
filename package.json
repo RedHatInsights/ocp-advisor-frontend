@@ -1,6 +1,6 @@
 {
   "name": "ocp-advisor-frontend",
-  "version": "1.17.0",
+  "version": "1.17.2",
   "private": false,
   "scripts": {
     "build": "NODE_ENV=production webpack --config config/prod.webpack.config.js",
@@ -30,7 +30,7 @@
     "@patternfly/react-core": "^4.276.6",
     "@patternfly/react-table": "^4.112.39",
     "@redhat-cloud-services/frontend-components": "^3.9.34",
-    "@redhat-cloud-services/frontend-components-advisor-components": "^1.0.7",
+    "@redhat-cloud-services/frontend-components-advisor-components": "^1.0.8",
     "@redhat-cloud-services/frontend-components-charts": "^3.2.5",
     "@redhat-cloud-services/frontend-components-notifications": "^3.2.14",
     "@redhat-cloud-services/frontend-components-translations": "^3.2.4",
@@ -65,7 +65,7 @@
     "@formatjs/cli": "^5.1.1",
     "@patternfly/patternfly": "^4.224.2",
     "@redhat-cloud-services/eslint-config-redhat-cloud-services": "^1.2.1",
-    "@redhat-cloud-services/frontend-components-config": "^4.7.2",
+    "@redhat-cloud-services/frontend-components-config": "^4.7.3",
     "@semantic-release/changelog": "^6.0.1",
     "@semantic-release/git": "^10.0.1",
     "babel-core": "7.0.0-bridge.0",

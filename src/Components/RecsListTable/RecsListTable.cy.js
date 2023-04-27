@@ -775,7 +775,7 @@ describe('successful non-empty recommendations list table', () => {
           .should(
             'have.attr',
             'href',
-            `/recommendations/${recommendationData.rule_id}`
+            `/openshift/insights/advisor/recommendations/${recommendationData.rule_id}`
           )
           .and(($a) => {
             if (recommendationData.impacted_clusters_count == 1) {
