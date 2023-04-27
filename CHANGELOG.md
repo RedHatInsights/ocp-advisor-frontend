@@ -1,3 +1,10 @@
+## [1.17.2](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.17.1...v1.17.2) (2023-04-27)
+
+
+### Bug Fixes
+
+* **OCPADVISOR-89:** Fix active tab handling ([#565](https://github.com/RedHatInsights/ocp-advisor-frontend/issues/565)) ([b1717da](https://github.com/RedHatInsights/ocp-advisor-frontend/commit/b1717daf2500d113340585b86fa172dfcdd87362))
+
 ## [1.17.1](https://github.com/RedHatInsights/ocp-advisor-frontend/compare/v1.17.0...v1.17.1) (2023-04-27)
 
 
