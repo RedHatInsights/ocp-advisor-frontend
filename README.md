@@ -7,8 +7,9 @@
 
 ### First time setup
 
-1. Make sure you have [`Node.js`](https://nodejs.org/en/) and [`npm`](https://www.npmjs.com/) installed. Check the currently maintained versions at https://nodejs.org/en/about/releases/.
-2. Make sure you are using [Red Hat proxy](http://hdn.corp.redhat.com/proxy.pac).
+1. Follow this [Initial etc/hosts setup from frontend-starter-app](https://github.com/RedHatInsights/frontend-starter-app#initial-etchosts-setup)
+2. Make sure you have [`Node.js`](https://nodejs.org/en/) and [`npm`](https://www.npmjs.com/) installed. Check the currently maintained versions at https://nodejs.org/en/about/releases/.
+3. Make sure you are using [Red Hat proxy](http://hdn.corp.redhat.com/proxy.pac).
 
 ### Running a development server
 
