@@ -11,7 +11,7 @@ describe('breadcrumbs', () => {
 
   it('renders breadcrumbs: single rec page', () => {
     props = {
-      current: 'Cluster upgrade will fail when default SCC gets changed',
+      current: 'Cluster update will fail when default SCC gets changed',
     };
     mount(
       <MemoryRouter
@@ -41,7 +41,7 @@ describe('breadcrumbs', () => {
       .eq(1)
       .should(
         'have.text',
-        'Cluster upgrade will fail when default SCC gets changed'
+        'Cluster update will fail when default SCC gets changed'
       );
     cy.get(BREADCRUMB_ITEM).eq(1).find('span').should('have.length', 1);
   });

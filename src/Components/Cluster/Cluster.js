@@ -8,11 +8,11 @@ import ClusterHeader from '../ClusterHeader';
 import Breadcrumbs from '../Breadcrumbs';
 import ClusterTabs from '../ClusterTabs/ClusterTabs';
 import { Flex, FlexItem, PageSection } from '@patternfly/react-core';
-import { UpgradeRisksAlert } from '../UpgradeRisksAlert';
-import useUpgradeRisksFeature from '../UpgradeRisksTable/useUpgradeRisksFeature';
+import { UpdateRisksAlert } from '../UpdateRisksAlert';
+import useUpdateRisksFeature from '../UpdateRisksTable/useUpdateRisksFeature';
 
 export const Cluster = ({ cluster, clusterId }) => {
-  const areUpgradeRisksEnabled = useUpgradeRisksFeature(clusterId);
+  const areUpdateRisksEnabled = useUpdateRisksFeature(clusterId);
 
   // TODO: make breadcrumbs take display name from GET /cluster/id/info
   return (
@@ -25,7 +25,7 @@ export const Cluster = ({ cluster, clusterId }) => {
             />
             <ClusterHeader />
           </FlexItem>
-          {areUpgradeRisksEnabled && <UpgradeRisksAlert />}
+          {areUpdateRisksEnabled && <UpdateRisksAlert />}
         </Flex>
       </PageHeader>
       <PageSection>

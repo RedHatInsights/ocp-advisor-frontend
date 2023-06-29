@@ -642,44 +642,43 @@ export default defineMessages({
     defaultMessage:
       'The risk of change is <strong>{ level }</strong>, because the change takes very little time to implement and there is minimal impact to system operations.',
   },
-  upgradeRisks: {
-    id: 'upgradeRisks',
-    description: 'Upgrade risks text',
-    defaultMessage: 'Upgrade risks',
+  updateRisks: {
+    id: 'updateRisks',
+    description: 'Update risks text',
+    defaultMessage: 'Update risks',
   },
-  noUpgradeRisksFound: {
-    id: 'noUpgradeRisksFound',
-    defaultMessage: 'No upgrade risks found for this cluster',
+  noUpdateRisksFound: {
+    id: 'noUpdateRisksFound',
+    defaultMessage: 'No update risks found for this cluster',
   },
-  noUpgradeRisksFoundDesc: {
-    id: 'noUpgradeRisksFoundDesc',
-    defaultMessage:
-      'There are no known upgrade risks that affect this cluster.',
+  noUpdateRisksFoundDesc: {
+    id: 'noUpdateRisksFoundDesc',
+    defaultMessage: 'There are no known update risks that affect this cluster.',
   },
-  upgradeRisksNotAvailable: {
-    id: 'upgradeRisksNotAvailable',
-    defaultMessage: 'Upgrade risks are not available',
+  updateRisksNotAvailable: {
+    id: 'updateRisksNotAvailable',
+    defaultMessage: 'Update risks are not available',
   },
-  upgradeRisksNotAvailableDesc: {
-    id: 'upgradeRisksNotAvailableDesc',
+  updateRisksNotAvailableDesc: {
+    id: 'updateRisksNotAvailableDesc',
     defaultMessage:
       "This cluster has gone more than two hours without sending metrics. Check the cluster's web console if you think that this is incorrect.",
   },
-  resolveUpgradeRisks: {
-    id: 'resolveUpgradeRisks',
-    defaultMessage: 'Resolve upgrade risks',
+  resolveUpdateRisks: {
+    id: 'resolveUpdateRisks',
+    defaultMessage: 'Resolve update risks',
   },
-  resolveUpgradeRisksDesc: {
-    id: 'resolveUpgradeRisksDesc',
+  resolveUpdateRisksDesc: {
+    id: 'resolveUpdateRisksDesc',
     defaultMessage:
-      'There are risks present that could impact the success of your cluster upgrade. For the best performance, resolve these risks in the <strong>Upgrade risks</strong> tab before upgrading.',
+      'There are risks present that could impact the success of your cluster update. For the best performance, resolve these risks in the <strong>Update risks</strong> tab before updating.',
   },
-  noKnownUpgradeRisks: {
-    id: 'noKnownUpgradeRisks',
-    defaultMessage: 'No known upgrade risks identified for this cluster.',
+  noKnownUpdateRisks: {
+    id: 'noKnownUpdateRisks',
+    defaultMessage: 'No known update risks identified for this cluster.',
   },
-  upgradeRisksNotCurrentlyAvailable: {
-    id: 'upgradeRisksNotCurrentlyAvailable',
-    defaultMessage: 'Upgrade risks are not currently available.',
+  updateRisksNotCurrentlyAvailable: {
+    id: 'updateRisksNotCurrentlyAvailable',
+    defaultMessage: 'Update risks are not currently available.',
   },
 });

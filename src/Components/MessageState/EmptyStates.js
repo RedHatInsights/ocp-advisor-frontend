@@ -187,7 +187,7 @@ const NoRecsAffecting = () => {
   );
 };
 
-const NoUpgradeRisks = () => {
+const NoUpdateRisks = () => {
   const intl = useIntl();
   return (
     <MessageState
@@ -195,19 +195,19 @@ const NoUpgradeRisks = () => {
       iconStyle={{
         color: globalSuccessColor100.value,
       }}
-      title={intl.formatMessage(messages.noUpgradeRisksFound)}
-      text={intl.formatMessage(messages.noUpgradeRisksFoundDesc)}
+      title={intl.formatMessage(messages.noUpdateRisksFound)}
+      text={intl.formatMessage(messages.noUpdateRisksFoundDesc)}
     />
   );
 };
 
-const UpgradeRisksNotAvailable = () => {
+const UpdateRisksNotAvailable = () => {
   const intl = useIntl();
   return (
     <MessageState
       icon={ExclamationTriangleIcon}
-      title={intl.formatMessage(messages.upgradeRisksNotAvailable)}
-      text={intl.formatMessage(messages.upgradeRisksNotAvailableDesc)}
+      title={intl.formatMessage(messages.updateRisksNotAvailable)}
+      text={intl.formatMessage(messages.updateRisksNotAvailableDesc)}
     />
   );
 };
@@ -222,6 +222,6 @@ export {
   NoInsightsResults,
   NoRecsError,
   NoRecsAffecting,
-  NoUpgradeRisks,
-  UpgradeRisksNotAvailable,
+  NoUpdateRisks,
+  UpdateRisksNotAvailable,
 };

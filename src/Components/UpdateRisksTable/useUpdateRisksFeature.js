@@ -1,16 +1,16 @@
 import get from 'lodash/get';
 import { useParams } from 'react-router-dom';
 
-import { useUpgradeRisksFeatureFlag } from '../../Utilities/useFeatureFlag';
+import { useUpdateRisksFeatureFlag } from '../../Utilities/useFeatureFlag';
 import { useGetClusterInfoState } from '../../Services/SmartProxy';
 
-const useUpgradeRisksFeature = (clusterId) => {
-  const upgradeRisksEnabled = useUpgradeRisksFeatureFlag();
+const useUpdateRisksFeature = (clusterId) => {
+  const updateRisksEnabled = useUpdateRisksFeatureFlag();
   const id = clusterId || useParams().clusterId;
   const clusterInfo = useGetClusterInfoState({ id }); // doesn't request new data, uses cache
   const isManaged = get(clusterInfo, 'data.managed', true);
 
-  return upgradeRisksEnabled && !isManaged;
+  return updateRisksEnabled && !isManaged;
 };
 
-export default useUpgradeRisksFeature;
+export default useUpdateRisksFeature;

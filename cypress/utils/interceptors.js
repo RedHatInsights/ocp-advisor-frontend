@@ -1,5 +1,5 @@
 import singleClusterPageReport from '../fixtures/api/insights-results-aggregator/v2/cluster/dcb95bbf-8673-4f3a-a63c-12d4a530aa6f/reports-disabled-false.json';
-import upgradeRisksFixtures from '../fixtures/api/insights-results-aggregator/v1/clusters/41c30565-b4c9-49f2-a4ce-3277ad22b258/upgrade-risks-prediction.json';
+import updateRisksFixtures from '../fixtures/api/insights-results-aggregator/v1/clusters/41c30565-b4c9-49f2-a4ce-3277ad22b258/upgrade-risks-prediction.json';
 import clusterInfoFixtures from '../fixtures/api/insights-results-aggregator/v2/cluster/dcb95bbf-8673-4f3a-a63c-12d4a530aa6f/info.json';
 import _ from 'lodash';
 
@@ -61,18 +61,18 @@ export const clusterReportsInterceptors = {
     ),
 };
 
-export const upgradeRisksInterceptors = {
+export const updateRisksInterceptors = {
   successful: () =>
     cy.intercept(
       'GET',
       /\/api\/insights-results-aggregator\/v2\/cluster\/.*\/upgrade-risks-prediction/,
       {
         statusCode: 200,
-        body: upgradeRisksFixtures,
+        body: updateRisksFixtures,
       }
     ),
   'successful, alerts empty': () => {
-    const fixtures = _.cloneDeep(upgradeRisksFixtures);
+    const fixtures = _.cloneDeep(updateRisksFixtures);
     fixtures.upgrade_recommendation.upgrade_risks_predictors.alerts = [];
     cy.intercept(
       'GET',
@@ -84,7 +84,7 @@ export const upgradeRisksInterceptors = {
     );
   },
   'successful, empty': () => {
-    const fixtures = _.cloneDeep(upgradeRisksFixtures);
+    const fixtures = _.cloneDeep(updateRisksFixtures);
     fixtures.upgrade_recommendation.upgrade_risks_predictors = {
       alerts: [],
       operator_conditions: [],
