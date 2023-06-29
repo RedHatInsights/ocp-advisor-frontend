@@ -2,20 +2,20 @@ import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import get from 'lodash/get';
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useGetUpgradeRisksState } from '../../Services/SmartProxy';
+import { useGetUpdateRisksState } from '../../Services/SmartProxy';
 
-const UPGRADE_RISKS_TRACK_EVENT_ID = 'ocp-upgrade-risks-viewed';
+const UPDATE_RISKS_TRACK_EVENT_ID = 'ocp-upgrade-risks-viewed';
 
-const UpgradeRisksTracker = () => {
+const UpdateRisksTracker = () => {
   const { analytics } = useChrome();
   const { clusterId } = useParams();
-  const { isError, isSuccess, data } = useGetUpgradeRisksState({
+  const { isError, isSuccess, data } = useGetUpdateRisksState({
     id: clusterId,
   });
 
   useEffect(() => {
     if (isError || isSuccess) {
-      analytics.track(UPGRADE_RISKS_TRACK_EVENT_ID, {
+      analytics.track(UPDATE_RISKS_TRACK_EVENT_ID, {
         cluster_id: clusterId,
         upgrade_recommended: get(
           data,
@@ -29,4 +29,4 @@ const UpgradeRisksTracker = () => {
   return <></>;
 };
 
-export default UpgradeRisksTracker;
+export default UpdateRisksTracker;

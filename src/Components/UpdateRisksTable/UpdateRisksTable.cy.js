@@ -1,12 +1,12 @@
 import React from 'react';
-import upgradeRisksFixtures from '../../../cypress/fixtures/api/insights-results-aggregator/v1/clusters/41c30565-b4c9-49f2-a4ce-3277ad22b258/upgrade-risks-prediction.json';
+import updateRisksFixtures from '../../../cypress/fixtures/api/insights-results-aggregator/v1/clusters/41c30565-b4c9-49f2-a4ce-3277ad22b258/upgrade-risks-prediction.json';
 import { TABLE_HEADER } from '../../../cypress/utils/components';
 import {
   checkEmptyState,
   checkTableHeaders,
 } from '../../../cypress/utils/table';
-import UpgradeRisksTable from './UpgradeRisksTable';
-import { upgradeRisksInterceptors as interceptors } from '../../../cypress/utils/interceptors';
+import UpdateRisksTable from './UpdateRisksTable';
+import { updateRisksInterceptors as interceptors } from '../../../cypress/utils/interceptors';
 
 const SEVERITY_MAPPING = {
   critical: 'Critical',
@@ -23,7 +23,7 @@ const SEVERITY_ICON_CLASS_MAPPING = {
 const CLUSTER_ID = '41c30565-b4c9-49f2-a4ce-3277ad22b258';
 
 const mount = (initialEntries = [`/clusters/${CLUSTER_ID}`]) => {
-  cy.mountWithContext(<UpgradeRisksTable />, {
+  cy.mountWithContext(<UpdateRisksTable />, {
     path: '/clusters/:clusterId',
     routerProps: { initialEntries },
   });
@@ -38,7 +38,7 @@ describe('successful with some risks', () => {
   });
 
   it('renders main headers', () => {
-    cy.get('#upgrade-risks-table');
+    cy.get('#update-risks-table');
     cy.get(TABLE_HEADER).contains('Name');
     cy.get(TABLE_ROW).contains('Alerts firing');
     cy.get(TABLE_ROW).contains('Cluster operators');
@@ -47,11 +47,11 @@ describe('successful with some risks', () => {
   it('shows correct risks number', () => {
     cy.get('#alerts-label').should(
       'have.text',
-      `${upgradeRisksFixtures.upgrade_recommendation.upgrade_risks_predictors.alerts.length} upgrade risks`
+      `${updateRisksFixtures.upgrade_recommendation.upgrade_risks_predictors.alerts.length} update risks`
     );
     cy.get('#operator-conditions-label').should(
       'have.text',
-      `${upgradeRisksFixtures.upgrade_recommendation.upgrade_risks_predictors.operator_conditions.length} upgrade risks`
+      `${updateRisksFixtures.upgrade_recommendation.upgrade_risks_predictors.operator_conditions.length} update risks`
     );
   });
 
@@ -72,7 +72,7 @@ describe('successful with some risks', () => {
         .find(TABLE_ROW)
         .each(($row, index) => {
           const alert =
-            upgradeRisksFixtures.upgrade_recommendation.upgrade_risks_predictors
+            updateRisksFixtures.upgrade_recommendation.upgrade_risks_predictors
               .alerts[index];
           if (alert.url) {
             cy.get($row)
@@ -106,7 +106,7 @@ describe('successful with some risks', () => {
         .find(TABLE_ROW)
         .each(($row, index) => {
           const condition =
-            upgradeRisksFixtures.upgrade_recommendation.upgrade_risks_predictors
+            updateRisksFixtures.upgrade_recommendation.upgrade_risks_predictors
               .operator_conditions[index];
           if (condition.url) {
             cy.get($row)
@@ -155,7 +155,7 @@ describe('successful, only cluster operators', () => {
 
   it('shows 0 alert risks', () => {
     cy.get('#alerts-label')
-      .should('have.text', `0 upgrade risks`)
+      .should('have.text', `0 update risks`)
       .and('have.class', 'pf-m-green');
   });
 
@@ -173,7 +173,7 @@ describe('successful, empty', () => {
   });
 
   it('renders empty state', () => {
-    checkEmptyState('No upgrade risks found for this cluster', true);
+    checkEmptyState('No update risks found for this cluster', true);
   });
 
   it('header is present', () => {
@@ -205,7 +205,7 @@ describe('error, not found', () => {
   });
 
   it('renders empty state', () => {
-    checkEmptyState('Upgrade risks are not available', true);
+    checkEmptyState('Update risks are not available', true);
   });
 
   it('header is present', () => {
@@ -238,6 +238,6 @@ describe('loading', () => {
 
   it('renders spinner', () => {
     cy.get('.pf-c-spinner').should('be.visible');
-    cy.get('#upgrade-risks-table').should('not.exist');
+    cy.get('#update-risks-table').should('not.exist');
   });
 });

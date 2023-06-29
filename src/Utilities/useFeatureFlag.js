@@ -9,12 +9,12 @@ const useFeatureFlag = (flag) => {
 
 export default useFeatureFlag;
 
-export const UPGRADE_RISKS_ENABLE_FLAG =
+export const UPDATE_RISKS_ENABLE_FLAG =
   'ocp-advisor.upgrade-risks.enable-in-stable';
 
-export const useUpgradeRisksFeatureFlag = () => {
-  const upgradeRisksEnabled = useFeatureFlag(UPGRADE_RISKS_ENABLE_FLAG);
+export const useUpdateRisksFeatureFlag = () => {
+  const updateRisksEnabled = useFeatureFlag(UPDATE_RISKS_ENABLE_FLAG);
   const chrome = useChrome();
 
-  return chrome.isBeta() || upgradeRisksEnabled;
+  return chrome.isBeta() || updateRisksEnabled;
 };

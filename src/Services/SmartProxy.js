@@ -37,7 +37,7 @@ export const SmartProxyApi = createApi({
       query: ({ id }) => `v2/cluster/${id}/info`,
       transformResponse: (response) => response?.cluster,
     }),
-    getUpgradeRisks: builder.query({
+    getUpdateRisks: builder.query({
       query: ({ id }) => `v2/cluster/${id}/upgrade-risks-prediction`,
     }),
   }),
@@ -46,7 +46,7 @@ export const SmartProxyApi = createApi({
 // Export hooks for usage in functional components
 export const {
   endpoints: {
-    getUpgradeRisks: { useQueryState: useGetUpgradeRisksState },
+    getUpdateRisks: { useQueryState: useGetUpdateRisksState },
     getClusterInfo: { useQueryState: useGetClusterInfoState },
   },
   useGetClusterByIdQuery,
@@ -57,5 +57,5 @@ export const {
   useLazyGetRecsQuery,
   useGetClustersQuery,
   useGetClusterInfoQuery,
-  useGetUpgradeRisksQuery,
+  useGetUpdateRisksQuery,
 } = SmartProxyApi;

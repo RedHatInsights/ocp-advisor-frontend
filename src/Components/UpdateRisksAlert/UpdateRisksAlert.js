@@ -3,14 +3,14 @@ import React from 'react';
 import { useIntl } from 'react-intl';
 import { useParams } from 'react-router-dom';
 import messages from '../../Messages';
-import { useGetUpgradeRisksQuery } from '../../Services/SmartProxy';
+import { useGetUpdateRisksQuery } from '../../Services/SmartProxy';
 import { strong } from '../../Utilities/Helpers';
 
-const UpgradeRisksAlert = () => {
+const UpdateRisksAlert = () => {
   const intl = useIntl();
   const { clusterId } = useParams();
   const { isError, isUninitialized, isFetching, isSuccess, data, error } =
-    useGetUpgradeRisksQuery({ id: clusterId });
+    useGetUpdateRisksQuery({ id: clusterId });
   const { alerts = [], operator_conditions: conditions = [] } =
     data?.upgrade_recommendation?.upgrade_risks_predictors || {};
 
@@ -23,30 +23,30 @@ const UpgradeRisksAlert = () => {
     <Alert
       variant="warning"
       isInline
-      title={intl.formatMessage(messages.resolveUpgradeRisks)}
-      ouiaId="upgrade-risks-alert"
+      title={intl.formatMessage(messages.resolveUpdateRisks)}
+      ouiaId="update-risks-alert"
     >
-      {intl.formatMessage(messages.resolveUpgradeRisksDesc, { strong })}
+      {intl.formatMessage(messages.resolveUpdateRisksDesc, { strong })}
     </Alert>
   ) : noRisks ? (
     <Alert
       variant="success"
       isInline
-      title={intl.formatMessage(messages.noKnownUpgradeRisks)}
-      ouiaId="upgrade-risks-alert"
+      title={intl.formatMessage(messages.noKnownUpdateRisks)}
+      ouiaId="update-risks-alert"
     />
   ) : isError && error.status === 404 ? (
     <Alert
       variant="warning"
       isInline
-      title={intl.formatMessage(messages.upgradeRisksNotCurrentlyAvailable)}
-      ouiaId="upgrade-risks-alert"
+      title={intl.formatMessage(messages.updateRisksNotCurrentlyAvailable)}
+      ouiaId="update-risks-alert"
     >
-      {intl.formatMessage(messages.upgradeRisksNotAvailableDesc)}
+      {intl.formatMessage(messages.updateRisksNotAvailableDesc)}
     </Alert>
   ) : (
     <></>
   );
 };
 
-export default UpgradeRisksAlert;
+export default UpdateRisksAlert;

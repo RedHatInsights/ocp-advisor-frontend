@@ -19,10 +19,10 @@ import {
 import ErrorState from '@redhat-cloud-services/frontend-components/ErrorState';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useGetUpgradeRisksQuery } from '../../Services/SmartProxy';
+import { useGetUpdateRisksQuery } from '../../Services/SmartProxy';
 import {
-  NoUpgradeRisks,
-  UpgradeRisksNotAvailable,
+  NoUpdateRisks,
+  UpdateRisksNotAvailable,
 } from '../MessageState/EmptyStates';
 import AlertsList, {
   ALERTS_SEVERITY_ICONS,
@@ -30,10 +30,10 @@ import AlertsList, {
 } from './AlertsList';
 import ClusterOperatorsList from './ClusterOperatorsList';
 
-const UpgradeRisksTable = () => {
+const UpdateRisksTable = () => {
   const { clusterId } = useParams();
   const { isError, isUninitialized, isFetching, isSuccess, data, error } =
-    useGetUpgradeRisksQuery({ id: clusterId });
+    useGetUpdateRisksQuery({ id: clusterId });
   const { alerts = [], operator_conditions: conditions = [] } =
     data?.upgrade_recommendation?.upgrade_risks_predictors || {};
 
@@ -57,10 +57,10 @@ const UpgradeRisksTable = () => {
     </EmptyState>
   ) : (
     <TableComposable
-      aria-label="Upgrade risks table"
+      aria-label="Update risks table"
       isExpandable
       variant="compact"
-      id="upgrade-risks-table"
+      id="update-risks-table"
       borders={hasRisks}
     >
       <Thead>
@@ -99,7 +99,7 @@ const UpgradeRisksTable = () => {
                     id="alerts-label"
                     color={alertsDisabled ? 'green' : 'grey'}
                   >
-                    {alerts.length} upgrade risks
+                    {alerts.length} update risks
                   </Label>
                 </Flex>
               </Td>
@@ -142,7 +142,7 @@ const UpgradeRisksTable = () => {
                     id="operator-conditions-label"
                     color={conditionsDisabled ? 'green' : 'grey'}
                   >
-                    {conditions.length} upgrade risks
+                    {conditions.length} update risks
                   </Label>
                 </Flex>
               </Td>
@@ -162,9 +162,9 @@ const UpgradeRisksTable = () => {
           <Tr>
             <Td colSpan={2}>
               {noRisks ? (
-                <NoUpgradeRisks />
+                <NoUpdateRisks />
               ) : isError && error.status === 404 ? (
-                <UpgradeRisksNotAvailable />
+                <UpdateRisksNotAvailable />
               ) : (
                 <ErrorState />
               )}
@@ -176,4 +176,4 @@ const UpgradeRisksTable = () => {
   );
 };
 
-export default UpgradeRisksTable;
+export default UpdateRisksTable;

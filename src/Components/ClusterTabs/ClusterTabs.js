@@ -6,28 +6,28 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import messages from '../../Messages';
 import { setSearchParameter } from '../../Utilities/Helpers';
 import ClusterRules from '../ClusterRules/ClusterRules';
-import { UpgradeRisksTable } from '../UpgradeRisksTable';
-import { UpgradeRisksTracker } from '../UpgradeRisksTracker';
-import useUpgradeRisksFeature from '../UpgradeRisksTable/useUpgradeRisksFeature';
+import { UpdateRisksTable } from '../UpdateRisksTable';
+import { UpdateRisksTracker } from '../UpdateRisksTracker';
+import useUpdateRisksFeature from '../UpdateRisksTable/useUpdateRisksFeature';
 
-const CLUSTER_TABS = ['recommendations', 'upgrade_risks'];
+const CLUSTER_TABS = ['recommendations', 'update_risks'];
 
 const ClusterTabs = () => {
   const intl = useIntl();
   const [searchParams] = useSearchParams();
   const { clusterId } = useParams();
-  const upgradeRisksEnabled = useUpgradeRisksFeature(clusterId);
+  const updateRisksEnabled = useUpdateRisksFeature(clusterId);
 
   const [activeKey, setActiveKey] = useState('recommendations');
 
   useEffect(() => {
     const tabKey = searchParams.get('active_tab');
     setActiveKey(
-      upgradeRisksEnabled && CLUSTER_TABS.includes(tabKey)
+      updateRisksEnabled && CLUSTER_TABS.includes(tabKey)
         ? tabKey
         : 'recommendations'
     );
-  }, [upgradeRisksEnabled]);
+  }, [updateRisksEnabled]);
 
   return (
     <Card isCompact>
@@ -47,16 +47,16 @@ const ClusterTabs = () => {
           >
             {activeKey === 'recommendations' && <ClusterRules />}
           </Tab>
-          {upgradeRisksEnabled && (
+          {updateRisksEnabled && (
             <Tab
-              eventKey="upgrade_risks"
-              title={intl.formatMessage(messages.upgradeRisks)}
-              ouiaId="upgrade-risks-tab"
+              eventKey="update_risks"
+              title={intl.formatMessage(messages.updateRisks)}
+              ouiaId="update-risks-tab"
             >
-              {activeKey === 'upgrade_risks' && (
+              {activeKey === 'update_risks' && (
                 <>
-                  <UpgradeRisksTracker />
-                  <UpgradeRisksTable />
+                  <UpdateRisksTracker />
+                  <UpdateRisksTable />
                 </>
               )}
             </Tab>
