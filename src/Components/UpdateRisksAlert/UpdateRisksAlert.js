@@ -5,12 +5,14 @@ import { useParams } from 'react-router-dom';
 import messages from '../../Messages';
 import { useGetUpdateRisksQuery } from '../../Services/SmartProxy';
 import { strong } from '../../Utilities/Helpers';
+import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 
 const UpdateRisksAlert = () => {
   const intl = useIntl();
   const { clusterId } = useParams();
+  const chrome = useChrome();
   const { isError, isUninitialized, isFetching, isSuccess, data, error } =
-    useGetUpdateRisksQuery({ clusterId });
+    useGetUpdateRisksQuery({ clusterId, preview: chrome.isBeta() });
   const { alerts = [], operator_conditions: conditions = [] } =
     data?.upgrade_recommendation?.upgrade_risks_predictors || {};
 

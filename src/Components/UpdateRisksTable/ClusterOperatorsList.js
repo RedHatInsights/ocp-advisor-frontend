@@ -11,10 +11,15 @@ import { useParams } from 'react-router-dom';
 import { useGetUpdateRisksState } from '../../Services/SmartProxy';
 import { Flex, Icon } from '@patternfly/react-core';
 import ExclamationTriangleIcon from '@patternfly/react-icons/dist/esm/icons/exclamation-triangle-icon';
+import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 
 const ClusterOperatorsList = () => {
   const { clusterId } = useParams();
-  const { data } = useGetUpdateRisksState({ clusterId });
+  const chrome = useChrome();
+  const { data } = useGetUpdateRisksState({
+    clusterId,
+    preview: chrome.isBeta(),
+  });
   const { operator_conditions: conditions = [] } =
     data?.upgrade_recommendation?.upgrade_risks_predictors || {};
 

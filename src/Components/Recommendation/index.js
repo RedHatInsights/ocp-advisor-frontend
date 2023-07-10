@@ -14,9 +14,14 @@ import messages from '../../Messages';
 const RecommendationWrapper = () => {
   const intl = useIntl();
   const { recommendationId } = useParams();
-  const rule = useGetRuleByIdQuery({ ruleId: recommendationId });
-  const ack = useGetRecAcksQuery({ ruleId: recommendationId });
   const chrome = useChrome();
+  const rule = useGetRuleByIdQuery({
+    ruleId: recommendationId,
+    preview: chrome.isBeta(),
+  });
+  const ack = useGetRecAcksQuery({
+    ruleId: recommendationId,
+  });
 
   if (rule.isSuccess && rule.data?.content?.description) {
     const subnav = `${rule.data.content.description} - Recommendations`;
@@ -24,7 +29,10 @@ const RecommendationWrapper = () => {
       intl.formatMessage(messages.documentTitle, { subnav })
     );
   }
-  const clusters = useGetAffectedClustersQuery({ ruleId: recommendationId });
+  const clusters = useGetAffectedClustersQuery({
+    ruleId: recommendationId,
+    preview: chrome.isBeta(),
+  });
 
   useEffect(() => {
     rule.refetch();

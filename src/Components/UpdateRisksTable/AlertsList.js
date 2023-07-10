@@ -14,6 +14,7 @@ import {
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useGetUpdateRisksState } from '../../Services/SmartProxy';
+import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 
 export const ALERTS_SEVERITY_ICONS = {
   critical: (
@@ -60,7 +61,11 @@ export const ALERTS_SEVERITY_ORDER = ['critical', 'warning', 'info'];
 
 const AlertsList = () => {
   const { clusterId } = useParams();
-  const { data } = useGetUpdateRisksState({ clusterId });
+  const chrome = useChrome();
+  const { data } = useGetUpdateRisksState({
+    clusterId,
+    preview: chrome.isBeta(),
+  });
   const { alerts = [] } =
     data?.upgrade_recommendation?.upgrade_risks_predictors || {};
 

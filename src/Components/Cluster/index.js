@@ -10,11 +10,12 @@ import { Cluster } from './Cluster';
 const ClusterWrapper = () => {
   const intl = useIntl();
   const { clusterId } = useParams();
+  const chrome = useChrome();
   const cluster = useGetClusterByIdQuery({
     clusterId,
     includeDisabled: false,
+    preview: chrome.isBeta(),
   });
-  const chrome = useChrome();
 
   useEffect(() => {
     cluster.refetch();

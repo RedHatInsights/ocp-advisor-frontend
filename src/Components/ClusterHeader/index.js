@@ -6,12 +6,15 @@ import {
   useGetClusterInfoQuery,
 } from '../../Services/SmartProxy';
 import { ClusterHeader } from './ClusterHeader';
+import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 
 const ClusterHeaderWrapper = () => {
+  const chrome = useChrome();
   const { clusterId } = useParams();
   const clusterData = useGetClusterByIdQuery({
     clusterId,
     includeDisabled: false,
+    preview: chrome.isBeta(),
   });
   const clusterInfo = useGetClusterInfoQuery({
     clusterId,

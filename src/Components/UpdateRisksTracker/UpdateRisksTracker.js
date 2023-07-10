@@ -7,9 +7,12 @@ import { useGetUpdateRisksState } from '../../Services/SmartProxy';
 const UPDATE_RISKS_TRACK_EVENT_ID = 'ocp-upgrade-risks-viewed';
 
 const UpdateRisksTracker = () => {
-  const { analytics } = useChrome();
+  const { analytics, isBeta } = useChrome();
   const { clusterId } = useParams();
-  const { isError, isSuccess, data } = useGetUpdateRisksState({ clusterId });
+  const { isError, isSuccess, data } = useGetUpdateRisksState({
+    clusterId,
+    preview: isBeta(),
+  });
 
   useEffect(() => {
     if (isError || isSuccess) {

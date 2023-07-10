@@ -29,11 +29,13 @@ import AlertsList, {
   ALERTS_SEVERITY_ORDER,
 } from './AlertsList';
 import ClusterOperatorsList from './ClusterOperatorsList';
+import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 
 const UpdateRisksTable = () => {
   const { clusterId } = useParams();
+  const chrome = useChrome();
   const { isError, isUninitialized, isFetching, isSuccess, data, error } =
-    useGetUpdateRisksQuery({ clusterId });
+    useGetUpdateRisksQuery({ clusterId, preview: chrome.isBeta() });
   const { alerts = [], operator_conditions: conditions = [] } =
     data?.upgrade_recommendation?.upgrade_risks_predictors || {};
 
