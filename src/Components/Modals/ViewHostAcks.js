@@ -54,7 +54,7 @@ const ViewHostAcks = ({
 
   const deleteAck = async (host) => {
     try {
-      await enableRuleForCluster({ uuid: host.cluster_id, recId });
+      await enableRuleForCluster({ clusterId: host.cluster_id, ruleId: recId });
       refetch();
       setUnclean(true);
     } catch (error) {

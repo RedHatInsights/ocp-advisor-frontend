@@ -10,11 +10,11 @@ import { ClusterHeader } from './ClusterHeader';
 const ClusterHeaderWrapper = () => {
   const { clusterId } = useParams();
   const clusterData = useGetClusterByIdQuery({
-    id: clusterId,
+    clusterId,
     includeDisabled: false,
   });
   const clusterInfo = useGetClusterInfoQuery({
-    id: clusterId,
+    clusterId,
   }); // TODO: improve cache handling: do network request only when cache is empty
 
   return (

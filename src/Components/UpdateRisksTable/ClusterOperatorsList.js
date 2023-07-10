@@ -14,7 +14,7 @@ import ExclamationTriangleIcon from '@patternfly/react-icons/dist/esm/icons/excl
 
 const ClusterOperatorsList = () => {
   const { clusterId } = useParams();
-  const { data } = useGetUpdateRisksState({ id: clusterId });
+  const { data } = useGetUpdateRisksState({ clusterId });
   const { operator_conditions: conditions = [] } =
     data?.upgrade_recommendation?.upgrade_risks_predictors || {};
 

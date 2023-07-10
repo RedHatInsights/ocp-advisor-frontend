@@ -104,7 +104,7 @@ const Recommendation = ({ rule, ack, clusters, recId }) => {
   const enableRecForHosts = async ({ uuids }) => {
     try {
       const requests = uuids.map((uuid) =>
-        enableRuleForCluster({ uuid, recId })
+        enableRuleForCluster({ clusterId: uuid, ruleId: recId })
       );
       await Promise.all(requests);
       refetch();

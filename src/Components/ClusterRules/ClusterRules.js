@@ -64,7 +64,7 @@ const ClusterRules = () => {
 
   const { isError, isUninitialized, isFetching, isSuccess, data, error } =
     useGetClusterByIdQuery({
-      id: clusterId,
+      clusterId,
       includeDisabled: false,
     });
   const reports = data?.report?.data || [];

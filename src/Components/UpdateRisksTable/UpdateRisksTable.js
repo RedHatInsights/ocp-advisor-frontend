@@ -33,7 +33,7 @@ import ClusterOperatorsList from './ClusterOperatorsList';
 const UpdateRisksTable = () => {
   const { clusterId } = useParams();
   const { isError, isUninitialized, isFetching, isSuccess, data, error } =
-    useGetUpdateRisksQuery({ id: clusterId });
+    useGetUpdateRisksQuery({ clusterId });
   const { alerts = [], operator_conditions: conditions = [] } =
     data?.upgrade_recommendation?.upgrade_risks_predictors || {};
 

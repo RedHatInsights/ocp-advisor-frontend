@@ -9,9 +9,7 @@ const UPDATE_RISKS_TRACK_EVENT_ID = 'ocp-upgrade-risks-viewed';
 const UpdateRisksTracker = () => {
   const { analytics } = useChrome();
   const { clusterId } = useParams();
-  const { isError, isSuccess, data } = useGetUpdateRisksState({
-    id: clusterId,
-  });
+  const { isError, isSuccess, data } = useGetUpdateRisksState({ clusterId });
 
   useEffect(() => {
     if (isError || isSuccess) {

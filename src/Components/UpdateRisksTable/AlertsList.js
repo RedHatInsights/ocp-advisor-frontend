@@ -60,7 +60,7 @@ export const ALERTS_SEVERITY_ORDER = ['critical', 'warning', 'info'];
 
 const AlertsList = () => {
   const { clusterId } = useParams();
-  const { data } = useGetUpdateRisksState({ id: clusterId });
+  const { data } = useGetUpdateRisksState({ clusterId });
   const { alerts = [] } =
     data?.upgrade_recommendation?.upgrade_risks_predictors || {};
 

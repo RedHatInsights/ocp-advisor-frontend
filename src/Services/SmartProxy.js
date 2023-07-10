@@ -11,22 +11,47 @@ export const SmartProxyApi = createApi({
   refetchOnMountOrArgChange: 3,
   endpoints: (builder) => ({
     getClusterById: builder.query({
-      query: ({ id, includeDisabled }) =>
-        `v2/cluster/${id}/reports?get_disabled=${includeDisabled}`,
+      query: ({ clusterId, includeDisabled, preview } = {}) => ({
+        url: `v2/cluster/${clusterId}/reports?get_disabled=${includeDisabled}`,
+        params: {
+          ...(preview ? { preview: true } : {}),
+          get_disabled: includeDisabled,
+        },
+      }),
     }),
     // Get rule's content using id (recId = recommendation id) in the rule_plugin_name|error_key format
     getRuleById: builder.query({
-      query: (recId) => `v2/rule/${recId}`,
+      query: ({ ruleId, preview } = {}) => ({
+        url: `v2/rule/${ruleId}`,
+        params: {
+          ...(preview ? { preview: true } : {}),
+        },
+      }),
     }),
     getAffectedClusters: builder.query({
-      query: (recId) => `v2/rule/${recId}/clusters_detail`,
+      query: ({ ruleId, preview } = {}) => ({
+        url: `v2/rule/${ruleId}/clusters_detail`,
+        params: {
+          ...(preview ? { preview: true } : {}),
+        },
+      }),
       transformResponse: (response) => response?.data,
     }),
     getRecs: builder.query({
-      query: () => `v2/rule`,
+      query: ({ preview } = {}) => ({
+        url: `v2/rule`,
+        params: {
+          ...(preview ? { preview: true } : {}),
+        },
+      }),
     }),
     getClusters: builder.query({
-      query: () => `v2/clusters`,
+      query: ({ preview } = {}) => ({
+        url: `v2/clusters`,
+        params: {
+          ...(preview ? { preview: true } : {}),
+        },
+      }),
       transformResponse: (response) => {
         return {
           data: response.data.filter((element) => element.cluster_id !== ''),
@@ -34,11 +59,21 @@ export const SmartProxyApi = createApi({
       },
     }),
     getClusterInfo: builder.query({
-      query: ({ id }) => `v2/cluster/${id}/info`,
+      query: ({ clusterId, preview } = {}) => ({
+        url: `v2/cluster/${clusterId}/info`,
+        params: {
+          ...(preview ? { preview: true } : {}),
+        },
+      }),
       transformResponse: (response) => response?.cluster,
     }),
     getUpdateRisks: builder.query({
-      query: ({ id }) => `v2/cluster/${id}/upgrade-risks-prediction`,
+      query: ({ clusterId, preview } = {}) => ({
+        url: `v2/cluster/${clusterId}/upgrade-risks-prediction`,
+        params: {
+          ...(preview ? { preview: true } : {}),
+        },
+      }),
     }),
   }),
 });

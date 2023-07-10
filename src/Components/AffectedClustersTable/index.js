@@ -6,7 +6,9 @@ import { useGetAffectedClustersQuery } from '../../Services/SmartProxy';
 import { AffectedClustersTable } from './AffectedClustersTable';
 
 const AffectedClustersTableWrapper = () => {
-  const query = useGetAffectedClustersQuery(useParams().recommendationId);
+  const query = useGetAffectedClustersQuery({
+    ruleId: useParams().recommendationId,
+  });
 
   return <AffectedClustersTable query={query} />;
 };

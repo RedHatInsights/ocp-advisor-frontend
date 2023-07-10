@@ -37,8 +37,8 @@ const DisableRule = ({
     try {
       const requests = hosts.map((h) =>
         disableRuleForCluster({
-          uuid: h.id,
-          recId: rule.rule_id,
+          clusterId: h.id,
+          ruleId: rule.rule_id,
           justification,
         })
       );
@@ -65,8 +65,8 @@ const DisableRule = ({
       if (singleHost) {
         // disable the rec for this single cluster
         await disableRuleForCluster({
-          uuid: host,
-          recId: rule.rule_id,
+          clusterId: host,
+          ruleId: rule.rule_id,
           justification,
         });
         notify({
@@ -80,7 +80,7 @@ const DisableRule = ({
       } else {
         // disable the whole rec
         await setAck({
-          rule_id: rule.rule_id,
+          ruleId: rule.rule_id,
           justification,
         }).unwrap();
         notify({

@@ -11,7 +11,7 @@ const ClusterWrapper = () => {
   const intl = useIntl();
   const { clusterId } = useParams();
   const cluster = useGetClusterByIdQuery({
-    id: clusterId,
+    clusterId,
     includeDisabled: false,
   });
   const chrome = useChrome();

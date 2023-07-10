@@ -11,36 +11,43 @@ export const Acks = createApi({
   }),
   endpoints: (build) => ({
     getRecAcks: build.query({
-      query: (options) => ({ url: `/v2/ack/${options.ruleId}` }),
+      query: ({ ruleId } = {}) => ({ url: `/v2/ack/${ruleId}` }),
     }),
     setAck: build.mutation({
-      query: (options) => ({
+      query: ({ ruleId, justification } = {}) => ({
         url: '/v2/ack',
-        body: options,
+        body: {
+          rule_id: ruleId,
+          justification,
+        },
         method: 'post',
       }),
     }),
   }),
 });
 
-const enableRuleForCluster = async ({ uuid, recId }) => {
+const enableRuleForCluster = async ({ clusterId, ruleId } = {}) => {
   await Put(
-    `${BASE_URL}/v1/clusters/${uuid}/rules/${getPluginName(
-      recId
-    )}.report/error_key/${getErrorKey(recId)}/enable`
+    `${BASE_URL}/v1/clusters/${clusterId}/rules/${getPluginName(
+      ruleId
+    )}.report/error_key/${getErrorKey(ruleId)}/enable`
   );
 };
 
-const disableRuleForCluster = async ({ uuid, recId, justification = '' }) => {
+const disableRuleForCluster = async ({
+  clusterId,
+  ruleId,
+  justification = '',
+} = {}) => {
   await Put(
-    `${BASE_URL}/v1/clusters/${uuid}/rules/${getPluginName(
-      recId
-    )}.report/error_key/${getErrorKey(recId)}/disable`
+    `${BASE_URL}/v1/clusters/${clusterId}/rules/${getPluginName(
+      ruleId
+    )}.report/error_key/${getErrorKey(ruleId)}/disable`
   );
   await Post(
-    `${BASE_URL}/v1/clusters/${uuid}/rules/${getPluginName(
-      recId
-    )}.report/error_key/${getErrorKey(recId)}/disable_feedback`,
+    `${BASE_URL}/v1/clusters/${clusterId}/rules/${getPluginName(
+      ruleId
+    )}.report/error_key/${getErrorKey(ruleId)}/disable_feedback`,
     {},
     { message: justification }
   );
