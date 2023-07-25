@@ -2,7 +2,6 @@ import './App.scss';
 
 import React, { useEffect, useState } from 'react';
 import { Provider } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
@@ -19,33 +18,21 @@ import MessageState from './Components/MessageState/MessageState';
 import messages from './Messages';
 import getStore from './Store';
 
-const App = ({ useLogger, basename }) => {
+const App = ({ useLogger }) => {
   const intl = useIntl();
-  const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const chrome = useChrome();
 
   useEffect(() => {
-    let unregister;
     if (chrome) {
       const registry = getRegistry();
       registry.register({ notifications: notificationsReducer });
-
-      unregister = chrome.on('APP_NAVIGATION', (event) => {
-        const targetUrl = event.domEvent?.href
-          ?.replace(basename, '/')
-          .replace(/^\/\//, '/');
-        if (typeof targetUrl === 'string') {
-          navigate(targetUrl);
-        }
-      });
       chrome.auth.getUser().then(() => {
         setIsAuthenticated(true);
         setIsLoading(false);
       });
     }
-    return () => unregister();
   }, [chrome]);
 
   return (
@@ -75,7 +62,6 @@ const App = ({ useLogger, basename }) => {
 
 App.propTypes = {
   useLogger: PropTypes.bool,
-  basename: PropTypes.string.isRequired,
 };
 
 App.defaultProps = {
