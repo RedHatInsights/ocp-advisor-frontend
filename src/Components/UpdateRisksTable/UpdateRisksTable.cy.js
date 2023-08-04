@@ -1,5 +1,5 @@
 import React from 'react';
-import updateRisksFixtures from '../../../cypress/fixtures/api/insights-results-aggregator/v1/clusters/41c30565-b4c9-49f2-a4ce-3277ad22b258/upgrade-risks-prediction.json';
+import updateRisksFixtures from '../../../cypress/fixtures/api/insights-results-aggregator/v2/cluster/dcb95bbf-8673-4f3a-a63c-12d4a530aa6f/upgrade-risks-prediction.json';
 import { TABLE_HEADER } from '../../../cypress/utils/components';
 import {
   checkEmptyState,
@@ -20,7 +20,7 @@ const SEVERITY_ICON_CLASS_MAPPING = {
   info: 'info',
 };
 
-const CLUSTER_ID = '41c30565-b4c9-49f2-a4ce-3277ad22b258';
+const CLUSTER_ID = 'dcb95bbf-8673-4f3a-a63c-12d4a530aa6f';
 
 const mount = (initialEntries = [`/clusters/${CLUSTER_ID}`]) => {
   cy.mountWithContext(<UpdateRisksTable />, {
