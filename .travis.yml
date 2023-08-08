@@ -6,6 +6,7 @@ node_js:
   - "16"
 install:
   - npm ci
+if: tag IS blank
 jobs:
   include:
     - stage: Lint
