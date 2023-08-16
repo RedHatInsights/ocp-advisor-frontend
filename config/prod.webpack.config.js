@@ -21,6 +21,7 @@ plugins.push(
           'react-router-dom': { singleton: true, requiredVersion: '*' },
         },
       ],
+      exclude: ['react-redux'],
     }
   )
 );
