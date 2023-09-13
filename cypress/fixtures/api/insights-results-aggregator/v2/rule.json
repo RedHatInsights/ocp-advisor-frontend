@@ -8,7 +8,12 @@
       "total_risk": 2,
       "impact": 1,
       "likelihood": 4,
-      "tags": ["openshift", "etcd", "performance"],
+      "tags": [
+        "openshift",
+        "etcd",
+        "performance",
+        "best_practice"
+      ],
       "disabled": false,
       "risk_of_change": 0,
       "impacted_clusters_count": 1,
@@ -41,7 +46,11 @@
       "total_risk": 2,
       "impact": 2,
       "likelihood": 3,
-      "tags": ["openshift", "configuration", "service_availability"],
+      "tags": [
+        "openshift",
+        "configuration",
+        "service_availability"
+      ],
       "disabled": false,
       "risk_of_change": 0,
       "impacted_clusters_count": 0,
@@ -55,7 +64,12 @@
       "total_risk": 2,
       "impact": 1,
       "likelihood": 4,
-      "tags": ["service_availability", "vsphere", "disk", "security"],
+      "tags": [
+        "service_availability",
+        "vsphere",
+        "disk",
+        "security"
+      ],
       "disabled": false,
       "risk_of_change": 0,
       "impacted_clusters_count": 0,
@@ -69,7 +83,11 @@
       "total_risk": 2,
       "impact": 2,
       "likelihood": 3,
-      "tags": ["openshift", "performance", "osd_customer"],
+      "tags": [
+        "openshift",
+        "performance",
+        "osd_customer"
+      ],
       "disabled": false,
       "risk_of_change": 0,
       "impacted_clusters_count": 0,
@@ -83,7 +101,11 @@
       "total_risk": 3,
       "impact": 2,
       "likelihood": 2,
-      "tags": ["service_availability", "openshift", "operator"],
+      "tags": [
+        "service_availability",
+        "openshift",
+        "operator"
+      ],
       "disabled": false,
       "risk_of_change": 0,
       "impacted_clusters_count": 100,
@@ -97,7 +119,10 @@
       "total_risk": 4,
       "impact": 1,
       "likelihood": 2,
-      "tags": ["openshift", "service_availability"],
+      "tags": [
+        "openshift",
+        "service_availability"
+      ],
       "disabled": false,
       "risk_of_change": 0,
       "impacted_clusters_count": 2003,
@@ -111,7 +136,10 @@
       "total_risk": 2,
       "impact": 1,
       "likelihood": 4,
-      "tags": ["openshift", "service_availability"],
+      "tags": [
+        "openshift",
+        "service_availability"
+      ],
       "disabled": true,
       "risk_of_change": 0,
       "impacted_clusters_count": 2,
@@ -125,7 +153,10 @@
       "total_risk": 1,
       "impact": 1,
       "likelihood": 1,
-      "tags": ["openshift", "service_availability"],
+      "tags": [
+        "openshift",
+        "service_availability"
+      ],
       "disabled": true,
       "risk_of_change": 0,
       "impacted_clusters_count": 0,

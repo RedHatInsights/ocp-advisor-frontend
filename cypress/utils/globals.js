@@ -6,6 +6,7 @@ const CATEGORIES = {
   Security: ['security'],
   'Fault Tolerance': ['fault_tolerance'],
   Performance: ['performance'],
+  'Best Practice': ['best_practice'],
 };
 
 const SORTING_ORDERS = ['ascending', 'descending'];

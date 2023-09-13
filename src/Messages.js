@@ -108,23 +108,28 @@ export default defineMessages({
   },
   serviceAvailability: {
     id: 'serviceAvailability',
-    description: 'Filter value',
+    description: 'Category Filter value',
     defaultMessage: 'Service Availability',
   },
   performance: {
     id: 'performance',
-    description: 'Filter value',
+    description: 'Category Filter value',
     defaultMessage: 'Performance',
   },
   faultTolerance: {
     id: 'faultTolerance',
-    description: 'Filter value',
+    description: 'Category Filter value',
     defaultMessage: 'Fault Tolerance',
   },
   security: {
     id: 'security',
-    description: 'Filter value',
+    description: 'Category Filter value',
     defaultMessage: 'Security',
+  },
+  bestPractice: {
+    id: 'bestPractice',
+    description: 'Category Filter value',
+    defaultMessage: 'Best Practice',
   },
   enabled: {
     id: 'enabled',
