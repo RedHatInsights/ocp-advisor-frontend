@@ -1,9 +1,9 @@
+import React from 'react';
 import { createIntl, createIntlCache } from 'react-intl';
 import intlHelper from '@redhat-cloud-services/frontend-components-translations/intlHelper';
 
 import messages from './Messages';
 import { fitContent, sortable } from '@patternfly/react-table';
-import { strong } from './Utilities/Helpers';
 
 const cache = createIntlCache();
 const locale = navigator.language.slice(0, 2);
@@ -356,20 +356,25 @@ export const CLUSTERS_TABLE_CELL_LOW = 6;
 export const CLUSTERS_TABLE_CELL_LAST_SEEN = 7;
 
 export const RISK_OF_CHANGE_DESC = {
-  1: intlHelper(
-    intl.formatMessage(messages.riskOfChangeTextOne, { strong }),
-    intlSettings
+  1: <span>The change poses no risk to workloads on the cluster.</span>,
+  2: (
+    <span>
+      The change may involve voluntary disruptions. Voluntary disruptions do not
+      affect cloud-native workloads. Legacy workloads may block the change or
+      experience temporary downtime.
+    </span>
   ),
-  2: intlHelper(
-    intl.formatMessage(messages.riskOfChangeTextTwo, { strong }),
-    intlSettings
+  3: (
+    <span>
+      The change poses some of these risks:
+      <ol>
+        <li>Requires workload changes</li>
+        <li>May disrupt the whole cluster if executed incorrectly</li>
+        <li>
+          May cause data unavailability or data loss if executed incorrectly
+        </li>
+      </ol>
+    </span>
   ),
-  3: intlHelper(
-    intl.formatMessage(messages.riskOfChangeTextThree, { strong }),
-    intlSettings
-  ),
-  4: intlHelper(
-    intl.formatMessage(messages.riskOfChangeTextFour, { strong }),
-    intlSettings
-  ),
+  4: <span>The change will require a cluster-wide outage window.</span>,
 };

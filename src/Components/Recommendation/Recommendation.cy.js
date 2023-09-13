@@ -191,7 +191,10 @@ describe('recommendation page for enabled recommendation with clusters enabled a
           .contains('Low');
         cy.get('.ins-c-rule-details__risk-of-ch-desc')
           .should('have.length', 1)
-          .contains('The risk of change is very low');
+          .and(
+            'have.text',
+            'The change poses no risk to workloads on the cluster.'
+          );
       });
     });
   });
