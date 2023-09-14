@@ -46,6 +46,7 @@ export const RULE_CATEGORIES = {
   performance: 2,
   fault_tolerance: 3,
   security: 4,
+  best_practice: 5,
 };
 export const FILTER_CATEGORIES = {
   total_risk: {
@@ -140,6 +141,13 @@ export const FILTER_CATEGORIES = {
       {
         label: intlHelper(intl.formatMessage(messages.security), intlSettings),
         value: `${RULE_CATEGORIES.security}`,
+      },
+      {
+        label: intlHelper(
+          intl.formatMessage(messages.bestPractice),
+          intlSettings
+        ),
+        value: `${RULE_CATEGORIES.best_practice}`,
       },
     ],
   },

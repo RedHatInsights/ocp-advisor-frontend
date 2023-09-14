@@ -54,7 +54,11 @@
           },
           "type": "rule"
         },
-        "tags": ["security", "service_availability"]
+        "tags": [
+          "security",
+          "service_availability",
+          "best_practice"
+        ]
       },
       {
         "rule_id": "external.rules.rule_n_one|ERROR_KEY_N2",
@@ -104,7 +108,9 @@
           },
           "type": "rule"
         },
-        "tags": ["service_availability"]
+        "tags": [
+          "service_availability"
+        ]
       },
       {
         "rule_id": "external.rules.rule_n_one|ERROR_KEY_N3",
@@ -154,7 +160,10 @@
           },
           "type": "rule"
         },
-        "tags": ["performance", "service_availability"]
+        "tags": [
+          "performance",
+          "service_availability"
+        ]
       },
       {
         "rule_id": "external.rules.rule_n_one|ERROR_KEY_N4",
@@ -204,7 +213,11 @@
           },
           "type": "rule"
         },
-        "tags": ["security", "service_availability", "fault_tolerance"]
+        "tags": [
+          "security",
+          "service_availability",
+          "fault_tolerance"
+        ]
       },
       {
         "rule_id": "external.rules.rule_n_one|ERROR_KEY_N5",
@@ -254,7 +267,10 @@
           },
           "type": "rule"
         },
-        "tags": ["security", "service_availability"]
+        "tags": [
+          "security",
+          "service_availability"
+        ]
       },
       {
         "rule_id": "external.rules.rule_n_one|ERROR_KEY_N6",
@@ -303,7 +319,9 @@
           },
           "type": "rule"
         },
-        "tags": ["security"]
+        "tags": [
+          "security"
+        ]
       }
     ]
   },

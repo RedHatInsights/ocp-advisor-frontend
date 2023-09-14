@@ -8,6 +8,7 @@ import LockIcon from '@patternfly/react-icons/dist/esm/icons/lock-icon';
 import PortIcon from '@patternfly/react-icons/dist/esm/icons/port-icon';
 import AutomationIcon from '@patternfly/react-icons/dist/esm/icons/automation-icon';
 import SyncAltIcon from '@patternfly/react-icons/dist/esm/icons/sync-icon';
+import OptimizeIcon from '@patternfly/react-icons/dist/esm/icons/optimize-icon';
 
 import messages from '../../Messages';
 import { RULE_CATEGORIES } from '../../AppConstants';
@@ -17,6 +18,7 @@ const CATEGORY_ICONS = {
   service_availability: <AutomationIcon />,
   performance: <PortIcon />,
   fault_tolerance: <SyncAltIcon />,
+  best_practice: <OptimizeIcon />,
 };
 
 export const extractCategories = (tags) =>
