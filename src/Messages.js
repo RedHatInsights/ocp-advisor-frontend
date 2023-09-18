@@ -614,29 +614,6 @@ export default defineMessages({
     id: 'impacted',
     defaultMessage: 'First impacted',
   },
-  riskOfChangeTextOne: {
-    id: 'riskOfChangeTextOne',
-    description: 'Risk of change text explaining a value one',
-    defaultMessage:
-      'The risk of change is <strong>very low</strong>, because the change takes very little time to implement and there is minimal impact to system operations.',
-  },
-  riskOfChangeTextTwo: {
-    id: 'riskOfChangeTextTwo',
-    description: 'Risk of change text explaining a value two',
-    defaultMessage:
-      'The risk of change is <strong>low</strong>, because the change does not require that a system be taken offline.',
-  },
-  riskOfChangeTextThree: {
-    id: 'riskOfChangeTextThree',
-    description: 'Risk of change text explaining a value three',
-    defaultMessage:
-      'The risk of change is <strong>moderate</strong>, because the change will likely require an outage window.',
-  },
-  riskOfChangeTextFour: {
-    id: 'riskOfChangeTextFour',
-    description: 'Risk of change text explaining a value four',
-    defaultMessage: `The risk of change is <strong>high</strong>, because the change takes a significant amount of time and planning to execute, and will impact the system and business operations of the host due to downtime.`,
-  },
   riskOfChangeLabel: {
     id: 'riskOfChangeLabel',
     defaultMessage: '{level}',
