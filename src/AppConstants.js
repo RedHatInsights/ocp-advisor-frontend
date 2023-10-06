@@ -282,7 +282,7 @@ export const AFFECTED_CLUSTERS_COLUMNS = [
   },
   {
     title: intl.formatMessage(messages.version),
-    transforms: [sortable, fitContent],
+    transforms: [sortable],
   },
   {
     title: intl.formatMessage(messages.lastSeen),
