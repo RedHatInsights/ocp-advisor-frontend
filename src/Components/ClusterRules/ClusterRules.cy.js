@@ -173,6 +173,7 @@ describe('cluster rules table', () => {
       cy.get('button').contains('Reset filters').should('not.exist');
     });
     it('all expected rows are displayed', () => {
+      cy.contains('1Lorem ipsum dolor sit amet'); // find the first row
       checkRowCounts(RULES_ENABLED);
     });
   });
