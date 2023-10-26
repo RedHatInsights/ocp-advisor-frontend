@@ -8,6 +8,7 @@ import {
   EmptyState,
 } from '@patternfly/react-core';
 import InvalidObject from '@redhat-cloud-services/frontend-components/InvalidObject/InvalidObject';
+import { useWorkloadsFeatureFlag } from './Utilities/useFeatureFlag';
 
 const Cluster = lazy(() =>
   import(/* webpackChunkName: "ClusterDetails" */ './Components/Cluster')
@@ -88,28 +89,32 @@ export const AppRoutes = () => (
           />
         }
       />
-      <Route
-        path="/workloads"
-        element={
-          <WorkloadsList
-            /**
-             * Generate random `key` to force component re-render,
-             * temporary workaround for https://issues.redhat.com/browse/OCPADVISOR-59
-             */ key={Math.random()}
-          />
-        }
-      />
-      <Route
-        path="/workloads/:workloadId"
-        element={
-          <Workload
-            /**
-             * Generate random `key` to force component re-render,
-             * temporary workaround for https://issues.redhat.com/browse/OCPADVISOR-59
-             */ key={Math.random()}
-          />
-        }
-      />
+      {useWorkloadsFeatureFlag && (
+        <Route
+          path="/workloads"
+          element={
+            <WorkloadsList
+              /**
+               * Generate random `key` to force component re-render,
+               * temporary workaround for https://issues.redhat.com/browse/OCPADVISOR-59
+               */ key={Math.random()}
+            />
+          }
+        />
+      )}
+      {useWorkloadsFeatureFlag && (
+        <Route
+          path="/workloads/:workloadId"
+          element={
+            <Workload
+              /**
+               * Generate random `key` to force component re-render,
+               * temporary workaround for https://issues.redhat.com/browse/OCPADVISOR-59
+               */ key={Math.random()}
+            />
+          }
+        />
+      )}
       <Route
         path="/"
         element={<Navigate to={`${BASE_PATH}/recommendations`} replace />}

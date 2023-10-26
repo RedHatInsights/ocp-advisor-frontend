@@ -22,9 +22,7 @@ const WorkloadsList = () => {
     <React.Fragment>
       <PageHeader className="ins-c-clusters-header">
         <Title headingLevel="h1" ouiaId="page-header">
-          {`${intl.formatMessage(messages.insightsHeader)} ${intl
-            .formatMessage(messages.clusters)
-            .toLowerCase()}`}
+          Workloads
         </Title>
       </PageHeader>
       <section className="pf-l-page__main-section pf-c-page__main-section">
