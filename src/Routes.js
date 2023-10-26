@@ -25,6 +25,14 @@ const ClustersList = lazy(() =>
   import(/* webpackChunkName: "ClustersList" */ './Components/ClustersList')
 );
 
+const WorkloadsList = lazy(() =>
+  import(/* webpackChunkName: "WorkloadsList" */ './Components/WorkloadsList')
+);
+
+const Workload = lazy(() =>
+  import(/* webpackChunkName: "Workload" */ './Components/Workload')
+);
+
 export const BASE_PATH = '/openshift/insights/advisor';
 
 export const AppRoutes = () => (
@@ -73,6 +81,28 @@ export const AppRoutes = () => (
         path="/recommendations"
         element={
           <RecsList
+            /**
+             * Generate random `key` to force component re-render,
+             * temporary workaround for https://issues.redhat.com/browse/OCPADVISOR-59
+             */ key={Math.random()}
+          />
+        }
+      />
+      <Route
+        path="/workloads"
+        element={
+          <WorkloadsList
+            /**
+             * Generate random `key` to force component re-render,
+             * temporary workaround for https://issues.redhat.com/browse/OCPADVISOR-59
+             */ key={Math.random()}
+          />
+        }
+      />
+      <Route
+        path="/workloads/:workloadId"
+        element={
+          <Workload
             /**
              * Generate random `key` to force component re-render,
              * temporary workaround for https://issues.redhat.com/browse/OCPADVISOR-59
