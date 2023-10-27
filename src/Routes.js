@@ -8,6 +8,10 @@ import {
   EmptyState,
 } from '@patternfly/react-core';
 import InvalidObject from '@redhat-cloud-services/frontend-components/InvalidObject/InvalidObject';
+import useFeatureFlag, {
+  WORKLOADS_ENABLE_FLAG,
+} from './Utilities/useFeatureFlag';
+import { ErrorState } from './Components/MessageState/EmptyStates';
 
 const Cluster = lazy(() =>
   import(/* webpackChunkName: "ClusterDetails" */ './Components/Cluster')
@@ -25,75 +29,116 @@ const ClustersList = lazy(() =>
   import(/* webpackChunkName: "ClustersList" */ './Components/ClustersList')
 );
 
+const WorkloadsList = lazy(() =>
+  import(/* webpackChunkName: "WorkloadsList" */ './Components/WorkloadsList')
+);
+
+const Workload = lazy(() =>
+  import(/* webpackChunkName: "Workload" */ './Components/Workload')
+);
+
 export const BASE_PATH = '/openshift/insights/advisor';
 
-export const AppRoutes = () => (
-  <Suspense
-    fallback={
-      <Bullseye>
-        <Spinner />
-      </Bullseye>
-    }
-  >
-    <Routes>
-      <Route
-        path="/clusters/:clusterId"
-        element={
-          <Cluster
-            /**
-             * Generate random `key` to force component re-render,
-             * temporary workaround for https://issues.redhat.com/browse/OCPADVISOR-59
-             */ key={Math.random()}
-          />
-        }
-      />
-      <Route
-        path="/clusters"
-        element={
-          <ClustersList
-            /**
-             * Generate random `key` to force component re-render,
-             * temporary workaround for https://issues.redhat.com/browse/OCPADVISOR-59
-             */ key={Math.random()}
-          />
-        }
-      />
-      <Route
-        path="/recommendations/:recommendationId"
-        element={
-          <Recommendation
-            /**
-             * Generate random `key` to force component re-render,
-             * temporary workaround for https://issues.redhat.com/browse/OCPADVISOR-59
-             */ key={Math.random()}
-          />
-        }
-      />
-      <Route
-        path="/recommendations"
-        element={
-          <RecsList
-            /**
-             * Generate random `key` to force component re-render,
-             * temporary workaround for https://issues.redhat.com/browse/OCPADVISOR-59
-             */ key={Math.random()}
-          />
-        }
-      />
-      <Route
-        path="/"
-        element={<Navigate to={`${BASE_PATH}/recommendations`} replace />}
-      />
-      <Route
-        path="*"
-        element={
-          <EmptyState>
-            <EmptyStateBody>
-              <InvalidObject />
-            </EmptyStateBody>
-          </EmptyState>
-        }
-      />
-    </Routes>
-  </Suspense>
-);
+export const AppRoutes = () => {
+  const workloadsEnabled = useFeatureFlag(WORKLOADS_ENABLE_FLAG);
+  return (
+    <Suspense
+      fallback={
+        <Bullseye>
+          <Spinner />
+        </Bullseye>
+      }
+    >
+      <Routes>
+        <Route
+          path="/clusters/:clusterId"
+          element={
+            <Cluster
+              /**
+               * Generate random `key` to force component re-render,
+               * temporary workaround for https://issues.redhat.com/browse/OCPADVISOR-59
+               */ key={Math.random()}
+            />
+          }
+        />
+        <Route
+          path="/clusters"
+          element={
+            <ClustersList
+              /**
+               * Generate random `key` to force component re-render,
+               * temporary workaround for https://issues.redhat.com/browse/OCPADVISOR-59
+               */ key={Math.random()}
+            />
+          }
+        />
+        <Route
+          path="/recommendations/:recommendationId"
+          element={
+            <Recommendation
+              /**
+               * Generate random `key` to force component re-render,
+               * temporary workaround for https://issues.redhat.com/browse/OCPADVISOR-59
+               */ key={Math.random()}
+            />
+          }
+        />
+        <Route
+          path="/recommendations"
+          element={
+            <RecsList
+              /**
+               * Generate random `key` to force component re-render,
+               * temporary workaround for https://issues.redhat.com/browse/OCPADVISOR-59
+               */ key={Math.random()}
+            />
+          }
+        />
+        <Route
+          path="/workloads"
+          element={
+            workloadsEnabled ? (
+              <WorkloadsList
+                /**
+                 * Generate random `key` to force component re-render,
+                 * temporary workaround for https://issues.redhat.com/browse/OCPADVISOR-59
+                 */ key={Math.random()}
+              />
+            ) : (
+              <ErrorState />
+            )
+          }
+        />
+        <Route
+          path="/workloads/:workloadId"
+          element={
+            workloadsEnabled ? (
+              <Workload
+                /**
+                 * Generate random `key` to force component re-render,
+                 * temporary workaround for https://issues.redhat.com/browse/OCPADVISOR-59
+                 */ key={Math.random()}
+              />
+            ) : (
+              <ErrorState />
+            )
+          }
+        />
+        <Route
+          path="/"
+          element={<Navigate to={`${BASE_PATH}/recommendations`} replace />}
+        />
+        <Route
+          path="*"
+          element={
+            <EmptyState>
+              <EmptyStateBody>
+                <InvalidObject />
+              </EmptyStateBody>
+            </EmptyState>
+          }
+        />
+      </Routes>
+    </Suspense>
+  );
+};
