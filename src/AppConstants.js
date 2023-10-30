@@ -4,6 +4,8 @@ import intlHelper from '@redhat-cloud-services/frontend-components-translations/
 
 import messages from './Messages';
 import { fitContent, sortable } from '@patternfly/react-table';
+import { Tooltip } from '@patternfly/react-core';
+import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
 
 const cache = createIntlCache();
 const locale = navigator.language.slice(0, 2);
@@ -386,3 +388,41 @@ export const RISK_OF_CHANGE_DESC = {
   ),
   4: <span>The change will require a cluster-wide outage window.</span>,
 };
+
+export const WORKLOADS_LIST_COLUMNS = [
+  {
+    title: (
+      <Tooltip position="top" content={'Cluster Namespace'}>
+        <span className="pf-c-table__text">
+          Workloads &nbsp;
+          <OutlinedQuestionCircleIcon className="grey-icon" />
+        </span>
+      </Tooltip>
+    ),
+    transforms: [sortable],
+  },
+  {
+    title: 'Recommendations',
+    transforms: [sortable, fitContent],
+  },
+  {
+    title: 'Highest severity',
+    transforms: [sortable, fitContent],
+  },
+  {
+    title: 'Objects',
+    transforms: [sortable, fitContent],
+  },
+  {
+    title: 'Last seen',
+    transforms: [sortable, fitContent],
+  },
+];
+
+export const WORKLOADS_LIST_COLUMNS_KEYS = [
+  'workload',
+  'recommendations',
+  'highest_severity',
+  'objects',
+  'last_seen',
+];
