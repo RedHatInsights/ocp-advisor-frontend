@@ -44,11 +44,21 @@ export const CLUSTER_RULES_INITIAL_STATE = {
   text: '',
 };
 
+export const WORKLOADS_LIST_INITIAL_STATE = {
+  limit: 50,
+  offset: 0,
+  sortIndex: CLUSTERS_TABLE_CELL_LAST_SEEN,
+  sortDirection: 'desc',
+  text: '',
+  highest_severity: [],
+};
+
 const filtersInitialState = {
   affectedClustersState: AFFECTED_CLUSTERS_INITIAL_STATE,
   recsListState: RECS_LIST_INITIAL_STATE,
   clustersListState: CLUSTERS_LIST_INITIAL_STATE,
   clusterRulesState: CLUSTER_RULES_INITIAL_STATE,
+  workloadsListState: WORKLOADS_LIST_INITIAL_STATE,
 };
 
 export const resetFilters = (filters, initialState, updateFilters) => {
@@ -81,6 +91,10 @@ const filters = createSlice({
     updateClusterRulesFilters(state, action) {
       state.clusterRulesState = action.payload;
     },
+    //workloads table page
+    updateWorkloadsListFilters(state, action) {
+      state.workloadsListState = action.payload;
+    },
   },
 });
 
@@ -89,6 +103,7 @@ export const {
   updateRecsListFilters,
   updateClustersListFilters,
   updateClusterRulesFilters,
+  updateWorkloadsListFilters,
 } = filters.actions;
 
 export default filters.reducer;

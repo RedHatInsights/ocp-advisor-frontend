@@ -1,7 +1,4 @@
 import React, { useEffect } from 'react';
-import useFeatureFlag, {
-  WORKLOADS_ENABLE_FLAG,
-} from '../../Utilities/useFeatureFlag';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
 import {
   Table,
@@ -10,12 +7,17 @@ import {
   TableVariant,
 } from '@patternfly/react-table';
 import { PaginationVariant } from '@patternfly/react-core/dist/js/components/Pagination/Pagination';
-import { WORKLOADS_LIST_COLUMNS } from '../../AppConstants';
+import {
+  WORKLOADS_LIST_COLUMNS,
+  WORKLOADS_TABLE_FILTER_CATEGORIES,
+} from '../../AppConstants';
 import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat';
 import { Link } from 'react-router-dom';
 import { BASE_PATH } from '../../Routes';
 import { HighestSeverityBadge } from '../HighestSeverityBadge/HighestSeverityBadge';
 import { Pagination } from '@patternfly/react-core';
+import { conditionalFilterType } from '@redhat-cloud-services/frontend-components/ConditionalFilter/conditionalFilterConstants';
+import { useSelector } from 'react-redux';
 
 const workloadsData = [
   {
@@ -47,11 +49,8 @@ const workloadsData = [
 ];
 
 const WorkloadsListTable = () => {
-  const workloadsEnabled = useFeatureFlag(WORKLOADS_ENABLE_FLAG);
-  console.log(workloadsEnabled, 'FLAG');
-
   const workloads = workloadsData;
-
+  const filters = useSelector(({ filters }) => filters.workloadsListState);
   const [rows, setRows] = React.useState([]);
 
   useEffect(() => {
@@ -85,6 +84,40 @@ const WorkloadsListTable = () => {
     });
   };
 
+  const filterConfigItems = [
+    {
+      label: 'Cluster name',
+      filterValues: {
+        key: 'text-filter',
+        onChange: () => console.log('filter is changed'),
+        value: filters.text,
+        placeholder: 'Filter by cluster name',
+      },
+    },
+    {
+      label: 'Namespace name',
+      filterValues: {
+        key: 'text-filter',
+        onChange: () => console.log('filter is changed'),
+        value: filters.text,
+        placeholder: 'Filter by namespace name',
+      },
+    },
+    {
+      label: 'Highest severity',
+      type: conditionalFilterType.checkbox,
+      id: WORKLOADS_TABLE_FILTER_CATEGORIES.highest_severity.urlParam,
+      value: `checkbox-${WORKLOADS_TABLE_FILTER_CATEGORIES.highest_severity.urlParam}`,
+      filterValues: {
+        key: `${WORKLOADS_TABLE_FILTER_CATEGORIES.highest_severity.urlParam}-filter`,
+        onChange: () => console.log('filter is changed'),
+        value: filters.hits,
+        items: WORKLOADS_TABLE_FILTER_CATEGORIES.highest_severity.values,
+        placeholder: 'Filter by highest severity',
+      },
+    },
+  ];
+
   return (
     <div id="workloads-list-table">
       <PrimaryToolbar
@@ -97,6 +130,7 @@ const WorkloadsListTable = () => {
           isCompact: true,
           ouiaId: 'pager',
         }}
+        filterConfig={{ items: filterConfigItems }}
       />
       <Table
         aria-label="Table of workloads"

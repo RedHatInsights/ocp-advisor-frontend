@@ -426,3 +426,23 @@ export const WORKLOADS_LIST_COLUMNS_KEYS = [
   'objects',
   'last_seen',
 ];
+
+export const WORKLOADS_TABLE_CELL_NAME = 0;
+export const WORKLOADS_TABLE_CELL_RECOMMENDATIONS = 1;
+export const WORKLOADS_TABLE_SEVERITY = 2;
+export const WORKLOADS_TABLE_CELL_OBJECTS = 3;
+export const WORKLOADS_TABLE_CELL_LAST_SEEN = 4;
+
+export const WORKLOADS_TABLE_FILTER_CATEGORIES = {
+  highest_severity: {
+    type: 'checkbox',
+    title: 'Highest severity',
+    urlParam: 'highest_severity',
+    values: [
+      { label: 'Critical', text: 'Critical', value: 'critical' },
+      { label: 'Important', text: 'Important', value: 'important' },
+      { label: 'Moderate', text: 'Moderate', value: 'moderate' },
+      { label: 'Low', text: 'Low', value: 'low' },
+    ],
+  },
+};
