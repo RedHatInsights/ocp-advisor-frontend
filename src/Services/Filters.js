@@ -1,5 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { CLUSTERS_TABLE_CELL_LAST_SEEN } from '../AppConstants';
+import {
+  CLUSTERS_TABLE_CELL_LAST_SEEN,
+  WORKLOADS_TABLE_CELL_LAST_SEEN,
+} from '../AppConstants';
 
 // single recommendation page
 export const AFFECTED_CLUSTERS_INITIAL_STATE = {
@@ -47,9 +50,10 @@ export const CLUSTER_RULES_INITIAL_STATE = {
 export const WORKLOADS_TABLE_INITIAL_STATE = {
   limit: 50,
   offset: 0,
-  sortIndex: CLUSTERS_TABLE_CELL_LAST_SEEN,
+  sortIndex: WORKLOADS_TABLE_CELL_LAST_SEEN,
   sortDirection: 'desc',
-  text: '',
+  cluster_name: '',
+  namespace_name: '',
   highest_severity: [],
 };
 

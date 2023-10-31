@@ -139,6 +139,32 @@ const pruneFilters = (localFilters, filterCategories) => {
             ]
           : []),
       ];
+    } else if (key === 'namespace_name') {
+      return [
+        ...arr,
+        ...(item.length > 0
+          ? [
+              {
+                category: 'Namespace name',
+                chips: [{ name: item, value: item }],
+                urlParam: key,
+              },
+            ]
+          : []),
+      ];
+    } else if (key === 'cluster_name') {
+      return [
+        ...arr,
+        ...(item.length > 0
+          ? [
+              {
+                category: 'Cluster name',
+                chips: [{ name: item, value: item }],
+                urlParam: key,
+              },
+            ]
+          : []),
+      ];
     }
   }, []);
 };
@@ -153,9 +179,6 @@ export const buildFilterChips = (filters, categories) => {
   localFilters?.hits &&
     localFilters.hits.length === 0 &&
     delete localFilters.hits;
-  localFilters?.highest_severity &&
-    localFilters.highest_severity.length === 0 &&
-    delete localFilters.highest_severity;
   return pruneFilters(localFilters, categories);
 };
 

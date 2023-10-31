@@ -59,7 +59,6 @@ const WorkloadsListTable = () => {
   const dispatch = useDispatch();
   const workloads = workloadsData;
   const filters = useSelector(({ filters }) => filters.workloadsListState);
-  console.log(filters);
   const [rows, setRows] = React.useState([]);
   const updateFilters = (payload) =>
     dispatch(updateWorkloadsListFilters(payload));
@@ -99,20 +98,20 @@ const WorkloadsListTable = () => {
     {
       label: 'Cluster name',
       filterValues: {
-        key: 'text-filter',
+        key: 'cluster_name',
         onChange: (_event, value) =>
-          updateFilters({ ...filters, offset: 0, text: value }),
-        value: filters.text,
+          updateFilters({ ...filters, offset: 0, cluster_name: value }),
+        value: filters.cluster_name,
         placeholder: 'Filter by cluster name',
       },
     },
     {
       label: 'Namespace name',
       filterValues: {
-        key: 'text-filter',
+        key: 'namespace_name',
         onChange: (_event, value) =>
-          updateFilters({ ...filters, offset: 0, text: value }),
-        value: filters.text,
+          updateFilters({ ...filters, offset: 0, namespace_name: value }),
+        value: filters.namespace_name,
         placeholder: 'Filter by namespace name',
       },
     },
