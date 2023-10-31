@@ -59,6 +59,7 @@ const WorkloadsListTable = () => {
   const dispatch = useDispatch();
   const workloads = workloadsData;
   const filters = useSelector(({ filters }) => filters.workloadsListState);
+  console.log(filters);
   const [rows, setRows] = React.useState([]);
   const updateFilters = (payload) =>
     dispatch(updateWorkloadsListFilters(payload));
@@ -99,7 +100,8 @@ const WorkloadsListTable = () => {
       label: 'Cluster name',
       filterValues: {
         key: 'text-filter',
-        onChange: () => console.log('filter is changed'),
+        onChange: (_event, value) =>
+          updateFilters({ ...filters, offset: 0, text: value }),
         value: filters.text,
         placeholder: 'Filter by cluster name',
       },
@@ -108,7 +110,8 @@ const WorkloadsListTable = () => {
       label: 'Namespace name',
       filterValues: {
         key: 'text-filter',
-        onChange: () => console.log('filter is changed'),
+        onChange: (_event, value) =>
+          updateFilters({ ...filters, offset: 0, text: value }),
         value: filters.text,
         placeholder: 'Filter by namespace name',
       },
@@ -120,8 +123,9 @@ const WorkloadsListTable = () => {
       value: `checkbox-${WORKLOADS_TABLE_FILTER_CATEGORIES.highest_severity.urlParam}`,
       filterValues: {
         key: `${WORKLOADS_TABLE_FILTER_CATEGORIES.highest_severity.urlParam}-filter`,
-        onChange: () => console.log('filter is changed'),
-        value: filters.hits,
+        onChange: (_event, value) =>
+          updateFilters({ ...filters, offset: 0, highest_severity: value }),
+        value: filters.highest_severity,
         items: WORKLOADS_TABLE_FILTER_CATEGORIES.highest_severity.values,
         placeholder: 'Filter by highest severity',
       },

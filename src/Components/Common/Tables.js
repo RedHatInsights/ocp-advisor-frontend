@@ -153,6 +153,9 @@ export const buildFilterChips = (filters, categories) => {
   localFilters?.hits &&
     localFilters.hits.length === 0 &&
     delete localFilters.hits;
+  localFilters?.highest_severity &&
+    localFilters.highest_severity.length === 0 &&
+    delete localFilters.highest_severity;
   return pruneFilters(localFilters, categories);
 };
 
