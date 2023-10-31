@@ -44,7 +44,7 @@ export const CLUSTER_RULES_INITIAL_STATE = {
   text: '',
 };
 
-export const WORKLOADS_LIST_INITIAL_STATE = {
+export const WORKLOADS_TABLE_INITIAL_STATE = {
   limit: 50,
   offset: 0,
   sortIndex: CLUSTERS_TABLE_CELL_LAST_SEEN,
@@ -58,7 +58,7 @@ const filtersInitialState = {
   recsListState: RECS_LIST_INITIAL_STATE,
   clustersListState: CLUSTERS_LIST_INITIAL_STATE,
   clusterRulesState: CLUSTER_RULES_INITIAL_STATE,
-  workloadsListState: WORKLOADS_LIST_INITIAL_STATE,
+  workloadsListState: WORKLOADS_TABLE_INITIAL_STATE,
 };
 
 export const resetFilters = (filters, initialState, updateFilters) => {
