@@ -1,11 +1,18 @@
 /* eslint-disable no-unused-vars */
+import React from 'react';
 import _, { filter } from 'lodash';
+import { mount } from '@cypress/react';
 import workloads from '../../../cypress/fixtures/api/insights-results-aggregator/v2/workloads.json';
 import { WORKLOADS_LIST_COLUMNS } from '../../AppConstants';
 import { cumulativeCombinations } from '../../../cypress/utils/combine';
 import { TOTAL_RISK } from '../../../cypress/utils/globals';
 import { DEFAULT_ROW_COUNT } from '../../../cypress/utils/defaults';
 import { passFilterWorkloads } from '../Common/Tables';
+import { MemoryRouter } from 'react-router-dom';
+import { Intl } from '../../Utilities/intlHelper';
+import { Provider } from 'react-redux';
+import getStore from '../../Store';
+import { WorkloadsListTable } from './WorkloadsListTable';
 
 let values = _.cloneDeep(workloads);
 values.forEach(
@@ -121,5 +128,92 @@ describe('data', () => {
   });
   it('at least one namespace matches foo bar in the name of the namespace', () => {
     expect(applyFilters({ name: 'foo bar namespace' })).to.have.length.gt(1);
+  });
+});
+
+describe('workloads list "No workload recommendations" Empty state rendering', () => {
+  beforeEach(() => {
+    mount(
+      <MemoryRouter
+        initialEntries={['/openshift/insights/advisor/workloads']}
+        initialIndex={0}
+      >
+        <Intl>
+          <Provider store={getStore()}>
+            <WorkloadsListTable
+              query={{
+                isError: false,
+                isFetching: false,
+                isUninitialized: false,
+                isSuccess: true,
+                data: [],
+              }}
+            />
+          </Provider>
+        </Intl>
+      </MemoryRouter>
+    );
+  });
+
+  it('renders the Empty State component', () => {
+    cy.get('div[class=pf-c-empty-state__content]')
+      .should('have.length', 1)
+      .find('h5')
+      .should('have.text', 'No workload recommendations');
+    cy.get('div[class=pf-c-empty-state__body] p').should(
+      'have.text',
+      'There are no workload-related recommendations for your clusters. This page only shows workloads if there are recommendations available.'
+    );
+    cy.get('div[class=pf-c-empty-state__body] button').should(
+      'have.text',
+      'Return to previous page'
+    );
+    cy.get('div[id=workloads-list-table]').should('not.exist');
+  });
+});
+
+describe('workloads list "Workloads data unavailable" Empty state rendering', () => {
+  beforeEach(() => {
+    mount(
+      <MemoryRouter
+        initialEntries={['/openshift/insights/advisor/workloads']}
+        initialIndex={0}
+      >
+        <Intl>
+          <Provider store={getStore()}>
+            <WorkloadsListTable
+              query={{
+                isError: true,
+                error: { status: 404 },
+                isFetching: false,
+                isUninitialized: false,
+                isSuccess: false,
+                data: [],
+              }}
+            />
+          </Provider>
+        </Intl>
+      </MemoryRouter>
+    );
+  });
+
+  it('renders the Empty State component', () => {
+    cy.get('div[class=pf-c-empty-state__content]')
+      .should('have.length', 1)
+      .find('h5')
+      .should('have.text', 'Workloads data unavailable');
+    cy.get('div[class=pf-c-empty-state__body] p').should(
+      'have.text',
+      'Verify that your clusters are connected and sending data to Red Hat, and that the Deployment Validation Operator is installed and configured.'
+    );
+    cy.get('div[class=pf-c-empty-state__body] button').should(
+      'have.text',
+      'Return to previous page'
+    );
+    cy.get('div[class=pf-c-empty-state__body] a').should(
+      'have.text',
+      'View documentation'
+    );
+    cy.get('div[id=workloads-list-table]').should('not.exist');
   });
 });
