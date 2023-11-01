@@ -1,7 +1,4 @@
 import React, { useEffect } from 'react';
-import useFeatureFlag, {
-  WORKLOADS_ENABLE_FLAG,
-} from '../../Utilities/useFeatureFlag';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
 import {
   Table,
@@ -10,12 +7,24 @@ import {
   TableVariant,
 } from '@patternfly/react-table';
 import { PaginationVariant } from '@patternfly/react-core/dist/js/components/Pagination/Pagination';
-import { WORKLOADS_LIST_COLUMNS } from '../../AppConstants';
+import {
+  WORKLOADS_LIST_COLUMNS,
+  WORKLOADS_TABLE_FILTER_CATEGORIES,
+} from '../../AppConstants';
 import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat';
 import { Link } from 'react-router-dom';
 import { BASE_PATH } from '../../Routes';
 import { HighestSeverityBadge } from '../HighestSeverityBadge/HighestSeverityBadge';
 import { Pagination } from '@patternfly/react-core';
+import { conditionalFilterType } from '@redhat-cloud-services/frontend-components/ConditionalFilter/conditionalFilterConstants';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  WORKLOADS_TABLE_INITIAL_STATE,
+  resetFilters,
+  updateWorkloadsListFilters,
+} from '../../Services/Filters';
+import isEqual from 'lodash/isEqual';
+import { buildFilterChips } from '../Common/Tables';
 
 const workloadsData = [
   {
@@ -47,12 +56,12 @@ const workloadsData = [
 ];
 
 const WorkloadsListTable = () => {
-  const workloadsEnabled = useFeatureFlag(WORKLOADS_ENABLE_FLAG);
-  console.log(workloadsEnabled, 'FLAG');
-
+  const dispatch = useDispatch();
   const workloads = workloadsData;
-
+  const filters = useSelector(({ filters }) => filters.workloadsListState);
   const [rows, setRows] = React.useState([]);
+  const updateFilters = (payload) =>
+    dispatch(updateWorkloadsListFilters(payload));
 
   useEffect(() => {
     setRows(buildRows(workloads));
@@ -85,6 +94,73 @@ const WorkloadsListTable = () => {
     });
   };
 
+  const filterConfigItems = [
+    {
+      label: 'Cluster name',
+      filterValues: {
+        key: 'cluster_name',
+        onChange: (_event, value) =>
+          updateFilters({ ...filters, offset: 0, cluster_name: value }),
+        value: filters.cluster_name,
+        placeholder: 'Filter by cluster name',
+      },
+    },
+    {
+      label: 'Namespace name',
+      filterValues: {
+        key: 'namespace_name',
+        onChange: (_event, value) =>
+          updateFilters({ ...filters, offset: 0, namespace_name: value }),
+        value: filters.namespace_name,
+        placeholder: 'Filter by namespace name',
+      },
+    },
+    {
+      label: 'Highest severity',
+      type: conditionalFilterType.checkbox,
+      id: WORKLOADS_TABLE_FILTER_CATEGORIES.highest_severity.urlParam,
+      value: `checkbox-${WORKLOADS_TABLE_FILTER_CATEGORIES.highest_severity.urlParam}`,
+      filterValues: {
+        key: `${WORKLOADS_TABLE_FILTER_CATEGORIES.highest_severity.urlParam}-filter`,
+        onChange: (_event, value) =>
+          updateFilters({ ...filters, offset: 0, highest_severity: value }),
+        value: filters.highest_severity,
+        items: WORKLOADS_TABLE_FILTER_CATEGORIES.highest_severity.values,
+        placeholder: 'Filter by highest severity',
+      },
+    },
+  ];
+
+  const activeFiltersConfig = {
+    showDeleteButton: true,
+    deleteTitle: 'Reset filters',
+    filters: buildFilterChips(filters, WORKLOADS_TABLE_FILTER_CATEGORIES),
+    onDelete: (_event, itemsToRemove, isAll) => {
+      if (isAll) {
+        if (isEqual(filters, WORKLOADS_TABLE_INITIAL_STATE)) {
+          console.log('here should be a refetch!');
+        } else {
+          resetFilters(filters, WORKLOADS_TABLE_INITIAL_STATE, updateFilters);
+        }
+      } else {
+        itemsToRemove.map((item) => {
+          const newFilter = {
+            [item.urlParam]: Array.isArray(filters[item.urlParam])
+              ? filters[item.urlParam].filter(
+                  (value) => String(value) !== String(item.chips[0].value)
+                )
+              : '',
+          };
+          newFilter[item.urlParam].length > 0
+            ? updateFilters({ ...filters, ...newFilter })
+            : console.log(
+                'here we should remove the filter parameter from a URL!'
+              );
+        });
+      }
+    },
+  };
+
   return (
     <div id="workloads-list-table">
       <PrimaryToolbar
@@ -92,11 +168,13 @@ const WorkloadsListTable = () => {
           itemCount: 2,
           page: 1,
           perPage: 20,
-          onSetPage: () => {},
-          onPerPageSelect: () => {},
+          onSetPage: () => console.log('here should be a pagination'),
+          onPerPageSelect: () => console.log('here should be a pagination'),
           isCompact: true,
           ouiaId: 'pager',
         }}
+        filterConfig={{ items: filterConfigItems }}
+        activeFiltersConfig={activeFiltersConfig}
       />
       <Table
         aria-label="Table of workloads"

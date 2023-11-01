@@ -139,6 +139,32 @@ const pruneFilters = (localFilters, filterCategories) => {
             ]
           : []),
       ];
+    } else if (key === 'namespace_name') {
+      return [
+        ...arr,
+        ...(item.length > 0
+          ? [
+              {
+                category: 'Namespace name',
+                chips: [{ name: item, value: item }],
+                urlParam: key,
+              },
+            ]
+          : []),
+      ];
+    } else if (key === 'cluster_name') {
+      return [
+        ...arr,
+        ...(item.length > 0
+          ? [
+              {
+                category: 'Cluster name',
+                chips: [{ name: item, value: item }],
+                urlParam: key,
+              },
+            ]
+          : []),
+      ];
     }
   }, []);
 };
