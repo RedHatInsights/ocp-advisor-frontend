@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
 import {
@@ -24,7 +24,11 @@ import {
   updateWorkloadsListFilters,
 } from '../../Services/Filters';
 import isEqual from 'lodash/isEqual';
-import { buildFilterChips } from '../Common/Tables';
+import {
+  addFilterParam,
+  buildFilterChips,
+  passFilterWorkloads,
+} from '../Common/Tables';
 import { ErrorState, NoMatchingClusters } from '../MessageState/EmptyStates';
 import Loading from '../Loading/Loading';
 import mockdata from '../../../cypress/fixtures/api/insights-results-aggregator/v2/workloads.json';
@@ -36,23 +40,44 @@ const WorkloadsListTable = ({
   const dispatch = useDispatch();
   const filters = useSelector(({ filters }) => filters.workloadsListState);
   //const workloads = data?.workloads || [];
+  //to check all types of filters use the mockdata json
   const workloads = mockdata;
 
-  const [rows, setRows] = React.useState([]);
+  const [rows, setRows] = useState([]);
+  const [filteredRows, setFilteredRows] = useState([]);
+  const [rowsFiltered, setRowsFiltered] = useState(false);
   const updateFilters = (payload) =>
     dispatch(updateWorkloadsListFilters(payload));
 
-  const loadingState = isUninitialized || isFetching;
+  const loadingState = isUninitialized || isFetching || !rowsFiltered;
   const errorState = isError;
   const noMatch = rows.length === 0;
   const successState = isSuccess;
 
   useEffect(() => {
-    setRows(buildRows(workloads));
-  }, [data]);
+    setRows(buildFilteredRows(workloads));
+    //should be refactored to smth like setDisplayedRows(buildDisplayedRows(filteredRows));
+    //when we add pagination
+    setRowsFiltered(true);
+  }, [data, filteredRows]);
 
-  const buildRows = (items) => {
-    return items.map((item, index) => {
+  useEffect(() => {
+    setFilteredRows(buildFilteredRows(workloads));
+  }, [
+    filters.namespace_name,
+    filters.cluster_name,
+    filters.highest_severity,
+    filters.sortDirection,
+    filters.sortIndex,
+  ]);
+
+  const buildFilteredRows = (items) => {
+    setRowsFiltered(false);
+    const filtered = items.filter((workloadData) => {
+      return passFilterWorkloads(workloadData, filters);
+    });
+
+    return filtered.map((item, index) => {
       return {
         entity: item,
         cells: [
@@ -114,7 +139,7 @@ const WorkloadsListTable = ({
       filterValues: {
         key: `${WORKLOADS_TABLE_FILTER_CATEGORIES.highest_severity.urlParam}-filter`,
         onChange: (_event, value) =>
-          updateFilters({ ...filters, offset: 0, highest_severity: value }),
+          addFilterParam(filters, updateFilters, 'highest_severity', value),
         value: filters.highest_severity,
         items: WORKLOADS_TABLE_FILTER_CATEGORIES.highest_severity.values,
         placeholder: 'Filter by highest severity',

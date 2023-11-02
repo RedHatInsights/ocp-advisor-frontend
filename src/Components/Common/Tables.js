@@ -275,3 +275,68 @@ export const addFilterParam = (currentFilters, updateFilters, param, values) =>
         ...{ [param]: values },
       })
     : removeFilterParam(currentFilters, updateFilters, param);
+
+export const severityTypeToText = (value) => {
+  value = parseInt(value);
+  if (value === 1) {
+    return 'Low';
+  } else if (value === 2) {
+    return 'Moderate';
+  } else if (value === 3) {
+    return 'Important';
+  } else {
+    return 'Critical';
+  }
+};
+
+export const remappingSeverity = (obj) => {
+  const mapping = {
+    1: 'low',
+    2: 'moderate',
+    3: 'important',
+    4: 'critical',
+  };
+
+  const updatedObj = {};
+
+  for (const key in obj) {
+    if (key in mapping) {
+      updatedObj[mapping[key]] = obj[key];
+    }
+  }
+
+  return updatedObj;
+};
+
+function hasAnyValueGreaterThanZero(obj, stringsToCheck) {
+  for (const key of stringsToCheck) {
+    if (obj[key] > 0) {
+      return true; // Return true if any matching string has a value greater than 0
+    }
+  }
+}
+
+export const passFilterWorkloads = (workloads, filters) => {
+  const severityRemapped = remappingSeverity(
+    workloads.metadata.hits_by_severity
+  );
+  return Object.entries(filters).every(([filterKey, filterValue]) => {
+    switch (filterKey) {
+      case 'cluster_name':
+        return workloads.cluster.display_name
+          .toLowerCase()
+          .includes(filterValue.toLowerCase());
+      case 'namespace_name':
+        return workloads.namespace.name
+          .toLowerCase()
+          .includes(filterValue.toLowerCase());
+      case 'highest_severity':
+        return (
+          filterValue.length === 0 ||
+          hasAnyValueGreaterThanZero(severityRemapped, filters.highest_severity)
+        );
+      default:
+        return true;
+    }
+  });
+};
