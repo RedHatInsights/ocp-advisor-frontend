@@ -1,4 +1,8 @@
 import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
+import useFeatureFlag, {
+  WORKLOADS_ENABLE_FLAG,
+} from '../../Utilities/useFeatureFlag';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
 import {
   Table,
@@ -25,47 +29,30 @@ import {
 } from '../../Services/Filters';
 import isEqual from 'lodash/isEqual';
 import { buildFilterChips } from '../Common/Tables';
+import { ErrorState, NoMatchingClusters } from '../MessageState/EmptyStates';
+import Loading from '../Loading/Loading';
 
-const workloadsData = [
-  {
-    workload_id: 'asd4134asd-1234241',
-    workload_name: 'Workload 1',
-    risks: {
-      1: 2,
-      2: 0,
-      3: 3,
-      4: 1,
-    },
-    recommendations: 4,
-    objects: 14,
-    lastSeen: '2023-10-30T09:55:52Z',
-  },
-  {
-    workload_id: 'worklooaaaasd-2',
-    workload_name: 'Workload 2',
-    risks: {
-      1: 1,
-      2: 3,
-      3: 2,
-      4: 0,
-    },
-    recommendations: 5,
-    objects: 3,
-    lastSeen: '2023-10-30T05:55:52Z',
-  },
-];
-
-const WorkloadsListTable = () => {
+const WorkloadsListTable = ({
+  query: { isError, isUninitialized, isFetching, isSuccess, data },
+}) => {
   const dispatch = useDispatch();
-  const workloads = workloadsData;
+  const workloadsEnabled = useFeatureFlag(WORKLOADS_ENABLE_FLAG);
   const filters = useSelector(({ filters }) => filters.workloadsListState);
+  console.log(workloadsEnabled, 'FLAG');
+  const workloads = data?.workloads || [];
+
   const [rows, setRows] = React.useState([]);
   const updateFilters = (payload) =>
     dispatch(updateWorkloadsListFilters(payload));
 
+  const loadingState = isUninitialized || isFetching;
+  const errorState = isError;
+  const noMatch = rows.length === 0;
+  const successState = isSuccess;
+
   useEffect(() => {
     setRows(buildRows(workloads));
-  }, [workloads]);
+  }, [data]);
 
   const buildRows = (items) => {
     return items.map((item, index) => {
@@ -73,19 +60,25 @@ const WorkloadsListTable = () => {
         entity: item,
         cells: [
           <span key={index}>
-            <Link to={`${BASE_PATH}/workloads/${item.workload_id}`}>
-              {item.workload_name || item.workload_id}
+            <Link
+              to={`${BASE_PATH}/workloads/${item.cluster.uuid}/${item.namespace.uuid}`}
+            >
+              <p key={`${index}-cluster`}>{item.cluster.display_name}</p>
+              <p key={`${index}-namespace`}>{item.namespace.name}</p>
             </Link>
           </span>,
-          item.recommendations,
+          item.metadata.recommendations,
           <span key={index}>
-            <HighestSeverityBadge severities={item.risks} />
+            <HighestSeverityBadge
+              highestSeverity={item.metadata.highest_severity}
+              severities={item.metadata.hits_by_severity}
+            />
           </span>,
-          item.objects,
-          <span key={Math.random()}>
+          item.metadata.objects,
+          <span key={index}>
             <DateFormat
               extraTitle="Last seen: "
-              date={item.lastSeen}
+              date={item.metadata.last_checked_at}
               variant="relative"
             />
           </span>,
@@ -165,7 +158,7 @@ const WorkloadsListTable = () => {
     <div id="workloads-list-table">
       <PrimaryToolbar
         pagination={{
-          itemCount: 2,
+          itemCount: data?.workloads.length || 0,
           page: 1,
           perPage: 20,
           onSetPage: () => console.log('here should be a pagination'),
@@ -181,7 +174,33 @@ const WorkloadsListTable = () => {
         ouiaId="workloads"
         variant={TableVariant.compact}
         cells={WORKLOADS_LIST_COLUMNS}
-        rows={rows}
+        rows={
+          errorState || loadingState || noMatch ? (
+            [
+              {
+                fullWidth: true,
+                cells: [
+                  {
+                    props: {
+                      colSpan: WORKLOADS_LIST_COLUMNS.length + 1,
+                    },
+                    title: errorState ? (
+                      <ErrorState />
+                    ) : loadingState ? (
+                      <Loading />
+                    ) : (
+                      <NoMatchingClusters />
+                    ),
+                  },
+                ],
+              },
+            ]
+          ) : successState ? (
+            rows
+          ) : (
+            <ErrorState />
+          )
+        }
         isStickyHeader
       >
         <TableHeader />
@@ -189,7 +208,7 @@ const WorkloadsListTable = () => {
       </Table>
       <Pagination
         ouiaId="pager"
-        itemCount={2}
+        itemCount={data?.workloads.length || 0}
         page={1}
         perPage={20}
         onSetPage={() => {}}
@@ -199,6 +218,10 @@ const WorkloadsListTable = () => {
       />
     </div>
   );
+};
+
+WorkloadsListTable.propTypes = {
+  query: PropTypes.object.isRequired,
 };
 
 export { WorkloadsListTable };

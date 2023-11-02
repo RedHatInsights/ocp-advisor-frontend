@@ -40,6 +40,13 @@ export const SmartProxyApi = createApi({
     getUpdateRisks: builder.query({
       query: ({ id }) => `v2/cluster/${id}/upgrade-risks-prediction`,
     }),
+    getWorkloads: builder.query({
+      query: () => `v2/namespaces/dvo`,
+    }),
+    getWorkloadById: builder.query({
+      query: ({ namespace_uuid, cluster_uuid }) =>
+        `v2/namespaces/dvo/${namespace_uuid}/cluster/${cluster_uuid}`,
+    }),
   }),
 });
 
@@ -58,4 +65,6 @@ export const {
   useGetClustersQuery,
   useGetClusterInfoQuery,
   useGetUpdateRisksQuery,
+  useGetWorkloadsQuery,
+  useLazyGetWorkloadByIdQuery,
 } = SmartProxyApi;
