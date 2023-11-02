@@ -28,6 +28,7 @@ import {
   addFilterParam,
   buildFilterChips,
   passFilterWorkloads,
+  removeFilterParam as _removeFilterParam,
 } from '../Common/Tables';
 import { ErrorState, NoMatchingClusters } from '../MessageState/EmptyStates';
 import Loading from '../Loading/Loading';
@@ -35,7 +36,7 @@ import mockdata from '../../../cypress/fixtures/api/insights-results-aggregator/
 import ShieldSet from '../ShieldSet';
 
 const WorkloadsListTable = ({
-  query: { isError, isUninitialized, isFetching, isSuccess, data },
+  query: { isError, isUninitialized, isFetching, isSuccess, data, refetch },
 }) => {
   const dispatch = useDispatch();
   const filters = useSelector(({ filters }) => filters.workloadsListState);
@@ -48,6 +49,8 @@ const WorkloadsListTable = ({
   const [rowsFiltered, setRowsFiltered] = useState(false);
   const updateFilters = (payload) =>
     dispatch(updateWorkloadsListFilters(payload));
+  const removeFilterParam = (param) =>
+    _removeFilterParam(filters, updateFilters, param);
 
   const loadingState = isUninitialized || isFetching || !rowsFiltered;
   const errorState = isError;
@@ -154,7 +157,7 @@ const WorkloadsListTable = ({
     onDelete: (_event, itemsToRemove, isAll) => {
       if (isAll) {
         if (isEqual(filters, WORKLOADS_TABLE_INITIAL_STATE)) {
-          console.log('here should be a refetch!');
+          refetch();
         } else {
           resetFilters(filters, WORKLOADS_TABLE_INITIAL_STATE, updateFilters);
         }
@@ -169,9 +172,7 @@ const WorkloadsListTable = ({
           };
           newFilter[item.urlParam].length > 0
             ? updateFilters({ ...filters, ...newFilter })
-            : console.log(
-                'here we should remove the filter parameter from a URL!'
-              );
+            : removeFilterParam(item.urlParam);
         });
       }
     },
