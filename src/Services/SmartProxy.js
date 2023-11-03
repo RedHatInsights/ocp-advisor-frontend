@@ -44,8 +44,8 @@ export const SmartProxyApi = createApi({
       query: () => `v2/namespaces/dvo`,
     }),
     getWorkloadById: builder.query({
-      query: ({ namespace_uuid, cluster_uuid }) =>
-        `v2/namespaces/dvo/${namespace_uuid}/cluster/${cluster_uuid}`,
+      query: ({ namespaceId, clusterId }) =>
+        `v2/namespaces/dvo/${namespaceId}/cluster/${clusterId}`,
     }),
   }),
 });
@@ -66,5 +66,5 @@ export const {
   useGetClusterInfoQuery,
   useGetUpdateRisksQuery,
   useGetWorkloadsQuery,
-  useLazyGetWorkloadByIdQuery,
+  useGetWorkloadByIdQuery,
 } = SmartProxyApi;
