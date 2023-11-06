@@ -445,4 +445,15 @@ export const WORKLOADS_TABLE_FILTER_CATEGORIES = {
       { label: 'Low', text: 'Low', value: 'low' },
     ],
   },
+  general_severity: {
+    type: 'checkbox',
+    title: 'General severity',
+    urlParam: 'general_severity',
+    values: [
+      { label: 'Critical', text: 'Critical', value: 'critical' },
+      { label: 'Important', text: 'Important', value: 'important' },
+      { label: 'Moderate', text: 'Moderate', value: 'moderate' },
+      { label: 'Low', text: 'Low', value: 'low' },
+    ],
+  },
 };

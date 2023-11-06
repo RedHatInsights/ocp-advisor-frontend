@@ -289,22 +289,24 @@ export const severityTypeToText = (value) => {
   }
 };
 
-export const remappingSeverity = (obj) => {
+export const remappingSeverity = (obj, mode) => {
   const mapping = {
     1: 'low',
     2: 'moderate',
     3: 'important',
     4: 'critical',
   };
+  let updatedObj = {};
 
-  const updatedObj = {};
-
-  for (const key in obj) {
-    if (key in mapping) {
-      updatedObj[mapping[key]] = obj[key];
+  if (mode === 'general') {
+    for (const key in obj) {
+      if (key in mapping) {
+        updatedObj[mapping[key]] = obj[key];
+      }
     }
+  } else {
+    updatedObj = mapping[obj];
   }
-
   return updatedObj;
 };
 
@@ -317,8 +319,13 @@ function hasAnyValueGreaterThanZero(obj, stringsToCheck) {
 }
 
 export const passFilterWorkloads = (workloads, filters) => {
-  const severityRemapped = remappingSeverity(
-    workloads.metadata.hits_by_severity
+  const generalSeverityRemapped = remappingSeverity(
+    workloads.metadata.hits_by_severity,
+    'general'
+  );
+  const highestSeverityRemapped = remappingSeverity(
+    workloads.metadata.highest_severity,
+    'highest'
   );
   return Object.entries(filters).every(([filterKey, filterValue]) => {
     switch (filterKey) {
@@ -330,10 +337,18 @@ export const passFilterWorkloads = (workloads, filters) => {
         return workloads.namespace.name
           .toLowerCase()
           .includes(filterValue.toLowerCase());
+      case 'general_severity':
+        return (
+          filterValue.length === 0 ||
+          hasAnyValueGreaterThanZero(
+            generalSeverityRemapped,
+            filters.general_severity
+          )
+        );
       case 'highest_severity':
         return (
           filterValue.length === 0 ||
-          hasAnyValueGreaterThanZero(severityRemapped, filters.highest_severity)
+          filterValue.includes(highestSeverityRemapped)
         );
       default:
         return true;

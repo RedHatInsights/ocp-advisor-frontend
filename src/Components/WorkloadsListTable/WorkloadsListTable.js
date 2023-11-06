@@ -47,6 +47,9 @@ const WorkloadsListTable = ({
   const [rows, setRows] = useState([]);
   const [filteredRows, setFilteredRows] = useState([]);
   const [rowsFiltered, setRowsFiltered] = useState(false);
+  const [filtersApplied] = useState(
+    filters === WORKLOADS_TABLE_INITIAL_STATE ? false : true
+  );
   const updateFilters = (payload) =>
     dispatch(updateWorkloadsListFilters(payload));
   const removeFilterParam = (param) =>
@@ -69,6 +72,7 @@ const WorkloadsListTable = ({
   }, [
     filters.namespace_name,
     filters.cluster_name,
+    filters.general_severity,
     filters.highest_severity,
     filters.sortDirection,
     filters.sortIndex,
@@ -148,10 +152,24 @@ const WorkloadsListTable = ({
         placeholder: 'Filter by highest severity',
       },
     },
+    {
+      label: 'General severity',
+      type: conditionalFilterType.checkbox,
+      id: WORKLOADS_TABLE_FILTER_CATEGORIES.general_severity.urlParam,
+      value: `checkbox-${WORKLOADS_TABLE_FILTER_CATEGORIES.general_severity.urlParam}`,
+      filterValues: {
+        key: `${WORKLOADS_TABLE_FILTER_CATEGORIES.general_severity.urlParam}-filter`,
+        onChange: (_event, value) =>
+          addFilterParam(filters, updateFilters, 'general_severity', value),
+        value: filters.general_severity,
+        items: WORKLOADS_TABLE_FILTER_CATEGORIES.general_severity.values,
+        placeholder: 'Filter by general severity',
+      },
+    },
   ];
 
   const activeFiltersConfig = {
-    showDeleteButton: true,
+    showDeleteButton: filtersApplied ? true : false,
     deleteTitle: 'Reset filters',
     filters: buildFilterChips(filters, WORKLOADS_TABLE_FILTER_CATEGORIES),
     onDelete: (_event, itemsToRemove, isAll) => {
@@ -191,7 +209,9 @@ const WorkloadsListTable = ({
           ouiaId: 'pager',
         }}
         filterConfig={{ items: filterConfigItems }}
-        activeFiltersConfig={activeFiltersConfig}
+        activeFiltersConfig={
+          isError ? { showDeleteButton: false } : activeFiltersConfig
+        }
       />
       <Table
         aria-label="Table of workloads"
