@@ -20,3 +20,24 @@
 .grey-icon {
     color: var(--pf-global--Color--200);
 }
+
+.nowrap {
+    white-space: nowrap;
+}
+
+.shield-set {
+    span {
+        vertical-align: 2px;
+        margin-left: 4px;
+        margin-right: 16px;
+    }
+}
+
+.disabled-shield {
+    text-decoration: none;
+    cursor: default;
+
+    span {
+        color: var(--pf-global--disabled-color--100);
+    }
+}

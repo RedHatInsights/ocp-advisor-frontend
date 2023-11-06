@@ -1,8 +1,5 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import useFeatureFlag, {
-  WORKLOADS_ENABLE_FLAG,
-} from '../../Utilities/useFeatureFlag';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
 import {
   Table,
@@ -18,7 +15,6 @@ import {
 import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat';
 import { Link } from 'react-router-dom';
 import { BASE_PATH } from '../../Routes';
-import { HighestSeverityBadge } from '../HighestSeverityBadge/HighestSeverityBadge';
 import { Pagination } from '@patternfly/react-core';
 import { conditionalFilterType } from '@redhat-cloud-services/frontend-components/ConditionalFilter/conditionalFilterConstants';
 import { useDispatch, useSelector } from 'react-redux';
@@ -31,15 +27,16 @@ import isEqual from 'lodash/isEqual';
 import { buildFilterChips } from '../Common/Tables';
 import { ErrorState, NoMatchingClusters } from '../MessageState/EmptyStates';
 import Loading from '../Loading/Loading';
+import mockdata from '../../../cypress/fixtures/api/insights-results-aggregator/v2/workloads.json';
+import ShieldSet from '../ShieldSet';
 
 const WorkloadsListTable = ({
   query: { isError, isUninitialized, isFetching, isSuccess, data },
 }) => {
   const dispatch = useDispatch();
-  const workloadsEnabled = useFeatureFlag(WORKLOADS_ENABLE_FLAG);
   const filters = useSelector(({ filters }) => filters.workloadsListState);
-  console.log(workloadsEnabled, 'FLAG');
-  const workloads = data?.workloads || [];
+  //const workloads = data?.workloads || [];
+  const workloads = mockdata;
 
   const [rows, setRows] = React.useState([]);
   const updateFilters = (payload) =>
@@ -69,10 +66,11 @@ const WorkloadsListTable = ({
           </span>,
           item.metadata.recommendations,
           <span key={index}>
-            <HighestSeverityBadge
+            <ShieldSet hits_by_severity={item.metadata.hits_by_severity} />
+            {/* <HighestSeverityBadge
               highestSeverity={item.metadata.highest_severity}
               severities={item.metadata.hits_by_severity}
-            />
+            /> */}
           </span>,
           item.metadata.objects,
           <span key={index}>
