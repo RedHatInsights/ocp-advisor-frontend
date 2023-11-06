@@ -110,7 +110,7 @@ export const AppRoutes = () => {
           }
         />
         <Route
-          path="/workloads/:workloadId"
+          path="/workloads/:clusterId/:namespaceId"
           element={
             workloadsEnabled ? (
               <Workload
