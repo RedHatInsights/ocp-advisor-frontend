@@ -99,10 +99,6 @@ const WorkloadsListTable = ({
           item.metadata.recommendations,
           <span key={index}>
             <ShieldSet hits_by_severity={item.metadata.hits_by_severity} />
-            {/* <HighestSeverityBadge
-              highestSeverity={item.metadata.highest_severity}
-              severities={item.metadata.hits_by_severity}
-            /> */}
           </span>,
           item.metadata.objects,
           <span key={index}>

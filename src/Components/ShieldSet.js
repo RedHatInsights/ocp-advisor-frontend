@@ -8,7 +8,8 @@ import { SEVERITY_OPTIONS, remappingSeverity } from '../Utilities/Workloads';
 const ShieldSet = (hits_by_severity) => {
   const DISABLED_COLOR = 'var(--pf-global--disabled-color--200)';
   const severitiesRemapped = remappingSeverity(
-    hits_by_severity.hits_by_severity
+    hits_by_severity.hits_by_severity,
+    'label'
   );
   return (
     <div className="shield-set">
