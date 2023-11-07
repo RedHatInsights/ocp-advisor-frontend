@@ -3,7 +3,7 @@ import { createIntl, createIntlCache } from 'react-intl';
 import intlHelper from '@redhat-cloud-services/frontend-components-translations/intlHelper';
 
 import messages from './Messages';
-import { fitContent, sortable } from '@patternfly/react-table';
+import { cellWidth, fitContent, sortable } from '@patternfly/react-table';
 import { Tooltip } from '@patternfly/react-core';
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
 
@@ -399,15 +399,15 @@ export const WORKLOADS_LIST_COLUMNS = [
         </span>
       </Tooltip>
     ),
-    transforms: [sortable],
+    transforms: [sortable, cellWidth(50)],
   },
   {
     title: 'Recommendations',
-    transforms: [sortable, fitContent],
+    transforms: [sortable, cellWidth(15)],
   },
   {
     title: 'Highest severity',
-    transforms: [sortable, fitContent],
+    transforms: [sortable, cellWidth(15)],
   },
   {
     title: 'Objects',
