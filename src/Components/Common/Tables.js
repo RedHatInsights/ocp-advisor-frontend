@@ -285,10 +285,6 @@ export const passFilterWorkloads = (workloads, filters) => {
     workloads.metadata.hits_by_severity,
     'general'
   );
-  const highestSeverityRemapped = remappingSeverity(
-    workloads.metadata.highest_severity,
-    'highest'
-  );
   return Object.entries(filters).every(([filterKey, filterValue]) => {
     switch (filterKey) {
       case 'cluster_name':
@@ -306,11 +302,6 @@ export const passFilterWorkloads = (workloads, filters) => {
             generalSeverityRemapped,
             filters.general_severity
           )
-        );
-      case 'highest_severity':
-        return (
-          filterValue.length === 0 ||
-          filterValue.includes(highestSeverityRemapped)
         );
       default:
         return true;

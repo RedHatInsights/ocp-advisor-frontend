@@ -55,7 +55,6 @@ export const WORKLOADS_TABLE_INITIAL_STATE = {
   cluster_name: '',
   namespace_name: '',
   general_severity: [],
-  highest_severity: [],
 };
 
 const filtersInitialState = {

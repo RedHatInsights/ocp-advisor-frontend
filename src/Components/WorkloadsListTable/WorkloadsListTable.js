@@ -135,21 +135,7 @@ const WorkloadsListTable = ({
       },
     },
     {
-      label: 'Highest severity',
-      type: conditionalFilterType.checkbox,
-      id: WORKLOADS_TABLE_FILTER_CATEGORIES.highest_severity.urlParam,
-      value: `checkbox-${WORKLOADS_TABLE_FILTER_CATEGORIES.highest_severity.urlParam}`,
-      filterValues: {
-        key: `${WORKLOADS_TABLE_FILTER_CATEGORIES.highest_severity.urlParam}-filter`,
-        onChange: (_event, value) =>
-          addFilterParam(filters, updateFilters, 'highest_severity', value),
-        value: filters.highest_severity,
-        items: WORKLOADS_TABLE_FILTER_CATEGORIES.highest_severity.values,
-        placeholder: 'Filter by highest severity',
-      },
-    },
-    {
-      label: 'General severity',
+      label: 'Severity',
       type: conditionalFilterType.checkbox,
       id: WORKLOADS_TABLE_FILTER_CATEGORIES.general_severity.urlParam,
       value: `checkbox-${WORKLOADS_TABLE_FILTER_CATEGORIES.general_severity.urlParam}`,
@@ -159,7 +145,7 @@ const WorkloadsListTable = ({
           addFilterParam(filters, updateFilters, 'general_severity', value),
         value: filters.general_severity,
         items: WORKLOADS_TABLE_FILTER_CATEGORIES.general_severity.values,
-        placeholder: 'Filter by general severity',
+        placeholder: 'Filter by severity',
       },
     },
   ];
