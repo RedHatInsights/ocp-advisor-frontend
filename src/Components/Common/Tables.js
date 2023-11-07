@@ -7,6 +7,10 @@ import {
   FILTER_CATEGORIES,
   RULE_CATEGORIES,
 } from '../../AppConstants';
+import {
+  hasAnyValueGreaterThanZero,
+  remappingSeverity,
+} from '../../Utilities/Workloads';
 
 export const passFilters = (rule, filters) =>
   Object.entries(filters).every(([filterKey, filterValue]) => {
@@ -275,3 +279,32 @@ export const addFilterParam = (currentFilters, updateFilters, param, values) =>
         ...{ [param]: values },
       })
     : removeFilterParam(currentFilters, updateFilters, param);
+
+export const passFilterWorkloads = (workloads, filters) => {
+  const generalSeverityRemapped = remappingSeverity(
+    workloads.metadata.hits_by_severity,
+    'general'
+  );
+  return Object.entries(filters).every(([filterKey, filterValue]) => {
+    switch (filterKey) {
+      case 'cluster_name':
+        return workloads.cluster.display_name
+          .toLowerCase()
+          .includes(filterValue.toLowerCase());
+      case 'namespace_name':
+        return workloads.namespace.name
+          .toLowerCase()
+          .includes(filterValue.toLowerCase());
+      case 'general_severity':
+        return (
+          filterValue.length === 0 ||
+          hasAnyValueGreaterThanZero(
+            generalSeverityRemapped,
+            filters.general_severity
+          )
+        );
+      default:
+        return true;
+    }
+  });
+};

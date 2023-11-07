@@ -434,10 +434,10 @@ export const WORKLOADS_TABLE_CELL_OBJECTS = 3;
 export const WORKLOADS_TABLE_CELL_LAST_SEEN = 4;
 
 export const WORKLOADS_TABLE_FILTER_CATEGORIES = {
-  highest_severity: {
+  general_severity: {
     type: 'checkbox',
-    title: 'Highest severity',
-    urlParam: 'highest_severity',
+    title: 'General severity',
+    urlParam: 'general_severity',
     values: [
       { label: 'Critical', text: 'Critical', value: 'critical' },
       { label: 'Important', text: 'Important', value: 'important' },

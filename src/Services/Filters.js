@@ -54,7 +54,7 @@ export const WORKLOADS_TABLE_INITIAL_STATE = {
   sortDirection: 'desc',
   cluster_name: '',
   namespace_name: '',
-  highest_severity: [],
+  general_severity: [],
 };
 
 const filtersInitialState = {

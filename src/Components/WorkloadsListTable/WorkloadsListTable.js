@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
 import {
@@ -24,35 +24,67 @@ import {
   updateWorkloadsListFilters,
 } from '../../Services/Filters';
 import isEqual from 'lodash/isEqual';
-import { buildFilterChips } from '../Common/Tables';
+import {
+  addFilterParam,
+  buildFilterChips,
+  passFilterWorkloads,
+  removeFilterParam as _removeFilterParam,
+} from '../Common/Tables';
 import { ErrorState, NoMatchingClusters } from '../MessageState/EmptyStates';
 import Loading from '../Loading/Loading';
 import mockdata from '../../../cypress/fixtures/api/insights-results-aggregator/v2/workloads.json';
 import ShieldSet from '../ShieldSet';
+import { noFiltersApplied } from '../../Utilities/Workloads';
 
 const WorkloadsListTable = ({
-  query: { isError, isUninitialized, isFetching, isSuccess, data },
+  query: { isError, isUninitialized, isFetching, isSuccess, data, refetch },
 }) => {
   const dispatch = useDispatch();
   const filters = useSelector(({ filters }) => filters.workloadsListState);
   //const workloads = data?.workloads || [];
+  //to check all types of filters use the mockdata json
   const workloads = mockdata;
 
-  const [rows, setRows] = React.useState([]);
+  const [rows, setRows] = useState([]);
+  const [filteredRows, setFilteredRows] = useState([]);
+  const [rowsFiltered, setRowsFiltered] = useState(false);
+  const [filtersApplied, setFiltersApplied] = useState(false);
   const updateFilters = (payload) =>
     dispatch(updateWorkloadsListFilters(payload));
+  const removeFilterParam = (param) =>
+    _removeFilterParam(filters, updateFilters, param);
 
-  const loadingState = isUninitialized || isFetching;
+  const loadingState = isUninitialized || isFetching || !rowsFiltered;
   const errorState = isError;
   const noMatch = rows.length === 0;
   const successState = isSuccess;
 
   useEffect(() => {
-    setRows(buildRows(workloads));
-  }, [data]);
+    setRows(buildFilteredRows(workloads));
+    //should be refactored to smth like setDisplayedRows(buildDisplayedRows(filteredRows));
+    //when we add pagination
+    setRowsFiltered(true);
+    setFiltersApplied(noFiltersApplied(filters).length > 0 ? true : false);
+  }, [data, filteredRows]);
 
-  const buildRows = (items) => {
-    return items.map((item, index) => {
+  useEffect(() => {
+    setFilteredRows(buildFilteredRows(workloads));
+  }, [
+    filters.namespace_name,
+    filters.cluster_name,
+    filters.general_severity,
+    filters.highest_severity,
+    filters.sortDirection,
+    filters.sortIndex,
+  ]);
+
+  const buildFilteredRows = (items) => {
+    setRowsFiltered(false);
+    const filtered = items.filter((workloadData) => {
+      return passFilterWorkloads(workloadData, filters);
+    });
+
+    return filtered.map((item, index) => {
       return {
         entity: item,
         cells: [
@@ -67,10 +99,6 @@ const WorkloadsListTable = ({
           item.metadata.recommendations,
           <span key={index}>
             <ShieldSet hits_by_severity={item.metadata.hits_by_severity} />
-            {/* <HighestSeverityBadge
-              highestSeverity={item.metadata.highest_severity}
-              severities={item.metadata.hits_by_severity}
-            /> */}
           </span>,
           item.metadata.objects,
           <span key={index}>
@@ -107,29 +135,29 @@ const WorkloadsListTable = ({
       },
     },
     {
-      label: 'Highest severity',
+      label: 'Severity',
       type: conditionalFilterType.checkbox,
-      id: WORKLOADS_TABLE_FILTER_CATEGORIES.highest_severity.urlParam,
-      value: `checkbox-${WORKLOADS_TABLE_FILTER_CATEGORIES.highest_severity.urlParam}`,
+      id: WORKLOADS_TABLE_FILTER_CATEGORIES.general_severity.urlParam,
+      value: `checkbox-${WORKLOADS_TABLE_FILTER_CATEGORIES.general_severity.urlParam}`,
       filterValues: {
-        key: `${WORKLOADS_TABLE_FILTER_CATEGORIES.highest_severity.urlParam}-filter`,
+        key: `${WORKLOADS_TABLE_FILTER_CATEGORIES.general_severity.urlParam}-filter`,
         onChange: (_event, value) =>
-          updateFilters({ ...filters, offset: 0, highest_severity: value }),
-        value: filters.highest_severity,
-        items: WORKLOADS_TABLE_FILTER_CATEGORIES.highest_severity.values,
-        placeholder: 'Filter by highest severity',
+          addFilterParam(filters, updateFilters, 'general_severity', value),
+        value: filters.general_severity,
+        items: WORKLOADS_TABLE_FILTER_CATEGORIES.general_severity.values,
+        placeholder: 'Filter by severity',
       },
     },
   ];
 
   const activeFiltersConfig = {
-    showDeleteButton: true,
+    showDeleteButton: filtersApplied ? true : false,
     deleteTitle: 'Reset filters',
     filters: buildFilterChips(filters, WORKLOADS_TABLE_FILTER_CATEGORIES),
     onDelete: (_event, itemsToRemove, isAll) => {
       if (isAll) {
         if (isEqual(filters, WORKLOADS_TABLE_INITIAL_STATE)) {
-          console.log('here should be a refetch!');
+          refetch();
         } else {
           resetFilters(filters, WORKLOADS_TABLE_INITIAL_STATE, updateFilters);
         }
@@ -144,9 +172,7 @@ const WorkloadsListTable = ({
           };
           newFilter[item.urlParam].length > 0
             ? updateFilters({ ...filters, ...newFilter })
-            : console.log(
-                'here we should remove the filter parameter from a URL!'
-              );
+            : removeFilterParam(item.urlParam);
         });
       }
     },
@@ -165,7 +191,9 @@ const WorkloadsListTable = ({
           ouiaId: 'pager',
         }}
         filterConfig={{ items: filterConfigItems }}
-        activeFiltersConfig={activeFiltersConfig}
+        activeFiltersConfig={
+          isError ? { showDeleteButton: false } : activeFiltersConfig
+        }
       />
       <Table
         aria-label="Table of workloads"

@@ -3,21 +3,9 @@ import { Tooltip } from '@patternfly/react-core';
 import { TooltipPosition } from '@patternfly/react-core/dist/js/components/Tooltip';
 import InsightsLabel from '@redhat-cloud-services/frontend-components/InsightsLabel';
 import PropTypes from 'prop-types';
+import { severityTypeToText } from '../../Utilities/Workloads';
 
 export const HighestSeverityBadge = ({ highestSeverity, severities }) => {
-  const severityTypeToText = (value) => {
-    value = parseInt(value);
-    if (value === 1) {
-      return 'Low';
-    } else if (value === 2) {
-      return 'Moderate';
-    } else if (value === 3) {
-      return 'Important';
-    } else {
-      return 'Critical';
-    }
-  };
-
   const severitiesToDisplay = Object.keys(severities)
     .map((severityType) => {
       return severities[severityType] > 0 ? (
