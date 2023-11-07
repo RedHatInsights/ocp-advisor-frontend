@@ -34,6 +34,7 @@ import { ErrorState, NoMatchingClusters } from '../MessageState/EmptyStates';
 import Loading from '../Loading/Loading';
 import mockdata from '../../../cypress/fixtures/api/insights-results-aggregator/v2/workloads.json';
 import ShieldSet from '../ShieldSet';
+import { noFiltersApplied } from '../../Utilities/Workloads';
 
 const WorkloadsListTable = ({
   query: { isError, isUninitialized, isFetching, isSuccess, data, refetch },
@@ -47,9 +48,7 @@ const WorkloadsListTable = ({
   const [rows, setRows] = useState([]);
   const [filteredRows, setFilteredRows] = useState([]);
   const [rowsFiltered, setRowsFiltered] = useState(false);
-  const [filtersApplied] = useState(
-    filters === WORKLOADS_TABLE_INITIAL_STATE ? false : true
-  );
+  const [filtersApplied, setFiltersApplied] = useState(false);
   const updateFilters = (payload) =>
     dispatch(updateWorkloadsListFilters(payload));
   const removeFilterParam = (param) =>
@@ -65,6 +64,7 @@ const WorkloadsListTable = ({
     //should be refactored to smth like setDisplayedRows(buildDisplayedRows(filteredRows));
     //when we add pagination
     setRowsFiltered(true);
+    setFiltersApplied(noFiltersApplied(filters).length > 0 ? true : false);
   }, [data, filteredRows]);
 
   useEffect(() => {
