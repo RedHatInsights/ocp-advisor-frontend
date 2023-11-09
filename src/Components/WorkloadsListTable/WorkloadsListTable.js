@@ -51,6 +51,7 @@ const WorkloadsListTable = ({
   const [filteredRows, setFilteredRows] = useState([]);
   const [rowsFiltered, setRowsFiltered] = useState(false);
   const [filtersApplied, setFiltersApplied] = useState(false);
+  const [tempQuery, setTempQuery] = useState(0);
   const updateFilters = (payload) =>
     dispatch(updateWorkloadsListFilters(payload));
   const removeFilterParam = (param) =>
@@ -58,12 +59,13 @@ const WorkloadsListTable = ({
 
   const loadingState = isUninitialized || isFetching || !rowsFiltered;
   const errorState = isError;
-  const noMatch = rows.length === 0;
+  const noMatch = rows.length > 0 && filteredRows.length === 0;
   const successState = isSuccess;
 
   useEffect(() => {
     setFilteredRows(buildFilteredRows(workloads));
   }, [
+    tempQuery,
     filters.namespace_name,
     filters.cluster_name,
     filters.general_severity,
@@ -192,6 +194,8 @@ const WorkloadsListTable = ({
   };
 
   const onSetPerPage = (_e, perPage) => {
+    //THIS IS A DUMMY QUERY THAT WILL BE REMOVED WHEN WE WORK ON CONNECTING FILTERS/SORTING/PAGES TO THE URL PARAMS
+    setTempQuery(Math.random());
     setRowsFiltered(false);
     updateFilters({ ...filters, limit: perPage, offset: 0 });
   };
