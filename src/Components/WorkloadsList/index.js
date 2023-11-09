@@ -14,7 +14,7 @@ const WorkloadsList = () => {
 
   chrome.updateDocumentTitle(
     intl.formatMessage(messages.documentTitle, {
-      subnav: intl.formatMessage(messages.clusters),
+      subnav: 'Workloads',
     })
   );
 
@@ -22,7 +22,7 @@ const WorkloadsList = () => {
     <React.Fragment>
       <PageHeader className="ins-c-clusters-header">
         <Title headingLevel="h1" ouiaId="page-header">
-          Advisor workloads
+          Workloads
         </Title>
       </PageHeader>
       <section className="pf-l-page__main-section pf-c-page__main-section">

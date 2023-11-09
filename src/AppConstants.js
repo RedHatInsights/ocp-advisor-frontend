@@ -394,7 +394,7 @@ export const WORKLOADS_LIST_COLUMNS = [
     title: (
       <Tooltip position="top" content={'Cluster Namespace'}>
         <span className="pf-c-table__text">
-          Workloads &nbsp;
+          Name &nbsp;
           <OutlinedQuestionCircleIcon className="grey-icon" />
         </span>
       </Tooltip>
@@ -420,7 +420,7 @@ export const WORKLOADS_LIST_COLUMNS = [
 ];
 
 export const WORKLOADS_TABLE_COLUMNS_KEYS = [
-  'workload',
+  'name',
   'recommendations',
   'highest_severity',
   'objects',
