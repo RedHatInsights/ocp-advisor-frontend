@@ -51,7 +51,6 @@ const WorkloadsListTable = ({
   const [filteredRows, setFilteredRows] = useState([]);
   const [rowsFiltered, setRowsFiltered] = useState(false);
   const [filtersApplied, setFiltersApplied] = useState(false);
-  const [tempQuery, setTempQuery] = useState(0);
   const updateFilters = (payload) =>
     dispatch(updateWorkloadsListFilters(payload));
   const removeFilterParam = (param) =>
@@ -65,7 +64,6 @@ const WorkloadsListTable = ({
   useEffect(() => {
     setFilteredRows(buildFilteredRows(workloads));
   }, [
-    tempQuery,
     filters.namespace_name,
     filters.cluster_name,
     filters.general_severity,
@@ -76,8 +74,6 @@ const WorkloadsListTable = ({
 
   useEffect(() => {
     setRows(buildDisplayedRows(filteredRows));
-    //should be refactored to smth like setDisplayedRows(buildDisplayedRows(filteredRows));
-    //when we add pagination
     setRowsFiltered(true);
     setFiltersApplied(noFiltersApplied(filters).length > 0 ? true : false);
   }, [filteredRows, filters.limit, filters.offset]);
@@ -194,10 +190,10 @@ const WorkloadsListTable = ({
   };
 
   const onSetPerPage = (_e, perPage) => {
-    //THIS IS A DUMMY QUERY THAT WILL BE REMOVED WHEN WE WORK ON CONNECTING FILTERS/SORTING/PAGES TO THE URL PARAMS
-    setTempQuery(Math.random());
-    setRowsFiltered(false);
-    updateFilters({ ...filters, limit: perPage, offset: 0 });
+    if (perPage !== filters.limit) {
+      setRowsFiltered(false);
+      updateFilters({ ...filters, limit: perPage, offset: 0 });
+    }
   };
 
   return (
