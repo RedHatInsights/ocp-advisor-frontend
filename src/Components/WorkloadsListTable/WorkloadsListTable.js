@@ -32,9 +32,9 @@ import {
 } from '../Common/Tables';
 import { ErrorState, NoMatchingClusters } from '../MessageState/EmptyStates';
 import Loading from '../Loading/Loading';
-import mockdata from '../../../cypress/fixtures/api/insights-results-aggregator/v2/workloads.json';
 import ShieldSet from '../ShieldSet';
 import { noFiltersApplied } from '../../Utilities/Workloads';
+import mockdata from '../../../cypress/fixtures/api/insights-results-aggregator/v2/workloads.json';
 
 const WorkloadsListTable = ({
   query: { isError, isUninitialized, isFetching, isSuccess, data, refetch },
@@ -45,7 +45,7 @@ const WorkloadsListTable = ({
   //to check all types of filters use the mockdata json
   const workloads = mockdata;
   const perPage = filters.limit;
-  const page = filters.offset / filters.limit + 1;
+  const page = Math.floor(filters.offset / filters.limit) + 1;
 
   const [rows, setRows] = useState([]);
   const [filteredRows, setFilteredRows] = useState([]);
