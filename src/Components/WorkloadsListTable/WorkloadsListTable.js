@@ -32,9 +32,9 @@ import {
 } from '../Common/Tables';
 import { ErrorState, NoMatchingClusters } from '../MessageState/EmptyStates';
 import Loading from '../Loading/Loading';
-import mockdata from '../../../cypress/fixtures/api/insights-results-aggregator/v2/workloads.json';
 import ShieldSet from '../ShieldSet';
 import { noFiltersApplied } from '../../Utilities/Workloads';
+import mockdata from '../../../cypress/fixtures/api/insights-results-aggregator/v2/workloads.json';
 
 const WorkloadsListTable = ({
   query: { isError, isUninitialized, isFetching, isSuccess, data, refetch },
@@ -44,6 +44,8 @@ const WorkloadsListTable = ({
   //const workloads = data?.workloads || [];
   //to check all types of filters use the mockdata json
   const workloads = mockdata;
+  const perPage = filters.limit;
+  const page = Math.floor(filters.offset / filters.limit) + 1;
 
   const [rows, setRows] = useState([]);
   const [filteredRows, setFilteredRows] = useState([]);
@@ -56,16 +58,8 @@ const WorkloadsListTable = ({
 
   const loadingState = isUninitialized || isFetching || !rowsFiltered;
   const errorState = isError;
-  const noMatch = rows.length === 0;
+  const noMatch = rows.length > 0 && filteredRows.length === 0;
   const successState = isSuccess;
-
-  useEffect(() => {
-    setRows(buildFilteredRows(workloads));
-    //should be refactored to smth like setDisplayedRows(buildDisplayedRows(filteredRows));
-    //when we add pagination
-    setRowsFiltered(true);
-    setFiltersApplied(noFiltersApplied(filters).length > 0 ? true : false);
-  }, [data, filteredRows]);
 
   useEffect(() => {
     setFilteredRows(buildFilteredRows(workloads));
@@ -78,14 +72,26 @@ const WorkloadsListTable = ({
     filters.sortIndex,
   ]);
 
+  useEffect(() => {
+    setRows(buildDisplayedRows(filteredRows));
+    setRowsFiltered(true);
+    setFiltersApplied(noFiltersApplied(filters).length > 0 ? true : false);
+  }, [filteredRows, filters.limit, filters.offset]);
+
   const buildFilteredRows = (items) => {
     setRowsFiltered(false);
     const filtered = items.filter((workloadData) => {
       return passFilterWorkloads(workloadData, filters);
     });
 
-    return filtered.map((item, index) => {
-      return {
+    return filtered;
+    //ADD SORTING HERE
+  };
+
+  const buildDisplayedRows = (rows) => {
+    return rows
+      .slice(perPage * (page - 1), perPage * (page - 1) + perPage)
+      .map((item, index) => ({
         entity: item,
         cells: [
           <span key={index}>
@@ -109,8 +115,7 @@ const WorkloadsListTable = ({
             />
           </span>,
         ],
-      };
-    });
+      }));
   };
 
   const filterConfigItems = [
@@ -178,15 +183,28 @@ const WorkloadsListTable = ({
     },
   };
 
+  const onSetPage = (_e, pageNumber) => {
+    setRowsFiltered(false);
+    const newOffset = pageNumber * filters.limit - filters.limit;
+    updateFilters({ ...filters, offset: newOffset });
+  };
+
+  const onSetPerPage = (_e, perPage) => {
+    if (perPage !== filters.limit) {
+      setRowsFiltered(false);
+      updateFilters({ ...filters, limit: perPage, offset: 0 });
+    }
+  };
+
   return (
     <div id="workloads-list-table">
       <PrimaryToolbar
         pagination={{
           itemCount: data?.workloads.length || 0,
-          page: 1,
-          perPage: 20,
-          onSetPage: () => console.log('here should be a pagination'),
-          onPerPageSelect: () => console.log('here should be a pagination'),
+          page,
+          perPage,
+          onSetPage,
+          onPerPageSelect: onSetPerPage,
           isCompact: true,
           ouiaId: 'pager',
         }}
@@ -235,10 +253,11 @@ const WorkloadsListTable = ({
       <Pagination
         ouiaId="pager"
         itemCount={data?.workloads.length || 0}
-        page={1}
-        perPage={20}
-        onSetPage={() => {}}
-        onPerPageSelect={() => {}}
+        page
+        perPage
+        onSetPage
+        onPerPageSelect={onSetPerPage}
+        onPageInput={onSetPage}
         widgetId={`pagination-options-menu-bottom`}
         variant={PaginationVariant.bottom}
       />
