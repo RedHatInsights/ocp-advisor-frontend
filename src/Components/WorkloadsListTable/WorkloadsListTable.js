@@ -10,7 +10,12 @@ import {
 import { PaginationVariant } from '@patternfly/react-core/dist/js/components/Pagination/Pagination';
 import {
   WORKLOADS_LIST_COLUMNS,
+  WORKLOADS_TABLE_CELL_LAST_SEEN,
+  WORKLOADS_TABLE_CELL_NAME,
+  WORKLOADS_TABLE_CELL_OBJECTS,
+  WORKLOADS_TABLE_CELL_RECOMMENDATIONS,
   WORKLOADS_TABLE_FILTER_CATEGORIES,
+  WORKLOADS_TABLE_SEVERITY,
 } from '../../AppConstants';
 import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat';
 import { Link } from 'react-router-dom';
@@ -80,12 +85,49 @@ const WorkloadsListTable = ({
 
   const buildFilteredRows = (items) => {
     setRowsFiltered(false);
-    const filtered = items.filter((workloadData) => {
-      return passFilterWorkloads(workloadData, filters);
-    });
+    const filtered = items
+      .filter((workloadData) => {
+        return passFilterWorkloads(workloadData, filters);
+      })
+      .sort((a, b) => {
+        let fst, snd;
+        const d = filters.sortDirection === 'asc' ? 1 : -1;
+        switch (filters.sortIndex) {
+          case WORKLOADS_TABLE_CELL_NAME:
+            if (a?.cluster.display_name && b?.cluster.display_name) {
+              return (
+                d *
+                a?.cluster.display_name.localeCompare(b?.cluster.display_name)
+              );
+            } else {
+              return d * a?.cluster.uuid.localeCompare(b?.cluster.uuid);
+            }
+          case WORKLOADS_TABLE_CELL_RECOMMENDATIONS:
+            fst = a.metadata.recommendations || 0;
+            snd = b.metadata.recommendations || 0;
+            return fst > snd ? d : snd > fst ? -d : 0;
+          case WORKLOADS_TABLE_SEVERITY:
+            fst = Object.values(a.metadata.hits_by_severity || 0).reduce(
+              (a, b) => a + b,
+              0
+            );
+            snd = Object.values(b.metadata.hits_by_severity || 0).reduce(
+              (a, b) => a + b,
+              0
+            );
+            return fst > snd ? d : snd > fst ? -d : 0;
+          case WORKLOADS_TABLE_CELL_OBJECTS:
+            fst = a.metadata.objects || 0;
+            snd = b.metadata.objects || 0;
+            return fst > snd ? d : snd > fst ? -d : 0;
+          case WORKLOADS_TABLE_CELL_LAST_SEEN:
+            fst = new Date(a.metadata.last_checked_at || 0);
+            snd = new Date(b.metadata.last_checked_at || 0);
+            return fst > snd ? d : snd > fst ? -d : 0;
+        }
+      });
 
     return filtered;
-    //ADD SORTING HERE
   };
 
   const buildDisplayedRows = (rows) => {
@@ -98,8 +140,16 @@ const WorkloadsListTable = ({
             <Link
               to={`${BASE_PATH}/workloads/${item.cluster.uuid}/${item.namespace.uuid}`}
             >
-              <p key={`${index}-cluster`}>{item.cluster.display_name}</p>
-              <p key={`${index}-namespace`}>{item.namespace.name}</p>
+              {item.cluster.display_name ? (
+                <p key={`${index}-cluster`}>{item.cluster.display_name}</p>
+              ) : (
+                <p key={`${index}-cluster`}>{item.cluster.uuid}</p>
+              )}
+              {item.namespace.name ? (
+                <p key={`${index}-cluster`}>{item.namespace.name}</p>
+              ) : (
+                <p key={`${index}-cluster`}>{item.namespace.uuid}</p>
+              )}
             </Link>
           </span>,
           item.metadata.recommendations,
@@ -196,6 +246,11 @@ const WorkloadsListTable = ({
     }
   };
 
+  const onSort = (_e, index, direction) => {
+    setRowsFiltered(false);
+    updateFilters({ ...filters, sortIndex: index, sortDirection: direction });
+  };
+
   return (
     <div id="workloads-list-table">
       <PrimaryToolbar
@@ -246,6 +301,11 @@ const WorkloadsListTable = ({
           )
         }
         isStickyHeader
+        sortBy={{
+          index: filters.sortIndex,
+          direction: filters.sortDirection,
+        }}
+        onSort={onSort}
       >
         <TableHeader />
         <TableBody />
