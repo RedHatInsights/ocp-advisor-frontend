@@ -14,6 +14,7 @@ function checkTableHeaders(expectedHeaders) {
     .then(($els) => {
       return _.map(Cypress.$.makeArray($els), 'innerText');
     })
+    .then(($els) => $els.map((el) => el.trim()))
     .should('deep.equal', expectedHeaders);
 }
 
@@ -58,6 +59,10 @@ function checkNoMatchingClusters() {
 
 function checkNoMatchingRecs() {
   return checkEmptyState('No matching recommendations found');
+}
+
+function checkNoMatchingWorkloads() {
+  return checkEmptyState('No matching workloads found');
 }
 
 /**
@@ -191,7 +196,13 @@ function checkSorting(
   }
 
   let sortedValues = _.map(
-    _.orderBy(data, [sortingField], [order === 'descending' ? 'desc' : 'asc']),
+    _.orderBy(
+      data,
+      sortingField,
+      Array(Array.isArray(sortingField) ? sortingField.length : 1).fill(
+        order === 'descending' ? 'desc' : 'asc'
+      )
+    ),
     dataField
   );
   cy.get(`td[data-label="${columnField}"]`)
@@ -209,6 +220,7 @@ export {
   checkEmptyState,
   checkNoMatchingClusters,
   checkNoMatchingRecs,
+  checkNoMatchingWorkloads,
   checkFiltering,
   checkSorting,
 };
