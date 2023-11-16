@@ -192,7 +192,14 @@ export const paramParser = (search) => {
   return Array.from(searchParams).reduce(
     (acc, [key, value]) => ({
       ...acc,
-      [key]: ['text', 'first', 'rule_status', 'sort'].includes(key)
+      [key]: [
+        'text',
+        'first',
+        'rule_status',
+        'sort',
+        'cluster_name',
+        'namespace_name',
+      ].includes(key)
         ? value // just copy the full value
         : value === 'true' || value === 'false'
         ? JSON.parse(value) // parse boolean
@@ -288,11 +295,11 @@ export const passFilterWorkloads = (workloads, filters) => {
   return Object.entries(filters).every(([filterKey, filterValue]) => {
     switch (filterKey) {
       case 'cluster_name':
-        return workloads.cluster.display_name
+        return (workloads.cluster.display_name || workloads.cluster.uuid)
           .toLowerCase()
           .includes(filterValue.toLowerCase());
       case 'namespace_name':
-        return workloads.namespace.name
+        return (workloads.namespace.name || workloads.namespace.uuid)
           .toLowerCase()
           .includes(filterValue.toLowerCase());
       case 'general_severity':
