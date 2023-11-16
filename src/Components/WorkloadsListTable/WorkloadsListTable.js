@@ -249,7 +249,7 @@ const WorkloadsListTable = ({
     <div id="workloads-list-table">
       <PrimaryToolbar
         pagination={{
-          itemCount: data?.workloads.length || 0,
+          itemCount: filteredRows.length,
           page,
           perPage,
           onSetPage,
@@ -306,10 +306,10 @@ const WorkloadsListTable = ({
       </Table>
       <Pagination
         ouiaId="pager"
-        itemCount={data?.workloads.length || 0}
-        page
-        perPage
-        onSetPage
+        itemCount={filteredRows.length}
+        page={page}
+        perPage={perPage}
+        onSetPage={onSetPage}
         onPerPageSelect={onSetPerPage}
         onPageInput={onSetPage}
         widgetId={`pagination-options-menu-bottom`}
