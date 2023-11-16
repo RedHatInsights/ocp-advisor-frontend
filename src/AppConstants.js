@@ -419,10 +419,10 @@ export const WORKLOADS_LIST_COLUMNS = [
   },
 ];
 
-export const WORKLOADS_TABLE_COLUMNS_KEYS = [
+export const WORKLOADS_LIST_COLUMNS_KEYS = [
   'name',
   'recommendations',
-  'highest_severity',
+  'general_severity',
   'objects',
   'last_seen',
 ];

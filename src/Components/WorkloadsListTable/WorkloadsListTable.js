@@ -10,6 +10,7 @@ import {
 import { PaginationVariant } from '@patternfly/react-core/dist/js/components/Pagination/Pagination';
 import {
   WORKLOADS_LIST_COLUMNS,
+  WORKLOADS_LIST_COLUMNS_KEYS,
   WORKLOADS_TABLE_CELL_LAST_SEEN,
   WORKLOADS_TABLE_CELL_NAME,
   WORKLOADS_TABLE_CELL_OBJECTS,
@@ -18,7 +19,7 @@ import {
   WORKLOADS_TABLE_SEVERITY,
 } from '../../AppConstants';
 import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { BASE_PATH } from '../../Routes';
 import { Pagination } from '@patternfly/react-core';
 import { conditionalFilterType } from '@redhat-cloud-services/frontend-components/ConditionalFilter/conditionalFilterConstants';
@@ -30,25 +31,25 @@ import {
 } from '../../Services/Filters';
 import isEqual from 'lodash/isEqual';
 import {
-  addFilterParam,
   buildFilterChips,
   passFilterWorkloads,
   removeFilterParam as _removeFilterParam,
+  addFilterParam as _addFilterParam,
+  translateSortParams,
+  paramParser,
+  updateSearchParams,
 } from '../Common/Tables';
 import { ErrorState, NoMatchingClusters } from '../MessageState/EmptyStates';
 import Loading from '../Loading/Loading';
 import ShieldSet from '../ShieldSet';
 import { noFiltersApplied } from '../../Utilities/Workloads';
-import mockdata from '../../../cypress/fixtures/api/insights-results-aggregator/v2/workloads.json';
 
 const WorkloadsListTable = ({
   query: { isError, isUninitialized, isFetching, isSuccess, data, refetch },
 }) => {
   const dispatch = useDispatch();
   const filters = useSelector(({ filters }) => filters.workloadsListState);
-  //const workloads = data?.workloads || [];
-  //to check all types of filters use the mockdata json
-  const workloads = mockdata;
+  const workloads = data?.workloads || [];
   const perPage = filters.limit;
   const page = Math.floor(filters.offset / filters.limit) + 1;
 
@@ -56,6 +57,7 @@ const WorkloadsListTable = ({
   const [filteredRows, setFilteredRows] = useState([]);
   const [rowsFiltered, setRowsFiltered] = useState(false);
   const [filtersApplied, setFiltersApplied] = useState(false);
+  const [filterBuilding, setFilterBuilding] = useState(true);
   const updateFilters = (payload) =>
     dispatch(updateWorkloadsListFilters(payload));
   const removeFilterParam = (param) =>
@@ -65,6 +67,10 @@ const WorkloadsListTable = ({
   const errorState = isError;
   const noMatch = rows.length > 0 && filteredRows.length === 0;
   const successState = isSuccess;
+  const { search } = useLocation();
+
+  const addFilterParam = (param, values) =>
+    _addFilterParam(filters, updateFilters, param, values);
 
   useEffect(() => {
     setFilteredRows(buildFilteredRows(workloads));
@@ -72,10 +78,38 @@ const WorkloadsListTable = ({
     filters.namespace_name,
     filters.cluster_name,
     filters.general_severity,
-    filters.highest_severity,
     filters.sortDirection,
     filters.sortIndex,
   ]);
+
+  useEffect(() => {
+    if (search && filterBuilding) {
+      const paramsObject = paramParser(search);
+
+      if (paramsObject.sort) {
+        const sortObj = translateSortParams(paramsObject.sort);
+        paramsObject.sortIndex = WORKLOADS_LIST_COLUMNS_KEYS.indexOf(
+          sortObj.name
+        );
+        paramsObject.sortDirection = sortObj.direction;
+      }
+      paramsObject.offset &&
+        (paramsObject.offset = Number(paramsObject.offset[0]));
+      paramsObject.limit &&
+        (paramsObject.limit = Number(paramsObject.limit[0]));
+      paramsObject.impacting &&
+        !Array.isArray(paramsObject.impacting) &&
+        (paramsObject.impacting = [`${paramsObject.impacting}`]);
+      updateFilters({ ...filters, ...paramsObject });
+    }
+    setFilterBuilding(false);
+  }, []);
+
+  useEffect(() => {
+    if (!filterBuilding) {
+      updateSearchParams(filters, WORKLOADS_LIST_COLUMNS_KEYS);
+    }
+  }, [filters, filterBuilding]);
 
   useEffect(() => {
     setRows(buildDisplayedRows(filteredRows));
@@ -190,8 +224,7 @@ const WorkloadsListTable = ({
       value: `checkbox-${WORKLOADS_TABLE_FILTER_CATEGORIES.general_severity.urlParam}`,
       filterValues: {
         key: `${WORKLOADS_TABLE_FILTER_CATEGORIES.general_severity.urlParam}-filter`,
-        onChange: (_event, value) =>
-          addFilterParam(filters, updateFilters, 'general_severity', value),
+        onChange: (_event, value) => addFilterParam('general_severity', value),
         value: filters.general_severity,
         items: WORKLOADS_TABLE_FILTER_CATEGORIES.general_severity.values,
         placeholder: 'Filter by severity',
