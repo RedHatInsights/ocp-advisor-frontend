@@ -18,6 +18,7 @@ import { InProgressIcon } from '@patternfly/react-icons/dist/esm/icons/in-progre
 import InfoCircleIcon from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import { global_info_color_100 as globalInfoColor100 } from '@patternfly/react-tokens/dist/js/global_info_color_100.js';
 import ExclamationTriangleIcon from '@patternfly/react-icons/dist/esm/icons/exclamation-triangle-icon';
+import WrenchIcon from '@patternfly/react-icons/dist/js/icons/wrench-icon';
 
 import DefaultErrorMessage from '@redhat-cloud-services/frontend-components/ErrorState/DefaultErrorMessage';
 
@@ -212,6 +213,66 @@ const UpdateRisksNotAvailable = () => {
   );
 };
 
+const NoRecsForWorkloads = () => {
+  return (
+    <MessageState
+      icon={CheckCircleIcon}
+      iconStyle={{
+        color: globalSuccessColor100.value,
+      }}
+      title="No workload recommendations"
+      text={
+        <>
+          <p>
+            There are no workload-related recommendations for your clusters.
+            This page only shows workloads if there are recommendations
+            available.
+          </p>
+          <Button
+            variant="primary"
+            className="pf-v5-u-mt-xl"
+            onClick={() => history.back()}
+          >
+            Return to previous page
+          </Button>
+        </>
+      }
+    />
+  );
+};
+
+const NoWorkloadsAvailable = () => {
+  return (
+    <MessageState
+      icon={WrenchIcon}
+      title="Workloads data unavailable"
+      text={
+        <>
+          <p>
+            Verify that your clusters are connected and sending data to Red Hat,
+            and that the Deployment Validation Operator is installed and
+            configured.
+          </p>
+          <Button
+            variant="primary"
+            className="pf-v5-u-mt-xl"
+            onClick={() => history.back()}
+          >
+            Return to previous page
+          </Button>
+          <br />
+          <a
+            className="pf-v5-u-display-inline-block pf-v5-u-mt-xl"
+            href="https://docs.openshift.com/container-platform/latest/support/getting-support.html"
+          >
+            View documentation
+          </a>
+        </>
+      }
+    />
+  );
+};
+
 export {
   ErrorState,
   NoAffectedClusters,
@@ -224,4 +285,6 @@ export {
   NoRecsAffecting,
   NoUpdateRisks,
   UpdateRisksNotAvailable,
+  NoRecsForWorkloads,
+  NoWorkloadsAvailable,
 };

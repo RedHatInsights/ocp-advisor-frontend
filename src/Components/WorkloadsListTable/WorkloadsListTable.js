@@ -39,13 +39,26 @@ import {
   paramParser,
   updateSearchParams,
 } from '../Common/Tables';
-import { ErrorState, NoMatchingClusters } from '../MessageState/EmptyStates';
+import {
+  ErrorState,
+  NoMatchingClusters,
+  NoRecsForWorkloads,
+  NoWorkloadsAvailable,
+} from '../MessageState/EmptyStates';
 import Loading from '../Loading/Loading';
 import ShieldSet from '../ShieldSet';
 import { noFiltersApplied } from '../../Utilities/Workloads';
 
 const WorkloadsListTable = ({
-  query: { isError, isUninitialized, isFetching, isSuccess, data, refetch },
+  query: {
+    isError,
+    error,
+    isUninitialized,
+    isFetching,
+    isSuccess,
+    data,
+    refetch,
+  },
 }) => {
   const dispatch = useDispatch();
   const filters = useSelector(({ filters }) => filters.workloadsListState);
@@ -279,7 +292,11 @@ const WorkloadsListTable = ({
     updateFilters({ ...filters, sortIndex: index, sortDirection: direction });
   };
 
-  return (
+  return isError && error.status === 404 ? (
+    <NoWorkloadsAvailable />
+  ) : isSuccess && workloads.length === 0 ? (
+    <NoRecsForWorkloads />
+  ) : (
     <div id="workloads-list-table">
       <PrimaryToolbar
         pagination={{
