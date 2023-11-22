@@ -75,6 +75,7 @@ const WorkloadsListTable = ({
   useEffect(() => {
     setFilteredRows(buildFilteredRows(workloads));
   }, [
+    data,
     filters.namespace_name,
     filters.cluster_name,
     filters.general_severity,
