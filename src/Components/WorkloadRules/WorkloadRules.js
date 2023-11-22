@@ -89,7 +89,8 @@ const WorkloadRules = ({ workload }) => {
       setDisplayedRows(
         displayedRows.map((row) => ({
           ...row,
-          isOpen,
+          // Don't show expand button for expanded content
+          ...(Object.hasOwn(row, 'parent') ? null : { isOpen }),
         }))
       );
     } else {
