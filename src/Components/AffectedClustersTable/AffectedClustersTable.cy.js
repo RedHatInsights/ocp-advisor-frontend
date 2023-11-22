@@ -602,7 +602,11 @@ describe('non-empty successful affected clusters table', () => {
 
       cy.get(MODAL).find('button[data-ouia-component-id="confirm"]').click();
       // Should catch at least one PUT and at least one POST requests after clusters rule disable
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(10000);
       cy.wait('@disableRequest');
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(10000);
       cy.wait('@disableFeedbackRequest');
       // TODO check page is reloaded afterwards
 
