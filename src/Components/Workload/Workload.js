@@ -1,9 +1,10 @@
 import React from 'react';
 import PageHeader from '@redhat-cloud-services/frontend-components/PageHeader';
-import { Flex, FlexItem, PageSection } from '@patternfly/react-core';
+import { Flex, FlexItem, PageSection, Title } from '@patternfly/react-core';
 import Breadcrumbs from '../Breadcrumbs';
 import WorkloadsHeader from '../WorkloadHeader';
 import PropTypes from 'prop-types';
+import WorkloadRules from '../WorkloadRules/WorkloadRules';
 
 export const Workload = ({ workload, namespaceId, clusterId }) => {
   return (
@@ -22,7 +23,12 @@ export const Workload = ({ workload, namespaceId, clusterId }) => {
           </FlexItem>
         </Flex>
       </PageHeader>
-      <PageSection>{/* <WorkloadRules workload={workload} /> */}</PageSection>
+      <PageSection>
+        <Title className="pf-u-mb-lg" headingLevel="h3" size="2xl">
+          Recommendations
+        </Title>
+        <WorkloadRules workload={workload} />
+      </PageSection>
     </React.Fragment>
   );
 };

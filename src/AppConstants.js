@@ -446,3 +446,22 @@ export const WORKLOADS_TABLE_FILTER_CATEGORIES = {
     ],
   },
 };
+
+export const WORKLOAD_RULES_COLUMNS = [
+  {
+    title: 'Description',
+    transforms: [sortable],
+  },
+  {
+    title: 'Total risk',
+    transforms: [sortable, fitContent],
+  },
+  {
+    title: 'Objects',
+    transforms: [sortable, fitContent],
+  },
+  {
+    title: 'Modified',
+    transforms: [sortable, fitContent],
+  },
+];
