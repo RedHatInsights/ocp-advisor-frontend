@@ -35,15 +35,13 @@ const DisableRule = ({
   const bulkHostActions = async () => {
     // disable for a group of hosts (clusters)
     try {
-      await Promise.all(
-        hosts.map(async (h) => {
-          await disableRuleForCluster({
-            uuid: h.id,
-            recId: rule.rule_id,
-            justification,
-          });
-        })
-      );
+      for (const host of hosts) {
+        await disableRuleForCluster({
+          uuid: host.id,
+          recId: rule.rule_id,
+          justification,
+        });
+      }
       notify({
         variant: 'success',
         dismissable: true,
