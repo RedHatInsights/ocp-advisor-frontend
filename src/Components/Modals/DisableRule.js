@@ -75,7 +75,7 @@ const DisableRule = ({
           title: intl.formatMessage(messages.recSuccessfullyDisabledForCluster),
         });
       } else if (multipleHosts) {
-        bulkHostActions();
+        await bulkHostActions();
       } else {
         // disable the whole rec
         await setAck({
