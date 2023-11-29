@@ -147,7 +147,6 @@ const ClusterRules = () => {
         .filter((ruleExpanded) => ruleExpanded?.isOpen)
         .map((object) => object?.rule?.rule_id)
     );
-    console.log(allRows, 'allRows');
 
     return allRows
       .filter((rule) => passFilters(rule, filters))

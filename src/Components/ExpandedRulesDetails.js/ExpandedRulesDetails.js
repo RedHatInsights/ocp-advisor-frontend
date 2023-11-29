@@ -39,11 +39,11 @@ const ExpandedRulesDetails = ({ recommendations }) => {
                 <strong>Detected issues</strong>
               </CardHeader>
               <CardBody>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error
-                quibusdam repellat quisquam quaerat accusamus porro numquam,
-                magnam provident asperiores reprehenderit quia exercitationem
-                aliquam, nemo laboriosam, natus voluptatibus! Dolores, placeat
-                dolorum?
+                THIS FIELD IS NOT AVAILABLE IN THE API YET Lorem ipsum dolor,
+                sit amet consectetur adipisicing elit. Neque accusantium veniam
+                provident similique nesciunt ratione laborum nulla cupiditate
+                recusandae iure assumenda, qui vel expedita error soluta fugiat
+                quo perspiciatis dolorum!
               </CardBody>
             </Card>
           </StackItem>
