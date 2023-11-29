@@ -38,7 +38,13 @@ const ExpandedRulesDetails = ({ recommendations }) => {
                 <BullseyeIcon className="ins-c-report-details__icon" />
                 <strong>Detected issues</strong>
               </CardHeader>
-              <CardBody>THIS FIELD IS NOT AVAILABLE IN THE API YET</CardBody>
+              <CardBody>
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error
+                quibusdam repellat quisquam quaerat accusamus porro numquam,
+                magnam provident asperiores reprehenderit quia exercitationem
+                aliquam, nemo laboriosam, natus voluptatibus! Dolores, placeat
+                dolorum?
+              </CardBody>
             </Card>
           </StackItem>
           <Divider />
