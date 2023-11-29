@@ -15,6 +15,7 @@ import Loading from '../Loading/Loading';
 import { ErrorState } from '../MessageState/EmptyStates';
 // import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat/DateFormat';
 import InsightsLabel from '@redhat-cloud-services/frontend-components/InsightsLabel';
+import ExpandedRulesDetails from '../ExpandedRulesDetails.js/ExpandedRulesDetails';
 
 const WorkloadRules = ({ workload }) => {
   const { isError, isUninitialized, isFetching, isSuccess, data, error } =
@@ -140,7 +141,7 @@ const WorkloadRules = ({ workload }) => {
       {
         cells: [
           {
-            title: 'test',
+            title: <ExpandedRulesDetails recommendations={recommendations} />,
           },
         ],
       },
