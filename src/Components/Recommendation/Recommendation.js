@@ -21,12 +21,14 @@ import {
   Title,
   LabelGroup,
   Button,
-  Dropdown,
-  DropdownItem,
-  DropdownToggle,
   Flex,
   FlexItem,
 } from '@patternfly/react-core';
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownToggle,
+} from '@patternfly/react-core/deprecated';
 import BellSlashIcon from '@patternfly/react-icons/dist/js/icons/bell-slash-icon';
 import CaretDownIcon from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
 import { addNotification } from '@redhat-cloud-services/frontend-components-notifications/';
@@ -270,7 +272,7 @@ const Recommendation = ({ rule, ack, clusters, recId }) => {
                     ouiaId="actions"
                     toggle={
                       <DropdownToggle
-                        onToggle={(actionsDropdownOpen) =>
+                        onToggle={(_event, actionsDropdownOpen) =>
                           setActionsDropdownOpen(actionsDropdownOpen)
                         }
                         toggleIndicator={CaretDownIcon}

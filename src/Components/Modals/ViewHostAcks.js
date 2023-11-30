@@ -5,11 +5,13 @@ import { useIntl } from 'react-intl';
 import { useDispatch } from 'react-redux';
 
 import {
-  Table,
-  TableBody,
-  TableHeader,
-  cellWidth,
+	cellWidth
 } from '@patternfly/react-table';
+import {
+	Table,
+	TableBody,
+	TableHeader
+} from '@patternfly/react-table/deprecated';
 import { Button, Modal } from '@patternfly/react-core';
 import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
 import OutlinedBellIcon from '@patternfly/react-icons/dist/js/icons/outlined-bell-icon';

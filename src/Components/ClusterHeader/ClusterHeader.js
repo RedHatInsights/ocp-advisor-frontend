@@ -9,7 +9,11 @@ import {
   StackItem,
   Title,
 } from '@patternfly/react-core';
-import { Dropdown, DropdownToggle, DropdownItem } from '@patternfly/react-core';
+import {
+	Dropdown,
+	DropdownToggle,
+	DropdownItem
+} from '@patternfly/react-core/deprecated';
 import Skeleton from '@redhat-cloud-services/frontend-components/Skeleton';
 import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat/DateFormat';
 
@@ -72,7 +76,7 @@ export const ClusterHeader = ({ clusterId, clusterData, clusterInfo }) => {
           toggle={
             <DropdownToggle
               id="toggle-id-2"
-              onToggle={(isOpen) => setIsOpen(isOpen)}
+              onToggle={(_event, isOpen) => setIsOpen(isOpen)}
             >
               {intl.formatMessage(messages.dropDownActionSingleCluster)}
             </DropdownToggle>

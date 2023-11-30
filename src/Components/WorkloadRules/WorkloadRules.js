@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { TableVariant } from '@patternfly/react-table';
 import {
   Table,
   TableBody,
   TableHeader,
-  TableVariant,
-} from '@patternfly/react-table';
+} from '@patternfly/react-table/deprecated';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
 import {
   WORKLOAD_RULES_COLUMNS,
@@ -45,6 +45,7 @@ const WorkloadRules = ({ workload }) => {
   const filterConfigItems = [
     {
       label: 'description',
+      type: 'text',
       filterValues: {
         key: 'text-filter',
         // value: filters.text,
@@ -52,7 +53,7 @@ const WorkloadRules = ({ workload }) => {
     },
     {
       label: FC.total_risk.title,
-      type: FC.total_risk.type,
+      type: 'checkbox',
       id: FC.total_risk.urlParam,
       value: `checkbox-${FC.total_risk.urlParam}`,
       filterValues: {
@@ -65,6 +66,7 @@ const WorkloadRules = ({ workload }) => {
     },
     {
       label: 'object ID',
+      type: 'text',
       filterValues: {
         key: 'text-filter',
         // value: filters.text,

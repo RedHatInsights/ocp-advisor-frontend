@@ -8,13 +8,12 @@ import capitalize from 'lodash/capitalize';
 
 import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat/DateFormat';
 import InsightsLabel from '@redhat-cloud-services/frontend-components/InsightsLabel';
+import { SortByDirection, TableVariant } from '@patternfly/react-table';
 import {
-  SortByDirection,
   Table,
   TableBody,
   TableHeader,
-  TableVariant,
-} from '@patternfly/react-table';
+} from '@patternfly/react-table/deprecated';
 import { Tooltip } from '@patternfly/react-core';
 import { TooltipPosition } from '@patternfly/react-core/dist/js/components/Tooltip';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
@@ -313,6 +312,7 @@ const ClusterRules = () => {
   const filterConfigItems = [
     {
       label: 'description',
+      type: 'text',
       filterValues: {
         key: 'text-filter',
         onChange: (_e, value) => addFilterParam('text', value),
@@ -321,7 +321,7 @@ const ClusterRules = () => {
     },
     {
       label: FC.total_risk.title,
-      type: FC.total_risk.type,
+      type: 'checkbox',
       id: FC.total_risk.urlParam,
       value: `checkbox-${FC.total_risk.urlParam}`,
       filterValues: {
@@ -334,7 +334,7 @@ const ClusterRules = () => {
     },
     {
       label: FC.category.title,
-      type: FC.category.type,
+      type: 'checkbox',
       id: FC.category.urlParam,
       value: `checkbox-${FC.category.urlParam}`,
       filterValues: {

@@ -4,7 +4,7 @@ import InfoCircleIcon from '@patternfly/react-icons/dist/esm/icons/info-circle-i
 import ExclamationTriangleIcon from '@patternfly/react-icons/dist/esm/icons/exclamation-triangle-icon';
 import CheckCircleIcon from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 import {
-  TableComposable,
+  Table /* data-codemods */,
   Tbody,
   Td,
   Th,
@@ -65,7 +65,7 @@ const AlertsList = () => {
     data?.upgrade_recommendation?.upgrade_risks_predictors || {};
 
   return (
-    <TableComposable
+    <Table
       aria-label="Alerts firing table"
       variant="compact"
       borders={false}
@@ -90,7 +90,7 @@ const AlertsList = () => {
           </Tr>
         ))}
       </Tbody>
-    </TableComposable>
+    </Table>
   );
 };
 

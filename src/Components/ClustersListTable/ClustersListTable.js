@@ -8,18 +8,16 @@ import uniqBy from 'lodash/uniqBy';
 import { valid } from 'semver';
 import { Link } from 'react-router-dom';
 
+import { SortByDirection, TableVariant } from '@patternfly/react-table';
 import {
-  SortByDirection,
   Table,
   TableBody,
   TableHeader,
-  TableVariant,
-} from '@patternfly/react-table';
+} from '@patternfly/react-table/deprecated';
 import { Pagination, Tooltip } from '@patternfly/react-core';
 import { PaginationVariant } from '@patternfly/react-core/dist/js/components/Pagination/Pagination';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar/PrimaryToolbar';
 import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat';
-import { conditionalFilterType } from '@redhat-cloud-services/frontend-components/ConditionalFilter/conditionalFilterConstants';
 
 import {
   CLUSTERS_LIST_INITIAL_STATE,
@@ -223,8 +221,9 @@ const ClustersListTable = ({
   const filterConfigItems = [
     {
       label: intl.formatMessage(messages.name).toLowerCase(),
+      type: 'text',
       filterValues: {
-        key: 'text-filter',
+        key: 'text',
         onChange: (_event, value) =>
           updateFilters({ ...filters, offset: 0, text: value }),
         value: filters.text,
@@ -234,7 +233,7 @@ const ClustersListTable = ({
     {
       label: intl.formatMessage(messages.version),
       placeholder: intl.formatMessage(messages.filterByVersion),
-      type: conditionalFilterType.checkbox,
+      type: 'checkbox',
       filterValues: {
         id: 'version-filter',
         key: 'version-filter',
@@ -262,7 +261,7 @@ const ClustersListTable = ({
     },
     {
       label: CLUSTER_FILTER_CATEGORIES.hits.title,
-      type: CLUSTER_FILTER_CATEGORIES.hits.type,
+      type: 'checkbox',
       id: CLUSTER_FILTER_CATEGORIES.hits.urlParam,
       value: `checkbox-${CLUSTER_FILTER_CATEGORIES.hits.urlParam}`,
       filterValues: {

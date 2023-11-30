@@ -3,9 +3,8 @@ import { EmptyStateVariant } from '@patternfly/react-core/dist/js/components/Emp
 import {
   EmptyStateIcon,
   EmptyStateBody,
-  EmptyState,
-  Title,
-} from '@patternfly/react-core';
+  EmptyState, EmptyStateHeader, EmptyStateFooter,
+  } from '@patternfly/react-core';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -20,7 +19,7 @@ const MessageState = ({
 }) => (
   <EmptyState
     className={className}
-    variant="large"
+    variant="lg"
     data-ouia-component-id="empty-state"
     data-ouia-component-type="PF4/EmptyState"
     data-ouia-safe={true}
@@ -28,12 +27,10 @@ const MessageState = ({
     {icon && (
       <EmptyStateIcon className={iconClass} style={iconStyle} icon={icon} />
     )}
-    <Title headingLevel="h5" size="lg">
-      {title}
-    </Title>
-    <EmptyStateBody>{text}</EmptyStateBody>
+    <EmptyStateHeader titleText={<>{title}</>} headingLevel="h5" />
+    <EmptyStateBody>{text}</EmptyStateBody><EmptyStateFooter>
     {children}
-  </EmptyState>
+  </EmptyStateFooter></EmptyState>
 );
 
 MessageState.propTypes = {

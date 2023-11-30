@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
+import { TableVariant } from '@patternfly/react-table';
 import {
   Table,
   TableBody,
   TableHeader,
-  TableVariant,
-} from '@patternfly/react-table';
+} from '@patternfly/react-table/deprecated';
 import { PaginationVariant } from '@patternfly/react-core/dist/js/components/Pagination/Pagination';
 import {
   WORKLOADS_LIST_COLUMNS,
@@ -22,7 +22,6 @@ import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat';
 import { Link, useLocation } from 'react-router-dom';
 import { BASE_PATH } from '../../Routes';
 import { Pagination } from '@patternfly/react-core';
-import { conditionalFilterType } from '@redhat-cloud-services/frontend-components/ConditionalFilter/conditionalFilterConstants';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   WORKLOADS_TABLE_INITIAL_STATE,
@@ -213,6 +212,7 @@ const WorkloadsListTable = ({
   const filterConfigItems = [
     {
       label: 'Cluster name',
+      type: 'text',
       filterValues: {
         key: 'cluster_name',
         onChange: (_event, value) =>
@@ -223,6 +223,7 @@ const WorkloadsListTable = ({
     },
     {
       label: 'Namespace name',
+      type: 'text',
       filterValues: {
         key: 'namespace_name',
         onChange: (_event, value) =>
@@ -233,7 +234,7 @@ const WorkloadsListTable = ({
     },
     {
       label: 'Severity',
-      type: conditionalFilterType.checkbox,
+      type: 'checkbox',
       id: WORKLOADS_TABLE_FILTER_CATEGORIES.general_severity.urlParam,
       value: `checkbox-${WORKLOADS_TABLE_FILTER_CATEGORIES.general_severity.urlParam}`,
       filterValues: {
