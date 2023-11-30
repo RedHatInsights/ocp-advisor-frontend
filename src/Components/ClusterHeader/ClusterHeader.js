@@ -10,9 +10,9 @@ import {
   Title,
 } from '@patternfly/react-core';
 import {
-	Dropdown,
-	DropdownToggle,
-	DropdownItem
+  Dropdown,
+  DropdownToggle,
+  DropdownItem,
 } from '@patternfly/react-core/deprecated';
 import Skeleton from '@redhat-cloud-services/frontend-components/Skeleton';
 import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat/DateFormat';

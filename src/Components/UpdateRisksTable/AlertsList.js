@@ -65,11 +65,7 @@ const AlertsList = () => {
     data?.upgrade_recommendation?.upgrade_risks_predictors || {};
 
   return (
-    <Table
-      aria-label="Alerts firing table"
-      variant="compact"
-      borders={false}
-    >
+    <Table aria-label="Alerts firing table" variant="compact" borders={false}>
       <Thead>
         <Tr>
           <Th width={50}>Name</Th>

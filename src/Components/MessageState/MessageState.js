@@ -3,8 +3,10 @@ import { EmptyStateVariant } from '@patternfly/react-core/dist/js/components/Emp
 import {
   EmptyStateIcon,
   EmptyStateBody,
-  EmptyState, EmptyStateHeader, EmptyStateFooter,
-  } from '@patternfly/react-core';
+  EmptyState,
+  EmptyStateHeader,
+  EmptyStateFooter,
+} from '@patternfly/react-core';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -28,9 +30,9 @@ const MessageState = ({
       <EmptyStateIcon className={iconClass} style={iconStyle} icon={icon} />
     )}
     <EmptyStateHeader titleText={<>{title}</>} headingLevel="h5" />
-    <EmptyStateBody>{text}</EmptyStateBody><EmptyStateFooter>
-    {children}
-  </EmptyStateFooter></EmptyState>
+    <EmptyStateBody>{text}</EmptyStateBody>
+    <EmptyStateFooter>{children}</EmptyStateFooter>
+  </EmptyState>
 );
 
 MessageState.propTypes = {

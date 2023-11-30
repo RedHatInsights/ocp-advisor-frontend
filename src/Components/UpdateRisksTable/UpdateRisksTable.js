@@ -4,7 +4,8 @@ import {
   Flex,
   Icon,
   Label,
-  Spinner, EmptyStateHeader,
+  Spinner,
+  EmptyStateHeader,
 } from '@patternfly/react-core';
 import ExclamationTriangleIcon from '@patternfly/react-icons/dist/esm/icons/exclamation-triangle-icon';
 import {
@@ -53,7 +54,8 @@ const UpdateRisksTable = () => {
 
   return isUninitialized || isFetching ? (
     <EmptyState>
-      <EmptyStateHeader icon={<EmptyStateIcon  icon={Spinner} />} /></EmptyState>
+      <EmptyStateHeader icon={<EmptyStateIcon icon={Spinner} />} />
+    </EmptyState>
   ) : (
     <Table
       aria-label="Update risks table"
