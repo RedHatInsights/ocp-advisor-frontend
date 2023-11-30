@@ -1,5 +1,5 @@
 import React from 'react';
-import { mount } from '@cypress/react';
+import { mount } from '@cypress/react18';
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import _ from 'lodash';

@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React from 'react';
 import _, { filter } from 'lodash';
-import { mount } from '@cypress/react';
+import { mount } from '@cypress/react18';
 import workloads from '../../../cypress/fixtures/api/insights-results-aggregator/v2/workloads.json';
 import { WORKLOADS_LIST_COLUMNS } from '../../AppConstants';
 import { cumulativeCombinations } from '../../../cypress/utils/combine';

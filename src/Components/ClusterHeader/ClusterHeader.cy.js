@@ -1,5 +1,5 @@
 import React from 'react';
-import { mount } from '@cypress/react';
+import { mount } from '@cypress/react18';
 
 import { Intl } from '../../Utilities/intlHelper';
 import { ClusterHeader } from './ClusterHeader';
