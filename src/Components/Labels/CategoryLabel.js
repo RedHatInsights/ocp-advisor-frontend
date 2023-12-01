@@ -4,11 +4,11 @@ import { useIntl } from 'react-intl';
 import camelCase from 'lodash/camelCase';
 
 import { Label, LabelGroup } from '@patternfly/react-core';
-import LockIcon from '@patternfly/react-icons/dist/esm/icons/lock-icon';
-import PortIcon from '@patternfly/react-icons/dist/esm/icons/port-icon';
-import AutomationIcon from '@patternfly/react-icons/dist/esm/icons/automation-icon';
-import SyncAltIcon from '@patternfly/react-icons/dist/esm/icons/sync-icon';
-import OptimizeIcon from '@patternfly/react-icons/dist/esm/icons/optimize-icon';
+import LockIcon from '@patternfly/react-icons/dist/js/icons/lock-icon';
+import PortIcon from '@patternfly/react-icons/dist/js/icons/port-icon';
+import AutomationIcon from '@patternfly/react-icons/dist/js/icons/automation-icon';
+import SyncAltIcon from '@patternfly/react-icons/dist/js/icons/sync-icon';
+import OptimizeIcon from '@patternfly/react-icons/dist/js/icons/optimize-icon';
 
 import messages from '../../Messages';
 import { RULE_CATEGORIES } from '../../AppConstants';
