@@ -6,7 +6,7 @@ import {
   Label,
   Spinner,
 } from '@patternfly/react-core';
-import ExclamationTriangleIcon from '@patternfly/react-icons/dist/esm/icons/exclamation-triangle-icon';
+import ExclamationTriangleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 import {
   ExpandableRowContent,
   TableComposable,

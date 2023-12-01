@@ -14,10 +14,10 @@ import CheckCircleIcon from '@patternfly/react-icons/dist/js/icons/check-circle-
 import PlusCircleIcon from '@patternfly/react-icons/dist/js/icons/plus-circle-icon';
 import { global_success_color_100 as globalSuccessColor100 } from '@patternfly/react-tokens/dist/js/global_success_color_100';
 import { global_danger_color_100 as globalDangerColor100 } from '@patternfly/react-tokens/dist/js/global_danger_color_100';
-import { InProgressIcon } from '@patternfly/react-icons/dist/esm/icons/in-progress-icon';
+import { InProgressIcon } from '@patternfly/react-icons/dist/js/icons/in-progress-icon';
 import InfoCircleIcon from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import { global_info_color_100 as globalInfoColor100 } from '@patternfly/react-tokens/dist/js/global_info_color_100.js';
-import ExclamationTriangleIcon from '@patternfly/react-icons/dist/esm/icons/exclamation-triangle-icon';
+import ExclamationTriangleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 import WrenchIcon from '@patternfly/react-icons/dist/js/icons/wrench-icon';
 
 import DefaultErrorMessage from '@redhat-cloud-services/frontend-components/ErrorState/DefaultErrorMessage';

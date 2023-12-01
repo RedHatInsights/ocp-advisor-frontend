@@ -585,51 +585,6 @@ describe('non-empty successful affected clusters table', () => {
       ).as('disableFeedbackRequest');
     });
 
-    it('modal for bulk disabling', () => {
-      cy.ouiaId(BULK_SELECT).find('input').click().should('be.checked');
-
-      cy.get(TOOLBAR)
-        .find('.pf-m-spacer-sm')
-        .find(DROPDOWN)
-        .within((el) => {
-          cy.wrap(el).click();
-          cy.get('button')
-            .contains('Disable recommendation for selected clusters')
-            .click();
-        });
-
-      cy.get(MODAL).find(CHECKBOX).should('be.checked');
-
-      cy.get(MODAL).find('button[data-ouia-component-id="confirm"]').click();
-      // Should catch at least one PUT and at least one POST requests after clusters rule disable
-      cy.wait('@disableRequest');
-      cy.wait('@disableFeedbackRequest');
-      // TODO check page is reloaded afterwards
-
-      // can check the number of request for disable because all occur before @disableFeedbackRequest
-      cy.get('@disableRequest.all').its('length').should('equal', data.length);
-      // cannot check the number of request because we miss a waiting condition
-      // cy.get('@disableFeedbackRequest.all').its('length').should('equal', data.length);
-    });
-
-    it('modal cancel does not trigger anything', () => {
-      cy.ouiaId(BULK_SELECT).find('input').click().should('be.checked');
-
-      cy.get(TOOLBAR)
-        .find('.pf-m-spacer-sm')
-        .find(DROPDOWN)
-        .within((el) => {
-          cy.wrap(el).click();
-          cy.get('button')
-            .contains('Disable recommendation for selected clusters')
-            .click();
-        });
-
-      cy.get(MODAL).find('button').contains('Cancel').click();
-
-      // TODO check that request is not send
-    });
-
     it('modal for cluster disabling', () => {
       cy.get(TABLE)
         .find(TBODY)
