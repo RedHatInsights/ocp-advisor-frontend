@@ -66,4 +66,9 @@ module.exports = {
       },
     ],
   ],
+  env: {
+    componentTest: {
+      plugins: ['istanbul'],
+    },
+  },
 };
