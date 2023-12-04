@@ -302,13 +302,10 @@ export const passFilterWorkloads = (workloads, filters) => {
         return (workloads.namespace.name || workloads.namespace.uuid)
           .toLowerCase()
           .includes(filterValue.toLowerCase());
-      case 'general_severity':
+      case 'severity':
         return (
           filterValue.length === 0 ||
-          hasAnyValueGreaterThanZero(
-            generalSeverityRemapped,
-            filters.general_severity
-          )
+          hasAnyValueGreaterThanZero(generalSeverityRemapped, filters.severity)
         );
       default:
         return true;

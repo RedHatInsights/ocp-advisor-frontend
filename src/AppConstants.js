@@ -406,7 +406,7 @@ export const WORKLOADS_LIST_COLUMNS = [
     transforms: [sortable, cellWidth(15)],
   },
   {
-    title: 'Highest severity',
+    title: 'Severity',
     transforms: [sortable, cellWidth(15)],
   },
   {
@@ -422,7 +422,7 @@ export const WORKLOADS_LIST_COLUMNS = [
 export const WORKLOADS_LIST_COLUMNS_KEYS = [
   'name',
   'recommendations',
-  'general_severity',
+  'severity',
   'objects',
   'last_seen',
 ];
@@ -434,10 +434,10 @@ export const WORKLOADS_TABLE_CELL_OBJECTS = 3;
 export const WORKLOADS_TABLE_CELL_LAST_SEEN = 4;
 
 export const WORKLOADS_TABLE_FILTER_CATEGORIES = {
-  general_severity: {
+  severity: {
     type: 'checkbox',
-    title: 'General severity',
-    urlParam: 'general_severity',
+    title: 'Severity',
+    urlParam: 'severity',
     values: [
       { label: 'Critical', text: 'Critical', value: 'critical' },
       { label: 'Important', text: 'Important', value: 'important' },
