@@ -63,7 +63,7 @@ const TemplateProcessor = ({ template, definitions, onError }) => {
       />
     );
   } catch (error) {
-    console.warn(error, definitions, template);
+    console.error(error, definitions, template);
     onError && onError(error);
     return (
       <pre>
