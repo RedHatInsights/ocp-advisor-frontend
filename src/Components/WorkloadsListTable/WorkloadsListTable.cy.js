@@ -56,7 +56,7 @@ const filtersConf = {
     urlParam: 'namespace_name',
     urlValue: (it) => it.replace(/ /g, '+'),
   },
-  general_severity: {
+  severity: {
     selectorText: 'Severity',
     values: Array.from(cumulativeCombinations(TOTAL_RISK_VALUES)),
     type: 'checkbox',
@@ -66,7 +66,7 @@ const filtersConf = {
       }
       return false;
     },
-    urlParam: 'general_severity',
+    urlParam: 'severity',
     urlValue: (it) =>
       encodeURIComponent(_.map(it, (x) => TOTAL_RISK_MAP[x]).join(',')),
   },
