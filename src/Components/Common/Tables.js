@@ -312,3 +312,21 @@ export const passFilterWorkloads = (workloads, filters) => {
     }
   });
 };
+
+export const passFilterWorkloadsRecs = (recs, filters) =>
+  Object.entries(filters).every(([filterKey, filterValue]) => {
+    switch (filterKey) {
+      case 'name':
+        return recs.description
+          .toLowerCase()
+          .includes(filterValue.toLowerCase());
+      case 'object_id':
+        return recs.description
+          .toLowerCase()
+          .includes(filterValue.toLowerCase());
+      case 'total_risk':
+        return filterValue.includes(String(recs.total_risk));
+      default:
+        return true;
+    }
+  });

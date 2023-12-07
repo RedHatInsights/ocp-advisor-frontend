@@ -16,21 +16,36 @@ import { ErrorState } from '../MessageState/EmptyStates';
 // import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat/DateFormat';
 import InsightsLabel from '@redhat-cloud-services/frontend-components/InsightsLabel';
 import ExpandedRulesDetails from '../ExpandedRulesDetails.js/ExpandedRulesDetails';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateWorkloadsRecsListFilters } from '../../Services/Filters';
+import {
+  addFilterParam as _addFilterParam,
+  passFilterWorkloadsRecs,
+} from '../Common/Tables';
 
 const WorkloadRules = ({ workload }) => {
-  const { isError, isUninitialized, isFetching, isSuccess, data, error } =
-    workload;
-  void error;
+  const dispatch = useDispatch();
+  const { isError, isUninitialized, isFetching, isSuccess, data } = workload;
   const recommendations = data?.recommendations || [];
   const errorState = isError;
   const successState = isSuccess;
-  const [filters, setFilters] = useState([]);
-  void setFilters;
   const [isAllExpanded, setIsAllExpanded] = useState(false);
   const [filteredRows, setFilteredRows] = useState([]);
   const [displayedRows, setDisplayedRows] = useState([]);
   const [rowsFiltered, setRowsFiltered] = useState(false);
   const loadingState = isUninitialized || isFetching || !rowsFiltered;
+  //FILTERS
+  const filters = useSelector(({ filters }) => filters.workloadsRecsListState);
+  const updateFilters = (payload) =>
+    dispatch(updateWorkloadsRecsListFilters(payload));
+  const addFilterParam = (param, values) => {
+    /* setExpandFirst(false);
+    setFirstRule(''); */
+    return _addFilterParam(filters, updateFilters, param, values);
+  };
+  //NOTE ADD REMOVE FILTERS
+  /* const removeFilterParam = (param) =>
+    _removeFilterParam(filters, updateFilters, param); */
 
   useEffect(() => {
     setFilteredRows(buildFilteredRows(recommendations, filters));
@@ -47,19 +62,20 @@ const WorkloadRules = ({ workload }) => {
     {
       label: 'description',
       filterValues: {
-        key: 'text-filter',
-        // value: filters.text,
+        key: 'text',
+        onChange: (_e, value) => addFilterParam('name', value),
+        value: filters.name,
+        placeholder: 'Filter by description',
       },
     },
     {
       label: FC.total_risk.title,
-      type: FC.total_risk.type,
+      type: 'checkbox',
       id: FC.total_risk.urlParam,
       value: `checkbox-${FC.total_risk.urlParam}`,
       filterValues: {
-        key: `${FC.total_risk.urlParam}-filter`,
-        // onChange: (_e, values) =>
-        //   addFilterParam(FILTER_CATEGORIES.total_risk.urlParam, values),
+        key: `total-risk`,
+        onChange: (_e, values) => addFilterParam('total_risk', values),
         value: filters.total_risk,
         items: FC.total_risk.values,
       },
@@ -67,8 +83,9 @@ const WorkloadRules = ({ workload }) => {
     {
       label: 'object ID',
       filterValues: {
-        key: 'text-filter',
-        // value: filters.text,
+        key: 'text',
+        onChange: (_e, value) => addFilterParam('object_id', value),
+        value: filters.object_id,
       },
     },
   ];
@@ -104,48 +121,49 @@ const WorkloadRules = ({ workload }) => {
   };
 
   const buildFilteredRows = (allRows, filters) => {
-    void filters;
     setRowsFiltered(false);
 
-    return allRows.map((value, key) => [
-      {
-        rule: value,
-        isOpen: isAllExpanded,
-        cells: [
-          {
-            title: value.description,
-          },
-          {
-            title: (
-              <div key={key}>
-                <InsightsLabel value={4} rest={{ isCompact: true }} />
-              </div>
-            ),
-          },
-          {
-            title: value.objects.length,
-          },
-          {
-            title: (
-              <div key={key}>
-                {/* <DateFormat
+    return allRows
+      .filter((recs) => passFilterWorkloadsRecs(recs, filters))
+      .map((value, key) => [
+        {
+          rule: value,
+          isOpen: isAllExpanded,
+          cells: [
+            {
+              title: value.description,
+            },
+            {
+              title: (
+                <div key={key}>
+                  <InsightsLabel value={4} rest={{ isCompact: true }} />
+                </div>
+              ),
+            },
+            {
+              title: value.objects.length,
+            },
+            {
+              title: (
+                <div key={key}>
+                  {/* <DateFormat
                   date={value.created_at}
                   type="relative"
                   tooltipProps={{ position: TooltipPosition.bottom }}
                 /> */}
-              </div>
-            ),
-          },
-        ],
-      },
-      {
-        cells: [
-          {
-            title: <ExpandedRulesDetails recommendations={recommendations} />,
-          },
-        ],
-      },
-    ]);
+                </div>
+              ),
+            },
+          ],
+        },
+        {
+          cells: [
+            {
+              title: <ExpandedRulesDetails recommendations={recommendations} />,
+            },
+          ],
+        },
+      ]);
   };
 
   return (
