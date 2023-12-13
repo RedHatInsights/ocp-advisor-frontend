@@ -61,7 +61,7 @@ export const WORKLOADS_RECS_TABLE_INITIAL_STATE = {
   limit: 50,
   sortIndex: 1,
   sortDirection: 'desc',
-  name: '',
+  description: '',
   total_risk: [],
   object_id: '',
 };

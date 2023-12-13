@@ -8,7 +8,7 @@ import {
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
 import {
   WORKLOAD_RULES_COLUMNS,
-  FILTER_CATEGORIES as FC,
+  WORKLOAD_RULES_FILTER_CATEGORIES,
 } from '../../AppConstants';
 import PropTypes from 'prop-types';
 import Loading from '../Loading/Loading';
@@ -17,11 +17,19 @@ import { ErrorState } from '../MessageState/EmptyStates';
 import InsightsLabel from '@redhat-cloud-services/frontend-components/InsightsLabel';
 import ExpandedRulesDetails from '../ExpandedRulesDetails.js/ExpandedRulesDetails';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateWorkloadsRecsListFilters } from '../../Services/Filters';
+import {
+  WORKLOADS_RECS_TABLE_INITIAL_STATE,
+  resetFilters,
+  updateWorkloadsRecsListFilters,
+} from '../../Services/Filters';
 import {
   addFilterParam as _addFilterParam,
   passFilterWorkloadsRecs,
+  removeFilterParam as _removeFilterParam,
 } from '../Common/Tables';
+import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat';
+import capitalize from 'lodash/capitalize';
+import { noFiltersApplied } from '../../Utilities/Workloads';
 
 const WorkloadRules = ({ workload }) => {
   const dispatch = useDispatch();
@@ -33,19 +41,20 @@ const WorkloadRules = ({ workload }) => {
   const [filteredRows, setFilteredRows] = useState([]);
   const [displayedRows, setDisplayedRows] = useState([]);
   const [rowsFiltered, setRowsFiltered] = useState(false);
+  const [filtersApplied, setFiltersApplied] = useState(false);
   const loadingState = isUninitialized || isFetching || !rowsFiltered;
   //FILTERS
   const filters = useSelector(({ filters }) => filters.workloadsRecsListState);
   const updateFilters = (payload) =>
     dispatch(updateWorkloadsRecsListFilters(payload));
   const addFilterParam = (param, values) => {
+    //THERE GONNA BE A FIRST RULE EXPANDED FEATURE
     /* setExpandFirst(false);
     setFirstRule(''); */
     return _addFilterParam(filters, updateFilters, param, values);
   };
-  //NOTE ADD REMOVE FILTERS
-  /* const removeFilterParam = (param) =>
-    _removeFilterParam(filters, updateFilters, param); */
+  const removeFilterParam = (param) =>
+    _removeFilterParam(filters, updateFilters, param);
 
   useEffect(() => {
     setFilteredRows(buildFilteredRows(recommendations, filters));
@@ -55,6 +64,7 @@ const WorkloadRules = ({ workload }) => {
     setDisplayedRows(
       buildDisplayedRows(filteredRows, filters.sortIndex, filters.sortDirection)
     );
+    setFiltersApplied(noFiltersApplied(filters).length > 0 ? true : false);
     setRowsFiltered(true);
   }, [filteredRows]);
 
@@ -62,28 +72,28 @@ const WorkloadRules = ({ workload }) => {
     {
       label: 'description',
       filterValues: {
-        key: 'text',
-        onChange: (_e, value) => addFilterParam('name', value),
-        value: filters.name,
+        key: 'description',
+        onChange: (_e, value) => addFilterParam('description', value),
+        value: filters.description,
         placeholder: 'Filter by description',
       },
     },
     {
-      label: FC.total_risk.title,
+      label: WORKLOAD_RULES_FILTER_CATEGORIES.total_risk.title,
       type: 'checkbox',
-      id: FC.total_risk.urlParam,
-      value: `checkbox-${FC.total_risk.urlParam}`,
+      id: WORKLOAD_RULES_FILTER_CATEGORIES.total_risk.urlParam,
+      value: `checkbox-${WORKLOAD_RULES_FILTER_CATEGORIES.total_risk.urlParam}`,
       filterValues: {
-        key: `total-risk`,
+        key: `total_risk`,
         onChange: (_e, values) => addFilterParam('total_risk', values),
         value: filters.total_risk,
-        items: FC.total_risk.values,
+        items: WORKLOAD_RULES_FILTER_CATEGORIES.total_risk.values,
       },
     },
     {
       label: 'object ID',
       filterValues: {
-        key: 'text',
+        key: 'object_id',
         onChange: (_e, value) => addFilterParam('object_id', value),
         value: filters.object_id,
       },
@@ -122,7 +132,6 @@ const WorkloadRules = ({ workload }) => {
 
   const buildFilteredRows = (allRows, filters) => {
     setRowsFiltered(false);
-
     return allRows
       .filter((recs) => passFilterWorkloadsRecs(recs, filters))
       .map((value, key) => [
@@ -131,7 +140,7 @@ const WorkloadRules = ({ workload }) => {
           isOpen: isAllExpanded,
           cells: [
             {
-              title: value.description,
+              title: value.details,
             },
             {
               title: (
@@ -146,11 +155,7 @@ const WorkloadRules = ({ workload }) => {
             {
               title: (
                 <div key={key}>
-                  {/* <DateFormat
-                  date={value.created_at}
-                  type="relative"
-                  tooltipProps={{ position: TooltipPosition.bottom }}
-                /> */}
+                  <DateFormat date={value.modified} type="relative" />
                 </div>
               ),
             },
@@ -159,11 +164,122 @@ const WorkloadRules = ({ workload }) => {
         {
           cells: [
             {
-              title: <ExpandedRulesDetails recommendations={recommendations} />,
+              title: (
+                <ExpandedRulesDetails
+                  extra_data={value.extra_data}
+                  more_info={value.more_info}
+                  resolution={value.resolution}
+                  objects={value.objects}
+                />
+              ),
             },
           ],
         },
       ]);
+  };
+
+  const pruneFilters = (localFilters, filterCategories) => {
+    const prunedFilters = Object.entries(localFilters);
+    return prunedFilters.length > 0
+      ? prunedFilters.reduce((arr, item) => {
+          if (filterCategories[item[0]]) {
+            const category = filterCategories[item[0]];
+            const chips = Array.isArray(item[1])
+              ? item[1].map((value) => {
+                  const selectedCategoryValue = category.values.find(
+                    (values) => values.value === String(value)
+                  );
+                  return selectedCategoryValue
+                    ? {
+                        name:
+                          selectedCategoryValue.text ||
+                          selectedCategoryValue.label,
+                        value,
+                      }
+                    : { name: value, value };
+                })
+              : [
+                  {
+                    name: category.values.find(
+                      (values) => values.value === String(item[1])
+                    ).label,
+                    value: item[1],
+                  },
+                ];
+            return [
+              ...arr,
+              {
+                category: capitalize(category.title),
+                chips,
+                urlParam: category.urlParam,
+              },
+            ];
+          } else if (item[0] === 'description') {
+            return [
+              ...arr,
+              ...(item[1].length > 0
+                ? [
+                    {
+                      category: 'Description',
+                      chips: [{ name: item[1], value: item[1] }],
+                      urlParam: item[0],
+                    },
+                  ]
+                : []),
+            ];
+          } else if (item[0] === 'object_id') {
+            return [
+              ...arr,
+              ...(item[1].length > 0
+                ? [
+                    {
+                      category: 'Object ID',
+                      chips: [{ name: item[1], value: item[1] }],
+                      urlParam: item[0],
+                    },
+                  ]
+                : []),
+            ];
+          } else {
+            return arr;
+          }
+        }, [])
+      : [];
+  };
+
+  const buildFilterChips = () => {
+    const localFilters = { ...filters };
+    delete localFilters.sortIndex;
+    delete localFilters.sortDirection;
+    return pruneFilters(localFilters, WORKLOAD_RULES_FILTER_CATEGORIES);
+  };
+
+  const activeFiltersConfig = {
+    showDeleteButton: filtersApplied ? true : false,
+    deleteTitle: 'Reset filters',
+    filters: buildFilterChips(),
+    onDelete: (_event, itemsToRemove, isAll) => {
+      if (isAll) {
+        resetFilters(
+          filters,
+          WORKLOADS_RECS_TABLE_INITIAL_STATE,
+          updateFilters
+        );
+      } else {
+        itemsToRemove.map((item) => {
+          const newFilter = {
+            [item.urlParam]: Array.isArray(filters[item.urlParam])
+              ? filters[item.urlParam].filter(
+                  (value) => String(value) !== String(item.chips[0].value)
+                )
+              : '',
+          };
+          newFilter[item.urlParam].length > 0
+            ? updateFilters({ ...filters, ...newFilter })
+            : removeFilterParam(item.urlParam);
+        });
+      }
+    },
   };
 
   return (
@@ -181,11 +297,11 @@ const WorkloadRules = ({ workload }) => {
               : `${recommendations.length} Recommendations`}
           </span>
         }
-        // activeFiltersConfig={
-        //   loadingState || errorState || reports.length === 0
-        //     ? undefined
-        //     : activeFiltersConfig
-        // }
+        activeFiltersConfig={
+          loadingState || errorState || recommendations.length === 0
+            ? undefined
+            : activeFiltersConfig
+        }
       />
       <Table
         aria-label={'Workload recommendations table'}

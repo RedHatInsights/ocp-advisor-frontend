@@ -19,7 +19,7 @@ const walkTokens = (token) => {
   }
 };
 
-marked.use({ walkTokens });
+marked?.use({ walkTokens });
 
 // eslint-disable-next-line react/prop-types
 const TemplateProcessor = ({ template, definitions, onError }) => {

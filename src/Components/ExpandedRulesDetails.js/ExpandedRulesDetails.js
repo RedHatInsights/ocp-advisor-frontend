@@ -22,8 +22,7 @@ const columnNames = {
   kind: 'Kind',
 };
 
-const ExpandedRulesDetails = ({ recommendations }) => {
-  const { remediation } = recommendations[0];
+const ExpandedRulesDetails = ({ more_info, resolution, objects }) => {
   return (
     <Card className="ins-c-report-details" style={{ boxShadow: 'none' }}>
       <CardBody>
@@ -39,11 +38,8 @@ const ExpandedRulesDetails = ({ recommendations }) => {
                 <strong>Detected issues</strong>
               </CardHeader>
               <CardBody>
-                THIS FIELD IS NOT AVAILABLE IN THE API YET Lorem ipsum dolor,
-                sit amet consectetur adipisicing elit. Neque accusantium veniam
-                provident similique nesciunt ratione laborum nulla cupiditate
-                recusandae iure assumenda, qui vel expedita error soluta fugiat
-                quo perspiciatis dolorum!
+                This should be a reason field and extradata should provide us an
+                array of reasons to list here
               </CardBody>
             </Card>
           </StackItem>
@@ -55,7 +51,9 @@ const ExpandedRulesDetails = ({ recommendations }) => {
                 <strong>Steps to resolve</strong>
               </CardHeader>
               <CardBody>
-                <TemplateProcessor template={remediation} />
+                There should be a resolution but it has an issue with WIDTH
+                restriction. It should not expand container
+                {/* <TemplateProcessor template={resolution} /> */}
               </CardBody>
             </Card>
           </StackItem>
@@ -67,7 +65,7 @@ const ExpandedRulesDetails = ({ recommendations }) => {
               </Tr>
             </Thead>
             <Tbody>
-              {recommendations[0].objects.slice(0, 3).map((object, key) => (
+              {objects.slice(0, 3).map((object, key) => (
                 <Tr key={key}>
                   <Td dataLabel={columnNames.object}>{object.uid}</Td>
                   <Td dataLabel={columnNames.kind}>{object.kind}</Td>
@@ -96,13 +94,7 @@ const ExpandedRulesDetails = ({ recommendations }) => {
                   <InfoCircleIcon className="ins-c-report-details__icon" />
                   <strong>Additional info</strong>
                 </CardHeader>
-                <CardBody>
-                  it needs another fields - will contain markdown for the whole
-                  section. Lorem ipsum dolor sit amet consectetur adipisicing
-                  elit. Numquam nemo illo minima nam voluptatum tempora amet
-                  blanditiis velit aliquid omnis, repudiandae reiciendis ipsam
-                  aperiam expedita eius corrupti aliquam praesentium! Ullam?
-                </CardBody>
+                <CardBody>{more_info}</CardBody>
               </Card>
             </StackItem>
           </React.Fragment>
@@ -115,13 +107,11 @@ const ExpandedRulesDetails = ({ recommendations }) => {
 export default ExpandedRulesDetails;
 
 ExpandedRulesDetails.propTypes = {
-  recommendations: PropTypes.shape({
-    check: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
-    remediation: PropTypes.string.isRequired,
-    objects: PropTypes.arrayOf({
-      kind: PropTypes.string,
-      uid: PropTypes.string,
-    }),
+  extra_data: PropTypes.string.isRequired,
+  more_info: PropTypes.string.isRequired,
+  resolution: PropTypes.string.isRequired,
+  objects: PropTypes.arrayOf({
+    kind: PropTypes.string,
+    uid: PropTypes.string,
   }),
 };

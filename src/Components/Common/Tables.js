@@ -313,20 +313,20 @@ export const passFilterWorkloads = (workloads, filters) => {
   });
 };
 
-export const passFilterWorkloadsRecs = (recs, filters) =>
-  Object.entries(filters).every(([filterKey, filterValue]) => {
+export const passFilterWorkloadsRecs = (recs, filters) => {
+  return Object.entries(filters).every(([filterKey, filterValue]) => {
     switch (filterKey) {
       case 'name':
-        return recs.description
-          .toLowerCase()
-          .includes(filterValue.toLowerCase());
+        return recs.details.toLowerCase().includes(filterValue.toLowerCase());
       case 'object_id':
-        return recs.description
-          .toLowerCase()
-          .includes(filterValue.toLowerCase());
-      case 'total_risk':
-        return filterValue.includes(String(recs.total_risk));
+        return recs.objects.filter(
+          (object) => object.uid.toLowerCase() === filterValue.toLowerCase()
+        );
+      //NOTE IS NOT AVAILABLE IN THE API YET
+      /* case 'total_risk':
+        return filterValue.includes(String(recs.total_risk)); */
       default:
         return true;
     }
   });
+};

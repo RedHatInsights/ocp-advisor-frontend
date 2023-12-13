@@ -465,3 +465,17 @@ export const WORKLOAD_RULES_COLUMNS = [
     transforms: [sortable, fitContent],
   },
 ];
+
+export const WORKLOAD_RULES_FILTER_CATEGORIES = {
+  total_risk: {
+    type: 'checkbox',
+    title: 'total risk',
+    urlParam: 'total_risk',
+    values: [
+      { label: TOTAL_RISK_LABEL[4], value: '4' },
+      { label: TOTAL_RISK_LABEL[3], value: '3' },
+      { label: TOTAL_RISK_LABEL[2], value: '2' },
+      { label: TOTAL_RISK_LABEL[1], value: '1' },
+    ],
+  },
+};
