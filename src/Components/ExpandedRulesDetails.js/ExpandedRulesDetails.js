@@ -51,9 +51,7 @@ const ExpandedRulesDetails = ({ more_info, resolution, objects }) => {
                 <strong>Steps to resolve</strong>
               </CardHeader>
               <CardBody>
-                There should be a resolution but it has an issue with WIDTH
-                restriction. It should not expand container
-                {/* <TemplateProcessor template={resolution} /> */}
+                <TemplateProcessor template={resolution} />
               </CardBody>
             </Card>
           </StackItem>
