@@ -9,6 +9,7 @@ import {
   Card,
   CardBody,
   CardHeader,
+  CodeBlock,
   Divider,
   Stack,
   StackItem,
@@ -21,6 +22,8 @@ const columnNames = {
   object: 'Object ID',
   kind: 'Kind',
 };
+const code = `oc get namespace -o jsonpath={range .items[*]}{.metadata.name}{"\t"}{.metadata.uid}{"\n"}{end}
+  oc -n <namespace> get <resourceKind> -o jsonpath={range .items[*]}{.metadata.name}{"\t"}{.metadata.uid}{"\n"}{end}`;
 
 const ExpandedRulesDetails = ({ more_info, resolution, objects }) => {
   return (
@@ -79,10 +82,13 @@ const ExpandedRulesDetails = ({ more_info, resolution, objects }) => {
             <strong>Note:</strong>
           </CardHeader>
           <CardBody>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam
-            nemo illo minima nam voluptatum tempora amet blanditiis velit
-            aliquid omnis, repudiandae reiciendis ipsam aperiam expedita eius
-            corrupti aliquam praesentium! Ullam?
+            SHOULD BE RENDERED ONLY WHEN THERE IS NO NAMES FOR CLUSTER AND
+            NAMESPACE Red Hat avoids gathering and processing namespace and
+            resource names as these may reveal confidential information.
+            Namespaces and resources are identified by their UIDs instead. You
+            can use in-cluster commands like the ones below to translate UIDs of
+            affected resources to their names.
+            <CodeBlock>{code}</CodeBlock>
           </CardBody>
           <React.Fragment>
             <Divider />
