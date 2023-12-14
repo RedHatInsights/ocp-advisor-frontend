@@ -42,15 +42,14 @@ const WorkloadRules = ({ workload }) => {
   const [displayedRows, setDisplayedRows] = useState([]);
   const [rowsFiltered, setRowsFiltered] = useState(false);
   const [filtersApplied, setFiltersApplied] = useState(false);
+  const [expandFirst, setExpandFirst] = useState(true);
   const loadingState = isUninitialized || isFetching || !rowsFiltered;
   //FILTERS
   const filters = useSelector(({ filters }) => filters.workloadsRecsListState);
   const updateFilters = (payload) =>
     dispatch(updateWorkloadsRecsListFilters(payload));
   const addFilterParam = (param, values) => {
-    //THERE GONNA BE A FIRST RULE EXPANDED FEATURE
-    /* setExpandFirst(false);
-    setFirstRule(''); */
+    setExpandFirst(false);
     return _addFilterParam(filters, updateFilters, param, values);
   };
   const removeFilterParam = (param) =>
@@ -104,10 +103,14 @@ const WorkloadRules = ({ workload }) => {
     void sortIndex;
     void sortDirection;
 
-    return filteredRows.flatMap((row, index) => [
-      row[0],
-      { ...row[1], parent: index * 2 },
-    ]);
+    return filteredRows.flatMap((row, index) => {
+      const updatedRow = [...row];
+      if (expandFirst && index === 0) {
+        row[0].isOpen = true;
+      }
+      row[1].parent = index * 2;
+      return updatedRow;
+    });
   };
 
   const handleOnCollapse = (_e, rowId, isOpen) => {
