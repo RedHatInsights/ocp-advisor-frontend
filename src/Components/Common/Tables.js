@@ -313,20 +313,26 @@ export const passFilterWorkloads = (workloads, filters) => {
   });
 };
 
-export const passFilterWorkloadsRecs = (recs, filters) => {
-  return Object.entries(filters).every(([filterKey, filterValue]) => {
-    switch (filterKey) {
-      case 'name':
-        return recs.details.toLowerCase().includes(filterValue.toLowerCase());
-      case 'object_id':
-        return recs.objects.filter(
-          (object) => object.uid.toLowerCase() === filterValue.toLowerCase()
-        );
-      //NOTE IS NOT AVAILABLE IN THE API YET
-      /* case 'total_risk':
+export const passFilterWorkloadsRecs = (recommendation, filters) => {
+  return Object.entries(filters).some(([filterKey, filterValue]) => {
+    if (filterValue.length === 0) {
+      return false;
+    } else {
+      switch (filterKey) {
+        case 'description':
+          return recommendation.details
+            .toLowerCase()
+            .includes(filterValue.toLowerCase());
+        case 'object_id':
+          return recommendation.objects.some((obj) =>
+            obj.uid.toLowerCase().includes(filterValue.toLowerCase())
+          );
+        //NOTE IS NOT AVAILABLE IN THE API YET
+        /* case 'total_risk':
         return filterValue.includes(String(recs.total_risk)); */
-      default:
-        return true;
+        default:
+          return false;
+      }
     }
   });
 };

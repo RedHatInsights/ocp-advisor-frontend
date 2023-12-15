@@ -47,7 +47,7 @@ import {
 } from '../MessageState/EmptyStates';
 import Loading from '../Loading/Loading';
 import ShieldSet from '../ShieldSet';
-import { noFiltersApplied } from '../../Utilities/Workloads';
+import { filtersAreApplied } from '../../Utilities/Workloads';
 
 const WorkloadsListTable = ({
   query: {
@@ -128,7 +128,7 @@ const WorkloadsListTable = ({
   useEffect(() => {
     setRows(buildDisplayedRows(filteredRows));
     setRowsFiltered(true);
-    setFiltersApplied(noFiltersApplied(filters).length > 0 ? true : false);
+    setFiltersApplied(filtersAreApplied(filters));
   }, [filteredRows, filters.limit, filters.offset]);
 
   const buildFilteredRows = (items) => {

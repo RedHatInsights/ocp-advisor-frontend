@@ -78,11 +78,14 @@ export const severityTypeToText = (value) => {
   }
 };
 
-export const noFiltersApplied = (params) => {
+export const filtersAreApplied = (params) => {
   const cleanedUpParams = _.cloneDeep(params);
   delete cleanedUpParams.sortIndex;
   delete cleanedUpParams.sortDirection;
   delete cleanedUpParams.offset;
   delete cleanedUpParams.limit;
-  return Object.values(cleanedUpParams).filter((value) => !isEmpty(value));
+  return Object.values(cleanedUpParams).filter((value) => !isEmpty(value))
+    .length
+    ? true
+    : false;
 };

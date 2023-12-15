@@ -29,7 +29,7 @@ import {
 } from '../Common/Tables';
 import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat';
 import capitalize from 'lodash/capitalize';
-import { noFiltersApplied } from '../../Utilities/Workloads';
+import { filtersAreApplied } from '../../Utilities/Workloads';
 
 const WorkloadRules = ({ workload }) => {
   const dispatch = useDispatch();
@@ -63,7 +63,7 @@ const WorkloadRules = ({ workload }) => {
     setDisplayedRows(
       buildDisplayedRows(filteredRows, filters.sortIndex, filters.sortDirection)
     );
-    setFiltersApplied(noFiltersApplied(filters).length > 0 ? true : false);
+    setFiltersApplied(filtersAreApplied(filters));
     setRowsFiltered(true);
   }, [filteredRows]);
 
@@ -135,8 +135,11 @@ const WorkloadRules = ({ workload }) => {
 
   const buildFilteredRows = (allRows, filters) => {
     setRowsFiltered(false);
+    const noFilters = filtersAreApplied(filters);
     return allRows
-      .filter((recs) => passFilterWorkloadsRecs(recs, filters))
+      .filter((recs) =>
+        noFilters ? passFilterWorkloadsRecs(recs, filters) : true
+      )
       .map((value, key) => [
         {
           rule: value,
