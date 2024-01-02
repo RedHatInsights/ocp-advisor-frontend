@@ -48,20 +48,9 @@ You can use the mocked version of Insights Results Aggregator (or Smart Proxy) A
 
 ## Deploying
 
-Any push to the following branches will trigger a build in [ocp-advisor-frontend-build](https://github.com/RedHatInsights/ocp-advisor-frontend-build) which will deploy to corresponding environment.
+The stage environment uses and always deploys the last commit available on the master branch. The production environment deploys the commit with a hash listed in the app-interface deploy configuration file.
 
-| Push to branch in this repo  | Updated branch in build repo  | Environment       | Available at
-| :--------------------------- | :---------------------------- | :---------------- | :-----------
-| master                       | qa-beta                       | stage beta        | https://console.stage.redhat.com/preview
-| master-stable                | qa-stable                     | stage stable      | https://console.stage.redhat.com
-| prod-beta                    | prod-beta                     | production beta   | https://console.redhat.com/preview
-| prod-stable                  | prod-stable                   | production stable | https://console.redhat.com
-
-### Deployment workflow
-
-To be finally deployed in production, all the features have to pass the following environments (the order is preserved): stage beta, production beta, and production stable. Integration tests are run against stage beta and production stable environments. Repository releases are automatically created once the stage beta (master branch) is updated.
 
 ### Travis
 
-- ocp-advisor-frontend uses Travis to deploy the webpack build to another Github repo defined in `.travis.yml`
 - Travis uploads results to RedHatInsight's [codecov](https://codecov.io) account. To change the account, modify CODECOV_TOKEN on https://travis-ci.com/.
