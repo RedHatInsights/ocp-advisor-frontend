@@ -467,8 +467,15 @@ export const WORKLOAD_RULES_COLUMNS = [
 ];
 
 export const WORKLOAD_RULES_FILTER_CATEGORIES = {
+  description: {
+    label: 'Description',
+    type: 'text',
+    title: 'description',
+    urlParam: 'description',
+  },
   total_risk: {
     type: 'checkbox',
+    label: 'Total risk',
     title: 'total risk',
     urlParam: 'total_risk',
     values: [
@@ -478,4 +485,45 @@ export const WORKLOAD_RULES_FILTER_CATEGORIES = {
       { label: TOTAL_RISK_LABEL[1], value: '1' },
     ],
   },
+  object_id: {
+    label: 'Object ID',
+    type: 'text',
+    title: 'object ID',
+    urlParam: 'object_id',
+  },
 };
+
+export const WORKLOADS_RULES_FILTER_CONFIG = (filters, addParamFunction) => [
+  {
+    label: 'description',
+    filterValues: {
+      key: 'description',
+      onChange: (_e, value) => addParamFunction('description', value),
+      value: filters.description,
+      placeholder: 'Filter by description',
+    },
+  },
+  {
+    label: 'total risk',
+    type: 'checkbox',
+    filterValues: {
+      key: `total_risk`,
+      onChange: (_e, values) => addParamFunction('total_risk', values),
+      value: filters.total_risk,
+      items: [
+        { label: TOTAL_RISK_LABEL[4], value: '4' },
+        { label: TOTAL_RISK_LABEL[3], value: '3' },
+        { label: TOTAL_RISK_LABEL[2], value: '2' },
+        { label: TOTAL_RISK_LABEL[1], value: '1' },
+      ],
+    },
+  },
+  {
+    label: 'object ID',
+    filterValues: {
+      key: 'object_id',
+      onChange: (_e, value) => addParamFunction('object_id', value),
+      value: filters.object_id,
+    },
+  },
+];
