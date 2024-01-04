@@ -57,12 +57,22 @@ export const WORKLOADS_TABLE_INITIAL_STATE = {
   severity: [],
 };
 
+export const WORKLOADS_RECS_TABLE_INITIAL_STATE = {
+  limit: 50,
+  sortIndex: 1,
+  sortDirection: 'desc',
+  description: '',
+  total_risk: [],
+  object_id: '',
+};
+
 const filtersInitialState = {
   affectedClustersState: AFFECTED_CLUSTERS_INITIAL_STATE,
   recsListState: RECS_LIST_INITIAL_STATE,
   clustersListState: CLUSTERS_LIST_INITIAL_STATE,
   clusterRulesState: CLUSTER_RULES_INITIAL_STATE,
   workloadsListState: WORKLOADS_TABLE_INITIAL_STATE,
+  workloadsRecsListState: WORKLOADS_RECS_TABLE_INITIAL_STATE,
 };
 
 export const resetFilters = (filters, initialState, updateFilters) => {
@@ -99,6 +109,9 @@ const filters = createSlice({
     updateWorkloadsListFilters(state, action) {
       state.workloadsListState = action.payload;
     },
+    updateWorkloadsRecsListFilters(state, action) {
+      state.workloadsRecsListState = action.payload;
+    },
   },
 });
 
@@ -108,6 +121,7 @@ export const {
   updateClustersListFilters,
   updateClusterRulesFilters,
   updateWorkloadsListFilters,
+  updateWorkloadsRecsListFilters,
 } = filters.actions;
 
 export default filters.reducer;

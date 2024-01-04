@@ -78,11 +78,69 @@ export const severityTypeToText = (value) => {
   }
 };
 
-export const noFiltersApplied = (params) => {
+export const filtersAreApplied = (params) => {
   const cleanedUpParams = _.cloneDeep(params);
   delete cleanedUpParams.sortIndex;
   delete cleanedUpParams.sortDirection;
   delete cleanedUpParams.offset;
   delete cleanedUpParams.limit;
-  return Object.values(cleanedUpParams).filter((value) => !isEmpty(value));
+  return Object.values(cleanedUpParams).filter((value) => !isEmpty(value))
+    .length
+    ? true
+    : false;
+};
+
+export const capitalize = (str) => {
+  return str?.charAt(0).toUpperCase() + str?.slice(1);
+};
+
+export const createChips = (category, value) => {
+  if (category.values) {
+    const selectedCategoryValue = category.values.find(
+      (values) => values.value === String(value)
+    );
+
+    return selectedCategoryValue
+      ? {
+          name: selectedCategoryValue.label || selectedCategoryValue.text,
+          value,
+        }
+      : { name: value, value };
+  }
+
+  return { name: value, value };
+};
+
+export const pruneWorkloadsRulesFilters = (localFilters, filterCategories) => {
+  const prunedFilters = Object.entries(localFilters);
+  return prunedFilters.reduce((arr, [name, value]) => {
+    if (filterCategories[name]) {
+      const category = filterCategories[name];
+      if (
+        (Array.isArray(value) && value.length > 0) ||
+        (typeof value === 'string' && value.trim() !== '')
+      ) {
+        const chips = Array.isArray(value)
+          ? value.map((v) => createChips(category, v))
+          : [createChips(category, value)];
+
+        arr.push({
+          category: capitalize(category.label),
+          chips,
+          urlParam: category.urlParam,
+        });
+      }
+    } else if (
+      (name === 'description' || name === 'object_id') &&
+      value.trim() !== ''
+    ) {
+      arr.push({
+        category: capitalize(name.replace('_', ' ')),
+        chips: [{ name: value, value }],
+        urlParam: name,
+      });
+    }
+
+    return arr;
+  }, []);
 };
