@@ -16,7 +16,7 @@ import {
 } from '@patternfly/react-core';
 import { Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import PropTypes from 'prop-types';
-import TemplateProcessor from '../../Utilities/TemplateProcessor';
+import TemplateProcessor from '@redhat-cloud-services/frontend-components-advisor-components/TemplateProcessor/TemplateProcessor';
 
 const columnNames = {
   object: 'Object ID',
