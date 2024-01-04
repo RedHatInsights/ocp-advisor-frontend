@@ -82,11 +82,10 @@ const ExpandedRulesDetails = ({ more_info, resolution, objects }) => {
             <strong>Note:</strong>
           </CardHeader>
           <CardBody>
-            SHOULD BE RENDERED ONLY WHEN THERE IS NO NAMES FOR CLUSTER AND
-            NAMESPACE Red Hat avoids gathering and processing namespace and
-            resource names as these may reveal confidential information.
-            Namespaces and resources are identified by their UIDs instead. You
-            can use in-cluster commands like the ones below to translate UIDs of
+            Red Hat avoids gathering and processing namespace and resource names
+            as these may reveal confidential information. Namespaces and
+            resources are identified by their UIDs instead. You can use
+            in-cluster commands like the ones below to translate UIDs of
             affected resources to their names.
             <CodeBlock>{code}</CodeBlock>
           </CardBody>
