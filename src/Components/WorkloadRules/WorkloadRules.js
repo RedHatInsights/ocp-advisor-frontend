@@ -7,6 +7,7 @@ import {
 } from '@patternfly/react-table';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
 import {
+  WORKLOADS_RULES_FILTER_CONFIG,
   WORKLOAD_RULES_COLUMNS,
   WORKLOAD_RULES_FILTER_CATEGORIES,
 } from '../../AppConstants';
@@ -28,8 +29,10 @@ import {
   removeFilterParam as _removeFilterParam,
 } from '../Common/Tables';
 import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat';
-import capitalize from 'lodash/capitalize';
-import { filtersAreApplied } from '../../Utilities/Workloads';
+import {
+  filtersAreApplied,
+  pruneWorkloadsRulesFilters,
+} from '../../Utilities/Workloads';
 
 const WorkloadRules = ({ workload }) => {
   const dispatch = useDispatch();
@@ -67,37 +70,10 @@ const WorkloadRules = ({ workload }) => {
     setRowsFiltered(true);
   }, [filteredRows]);
 
-  const filterConfigItems = [
-    {
-      label: 'description',
-      filterValues: {
-        key: 'description',
-        onChange: (_e, value) => addFilterParam('description', value),
-        value: filters.description,
-        placeholder: 'Filter by description',
-      },
-    },
-    {
-      label: WORKLOAD_RULES_FILTER_CATEGORIES.total_risk.title,
-      type: 'checkbox',
-      id: WORKLOAD_RULES_FILTER_CATEGORIES.total_risk.urlParam,
-      value: `checkbox-${WORKLOAD_RULES_FILTER_CATEGORIES.total_risk.urlParam}`,
-      filterValues: {
-        key: `total_risk`,
-        onChange: (_e, values) => addFilterParam('total_risk', values),
-        value: filters.total_risk,
-        items: WORKLOAD_RULES_FILTER_CATEGORIES.total_risk.values,
-      },
-    },
-    {
-      label: 'object ID',
-      filterValues: {
-        key: 'object_id',
-        onChange: (_e, value) => addFilterParam('object_id', value),
-        value: filters.object_id,
-      },
-    },
-  ];
+  const filterConfigItems = WORKLOADS_RULES_FILTER_CONFIG(
+    filters,
+    addFilterParam
+  );
 
   const buildDisplayedRows = (filteredRows, sortIndex, sortDirection) => {
     void sortIndex;
@@ -184,80 +160,14 @@ const WorkloadRules = ({ workload }) => {
       ]);
   };
 
-  const pruneFilters = (localFilters, filterCategories) => {
-    const prunedFilters = Object.entries(localFilters);
-    return prunedFilters.length > 0
-      ? prunedFilters.reduce((arr, item) => {
-          if (filterCategories[item[0]]) {
-            const category = filterCategories[item[0]];
-            const chips = Array.isArray(item[1])
-              ? item[1].map((value) => {
-                  const selectedCategoryValue = category.values.find(
-                    (values) => values.value === String(value)
-                  );
-                  return selectedCategoryValue
-                    ? {
-                        name:
-                          selectedCategoryValue.text ||
-                          selectedCategoryValue.label,
-                        value,
-                      }
-                    : { name: value, value };
-                })
-              : [
-                  {
-                    name: category.values.find(
-                      (values) => values.value === String(item[1])
-                    ).label,
-                    value: item[1],
-                  },
-                ];
-            return [
-              ...arr,
-              {
-                category: capitalize(category.title),
-                chips,
-                urlParam: category.urlParam,
-              },
-            ];
-          } else if (item[0] === 'description') {
-            return [
-              ...arr,
-              ...(item[1].length > 0
-                ? [
-                    {
-                      category: 'Description',
-                      chips: [{ name: item[1], value: item[1] }],
-                      urlParam: item[0],
-                    },
-                  ]
-                : []),
-            ];
-          } else if (item[0] === 'object_id') {
-            return [
-              ...arr,
-              ...(item[1].length > 0
-                ? [
-                    {
-                      category: 'Object ID',
-                      chips: [{ name: item[1], value: item[1] }],
-                      urlParam: item[0],
-                    },
-                  ]
-                : []),
-            ];
-          } else {
-            return arr;
-          }
-        }, [])
-      : [];
-  };
-
   const buildFilterChips = () => {
     const localFilters = { ...filters };
     delete localFilters.sortIndex;
     delete localFilters.sortDirection;
-    return pruneFilters(localFilters, WORKLOAD_RULES_FILTER_CATEGORIES);
+    return pruneWorkloadsRulesFilters(
+      localFilters,
+      WORKLOAD_RULES_FILTER_CATEGORIES
+    );
   };
 
   const activeFiltersConfig = {
