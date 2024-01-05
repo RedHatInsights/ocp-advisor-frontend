@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
+  SortByDirection,
   Table,
   TableBody,
   TableHeader,
@@ -76,10 +77,34 @@ const WorkloadRules = ({ workload }) => {
   );
 
   const buildDisplayedRows = (filteredRows, sortIndex, sortDirection) => {
-    void sortIndex;
-    void sortDirection;
+    const sortingRows =
+      sortIndex >= 0 && !expandFirst
+        ? [...filteredRows].sort((a, b) => {
+            const d = sortDirection === SortByDirection.asc ? 1 : -1;
+            const getValue = (item) => {
+              switch (sortIndex) {
+                case 1:
+                  return item[0].rule.details;
+                case 2:
+                  console.log('total risk sorting - we need data in the api');
+                  break;
+                case 3:
+                  return item[0].rule.objects.length;
+                case 4:
+                  return item[0].rule.modified;
+                default:
+                  return 0;
+              }
+            };
+            return getValue(a, sortIndex) > getValue(b, sortIndex)
+              ? d
+              : getValue(b, sortIndex) > getValue(a, sortIndex)
+              ? -d
+              : 0;
+          })
+        : [...filteredRows];
 
-    return filteredRows.flatMap((row, index) => {
+    return sortingRows.flatMap((row, index) => {
       const updatedRow = [...row];
       if (expandFirst && index === 0) {
         row[0].isOpen = true;
@@ -198,6 +223,16 @@ const WorkloadRules = ({ workload }) => {
     },
   };
 
+  const onSort = (_e, index, direction) => {
+    setRowsFiltered(false);
+    setExpandFirst(false);
+    return updateFilters({
+      ...filters,
+      sortIndex: index,
+      sortDirection: direction,
+    });
+  };
+
   return (
     <div id="workload-recs-list-table">
       <PrimaryToolbar
@@ -250,6 +285,11 @@ const WorkloadRules = ({ workload }) => {
         variant={TableVariant.compact}
         isStickyHeader
         canCollapseAll
+        sortBy={{
+          index: filters.sortIndex,
+          direction: filters.sortDirection,
+        }}
+        onSort={onSort}
       >
         <TableHeader />
         <TableBody />
