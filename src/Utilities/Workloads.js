@@ -84,6 +84,7 @@ export const filtersAreApplied = (params) => {
   delete cleanedUpParams.sortDirection;
   delete cleanedUpParams.offset;
   delete cleanedUpParams.limit;
+  delete cleanedUpParams.sort;
   return Object.values(cleanedUpParams).filter((value) => !isEmpty(value))
     .length
     ? true

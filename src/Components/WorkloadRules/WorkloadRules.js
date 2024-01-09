@@ -90,7 +90,6 @@ const WorkloadRules = ({ workload }) => {
   useEffect(() => {
     if (search && filterBuilding) {
       const paramsObject = paramParser(search);
-
       if (paramsObject.sort) {
         const sortObj = translateSortParams(paramsObject.sort);
         paramsObject.sortIndex = WORKLOADS_RULES_COLUMNS_KEYS.indexOf(
@@ -172,10 +171,10 @@ const WorkloadRules = ({ workload }) => {
 
   const buildFilteredRows = (allRows, filters) => {
     setRowsFiltered(false);
-    const noFilters = filtersAreApplied(filters);
+    const filtersArePresent = filtersAreApplied(filters);
     return allRows
       .filter((recs) =>
-        noFilters ? passFilterWorkloadsRecs(recs, filters) : true
+        filtersArePresent ? passFilterWorkloadsRecs(recs, filters) : true
       )
       .map((value, key) => [
         {
@@ -232,7 +231,7 @@ const WorkloadRules = ({ workload }) => {
   };
 
   const activeFiltersConfig = {
-    showDeleteButton: filtersApplied ? true : false,
+    showDeleteButton: filtersApplied,
     deleteTitle: 'Reset filters',
     filters: buildFilterChips(),
     onDelete: (_event, itemsToRemove, isAll) => {

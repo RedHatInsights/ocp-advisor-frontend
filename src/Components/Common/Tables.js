@@ -216,6 +216,7 @@ export const translateSortParams = (value) => ({
   name: value.substring(value.startsWith('-') ? 1 : 0),
   direction: value.startsWith('-') ? 'desc' : 'asc',
   description: value.substring(value.startsWith('-') ? 1 : 0),
+  object_id: value.substring(value.startsWith('-') ? 1 : 0),
 });
 
 export const translateSortValue = (index, indexMapping, direction) => {
@@ -317,21 +318,27 @@ export const passFilterWorkloads = (workloads, filters) => {
 };
 
 export const passFilterWorkloadsRecs = (recommendation, filters) => {
+  console.log(recommendation, 'recommendation');
+  console.log(filters, 'filters');
   return Object.entries(filters).some(([filterKey, filterValue]) => {
-    switch (filterKey) {
-      case 'description':
-        return recommendation.details
-          .toLowerCase()
-          .includes(filterValue.toLowerCase());
-      case 'object_id':
-        return recommendation.objects.some((obj) =>
-          obj.uid.toLowerCase().includes(filterValue.toLowerCase())
-        );
-      //NOTE IS NOT AVAILABLE IN THE API YET
-      /* case 'total_risk':
+    if (filterValue.length === 0) {
+      return false;
+    } else {
+      switch (filterKey) {
+        case 'description':
+          return recommendation.details
+            .toLowerCase()
+            .includes(filterValue.toLowerCase());
+        case 'object_id':
+          return recommendation.objects.some((obj) =>
+            obj.uid.toLowerCase().includes(filterValue.toLowerCase())
+          );
+        //NOTE IS NOT AVAILABLE IN THE API YET
+        /* case 'total_risk':
         return filterValue.includes(String(recs.total_risk)); */
-      default:
-        return false;
+        default:
+          return false;
+      }
     }
   });
 };
