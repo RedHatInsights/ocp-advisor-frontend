@@ -8,6 +8,7 @@ import {
 } from '@patternfly/react-table';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
 import {
+  WORKLOADS_RULES_COLUMNS_KEYS,
   WORKLOADS_RULES_FILTER_CONFIG,
   WORKLOAD_RULES_COLUMNS,
   WORKLOAD_RULES_FILTER_CATEGORIES,
@@ -28,12 +29,16 @@ import {
   addFilterParam as _addFilterParam,
   passFilterWorkloadsRecs,
   removeFilterParam as _removeFilterParam,
+  translateSortParams,
+  paramParser,
+  updateSearchParams,
 } from '../Common/Tables';
 import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat';
 import {
   filtersAreApplied,
   pruneWorkloadsRulesFilters,
 } from '../../Utilities/Workloads';
+import { useLocation } from 'react-router-dom';
 
 const WorkloadRules = ({ workload }) => {
   const dispatch = useDispatch();
@@ -43,12 +48,14 @@ const WorkloadRules = ({ workload }) => {
   const successState = isSuccess;
   const [isAllExpanded, setIsAllExpanded] = useState(false);
   const [filteredRows, setFilteredRows] = useState([]);
+  const [filterBuilding, setFilterBuilding] = useState(true);
   const [displayedRows, setDisplayedRows] = useState([]);
   const [rowsFiltered, setRowsFiltered] = useState(false);
   const [filtersApplied, setFiltersApplied] = useState(false);
   const [expandFirst, setExpandFirst] = useState(true);
   const [firstRule, setFirstRule] = useState('');
   const loadingState = isUninitialized || isFetching || !rowsFiltered;
+  const { search } = useLocation();
   //FILTERS
   const filters = useSelector(({ filters }) => filters.workloadsRecsListState);
 
@@ -79,6 +86,31 @@ const WorkloadRules = ({ workload }) => {
     filters,
     addFilterParam
   );
+
+  useEffect(() => {
+    if (search && filterBuilding) {
+      const paramsObject = paramParser(search);
+
+      if (paramsObject.sort) {
+        const sortObj = translateSortParams(paramsObject.sort);
+        paramsObject.sortIndex = WORKLOADS_RULES_COLUMNS_KEYS.indexOf(
+          sortObj.description
+        );
+        paramsObject.sortDirection = sortObj.direction;
+      }
+      paramsObject.total_risk &&
+        !Array.isArray(paramsObject.total_risk) &&
+        (paramsObject.total_risk = [`${paramsObject.total_risk}`]);
+      updateFilters({ ...filters, ...paramsObject });
+    }
+    setFilterBuilding(false);
+  }, []);
+
+  useEffect(() => {
+    if (!filterBuilding) {
+      updateSearchParams(filters, WORKLOADS_RULES_COLUMNS_KEYS);
+    }
+  }, [filters, filterBuilding]);
 
   const buildDisplayedRows = (filteredRows, sortIndex, sortDirection) => {
     const sortingRows =
