@@ -47,13 +47,17 @@ const WorkloadRules = ({ workload }) => {
   const [rowsFiltered, setRowsFiltered] = useState(false);
   const [filtersApplied, setFiltersApplied] = useState(false);
   const [expandFirst, setExpandFirst] = useState(true);
+  const [firstRule, setFirstRule] = useState('');
   const loadingState = isUninitialized || isFetching || !rowsFiltered;
   //FILTERS
   const filters = useSelector(({ filters }) => filters.workloadsRecsListState);
+
   const updateFilters = (payload) =>
     dispatch(updateWorkloadsRecsListFilters(payload));
+
   const addFilterParam = (param, values) => {
     setExpandFirst(false);
+    setFirstRule('');
     return _addFilterParam(filters, updateFilters, param, values);
   };
   const removeFilterParam = (param) =>
@@ -78,7 +82,7 @@ const WorkloadRules = ({ workload }) => {
 
   const buildDisplayedRows = (filteredRows, sortIndex, sortDirection) => {
     const sortingRows =
-      sortIndex >= 0 && !expandFirst
+      sortIndex >= 0 && !firstRule
         ? [...filteredRows].sort((a, b) => {
             const d = sortDirection === SortByDirection.asc ? 1 : -1;
             const getValue = (item) => {
@@ -226,6 +230,7 @@ const WorkloadRules = ({ workload }) => {
   const onSort = (_e, index, direction) => {
     setRowsFiltered(false);
     setExpandFirst(false);
+    setFirstRule('');
     return updateFilters({
       ...filters,
       sortIndex: index,
