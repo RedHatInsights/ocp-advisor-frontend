@@ -1,3 +1,4 @@
+import { SortByDirection } from '@patternfly/react-table';
 import _, { isEmpty } from 'lodash';
 
 export const SEVERITY_OPTIONS = [
@@ -143,4 +144,49 @@ export const pruneWorkloadsRulesFilters = (localFilters, filterCategories) => {
 
     return arr;
   }, []);
+};
+
+export const switchSort = (sortIndex, item) => {
+  const rule = item[0]?.rule; // Using optional chaining to check if 'rule' is defined
+  switch (sortIndex) {
+    case 1:
+      return rule?.details || '';
+    case 2:
+      return rule?.total_risk || [];
+    case 3:
+      return rule?.objects?.length || 0;
+    case 4:
+      return rule?.modified || '';
+    default:
+      return 0;
+  }
+};
+
+export const sortWithSwitch = (
+  sortIndex,
+  sortDirection,
+  filteredRows,
+  firstRule
+) => {
+  return sortIndex >= 0 && !firstRule
+    ? [...filteredRows].sort((a, b) => {
+        const d = sortDirection === SortByDirection.asc ? 1 : -1;
+        return switchSort(sortIndex, a) > switchSort(sortIndex, b)
+          ? d
+          : switchSort(sortIndex, b) > switchSort(sortIndex, a)
+          ? -d
+          : 0;
+      })
+    : [...filteredRows];
+};
+
+export const flatMapRows = (filteredRows, expandFirst) => {
+  return filteredRows.flatMap((row, index) => {
+    const updatedRow = [...row];
+    if (expandFirst && index === 0) {
+      row[0].isOpen = true;
+    }
+    row[1].parent = index * 2;
+    return updatedRow;
+  });
 };
