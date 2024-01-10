@@ -208,9 +208,9 @@ const WorkloadRules = ({ workload }) => {
         }}
         pagination={
           <span className="pf-u-font-weight-bold">
-            {recommendations?.length === 1
-              ? `${recommendations.length} Recommendation`
-              : `${recommendations.length} Recommendations`}
+            {filteredRows?.length === 1
+              ? `${filteredRows.length} Recommendation`
+              : `${filteredRows.length} Recommendations`}
           </span>
         }
         activeFiltersConfig={
