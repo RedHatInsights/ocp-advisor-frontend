@@ -204,7 +204,7 @@ const WorkloadRules = ({ workload }) => {
     setRowsFiltered(false);
     setExpandFirst(false);
     setFirstRule('');
-    return updateFilters({
+    updateFilters({
       ...filters,
       sortIndex: index,
       sortDirection: direction,
