@@ -318,8 +318,6 @@ export const passFilterWorkloads = (workloads, filters) => {
 };
 
 export const passFilterWorkloadsRecs = (recommendation, filters) => {
-  console.log(recommendation, 'recommendation');
-  console.log(filters, 'filters');
   return Object.entries(filters).some(([filterKey, filterValue]) => {
     if (filterValue.length === 0) {
       return false;

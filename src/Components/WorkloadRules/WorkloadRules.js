@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import {
-  SortByDirection,
   Table,
   TableBody,
   TableHeader,
@@ -26,9 +25,7 @@ import {
   updateWorkloadsRecsListFilters,
 } from '../../Services/Filters';
 import {
-  addFilterParam as _addFilterParam,
   passFilterWorkloadsRecs,
-  removeFilterParam as _removeFilterParam,
   translateSortParams,
   paramParser,
   updateSearchParams,
@@ -36,7 +33,11 @@ import {
 import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat';
 import {
   filtersAreApplied,
+  flatMapRows,
   pruneWorkloadsRulesFilters,
+  sortWithSwitch,
+  workloadsRulesAddFilterParam,
+  workloadsRulesRemoveFilterParam,
 } from '../../Utilities/Workloads';
 import { useLocation } from 'react-router-dom';
 
@@ -65,10 +66,10 @@ const WorkloadRules = ({ workload }) => {
   const addFilterParam = (param, values) => {
     setExpandFirst(false);
     setFirstRule('');
-    return _addFilterParam(filters, updateFilters, param, values);
+    return workloadsRulesAddFilterParam(filters, updateFilters, param, values);
   };
   const removeFilterParam = (param) =>
-    _removeFilterParam(filters, updateFilters, param);
+    workloadsRulesRemoveFilterParam(filters, updateFilters, param);
 
   useEffect(() => {
     setFilteredRows(buildFilteredRows(recommendations, filters));
@@ -112,41 +113,13 @@ const WorkloadRules = ({ workload }) => {
   }, [filters, filterBuilding]);
 
   const buildDisplayedRows = (filteredRows, sortIndex, sortDirection) => {
-    const sortingRows =
-      sortIndex >= 0 && !firstRule
-        ? [...filteredRows].sort((a, b) => {
-            const d = sortDirection === SortByDirection.asc ? 1 : -1;
-            const getValue = (item) => {
-              switch (sortIndex) {
-                case 1:
-                  return item[0].rule.details;
-                case 2:
-                  console.log('total risk sorting - we need data in the api');
-                  break;
-                case 3:
-                  return item[0].rule.objects.length;
-                case 4:
-                  return item[0].rule.modified;
-                default:
-                  return 0;
-              }
-            };
-            return getValue(a, sortIndex) > getValue(b, sortIndex)
-              ? d
-              : getValue(b, sortIndex) > getValue(a, sortIndex)
-              ? -d
-              : 0;
-          })
-        : [...filteredRows];
-
-    return sortingRows.flatMap((row, index) => {
-      const updatedRow = [...row];
-      if (expandFirst && index === 0) {
-        row[0].isOpen = true;
-      }
-      row[1].parent = index * 2;
-      return updatedRow;
-    });
+    const sortingRows = sortWithSwitch(
+      sortIndex,
+      sortDirection,
+      filteredRows,
+      firstRule
+    );
+    return flatMapRows(sortingRows, expandFirst);
   };
 
   const handleOnCollapse = (_e, rowId, isOpen) => {
