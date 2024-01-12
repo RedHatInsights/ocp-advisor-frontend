@@ -2,6 +2,8 @@ import {
   capitalize,
   createChips,
   pruneWorkloadsRulesFilters,
+  switchSort,
+  sortWithSwitch,
 } from '../../Utilities/Workloads';
 
 describe('capitalize function', () => {
@@ -72,6 +74,73 @@ describe('pruneWorkloadsRulesFilters function', () => {
         chips: [{ name: '12345', value: '12345' }],
         urlParam: 'object_id',
       },
+    ]);
+  });
+});
+
+// Mocking SortByDirection for testing purposes
+const SortByDirection = {
+  asc: 'asc',
+  desc: 'desc',
+};
+
+describe('switchSort function', () => {
+  test('should return details for sortIndex 1', () => {
+    const item = [{ rule: { details: 'someDetails' } }];
+    const result = switchSort(1, item);
+    expect(result).toBe('someDetails');
+  });
+
+  test('should return total_risk for sortIndex 2', () => {
+    const item = [{ rule: { total_risk: 42 } }];
+    const result = switchSort(2, item);
+    expect(result).toBe(42);
+  });
+
+  test('should return objects length for sortIndex 3', () => {
+    const item = [{ rule: { objects: [1, 2, 3] } }];
+    const result = switchSort(3, item);
+    expect(result).toBe(3);
+  });
+
+  test('should return modified for sortIndex 4', () => {
+    const item = [{ rule: { modified: '2024-01-10' } }];
+    const result = switchSort(4, item);
+    expect(result).toBe('2024-01-10');
+  });
+});
+
+describe('sortWithSwitch function', () => {
+  test('should return original rows if sortIndex is invalid or firstRule is true', () => {
+    const filteredRows = [
+      [{ rule: { details: 'abc' } }],
+      [{ rule: { details: 'xyz' } }],
+    ];
+    const result = sortWithSwitch(5, SortByDirection.asc, filteredRows, false);
+    expect(result).toEqual(filteredRows);
+  });
+
+  test('should sort rows in ascending order based on switchSort', () => {
+    const filteredRows = [
+      [{ rule: { details: 'abc' } }],
+      [{ rule: { details: 'xyz' } }],
+    ];
+    const result = sortWithSwitch(1, SortByDirection.asc, filteredRows);
+    expect(result).toEqual([
+      [{ rule: { details: 'abc' } }],
+      [{ rule: { details: 'xyz' } }],
+    ]);
+  });
+
+  test('should sort rows in descending order based on switchSort', () => {
+    const filteredRows = [
+      [{ rule: { details: 'abc' } }],
+      [{ rule: { details: 'xyz' } }],
+    ];
+    const result = sortWithSwitch(1, SortByDirection.desc, filteredRows);
+    expect(result).toEqual([
+      [{ rule: { details: 'xyz' } }],
+      [{ rule: { details: 'abc' } }],
     ]);
   });
 });

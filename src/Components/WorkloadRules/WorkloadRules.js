@@ -31,7 +31,9 @@ import {
 import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat';
 import {
   filtersAreApplied,
+  flatMapRows,
   pruneWorkloadsRulesFilters,
+  sortWithSwitch,
 } from '../../Utilities/Workloads';
 
 const WorkloadRules = ({ workload }) => {
@@ -49,8 +51,10 @@ const WorkloadRules = ({ workload }) => {
   const loadingState = isUninitialized || isFetching || !rowsFiltered;
   //FILTERS
   const filters = useSelector(({ filters }) => filters.workloadsRecsListState);
+
   const updateFilters = (payload) =>
     dispatch(updateWorkloadsRecsListFilters(payload));
+
   const addFilterParam = (param, values) => {
     setExpandFirst(false);
     return _addFilterParam(filters, updateFilters, param, values);
@@ -76,17 +80,8 @@ const WorkloadRules = ({ workload }) => {
   );
 
   const buildDisplayedRows = (filteredRows, sortIndex, sortDirection) => {
-    void sortIndex;
-    void sortDirection;
-
-    return filteredRows.flatMap((row, index) => {
-      const updatedRow = [...row];
-      if (expandFirst && index === 0) {
-        row[0].isOpen = true;
-      }
-      row[1].parent = index * 2;
-      return updatedRow;
-    });
+    const sortingRows = sortWithSwitch(sortIndex, sortDirection, filteredRows);
+    return flatMapRows(sortingRows, expandFirst);
   };
 
   const handleOnCollapse = (_e, rowId, isOpen) => {
@@ -198,6 +193,16 @@ const WorkloadRules = ({ workload }) => {
     },
   };
 
+  const onSort = (_e, index, direction) => {
+    setRowsFiltered(false);
+    setExpandFirst(false);
+    updateFilters({
+      ...filters,
+      sortIndex: index,
+      sortDirection: direction,
+    });
+  };
+
   return (
     <div id="workload-recs-list-table">
       <PrimaryToolbar
@@ -250,6 +255,11 @@ const WorkloadRules = ({ workload }) => {
         variant={TableVariant.compact}
         isStickyHeader
         canCollapseAll
+        sortBy={{
+          index: filters.sortIndex,
+          direction: filters.sortDirection,
+        }}
+        onSort={onSort}
       >
         <TableHeader />
         <TableBody />
