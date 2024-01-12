@@ -150,13 +150,13 @@ export const switchSort = (sortIndex, item) => {
   const rule = item[0].rule;
   switch (sortIndex) {
     case 1:
-      return rule?.details || '';
+      return rule.details;
     case 2:
-      return rule?.total_risk || '';
+      return rule.total_risk;
     case 3:
-      return rule?.objects?.length || 0;
+      return rule.objects.length;
     case 4:
-      return rule?.modified || '';
+      return rule.modified;
   }
 };
 
