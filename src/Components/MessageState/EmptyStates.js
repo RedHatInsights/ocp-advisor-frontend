@@ -273,6 +273,53 @@ const NoWorkloadsAvailable = () => {
   );
 };
 
+const NoWorkloadsRecsAvailable = () => {
+  return (
+    <MessageState
+      icon={ExclamationCircleIcon}
+      iconStyle={{ color: globalDangerColor100.value }}
+      title="Unable to connect"
+      text={
+        <>
+          <p>Check your connection and reload the page.</p>
+          <Button
+            variant="primary"
+            className="pf-v5-u-mt-xl"
+            onClick={() => history.back()}
+          >
+            Return to previous page
+          </Button>
+          <br />
+        </>
+      }
+    />
+  );
+};
+
+const NoRecsForWorkloadsDetails = () => {
+  return (
+    <MessageState
+      icon={CheckCircleIcon}
+      iconStyle={{
+        color: globalSuccessColor100.value,
+      }}
+      title="No workload recommendations"
+      text={
+        <>
+          <p>There are no recommendations for this workload.</p>
+          <Button
+            variant="primary"
+            className="pf-v5-u-mt-xl"
+            onClick={() => history.back()}
+          >
+            Return to previous page
+          </Button>
+        </>
+      }
+    />
+  );
+};
+
 export {
   ErrorState,
   NoAffectedClusters,
@@ -287,4 +334,6 @@ export {
   UpdateRisksNotAvailable,
   NoRecsForWorkloads,
   NoWorkloadsAvailable,
+  NoWorkloadsRecsAvailable,
+  NoRecsForWorkloadsDetails,
 };
