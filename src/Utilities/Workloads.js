@@ -148,29 +148,22 @@ export const pruneWorkloadsRulesFilters = (localFilters, filterCategories) => {
 };
 
 export const switchSort = (sortIndex, item) => {
-  const rule = item[0]?.rule; // Using optional chaining to check if 'rule' is defined
+  const rule = item[0].rule;
   switch (sortIndex) {
     case 1:
-      return rule?.details || '';
+      return rule.details;
     case 2:
-      return rule?.total_risk || [];
+      return rule.total_risk;
     case 3:
-      return rule?.objects?.length || 0;
+      return rule.objects.length;
     case 4:
-      return rule?.modified || '';
-    default:
-      return 0;
+      return rule.modified;
   }
 };
 
-export const sortWithSwitch = (
-  sortIndex,
-  sortDirection,
-  filteredRows,
-  firstRule
-) => {
-  return sortIndex >= 0 && !firstRule
-    ? [...filteredRows].sort((a, b) => {
+export const sortWithSwitch = (sortIndex, sortDirection, filteredRows) => {
+  return sortIndex >= 1
+    ? [...filteredRows]?.sort((a, b) => {
         const d = sortDirection === SortByDirection.asc ? 1 : -1;
         return switchSort(sortIndex, a) > switchSort(sortIndex, b)
           ? d

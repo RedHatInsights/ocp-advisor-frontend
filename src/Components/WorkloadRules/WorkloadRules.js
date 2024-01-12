@@ -54,7 +54,6 @@ const WorkloadRules = ({ workload }) => {
   const [rowsFiltered, setRowsFiltered] = useState(false);
   const [filtersApplied, setFiltersApplied] = useState(false);
   const [expandFirst, setExpandFirst] = useState(true);
-  const [firstRule, setFirstRule] = useState('');
   const loadingState = isUninitialized || isFetching || !rowsFiltered;
   const { search } = useLocation();
   //FILTERS
@@ -65,7 +64,6 @@ const WorkloadRules = ({ workload }) => {
 
   const addFilterParam = (param, values) => {
     setExpandFirst(false);
-    setFirstRule('');
     return workloadsRulesAddFilterParam(filters, updateFilters, param, values);
   };
   const removeFilterParam = (param) =>
@@ -113,12 +111,7 @@ const WorkloadRules = ({ workload }) => {
   }, [filters, filterBuilding]);
 
   const buildDisplayedRows = (filteredRows, sortIndex, sortDirection) => {
-    const sortingRows = sortWithSwitch(
-      sortIndex,
-      sortDirection,
-      filteredRows,
-      firstRule
-    );
+    const sortingRows = sortWithSwitch(sortIndex, sortDirection, filteredRows);
     return flatMapRows(sortingRows, expandFirst);
   };
 
@@ -234,8 +227,7 @@ const WorkloadRules = ({ workload }) => {
   const onSort = (_e, index, direction) => {
     setRowsFiltered(false);
     setExpandFirst(false);
-    setFirstRule('');
-    return updateFilters({
+    updateFilters({
       ...filters,
       sortIndex: index,
       sortDirection: direction,
@@ -252,9 +244,9 @@ const WorkloadRules = ({ workload }) => {
         }}
         pagination={
           <span className="pf-u-font-weight-bold">
-            {recommendations?.length === 1
-              ? `${recommendations.length} Recommendation`
-              : `${recommendations.length} Recommendations`}
+            {filteredRows?.length === 1
+              ? `${filteredRows.length} Recommendation`
+              : `${filteredRows.length} Recommendations`}
           </span>
         }
         activeFiltersConfig={

@@ -110,12 +110,6 @@ describe('switchSort function', () => {
     const result = switchSort(4, item);
     expect(result).toBe('2024-01-10');
   });
-
-  test('should return 0 for invalid sortIndex', () => {
-    const item = [{ rule: {} }];
-    const result = switchSort(5, item);
-    expect(result).toBe(0);
-  });
 });
 
 describe('sortWithSwitch function', () => {
@@ -127,25 +121,25 @@ describe('sortWithSwitch function', () => {
 
   test('should sort rows in ascending order based on switchSort', () => {
     const filteredRows = [
-      { rule: { details: 'abc' } },
-      { rule: { details: 'xyz' } },
+      [{ rule: { details: 'abc' } }],
+      [{ rule: { details: 'xyz' } }],
     ];
-    const result = sortWithSwitch(1, SortByDirection.asc, filteredRows, false);
+    const result = sortWithSwitch(1, SortByDirection.asc, filteredRows);
     expect(result).toEqual([
-      { rule: { details: 'abc' } },
-      { rule: { details: 'xyz' } },
+      [{ rule: { details: 'abc' } }],
+      [{ rule: { details: 'xyz' } }],
     ]);
   });
 
   test('should sort rows in descending order based on switchSort', () => {
     const filteredRows = [
-      { rule: { details: 'abc' } },
-      { rule: { details: 'xyz' } },
+      [{ rule: { details: 'abc' } }],
+      [{ rule: { details: 'xyz' } }],
     ];
-    const result = sortWithSwitch(1, SortByDirection.desc, filteredRows, false);
+    const result = sortWithSwitch(1, SortByDirection.desc, filteredRows);
     expect(result).toEqual([
-      { rule: { details: 'abc' } },
-      { rule: { details: 'xyz' } },
+      [{ rule: { details: 'xyz' } }],
+      [{ rule: { details: 'abc' } }],
     ]);
   });
 });
