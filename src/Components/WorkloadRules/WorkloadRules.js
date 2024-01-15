@@ -13,7 +13,11 @@ import {
 } from '../../AppConstants';
 import PropTypes from 'prop-types';
 import Loading from '../Loading/Loading';
-import { ErrorState } from '../MessageState/EmptyStates';
+import {
+  ErrorState,
+  NoRecsForWorkloadsDetails,
+  NoWorkloadsRecsAvailable,
+} from '../MessageState/EmptyStates';
 // import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat/DateFormat';
 import InsightsLabel from '@redhat-cloud-services/frontend-components/InsightsLabel';
 import ExpandedRulesDetails from '../ExpandedRulesDetails.js/ExpandedRulesDetails';
@@ -42,6 +46,7 @@ const WorkloadRules = ({ workload }) => {
   const recommendations = data?.recommendations || [];
   const errorState = isError;
   const successState = isSuccess;
+  const noInput = successState && recommendations.length === 0;
   const [isAllExpanded, setIsAllExpanded] = useState(false);
   const [filteredRows, setFilteredRows] = useState([]);
   const [displayedRows, setDisplayedRows] = useState([]);
@@ -209,7 +214,10 @@ const WorkloadRules = ({ workload }) => {
         filterConfig={{
           items: filterConfigItems,
           isDisabled:
-            loadingState || errorState || recommendations.length === 0,
+            loadingState ||
+            errorState ||
+            noInput ||
+            recommendations.length === 0,
         }}
         pagination={
           <span className="pf-u-font-weight-bold">
@@ -219,7 +227,7 @@ const WorkloadRules = ({ workload }) => {
           </span>
         }
         activeFiltersConfig={
-          loadingState || errorState || recommendations.length === 0
+          loadingState || errorState || noInput || recommendations.length === 0
             ? undefined
             : activeFiltersConfig
         }
@@ -231,7 +239,7 @@ const WorkloadRules = ({ workload }) => {
         ouiaSafe={!loadingState}
         onCollapse={handleOnCollapse} // TODO: set undefined when there is an empty state
         rows={
-          errorState || loadingState ? (
+          errorState || loadingState || noInput ? (
             [
               {
                 fullWidth: true,
@@ -240,8 +248,13 @@ const WorkloadRules = ({ workload }) => {
                     props: {
                       colSpan: WORKLOAD_RULES_COLUMNS.length + 1,
                     },
-                    title: <Loading />,
-                    // TODO: Empty state
+                    title: errorState ? (
+                      <NoWorkloadsRecsAvailable />
+                    ) : loadingState ? (
+                      <Loading />
+                    ) : (
+                      <NoRecsForWorkloadsDetails />
+                    ),
                   },
                 ],
               },
