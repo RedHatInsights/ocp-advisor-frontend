@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   BullseyeIcon,
   InfoCircleIcon,
@@ -17,6 +17,7 @@ import {
 import { Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import PropTypes from 'prop-types';
 import TemplateProcessor from '@redhat-cloud-services/frontend-components-advisor-components/TemplateProcessor/TemplateProcessor';
+import ObjectsModal from '../ObjectsModal/ObjectsModal';
 
 const columnNames = {
   object: 'Object ID',
@@ -26,9 +27,16 @@ const code = `oc get namespace -o jsonpath={range .items[*]}{.metadata.name}{"\t
   oc -n <namespace> get <resourceKind> -o jsonpath={range .items[*]}{.metadata.name}{"\t"}{.metadata.uid}{"\n"}{end}`;
 
 const ExpandedRulesDetails = ({ more_info, resolution, objects }) => {
+  const [objectsModalOpen, setObjectsModalOpen] = useState(false);
   return (
     <Card className="ins-c-report-details" style={{ boxShadow: 'none' }}>
       <CardBody>
+        {objectsModalOpen && (
+          <ObjectsModal
+            isModalOpen={objectsModalOpen}
+            setIsModalOpen={setObjectsModalOpen}
+          />
+        )}
         <Stack
           className="ins-c-report-details__cards-stack"
           widget-type="InsightsRulesCard"
@@ -74,7 +82,11 @@ const ExpandedRulesDetails = ({ more_info, resolution, objects }) => {
               ))}
             </Tbody>
           </Table>
-          <Button variant="link" isInline>
+          <Button
+            variant="link"
+            isInline
+            onClick={() => setObjectsModalOpen(true)}
+          >
             View all objects
           </Button>
           <br />
