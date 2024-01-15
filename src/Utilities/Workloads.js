@@ -85,6 +85,7 @@ export const filtersAreApplied = (params) => {
   delete cleanedUpParams.sortDirection;
   delete cleanedUpParams.offset;
   delete cleanedUpParams.limit;
+  delete cleanedUpParams.sort;
   return Object.values(cleanedUpParams).filter((value) => !isEmpty(value))
     .length
     ? true
@@ -183,3 +184,34 @@ export const flatMapRows = (filteredRows, expandFirst) => {
     return updatedRow;
   });
 };
+
+export const workloadsRulesRemoveFilterParam = (
+  currentFilters,
+  updateFilters,
+  param
+) => {
+  const { [param]: omitted, ...newFilters } = { ...currentFilters };
+  updateFilters({
+    ...newFilters,
+    ...(param === 'description'
+      ? { description: '' }
+      : param === 'total_risk'
+      ? { total_risk: [] }
+      : param === 'object_id'
+      ? { object_id: '' }
+      : {}),
+  });
+};
+
+export const workloadsRulesAddFilterParam = (
+  currentFilters,
+  updateFilters,
+  param,
+  values
+) =>
+  values.length > 0
+    ? updateFilters({
+        ...currentFilters,
+        ...{ [param]: values },
+      })
+    : workloadsRulesRemoveFilterParam(currentFilters, updateFilters, param);

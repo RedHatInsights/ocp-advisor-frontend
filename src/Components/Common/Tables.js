@@ -199,6 +199,8 @@ export const paramParser = (search) => {
         'sort',
         'cluster_name',
         'namespace_name',
+        'description',
+        'object_id',
       ].includes(key)
         ? value // just copy the full value
         : value === 'true' || value === 'false'
@@ -213,6 +215,8 @@ export const paramParser = (search) => {
 export const translateSortParams = (value) => ({
   name: value.substring(value.startsWith('-') ? 1 : 0),
   direction: value.startsWith('-') ? 'desc' : 'asc',
+  description: value.substring(value.startsWith('-') ? 1 : 0),
+  object_id: value.substring(value.startsWith('-') ? 1 : 0),
 });
 
 export const translateSortValue = (index, indexMapping, direction) => {

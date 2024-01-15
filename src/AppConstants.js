@@ -527,3 +527,11 @@ export const WORKLOADS_RULES_FILTER_CONFIG = (filters, addParamFunction) => [
     },
   },
 ];
+
+export const WORKLOADS_RULES_COLUMNS_KEYS = [
+  '', // reserved for expand button
+  'description',
+  'total_risk',
+  'objects',
+  'modified',
+];
