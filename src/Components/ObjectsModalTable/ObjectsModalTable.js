@@ -2,40 +2,11 @@ import React from 'react';
 import { Table, Thead, Tr, Th, Tbody, Td } from '@patternfly/react-table';
 import { Title } from '@patternfly/react-core';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
+import { ObjectsTableColumns } from '../../AppConstants';
+import PropTypes from 'prop-types';
+import Pagination from '@redhat-cloud-services/frontend-components/Pagination';
 
-export const ObjectsModalTable = () => {
-  const repositories = [
-    {
-      name: 'one',
-      branches: 'two',
-      prs: 'three',
-      workspaces: 'four',
-      lastCommit: 'five',
-    },
-    {
-      name: 'one - 2',
-      branches: null,
-      prs: null,
-      workspaces: 'four - 2',
-      lastCommit: 'five - 2',
-    },
-    {
-      name: 'one - 3',
-      branches: 'two - 3',
-      prs: 'three - 3',
-      workspaces: 'four - 3',
-      lastCommit: 'five - 3',
-    },
-  ];
-
-  const columnNames = {
-    name: 'Repositories',
-    branches: 'Branches',
-    prs: 'Pull requests',
-    workspaces: 'Workspaces',
-    lastCommit: 'Last commit',
-  };
-
+export const ObjectsModalTable = ({ objects }) => {
   return (
     <div id="objects-list-table">
       <Title headingLevel="h1" ouiaId="page-header">
@@ -54,32 +25,37 @@ export const ObjectsModalTable = () => {
       <Table aria-label="Cell widths">
         <Thead>
           <Tr>
-            <Th width={15}>{columnNames.name}</Th>
-            <Th width={15}>{columnNames.branches}</Th>
-            <Th width={40} visibility={['hiddenOnMd', 'visibleOnLg']}>
-              {columnNames.prs}
-            </Th>
-            <Th width={15}>{columnNames.workspaces}</Th>
-            <Th width={15}>{columnNames.lastCommit}</Th>
+            <Th width={60}>{ObjectsTableColumns.object}</Th>
+            <Th width={30}>{ObjectsTableColumns.kind}</Th>
           </Tr>
         </Thead>
         <Tbody>
-          {repositories.map((repo) => (
-            <Tr key={repo.name}>
-              <Td dataLabel={columnNames.name}>{repo.name}</Td>
-              <Td dataLabel={columnNames.branches}>{repo.branches}</Td>
-              <Td
-                dataLabel={columnNames.prs}
-                visibility={['hiddenOnMd', 'visibleOnLg']}
-              >
-                {repo.prs}
-              </Td>
-              <Td dataLabel={columnNames.workspaces}>{repo.workspaces}</Td>
-              <Td dataLabel={columnNames.lastCommit}>{repo.lastCommit}</Td>
+          {objects.map((object, index) => (
+            <Tr key={index}>
+              <Td dataLabel={ObjectsTableColumns.object}>{object.uid}</Td>
+              <Td dataLabel={ObjectsTableColumns.kind}>{object.kind}</Td>
             </Tr>
           ))}
         </Tbody>
       </Table>
+      <Pagination
+        ouiaId="pager"
+        /* itemCount={filteredRows.length}
+        page={page}
+        perPage={perPage}
+        onSetPage={onSetPage}
+        onPerPageSelect={onSetPerPage}
+        onPageInput={onSetPage}
+        widgetId={`pagination-options-menu-bottom`}*/
+        variant={'bottom'}
+      />
     </div>
   );
+};
+
+ObjectsModalTable.propTypes = {
+  objects: PropTypes.arrayOf({
+    kind: PropTypes.string,
+    uid: PropTypes.string,
+  }),
 };

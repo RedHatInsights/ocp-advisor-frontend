@@ -18,11 +18,8 @@ import { Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import PropTypes from 'prop-types';
 import TemplateProcessor from '@redhat-cloud-services/frontend-components-advisor-components/TemplateProcessor/TemplateProcessor';
 import ObjectsModal from '../ObjectsModal/ObjectsModal';
+import { ObjectsTableColumns } from '../../AppConstants';
 
-const columnNames = {
-  object: 'Object ID',
-  kind: 'Kind',
-};
 const code = `oc get namespace -o jsonpath={range .items[*]}{.metadata.name}{"\t"}{.metadata.uid}{"\n"}{end}
   oc -n <namespace> get <resourceKind> -o jsonpath={range .items[*]}{.metadata.name}{"\t"}{.metadata.uid}{"\n"}{end}`;
 
@@ -35,6 +32,7 @@ const ExpandedRulesDetails = ({ more_info, resolution, objects }) => {
           <ObjectsModal
             isModalOpen={objectsModalOpen}
             setIsModalOpen={setObjectsModalOpen}
+            objects={objects}
           />
         )}
         <Stack
@@ -69,15 +67,15 @@ const ExpandedRulesDetails = ({ more_info, resolution, objects }) => {
           <Table borders={'compactBorderless'}>
             <Thead>
               <Tr>
-                <Th modifier="fitContent">{columnNames.object}</Th>
-                <Th modifier="fitContent">{columnNames.kind}</Th>
+                <Th modifier="fitContent">{ObjectsTableColumns.object}</Th>
+                <Th modifier="fitContent">{ObjectsTableColumns.kind}</Th>
               </Tr>
             </Thead>
             <Tbody>
               {objects.slice(0, 3).map((object, key) => (
                 <Tr key={key}>
-                  <Td dataLabel={columnNames.object}>{object.uid}</Td>
-                  <Td dataLabel={columnNames.kind}>{object.kind}</Td>
+                  <Td dataLabel={ObjectsTableColumns.object}>{object.uid}</Td>
+                  <Td dataLabel={ObjectsTableColumns.kind}>{object.kind}</Td>
                 </Tr>
               ))}
             </Tbody>
