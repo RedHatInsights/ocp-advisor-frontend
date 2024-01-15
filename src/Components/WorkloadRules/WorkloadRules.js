@@ -64,7 +64,7 @@ const WorkloadRules = ({ workload }) => {
 
   const addFilterParam = (param, values) => {
     setExpandFirst(false);
-    return workloadsRulesAddFilterParam(filters, updateFilters, param, values);
+    workloadsRulesAddFilterParam(filters, updateFilters, param, values);
   };
   const removeFilterParam = (param) =>
     workloadsRulesRemoveFilterParam(filters, updateFilters, param);
