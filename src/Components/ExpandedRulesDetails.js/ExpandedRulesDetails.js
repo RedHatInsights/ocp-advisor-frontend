@@ -120,7 +120,6 @@ const ExpandedRulesDetails = ({ more_info, resolution, objects }) => {
 export default ExpandedRulesDetails;
 
 ExpandedRulesDetails.propTypes = {
-  extra_data: PropTypes.string.isRequired,
   more_info: PropTypes.string.isRequired,
   resolution: PropTypes.string.isRequired,
   objects: PropTypes.arrayOf({

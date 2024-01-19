@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table, Thead, Tr, Th, Tbody, Td } from '@patternfly/react-table';
 import { Title } from '@patternfly/react-core';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
@@ -12,19 +12,30 @@ import {
   updateWorkloadsObjectsListFilters,
 } from '../../Services/Filters';
 import { removeFilterParam as _removeFilterParam } from '../Common/Tables';
-import { pruneWorkloadsRulesFilters } from '../../Utilities/Workloads';
+import {
+  filtersAreApplied,
+  pruneWorkloadsRulesFilters,
+} from '../../Utilities/Workloads';
+import ErrorState from '@redhat-cloud-services/frontend-components/ErrorState';
 
 export const ObjectsModalTable = ({ objects }) => {
+  const objectsData = objects || [];
   const dispatch = useDispatch();
   const [filtersApplied, setFiltersApplied] = useState(false);
+  const [filteredRows, setFilteredRows] = useState([]);
+  const [displayedRows, setDisplayedRows] = useState([]);
+  const [rowsFiltered, setRowsFiltered] = useState(false);
   const filters = useSelector(
     ({ filters }) => filters.workloadsObjectsListState
   );
+  const page = filters.offset / filters.limit + 1;
+
   const removeFilterParam = (param) =>
     _removeFilterParam(filters, updateFilters, param);
 
   const updateFilters = (payload) =>
     dispatch(updateWorkloadsObjectsListFilters(payload));
+  const preparedRows = displayedRows.length > 0 ? true : false;
 
   const filterConfigItems = [
     {
@@ -77,56 +88,33 @@ export const ObjectsModalTable = ({ objects }) => {
     },
   };
 
-  const buildFilteredRows = (allRows, filters) => {
-    setRowsFiltered(false);
-    const noFilters = filtersAreApplied(filters);
-    return allRows
-      .filter((recs) =>
-        noFilters ? passFilterWorkloadsRecs(recs, filters) : true
-      )
-      .map((value, key) => [
-        {
-          rule: value,
-          isOpen: isAllExpanded,
-          cells: [
-            {
-              title: value.details,
-            },
-            {
-              title: (
-                <div key={key}>
-                  <InsightsLabel value={4} rest={{ isCompact: true }} />
-                </div>
-              ),
-            },
-            {
-              title: value.objects.length,
-            },
-            {
-              title: (
-                <div key={key}>
-                  <DateFormat date={value.modified} type="relative" />
-                </div>
-              ),
-            },
-          ],
-        },
-        {
-          cells: [
-            {
-              title: (
-                <ExpandedRulesDetails
-                  extra_data={value.extra_data}
-                  more_info={value.more_info}
-                  resolution={value.resolution}
-                  objects={value.objects}
-                />
-              ),
-            },
-          ],
-        },
-      ]);
+  const passObjectsFilters = (objects, filters) => {
+    return Object.entries(filters).some(([filterKey, filterValue]) => {
+      switch (filterKey) {
+        case 'object_id':
+          return objects.uid.toLowerCase().includes(filterValue.toLowerCase());
+        default:
+          return false;
+      }
+    });
   };
+
+  //This is where we apply filters and map rows agains the filters
+  const buildFilterRows = (allrows, filters) => {
+    return allrows.filter((object) => passObjectsFilters(object, filters));
+  };
+
+  //After objectsData is present or in case of object id filter change we setFiltered rows using buildiflterRows
+  useEffect(() => {
+    setFilteredRows(buildFilterRows(objectsData, filters));
+  }, [objectsData, filters.object_id]);
+
+  //after objects data is present we set filtered rows and this useEffect is triggered to update displayed rows
+  //with new array of rows that have filters applied
+  useEffect(() => {
+    setDisplayedRows(filteredRows);
+    setRowsFiltered(true);
+  }, [filteredRows, filters.limit, filters.offset]);
 
   return (
     <div id="objects-list-table">
@@ -145,22 +133,26 @@ export const ObjectsModalTable = ({ objects }) => {
         filterConfig={{ items: filterConfigItems }}
         activeFiltersConfig={activeFiltersConfig}
       />
-      <Table aria-label="Cell widths">
-        <Thead>
-          <Tr>
-            <Th width={60}>{ObjectsTableColumns.object}</Th>
-            <Th width={30}>{ObjectsTableColumns.kind}</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {objects.map((object, index) => (
-            <Tr key={index}>
-              <Td dataLabel={ObjectsTableColumns.object}>{object.uid}</Td>
-              <Td dataLabel={ObjectsTableColumns.kind}>{object.kind}</Td>
+      {preparedRows ? (
+        <Table aria-label="Cell widths">
+          <Thead>
+            <Tr>
+              <Th width={60}>{ObjectsTableColumns.object}</Th>
+              <Th width={30}>{ObjectsTableColumns.kind}</Th>
             </Tr>
-          ))}
-        </Tbody>
-      </Table>
+          </Thead>
+          <Tbody>
+            {displayedRows?.map((object, index) => (
+              <Tr key={index}>
+                <Td dataLabel={ObjectsTableColumns.object}>{object.uid}</Td>
+                <Td dataLabel={ObjectsTableColumns.kind}>{object.kind}</Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      ) : (
+        <ErrorState />
+      )}
       <Pagination
         ouiaId="pager"
         /* itemCount={filteredRows.length}
