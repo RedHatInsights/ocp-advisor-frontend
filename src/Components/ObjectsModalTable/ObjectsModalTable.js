@@ -85,7 +85,6 @@ export const ObjectsModalTable = ({ objects }) => {
                 )
               : '',
           };
-          console.log(newFilter, 'newFilter');
           newFilter[item.urlParam].length > 0
             ? updateFilters({ ...filters, ...newFilter })
             : removeFilterParam(item.urlParam);
@@ -135,6 +134,7 @@ export const ObjectsModalTable = ({ objects }) => {
       updateFilters({ ...filters, limit: perPage, offset: 0 });
     }
   };
+  console.log(filters, 'filters');
 
   return (
     <div id="objects-list-table">
