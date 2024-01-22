@@ -16,7 +16,8 @@ import {
   filtersAreApplied,
   pruneWorkloadsRulesFilters,
 } from '../../Utilities/Workloads';
-import ErrorState from '@redhat-cloud-services/frontend-components/ErrorState';
+import { NoMatchingWorkloadsObjects } from '../MessageState/EmptyStates';
+import Loading from '../Loading/Loading';
 
 export const ObjectsModalTable = ({ objects }) => {
   const objectsData = objects || [];
@@ -28,7 +29,8 @@ export const ObjectsModalTable = ({ objects }) => {
   const filters = useSelector(
     ({ filters }) => filters.workloadsObjectsListState
   );
-  const page = filters.offset / filters.limit + 1;
+  const page = Math.floor(filters.offset / filters.limit) + 1;
+  const perPage = filters.limit;
 
   const removeFilterParam = (param) =>
     _removeFilterParam(filters, updateFilters, param);
@@ -36,6 +38,7 @@ export const ObjectsModalTable = ({ objects }) => {
   const updateFilters = (payload) =>
     dispatch(updateWorkloadsObjectsListFilters(payload));
   const preparedRows = displayedRows.length > 0 ? true : false;
+  const loadingState = !rowsFiltered;
 
   const filterConfigItems = [
     {
@@ -54,10 +57,12 @@ export const ObjectsModalTable = ({ objects }) => {
     const localFilters = { ...filters };
     delete localFilters.sortIndex;
     delete localFilters.sortDirection;
-    return pruneWorkloadsRulesFilters(
-      localFilters,
-      WORKLOADS_OBJECTS_TABLE_INITIAL_STATE
-    );
+    return pruneWorkloadsRulesFilters(localFilters, {
+      label: 'Object ID',
+      type: 'text',
+      title: 'object ID',
+      urlParam: 'object_id',
+    });
   };
 
   const activeFiltersConfig = {
@@ -80,6 +85,7 @@ export const ObjectsModalTable = ({ objects }) => {
                 )
               : '',
           };
+          console.log(newFilter, 'newFilter');
           newFilter[item.urlParam].length > 0
             ? updateFilters({ ...filters, ...newFilter })
             : removeFilterParam(item.urlParam);
@@ -107,14 +113,28 @@ export const ObjectsModalTable = ({ objects }) => {
   //After objectsData is present or in case of object id filter change we setFiltered rows using buildiflterRows
   useEffect(() => {
     setFilteredRows(buildFilterRows(objectsData, filters));
-  }, [objectsData, filters.object_id]);
+  }, [objectsData, filters]);
 
   //after objects data is present we set filtered rows and this useEffect is triggered to update displayed rows
   //with new array of rows that have filters applied
   useEffect(() => {
     setDisplayedRows(filteredRows);
+    setFiltersApplied(filtersAreApplied(filters));
     setRowsFiltered(true);
   }, [filteredRows, filters.limit, filters.offset]);
+
+  const onSetPage = (_e, pageNumber) => {
+    setRowsFiltered(false);
+    const newOffset = pageNumber * filters.limit - filters.limit;
+    updateFilters({ ...filters, offset: newOffset });
+  };
+
+  const onSetPerPage = (_e, perPage) => {
+    if (perPage !== filters.limit) {
+      setRowsFiltered(false);
+      updateFilters({ ...filters, limit: perPage, offset: 0 });
+    }
+  };
 
   return (
     <div id="objects-list-table">
@@ -123,17 +143,19 @@ export const ObjectsModalTable = ({ objects }) => {
       </Title>
       <PrimaryToolbar
         pagination={{
-          /*           page,
+          page,
           perPage,
-          onSetPage, */
-          onPerPageSelect: () => console.log('pageChanged'),
+          onSetPage,
+          onPerPageSelect: onSetPerPage,
           isCompact: true,
           ouiaId: 'pager',
         }}
         filterConfig={{ items: filterConfigItems }}
         activeFiltersConfig={activeFiltersConfig}
       />
-      {preparedRows ? (
+      {loadingState ? (
+        <Loading />
+      ) : preparedRows ? (
         <Table aria-label="Cell widths">
           <Thead>
             <Tr>
@@ -151,17 +173,17 @@ export const ObjectsModalTable = ({ objects }) => {
           </Tbody>
         </Table>
       ) : (
-        <ErrorState />
+        <NoMatchingWorkloadsObjects />
       )}
       <Pagination
         ouiaId="pager"
-        /* itemCount={filteredRows.length}
+        itemCount={filteredRows.length}
         page={page}
         perPage={perPage}
         onSetPage={onSetPage}
         onPerPageSelect={onSetPerPage}
         onPageInput={onSetPage}
-        widgetId={`pagination-options-menu-bottom`}*/
+        widgetId={`pagination-options-menu-bottom`}
         variant={'bottom'}
       />
     </div>
