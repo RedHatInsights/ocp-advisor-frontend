@@ -41,7 +41,43 @@
     },
     {
         "kind": "Deployment",
-        "uid": "74106997-d5b2-4fa9-875a-d1cb45d2ce68"
+        "uid": "74106997"
+    },
+    {
+        "kind": "Deployment",
+        "uid": "8e0375c6-a290-4011-95be-46a3193f9ee5"
+    },
+    {
+        "kind": "StatefulSet",
+        "uid": "975245fd-fec6-4a54-9fd4-2b6bcd7067b1"
+    },
+    {
+        "kind": "Deployment",
+        "uid": "875a-d1cb45d2ce68"
+    },
+    {
+        "kind": "Deployment",
+        "uid": "8e0375c6-a290-4011-95be-46a3193f9ee5"
+    },
+    {
+        "kind": "StatefulSet",
+        "uid": "975245fd-f4-9fd4-2b6bcd7067b1"
+    },
+    {
+        "kind": "Deployment",
+        "uid": "741069cb45d2ce68"
+    },
+    {
+        "kind": "Deployment",
+        "uid": "8e0375c6-a290-4011-95be-46a3193f9ee5"
+    },
+    {
+        "kind": "StatefulSet",
+        "uid": "975245fd-fec6-4a54-9fd7067b1"
+    },
+    {
+        "kind": "Deployment",
+        "uid": "74106997ce68"
     },
     {
         "kind": "Deployment",
@@ -61,7 +97,7 @@
     },
     {
         "kind": "StatefulSet",
-        "uid": "975245fd-fec6-4a54-9fd4-2b6bcd7067b1"
+        "uid": "975245fd-f067b1"
     },
     {
         "kind": "Deployment",
@@ -69,43 +105,7 @@
     },
     {
         "kind": "Deployment",
-        "uid": "8e0375c6-a290-4011-95be-46a3193f9ee5"
-    },
-    {
-        "kind": "StatefulSet",
-        "uid": "975245fd-fec6-4a54-9fd4-2b6bcd7067b1"
-    },
-    {
-        "kind": "Deployment",
-        "uid": "74106997-d5b2-4fa9-875a-d1cb45d2ce68"
-    },
-    {
-        "kind": "Deployment",
-        "uid": "8e0375c6-a290-4011-95be-46a3193f9ee5"
-    },
-    {
-        "kind": "StatefulSet",
-        "uid": "975245fd-fec6-4a54-9fd4-2b6bcd7067b1"
-    },
-    {
-        "kind": "Deployment",
-        "uid": "74106997-d5b2-4fa9-875a-d1cb45d2ce68"
-    },
-    {
-        "kind": "Deployment",
-        "uid": "8e0375c6-a290-4011-95be-46a3193f9ee5"
-    },
-    {
-        "kind": "StatefulSet",
-        "uid": "975245fd-fec6-4a54-9fd4-2b6bcd7067b1"
-    },
-    {
-        "kind": "Deployment",
-        "uid": "74106997-d5b2-4fa9-875a-d1cb45d2ce68"
-    },
-    {
-        "kind": "Deployment",
-        "uid": "8e0375c6-a290-4011-95be-46a3193f9ee5"
+        "uid": "8e0375c6-a290-401e5"
     },
     {
         "kind": "StatefulSet",

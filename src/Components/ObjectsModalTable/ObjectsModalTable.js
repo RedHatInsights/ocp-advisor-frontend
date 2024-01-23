@@ -4,8 +4,6 @@ import { Title } from '@patternfly/react-core';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
 import { ObjectsTableColumns } from '../../AppConstants';
 import PropTypes from 'prop-types';
-import Pagination from '@redhat-cloud-services/frontend-components/Pagination';
-import { PaginationVariant } from '@patternfly/react-core/dist/js/components/Pagination/Pagination';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   WORKLOADS_OBJECTS_TABLE_INITIAL_STATE,
@@ -108,7 +106,7 @@ export const ObjectsModalTable = ({ objects }) => {
   //After objectsData is present or in case of object id filter change we setFiltered rows using buildiflterRows
   useEffect(() => {
     setFilteredRows(buildFilteredRows(objectsData, filters));
-  }, [objectsData, filters.limit, filters.offset]);
+  }, [objectsData, filters]);
 
   //after objects data is present we set filtered rows and this useEffect is triggered to update displayed rows
   //with new array of rows that have filters applied
@@ -171,17 +169,6 @@ export const ObjectsModalTable = ({ objects }) => {
       ) : (
         <NoMatchingWorkloadsObjects />
       )}
-      <Pagination
-        ouiaId="pager"
-        itemCount={filteredRows.length}
-        page={page}
-        perPage={perPage}
-        onSetPage={onSetPage}
-        onPerPageSelect={onSetPerPage}
-        onPageInput={onSetPage}
-        widgetId={`pagination-options-menu-bottom`}
-        variant={PaginationVariant.bottom}
-      />
     </div>
   );
 };
