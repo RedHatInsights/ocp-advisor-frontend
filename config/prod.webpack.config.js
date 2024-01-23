@@ -4,7 +4,7 @@ const BundleAnalyzerPlugin =
   require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const { config: webpackConfig, plugins } = config({
   rootFolder: resolve(__dirname, '../'),
-  ...(process.env.BETA && { deployment: 'beta/apps' }),
+  ...(process.env.BETA === 'true' && { deployment: 'beta/apps' }),
   debug: true,
   sassPrefix: '.ocp-advisor, .ocpAdvisor',
 });

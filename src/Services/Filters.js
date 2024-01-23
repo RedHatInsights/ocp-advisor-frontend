@@ -58,7 +58,6 @@ export const WORKLOADS_TABLE_INITIAL_STATE = {
 };
 
 export const WORKLOADS_RECS_TABLE_INITIAL_STATE = {
-  limit: 50,
   sortIndex: 1,
   sortDirection: 'desc',
   description: '',

@@ -7,13 +7,18 @@ import {
 } from '@patternfly/react-table';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
 import {
+  WORKLOADS_RULES_COLUMNS_KEYS,
   WORKLOADS_RULES_FILTER_CONFIG,
   WORKLOAD_RULES_COLUMNS,
   WORKLOAD_RULES_FILTER_CATEGORIES,
 } from '../../AppConstants';
 import PropTypes from 'prop-types';
 import Loading from '../Loading/Loading';
-import { ErrorState } from '../MessageState/EmptyStates';
+import {
+  ErrorState,
+  NoRecsForWorkloadsDetails,
+  NoWorkloadsRecsAvailable,
+} from '../MessageState/EmptyStates';
 // import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat/DateFormat';
 import InsightsLabel from '@redhat-cloud-services/frontend-components/InsightsLabel';
 import ExpandedRulesDetails from '../ExpandedRulesDetails.js/ExpandedRulesDetails';
@@ -24,9 +29,10 @@ import {
   updateWorkloadsRecsListFilters,
 } from '../../Services/Filters';
 import {
-  addFilterParam as _addFilterParam,
   passFilterWorkloadsRecs,
-  removeFilterParam as _removeFilterParam,
+  translateSortParams,
+  paramParser,
+  updateSearchParams,
 } from '../Common/Tables';
 import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat';
 import {
@@ -34,7 +40,10 @@ import {
   flatMapRows,
   pruneWorkloadsRulesFilters,
   sortWithSwitch,
+  workloadsRulesAddFilterParam,
+  workloadsRulesRemoveFilterParam,
 } from '../../Utilities/Workloads';
+import { useLocation } from 'react-router-dom';
 
 const WorkloadRules = ({ workload }) => {
   const dispatch = useDispatch();
@@ -42,13 +51,16 @@ const WorkloadRules = ({ workload }) => {
   const recommendations = data?.recommendations || [];
   const errorState = isError;
   const successState = isSuccess;
+  const noInput = successState && recommendations.length === 0;
   const [isAllExpanded, setIsAllExpanded] = useState(false);
   const [filteredRows, setFilteredRows] = useState([]);
+  const [filterBuilding, setFilterBuilding] = useState(true);
   const [displayedRows, setDisplayedRows] = useState([]);
   const [rowsFiltered, setRowsFiltered] = useState(false);
   const [filtersApplied, setFiltersApplied] = useState(false);
   const [expandFirst, setExpandFirst] = useState(true);
   const loadingState = isUninitialized || isFetching || !rowsFiltered;
+  const { search } = useLocation();
   //FILTERS
   const filters = useSelector(({ filters }) => filters.workloadsRecsListState);
 
@@ -57,10 +69,10 @@ const WorkloadRules = ({ workload }) => {
 
   const addFilterParam = (param, values) => {
     setExpandFirst(false);
-    return _addFilterParam(filters, updateFilters, param, values);
+    workloadsRulesAddFilterParam(filters, updateFilters, param, values);
   };
   const removeFilterParam = (param) =>
-    _removeFilterParam(filters, updateFilters, param);
+    workloadsRulesRemoveFilterParam(filters, updateFilters, param);
 
   useEffect(() => {
     setFilteredRows(buildFilteredRows(recommendations, filters));
@@ -78,6 +90,30 @@ const WorkloadRules = ({ workload }) => {
     filters,
     addFilterParam
   );
+
+  useEffect(() => {
+    if (search && filterBuilding) {
+      const paramsObject = paramParser(search);
+      if (paramsObject.sort) {
+        const sortObj = translateSortParams(paramsObject.sort);
+        paramsObject.sortIndex = WORKLOADS_RULES_COLUMNS_KEYS.indexOf(
+          sortObj.description
+        );
+        paramsObject.sortDirection = sortObj.direction;
+      }
+      paramsObject.total_risk &&
+        !Array.isArray(paramsObject.total_risk) &&
+        (paramsObject.total_risk = [`${paramsObject.total_risk}`]);
+      updateFilters({ ...filters, ...paramsObject });
+    }
+    setFilterBuilding(false);
+  }, []);
+
+  useEffect(() => {
+    if (!filterBuilding) {
+      updateSearchParams(filters, WORKLOADS_RULES_COLUMNS_KEYS);
+    }
+  }, [filters, filterBuilding]);
 
   const buildDisplayedRows = (filteredRows, sortIndex, sortDirection) => {
     const sortingRows = sortWithSwitch(sortIndex, sortDirection, filteredRows);
@@ -106,10 +142,10 @@ const WorkloadRules = ({ workload }) => {
 
   const buildFilteredRows = (allRows, filters) => {
     setRowsFiltered(false);
-    const noFilters = filtersAreApplied(filters);
+    const filtersArePresent = filtersAreApplied(filters);
     return allRows
       .filter((recs) =>
-        noFilters ? passFilterWorkloadsRecs(recs, filters) : true
+        filtersArePresent ? passFilterWorkloadsRecs(recs, filters) : true
       )
       .map((value, key) => [
         {
@@ -166,7 +202,7 @@ const WorkloadRules = ({ workload }) => {
   };
 
   const activeFiltersConfig = {
-    showDeleteButton: filtersApplied ? true : false,
+    showDeleteButton: filtersApplied,
     deleteTitle: 'Reset filters',
     filters: buildFilterChips(),
     onDelete: (_event, itemsToRemove, isAll) => {
@@ -209,7 +245,10 @@ const WorkloadRules = ({ workload }) => {
         filterConfig={{
           items: filterConfigItems,
           isDisabled:
-            loadingState || errorState || recommendations.length === 0,
+            loadingState ||
+            errorState ||
+            noInput ||
+            recommendations.length === 0,
         }}
         pagination={
           <span className="pf-u-font-weight-bold">
@@ -219,7 +258,7 @@ const WorkloadRules = ({ workload }) => {
           </span>
         }
         activeFiltersConfig={
-          loadingState || errorState || recommendations.length === 0
+          loadingState || errorState || noInput || recommendations.length === 0
             ? undefined
             : activeFiltersConfig
         }
@@ -231,7 +270,7 @@ const WorkloadRules = ({ workload }) => {
         ouiaSafe={!loadingState}
         onCollapse={handleOnCollapse} // TODO: set undefined when there is an empty state
         rows={
-          errorState || loadingState ? (
+          errorState || loadingState || noInput ? (
             [
               {
                 fullWidth: true,
@@ -240,8 +279,13 @@ const WorkloadRules = ({ workload }) => {
                     props: {
                       colSpan: WORKLOAD_RULES_COLUMNS.length + 1,
                     },
-                    title: <Loading />,
-                    // TODO: Empty state
+                    title: errorState ? (
+                      <NoWorkloadsRecsAvailable />
+                    ) : loadingState ? (
+                      <Loading />
+                    ) : (
+                      <NoRecsForWorkloadsDetails />
+                    ),
                   },
                 ],
               },

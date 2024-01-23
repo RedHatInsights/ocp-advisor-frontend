@@ -4,6 +4,8 @@ import {
   pruneWorkloadsRulesFilters,
   switchSort,
   sortWithSwitch,
+  workloadsRulesRemoveFilterParam,
+  workloadsRulesAddFilterParam,
 } from '../../Utilities/Workloads';
 
 describe('capitalize function', () => {
@@ -112,10 +114,7 @@ describe('switchSort function', () => {
 
 describe('sortWithSwitch function', () => {
   test('should return original rows if sortIndex is invalid or firstRule is true', () => {
-    const filteredRows = [
-      [{ rule: { details: 'abc' } }],
-      [{ rule: { details: 'xyz' } }],
-    ];
+    const filteredRows = [{ rule: { details: 'abc' } }];
     const result = sortWithSwitch(5, SortByDirection.asc, filteredRows, false);
     expect(result).toEqual(filteredRows);
   });
@@ -142,5 +141,95 @@ describe('sortWithSwitch function', () => {
       [{ rule: { details: 'xyz' } }],
       [{ rule: { details: 'abc' } }],
     ]);
+  });
+});
+
+describe('workloadsRulesRemoveFilterParam', () => {
+  it('should remove the specified filter param', () => {
+    const currentFilters = {
+      description: 'example',
+      total_risk: [],
+      object_id: '123',
+    };
+    const updateFiltersMock = jest.fn();
+
+    workloadsRulesRemoveFilterParam(
+      currentFilters,
+      updateFiltersMock,
+      'description'
+    );
+
+    expect(updateFiltersMock).toHaveBeenCalledWith({
+      total_risk: [],
+      object_id: '123',
+      description: '',
+    });
+  });
+
+  it('should remove the total_risk filter param', () => {
+    const currentFilters = {
+      description: 'example',
+      total_risk: [1, 2, 3],
+      object_id: '123',
+    };
+    const updateFiltersMock = jest.fn();
+
+    workloadsRulesRemoveFilterParam(
+      currentFilters,
+      updateFiltersMock,
+      'total_risk'
+    );
+
+    expect(updateFiltersMock).toHaveBeenCalledWith({
+      description: 'example',
+      object_id: '123',
+      total_risk: [],
+    });
+  });
+});
+
+describe('workloadsRulesAddFilterParam', () => {
+  it('should add values to the specified filter param', () => {
+    const currentFilters = {
+      description: 'example',
+      total_risk: [],
+      object_id: '123',
+    };
+    const updateFiltersMock = jest.fn();
+
+    workloadsRulesAddFilterParam(
+      currentFilters,
+      updateFiltersMock,
+      'total_risk',
+      [1, 2, 3]
+    );
+
+    expect(updateFiltersMock).toHaveBeenCalledWith({
+      description: 'example',
+      object_id: '123',
+      total_risk: [1, 2, 3],
+    });
+  });
+
+  it('should remove the filter param if values are empty', () => {
+    const currentFilters = {
+      description: 'example',
+      total_risk: [1, 2, 3],
+      object_id: '123',
+    };
+    const updateFiltersMock = jest.fn();
+
+    workloadsRulesAddFilterParam(
+      currentFilters,
+      updateFiltersMock,
+      'total_risk',
+      []
+    );
+
+    expect(updateFiltersMock).toHaveBeenCalledWith({
+      description: 'example',
+      object_id: '123',
+      total_risk: [],
+    });
   });
 });
