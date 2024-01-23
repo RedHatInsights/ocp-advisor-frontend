@@ -15,6 +15,7 @@ import {
 import { removeFilterParam as _removeFilterParam } from '../Common/Tables';
 import {
   filtersAreApplied,
+  passObjectsFilters,
   pruneWorkloadsRulesFilters,
 } from '../../Utilities/Workloads';
 import { NoMatchingWorkloadsObjects } from '../MessageState/EmptyStates';
@@ -92,17 +93,6 @@ export const ObjectsModalTable = ({ objects }) => {
         });
       }
     },
-  };
-
-  const passObjectsFilters = (objects, filters) => {
-    return Object.entries(filters).some(([filterKey, filterValue]) => {
-      switch (filterKey) {
-        case 'object_id':
-          return objects.uid.toLowerCase().includes(filterValue.toLowerCase());
-        default:
-          return false;
-      }
-    });
   };
 
   //This is where we apply filters and map rows agains the filters
