@@ -119,14 +119,12 @@ export const ObjectsModalTable = ({ objects }) => {
   }, [filteredRows, filters.limit, filters.offset]);
 
   const onSetPage = (_e, pageNumber) => {
-    setRowsFiltered(false);
     const newOffset = pageNumber * filters.limit - filters.limit;
     updateFilters({ ...filters, offset: newOffset });
   };
 
   const onPerPageSelect = (_e, perPage) => {
     if (perPage !== filters.limit) {
-      setRowsFiltered(false);
       updateFilters({ ...filters, limit: perPage, offset: 0 });
     }
   };
@@ -200,8 +198,10 @@ export const ObjectsModalTable = ({ objects }) => {
 };
 
 ObjectsModalTable.propTypes = {
-  objects: PropTypes.arrayOf({
-    kind: PropTypes.string,
-    uid: PropTypes.string,
-  }),
+  objects: PropTypes.arrayOf(
+    PropTypes.shape({
+      kind: PropTypes.string,
+      uid: PropTypes.string,
+    })
+  ),
 };

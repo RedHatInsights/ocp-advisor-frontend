@@ -28,13 +28,11 @@ const ExpandedRulesDetails = ({ more_info, resolution, objects }) => {
   return (
     <Card className="ins-c-report-details" style={{ boxShadow: 'none' }}>
       <CardBody>
-        {objectsModalOpen && (
-          <ObjectsModal
-            isModalOpen={objectsModalOpen}
-            setIsModalOpen={setObjectsModalOpen}
-            objects={objects}
-          />
-        )}
+        <ObjectsModal
+          isModalOpen={objectsModalOpen}
+          setIsModalOpen={setObjectsModalOpen}
+          objects={objects}
+        />
         <Stack
           className="ins-c-report-details__cards-stack"
           widget-type="InsightsRulesCard"
@@ -64,7 +62,7 @@ const ExpandedRulesDetails = ({ more_info, resolution, objects }) => {
               </CardBody>
             </Card>
           </StackItem>
-          <Table borders={'compactBorderless'}>
+          <Table borders={'compactBorderless'} aria-label="Objects table">
             <Thead>
               <Tr>
                 <Th modifier="fitContent">{ObjectsTableColumns.object}</Th>
