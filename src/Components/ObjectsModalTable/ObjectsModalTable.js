@@ -5,6 +5,7 @@ import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryTo
 import { ObjectsTableColumns } from '../../AppConstants';
 import PropTypes from 'prop-types';
 import Pagination from '@redhat-cloud-services/frontend-components/Pagination';
+import { PaginationVariant } from '@patternfly/react-core/dist/js/components/Pagination/Pagination';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   WORKLOADS_OBJECTS_TABLE_INITIAL_STATE,
@@ -105,19 +106,24 @@ export const ObjectsModalTable = ({ objects }) => {
   };
 
   //This is where we apply filters and map rows agains the filters
-  const buildFilterRows = (allrows, filters) => {
+  const buildFilteredRows = (allrows, filters) => {
     return allrows.filter((object) => passObjectsFilters(object, filters));
+  };
+
+  //building displayed rows applying limits and per page values
+  const buildDisplayedRows = (rows) => {
+    return rows.slice(perPage * (page - 1), perPage * (page - 1) + perPage);
   };
 
   //After objectsData is present or in case of object id filter change we setFiltered rows using buildiflterRows
   useEffect(() => {
-    setFilteredRows(buildFilterRows(objectsData, filters));
-  }, [objectsData, filters]);
+    setFilteredRows(buildFilteredRows(objectsData, filters));
+  }, [objectsData, filters.limit, filters.offset]);
 
   //after objects data is present we set filtered rows and this useEffect is triggered to update displayed rows
   //with new array of rows that have filters applied
   useEffect(() => {
-    setDisplayedRows(filteredRows);
+    setDisplayedRows(buildDisplayedRows(filteredRows));
     setFiltersApplied(filtersAreApplied(filters));
     setRowsFiltered(true);
   }, [filteredRows, filters.limit, filters.offset]);
@@ -134,7 +140,6 @@ export const ObjectsModalTable = ({ objects }) => {
       updateFilters({ ...filters, limit: perPage, offset: 0 });
     }
   };
-  console.log(filters, 'filters');
 
   return (
     <div id="objects-list-table">
@@ -149,6 +154,7 @@ export const ObjectsModalTable = ({ objects }) => {
           onPerPageSelect: onSetPerPage,
           isCompact: true,
           ouiaId: 'pager',
+          itemCount: filteredRows.length,
         }}
         filterConfig={{ items: filterConfigItems }}
         activeFiltersConfig={activeFiltersConfig}
@@ -184,7 +190,7 @@ export const ObjectsModalTable = ({ objects }) => {
         onPerPageSelect={onSetPerPage}
         onPageInput={onSetPage}
         widgetId={`pagination-options-menu-bottom`}
-        variant={'bottom'}
+        variant={PaginationVariant.bottom}
       />
     </div>
   );
