@@ -158,7 +158,10 @@ const WorkloadRules = ({ workload }) => {
             {
               title: (
                 <div key={key}>
-                  <InsightsLabel value={4} rest={{ isCompact: true }} />
+                  <InsightsLabel
+                    value={value.total_risk}
+                    rest={{ isCompact: true }}
+                  />
                 </div>
               ),
             },
