@@ -11,6 +11,7 @@ import {
   updateWorkloadsObjectsListFilters,
 } from '../../Services/Filters';
 import { removeFilterParam as _removeFilterParam } from '../Common/Tables';
+import { Pagination } from '@patternfly/react-core';
 import {
   filtersAreApplied,
   passObjectsFilters,
@@ -18,6 +19,7 @@ import {
 } from '../../Utilities/Workloads';
 import { NoMatchingWorkloadsObjects } from '../MessageState/EmptyStates';
 import Loading from '../Loading/Loading';
+import { PaginationVariant } from '@patternfly/react-core/dist/js/components/Pagination/Pagination';
 
 export const ObjectsModalTable = ({ objects }) => {
   const objectsData = objects || [];
@@ -122,7 +124,7 @@ export const ObjectsModalTable = ({ objects }) => {
     updateFilters({ ...filters, offset: newOffset });
   };
 
-  const onSetPerPage = (_e, perPage) => {
+  const onPerPageSelect = (_e, perPage) => {
     if (perPage !== filters.limit) {
       setRowsFiltered(false);
       updateFilters({ ...filters, limit: perPage, offset: 0 });
@@ -139,7 +141,7 @@ export const ObjectsModalTable = ({ objects }) => {
           page,
           perPage,
           onSetPage,
-          onPerPageSelect: onSetPerPage,
+          onPerPageSelect,
           isCompact: true,
           ouiaId: 'pager',
           itemCount: filteredRows.length,
@@ -150,22 +152,46 @@ export const ObjectsModalTable = ({ objects }) => {
       {loadingState ? (
         <Loading />
       ) : preparedRows ? (
-        <Table aria-label="Cell widths">
-          <Thead>
-            <Tr>
-              <Th width={60}>{ObjectsTableColumns.object}</Th>
-              <Th width={30}>{ObjectsTableColumns.kind}</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {displayedRows?.map((object, index) => (
-              <Tr key={index}>
-                <Td dataLabel={ObjectsTableColumns.object}>{object.uid}</Td>
-                <Td dataLabel={ObjectsTableColumns.kind}>{object.kind}</Td>
+        <div>
+          <Table aria-label="Cell widths">
+            <Thead>
+              <Tr>
+                <Th width={60}>{ObjectsTableColumns.object}</Th>
+                <Th width={30}>{ObjectsTableColumns.kind}</Th>
               </Tr>
-            ))}
-          </Tbody>
-        </Table>
+            </Thead>
+            <Tbody>
+              {displayedRows?.map((object, index) => (
+                <Tr key={index}>
+                  <Td dataLabel={ObjectsTableColumns.object}>{object.uid}</Td>
+                  <Td dataLabel={ObjectsTableColumns.kind}>{object.kind}</Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+          {displayedRows.length > 0 ? (
+            <Pagination
+              ouiaId="pager"
+              itemCount={filteredRows.length}
+              page={page}
+              perPage={perPage}
+              onSetPage={onSetPage}
+              onPerPageSelect={onPerPageSelect}
+              onPageInput={onSetPage}
+              widgetId={`pagination-options-menu-bottom`}
+              variant={PaginationVariant.bottom}
+            />
+          ) : (
+            <Pagination
+              itemCount={0}
+              perPage
+              page
+              onSetPage
+              onPerPageSelect
+              isDisabled
+            />
+          )}
+        </div>
       ) : (
         <NoMatchingWorkloadsObjects />
       )}
