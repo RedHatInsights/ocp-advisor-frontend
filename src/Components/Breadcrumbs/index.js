@@ -7,7 +7,7 @@ import { Breadcrumb, BreadcrumbItem } from '@patternfly/react-core';
 
 import messages from '../../Messages';
 
-const Breadcrumbs = ({ current }) => {
+const Breadcrumbs = ({ current, workloads }) => {
   const intl = useIntl();
   const location = useLocation();
   const splitUrl = location.pathname.split('/');
@@ -16,7 +16,7 @@ const Breadcrumbs = ({ current }) => {
     <div>
       <Breadcrumb ouiaId="detail">
         <BreadcrumbItem className="breadcrumb-item">
-          <Link to={`..`} relative="path">
+          <Link to={workloads ? `../..` : `..`} relative="path">
             {`${intl.formatMessage(messages.insightsHeader)} ${splitUrl[4]}`}
           </Link>
         </BreadcrumbItem>
@@ -30,6 +30,7 @@ const Breadcrumbs = ({ current }) => {
 
 Breadcrumbs.propTypes = {
   current: PropTypes.string,
+  workloads: PropTypes.boolean,
 };
 
 export default Breadcrumbs;

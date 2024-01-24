@@ -18,6 +18,7 @@ export const Workload = ({ workload, namespaceId, clusterId }) => {
                   ? `${workload.data.cluster.display_name} | ${workload.data.namespace.name}`
                   : `${clusterId} | ${namespaceId}`
               }
+              workloads="true"
             />
             <WorkloadsHeader />
           </FlexItem>
