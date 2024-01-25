@@ -247,7 +247,7 @@ const WorkloadsListTable = ({
   ];
 
   const activeFiltersConfig = {
-    showDeleteButton: filtersApplied ? true : false,
+    showDeleteButton: filtersApplied,
     deleteTitle: 'Reset filters',
     filters: buildFilterChips(filters, WORKLOADS_TABLE_FILTER_CATEGORIES),
     onDelete: (_event, itemsToRemove, isAll) => {
