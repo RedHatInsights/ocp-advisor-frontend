@@ -185,6 +185,17 @@ export const flatMapRows = (filteredRows, expandFirst) => {
   });
 };
 
+export const passObjectsFilters = (objects, filters) => {
+  return Object.entries(filters).some(([filterKey, filterValue]) => {
+    switch (filterKey) {
+      case 'object_id':
+        return objects.uid.toLowerCase().includes(filterValue.toLowerCase());
+      default:
+        return false;
+    }
+  });
+};
+
 export const workloadsRulesRemoveFilterParam = (
   currentFilters,
   updateFilters,

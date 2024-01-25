@@ -273,6 +273,16 @@ const NoWorkloadsAvailable = () => {
   );
 };
 
+// used in the workloads objects
+const NoMatchingWorkloadsObjects = () => {
+  return (
+    <MessageState
+      title={'No matching workloads found'}
+      text={'To continue, edit your filter settings and search again.'}
+    />
+  );
+};
+
 const NoWorkloadsRecsAvailable = () => {
   return (
     <MessageState
@@ -334,6 +344,7 @@ export {
   UpdateRisksNotAvailable,
   NoRecsForWorkloads,
   NoWorkloadsAvailable,
+  NoMatchingWorkloadsObjects,
   NoWorkloadsRecsAvailable,
   NoRecsForWorkloadsDetails,
 };

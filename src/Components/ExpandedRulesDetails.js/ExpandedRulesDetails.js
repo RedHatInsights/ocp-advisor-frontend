@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   BullseyeIcon,
   InfoCircleIcon,
@@ -17,18 +17,22 @@ import {
 import { Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import PropTypes from 'prop-types';
 import TemplateProcessor from '@redhat-cloud-services/frontend-components-advisor-components/TemplateProcessor/TemplateProcessor';
+import ObjectsModal from '../ObjectsModal/ObjectsModal';
+import { ObjectsTableColumns } from '../../AppConstants';
 
-const columnNames = {
-  object: 'Object ID',
-  kind: 'Kind',
-};
 const code = `oc get namespace -o jsonpath={range .items[*]}{.metadata.name}{"\t"}{.metadata.uid}{"\n"}{end}
   oc -n <namespace> get <resourceKind> -o jsonpath={range .items[*]}{.metadata.name}{"\t"}{.metadata.uid}{"\n"}{end}`;
 
 const ExpandedRulesDetails = ({ more_info, resolution, objects }) => {
+  const [objectsModalOpen, setObjectsModalOpen] = useState(false);
   return (
     <Card className="ins-c-report-details" style={{ boxShadow: 'none' }}>
       <CardBody>
+        <ObjectsModal
+          isModalOpen={objectsModalOpen}
+          setIsModalOpen={setObjectsModalOpen}
+          objects={objects}
+        />
         <Stack
           className="ins-c-report-details__cards-stack"
           widget-type="InsightsRulesCard"
@@ -58,23 +62,27 @@ const ExpandedRulesDetails = ({ more_info, resolution, objects }) => {
               </CardBody>
             </Card>
           </StackItem>
-          <Table borders={'compactBorderless'}>
+          <Table borders={'compactBorderless'} aria-label="Objects table">
             <Thead>
               <Tr>
-                <Th modifier="fitContent">{columnNames.object}</Th>
-                <Th modifier="fitContent">{columnNames.kind}</Th>
+                <Th modifier="fitContent">{ObjectsTableColumns.object}</Th>
+                <Th modifier="fitContent">{ObjectsTableColumns.kind}</Th>
               </Tr>
             </Thead>
             <Tbody>
               {objects.slice(0, 3).map((object, key) => (
                 <Tr key={key}>
-                  <Td dataLabel={columnNames.object}>{object.uid}</Td>
-                  <Td dataLabel={columnNames.kind}>{object.kind}</Td>
+                  <Td dataLabel={ObjectsTableColumns.object}>{object.uid}</Td>
+                  <Td dataLabel={ObjectsTableColumns.kind}>{object.kind}</Td>
                 </Tr>
               ))}
             </Tbody>
           </Table>
-          <Button variant="link" isInline>
+          <Button
+            variant="link"
+            isInline
+            onClick={() => setObjectsModalOpen(true)}
+          >
             View all objects
           </Button>
           <br />
@@ -110,7 +118,6 @@ const ExpandedRulesDetails = ({ more_info, resolution, objects }) => {
 export default ExpandedRulesDetails;
 
 ExpandedRulesDetails.propTypes = {
-  extra_data: PropTypes.string.isRequired,
   more_info: PropTypes.string.isRequired,
   resolution: PropTypes.string.isRequired,
   objects: PropTypes.arrayOf({
