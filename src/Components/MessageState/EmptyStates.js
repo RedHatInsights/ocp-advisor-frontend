@@ -330,6 +330,15 @@ const NoRecsForWorkloadsDetails = () => {
   );
 };
 
+const NoMatchingWorkloads = () => {
+  return (
+    <MessageState
+      title={'No matching workloads found'}
+      text={'To continue, edit your filter settings and search again.'}
+    />
+  );
+};
+
 export {
   ErrorState,
   NoAffectedClusters,
@@ -347,4 +356,5 @@ export {
   NoMatchingWorkloadsObjects,
   NoWorkloadsRecsAvailable,
   NoRecsForWorkloadsDetails,
+  NoMatchingWorkloads,
 };

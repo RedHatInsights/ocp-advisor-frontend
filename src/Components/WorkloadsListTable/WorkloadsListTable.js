@@ -41,7 +41,7 @@ import {
 } from '../Common/Tables';
 import {
   ErrorState,
-  NoMatchingClusters,
+  NoMatchingWorkloads,
   NoRecsForWorkloads,
   NoWorkloadsAvailable,
 } from '../MessageState/EmptyStates';
@@ -78,7 +78,7 @@ const WorkloadsListTable = ({
 
   const loadingState = isUninitialized || isFetching || !rowsFiltered;
   const errorState = isError;
-  const noMatch = rows.length > 0 && filteredRows.length === 0;
+  const noMatch = filteredRows.length === 0;
   const successState = isSuccess;
   const { search } = useLocation();
 
@@ -333,7 +333,7 @@ const WorkloadsListTable = ({
                     ) : loadingState ? (
                       <Loading />
                     ) : (
-                      <NoMatchingClusters />
+                      <NoMatchingWorkloads />
                     ),
                   },
                 ],
