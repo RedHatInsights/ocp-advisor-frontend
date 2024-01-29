@@ -131,9 +131,6 @@ export const ObjectsModalTable = ({ objects }) => {
 
   return (
     <div id="objects-list-table">
-      <Title headingLevel="h1" ouiaId="page-header">
-        Objects
-      </Title>
       <PrimaryToolbar
         pagination={{
           page,
