@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Thead, Tr, Th, Tbody, Td } from '@patternfly/react-table';
-import { Title } from '@patternfly/react-core';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
 import { ObjectsTableColumns } from '../../AppConstants';
 import PropTypes from 'prop-types';
@@ -131,9 +130,6 @@ export const ObjectsModalTable = ({ objects }) => {
 
   return (
     <div id="objects-list-table">
-      <Title headingLevel="h1" ouiaId="page-header">
-        Objects
-      </Title>
       <PrimaryToolbar
         pagination={{
           page,

@@ -10,6 +10,7 @@ const ObjectsModal = ({ isModalOpen, setIsModalOpen }) => {
       isOpen={isModalOpen}
       onClose={() => setIsModalOpen(false)}
       variant={'medium'}
+      title="Objects"
     >
       <ObjectsModalTable
         //objects={objects}
