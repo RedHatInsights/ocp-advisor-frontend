@@ -1,0 +1,574 @@
+{
+	"status": "ok",
+	"cluster": {
+		"uuid": "00000001-0001-0001-0001-000000000005",
+		"display_name": "Cluster name 00000001-0001-0001-0001-000000000005"
+	},
+	"namespace": {
+		"uuid": "fad82c1f-96db-430f-b3ec-503fb9eeb7bb",
+		"name": "Namespace name fad82c1f-96db-430f-b3ec-503fb9eeb7bb"
+	},
+	"metadata": {
+		"recommendations": 1,
+		"objects": 100,
+		"reported_at": "2024-01-23T12:57:14+01:00",
+		"last_checked_at": "2024-01-23T12:57:14+01:00",
+		"highest_severity": 4,
+		"hits_by_severity": {
+			"1": 0,
+			"2": 2,
+			"3": 0,
+			"4": 1
+		} },
+	"recommendations": [
+		{
+			"check": "non_isolated_pod",
+			"details": "Alert on deployment-like objects that are not selected by any NetworkPolicy.",
+			"resolution": "Ensure pod does not accept unsafe traffic by isolating it with a NetworkPolicy. See https://cloud.redhat.com/blog/gUID:e-to-kubernetes-ingress-network-policies for more details.",
+			"modified": "2022-01-01T00:00:00Z",
+			"more_info": "There is no more info about this rule, sorry",
+			"total_risk": 3,
+			"extra_data": {
+				"type": "rule",
+				"error_key": "BUGZILLA_BUG_1766907"
+			},
+			"objects": [
+				{
+					"kind": "Pod",
+					"uid": "44de671b-2bd1-4b1c-9be5-78609b9e74a6"
+				},
+				{
+					"kind": "Pod",
+					"uid": "12fc9092-94c2-477f-b6ba-5e07304cd651"
+				},
+				{
+					"kind": "Pod",
+					"uid": "bb78507b-cc1c-4c53-af2c-7807d9cbeab4"
+				},
+				{
+					"kind": "Pod",
+					"uid": "25c22e8b-c490-43b4-a461-39c59367a979"
+				},
+				{
+					"kind": "Pod",
+					"uid": "1e2da76c-a4bb-477a-9323-644f72c5d8c3"
+				},
+				{
+					"kind": "Pod",
+					"uid": "f5d9a88d-d400-4edd-a91f-e63d0ea5ed95"
+				},
+				{
+					"kind": "Pod",
+					"uid": "32acf562-b730-4c18-a9d6-24f6386820be"
+				},
+				{
+					"kind": "Pod",
+					"uid": "91f6880b-19b8-4846-94e4-e9a9c2f04bc4"
+				},
+				{
+					"kind": "Pod",
+					"uid": "cf2f1c43-5364-4ff5-bc1f-a73a7c120f55"
+				},
+				{
+					"kind": "Pod",
+					"uid": "6b0e9021-9fc0-460f-bf02-6c6635501622"
+				},
+				{
+					"kind": "Pod",
+					"uid": "5b5c1b58-dcde-43b5-9b40-a33fc274c60c"
+				},
+				{
+					"kind": "Pod",
+					"uid": "0714a4c6-1c58-4af1-9ae7-deec6582913b"
+				},
+				{
+					"kind": "Pod",
+					"uid": "eeae39fc-6eef-4ac7-a4ea-c35d2d024cc9"
+				},
+				{
+					"kind": "Pod",
+					"uid": "11fb2240-b074-483f-97a9-26271dcd5f83"
+				},
+				{
+					"kind": "Pod",
+					"uid": "446824b4-5c32-47d2-87eb-7cb2444df9d1"
+				},
+				{
+					"kind": "Pod",
+					"uid": "b807887f-034f-49d9-9eee-072b7d713525"
+				},
+				{
+					"kind": "Pod",
+					"uid": "617ccbcf-cdbf-4617-9675-00542ccd06e6"
+				},
+				{
+					"kind": "Pod",
+					"uid": "ad162ea5-5361-4965-87ec-189b031d8634"
+				},
+				{
+					"kind": "Pod",
+					"uid": "79402b0c-5dfc-45fe-895d-52940b7884b5"
+				},
+				{
+					"kind": "Pod",
+					"uid": "952a89f6-6d65-486e-968c-868876dc6303"
+				},
+				{
+					"kind": "Pod",
+					"uid": "657736a9-536b-4c83-9bbe-143023c00d76"
+				},
+				{
+					"kind": "Pod",
+					"uid": "dc862c96-c593-4262-925d-7b7bbfd472a1"
+				},
+				{
+					"kind": "Pod",
+					"uid": "daa8de2d-8e33-4787-9415-07a68393fead"
+				},
+				{
+					"kind": "Pod",
+					"uid": "ffb33206-c1ff-4a54-b456-007a8f1fe3a6"
+				},
+				{
+					"kind": "Pod",
+					"uid": "6b08978b-c5dd-475f-bda9-063dc44e3f59"
+				},
+				{
+					"kind": "Pod",
+					"uid": "34a85912-2d77-46db-a796-70edb5c61209"
+				},
+				{
+					"kind": "Pod",
+					"uid": "d500dcc0-4296-473f-a320-6e5734d967cb"
+				},
+				{
+					"kind": "Pod",
+					"uid": "5a928576-4d3f-437c-a39d-f016efc05090"
+				},
+				{
+					"kind": "Pod",
+					"uid": "90fa0c47-ef1e-46b4-9bb4-9b46c6d8dab2"
+				},
+				{
+					"kind": "Pod",
+					"uid": "b938373d-4ac5-48bc-a7ee-519f7b727759"
+				},
+				{
+					"kind": "Pod",
+					"uid": "9bb7d28b-8df4-422c-84b1-d3a56b592621"
+				},
+				{
+					"kind": "Pod",
+					"uid": "0608bbb6-a207-4bb5-9dfe-9f34fa263e99"
+				},
+				{
+					"kind": "Pod",
+					"uid": "1e6cb4f1-0f47-4ef7-8c59-cad9b922ea24"
+				},
+				{
+					"kind": "Pod",
+					"uid": "dcd596bf-7750-4609-b8ff-9f7f4fff312f"
+				},
+				{
+					"kind": "Pod",
+					"uid": "a03e37c8-3180-4992-820a-4c528d6b87d5"
+				},
+				{
+					"kind": "Pod",
+					"uid": "43d9f5cb-050a-41a8-bd05-b969c2a61c38"
+				},
+				{
+					"kind": "Pod",
+					"uid": "977ac771-2bdd-4e99-ad51-2dae89cc2ddb"
+				},
+				{
+					"kind": "Pod",
+					"uid": "a06e4edb-a4eb-4b25-b610-9ced93f29083"
+				},
+				{
+					"kind": "Pod",
+					"uid": "c6a3f0ec-5de4-4c0d-a646-d9fba27fa796"
+				},
+				{
+					"kind": "Pod",
+					"uid": "36abbc02-c8e8-48e6-9572-d6bbf7d200a8"
+				},
+				{
+					"kind": "Pod",
+					"uid": "56b9246d-4f99-4774-a0ef-9f808eff0396"
+				},
+				{
+					"kind": "Pod",
+					"uid": "2e90ae88-371f-470f-a7f3-9562225cad43"
+				},
+				{
+					"kind": "Pod",
+					"uid": "59459ae7-f2da-4f33-8a92-c5bb50cae277"
+				},
+				{
+					"kind": "Pod",
+					"uid": "2998897e-6c48-4246-b1c5-4217af53d21f"
+				},
+				{
+					"kind": "Pod",
+					"uid": "33d664c0-2c03-4250-a204-29a63850b33a"
+				},
+				{
+					"kind": "Pod",
+					"uid": "c1abe8a1-3085-442f-a63e-2fb0833d2059"
+				},
+				{
+					"kind": "Pod",
+					"uid": "628ba5bc-8ca7-4034-bfcd-ff9435a7e2c5"
+				},
+				{
+					"kind": "Pod",
+					"uid": "799d3251-c296-4be5-add8-b1039db568af"
+				},
+				{
+					"kind": "Pod",
+					"uid": "922baa11-0f25-4e0f-8930-d30317fc4d65"
+				},
+				{
+					"kind": "Pod",
+					"uid": "99f0acd2-f8be-4431-b3e9-da06cb6259d8"
+				},
+				{
+					"kind": "Pod",
+					"uid": "b30beda9-dcf5-4f7a-9524-75f3a4afbde3"
+				},
+				{
+					"kind": "Pod",
+					"uid": "58879ff8-9bda-4da7-b981-ea37ecb1bd4d"
+				},
+				{
+					"kind": "Pod",
+					"uid": "1f859379-1d87-4f78-aedc-e7d50732af0d"
+				},
+				{
+					"kind": "Pod",
+					"uid": "949cff7f-e8dd-4db4-85db-51d5bd17c049"
+				},
+				{
+					"kind": "Pod",
+					"uid": "6afc1239-ceff-478b-a82b-d39d886eaca0"
+				},
+				{
+					"kind": "Pod",
+					"uid": "de25f4de-15f7-40cd-82d8-882cc7e233b9"
+				},
+				{
+					"kind": "Pod",
+					"uid": "b97e3968-0367-40d2-a3d3-c607a818a352"
+				},
+				{
+					"kind": "Pod",
+					"uid": "598b4c49-daaf-4113-87e9-65cf760983ec"
+				},
+				{
+					"kind": "Pod",
+					"uid": "c4c87125-ada3-446c-873d-8896d9a7ef46"
+				},
+				{
+					"kind": "Pod",
+					"uid": "6cc5f175-33e6-4060-a5bd-2162b7209b91"
+				},
+				{
+					"kind": "Pod",
+					"uid": "186a602c-791a-4051-84ad-6736a9eaaa3c"
+				},
+				{
+					"kind": "Pod",
+					"uid": "3e3c6797-d18f-4ed9-b67a-4603d2928255"
+				},
+				{
+					"kind": "Pod",
+					"uid": "d54f4ec5-eaad-440d-879e-3c0655fed588"
+				},
+				{
+					"kind": "Pod",
+					"uid": "35ed1f58-e6d7-40d9-987d-6c84a7581a69"
+				},
+				{
+					"kind": "Pod",
+					"uid": "0f02a25a-fac8-4ab4-975c-7e533e855034"
+				},
+				{
+					"kind": "Pod",
+					"uid": "86b99147-e7c5-4277-b2c3-c87901ba8a47"
+				},
+				{
+					"kind": "Pod",
+					"uid": "5a893389-bc0c-438e-bb5a-d3caec53de9e"
+				},
+				{
+					"kind": "Pod",
+					"uid": "fd23d42c-868b-479d-ae0d-6fa088480b6e"
+				},
+				{
+					"kind": "Pod",
+					"uid": "37893bd7-c53b-4451-bf7a-0939d19cfac8"
+				},
+				{
+					"kind": "Pod",
+					"uid": "43183885-2d33-40c8-8802-19d7d29f1243"
+				},
+				{
+					"kind": "Pod",
+					"uid": "208094ff-43d4-4414-b281-796410026b1b"
+				},
+				{
+					"kind": "Pod",
+					"uid": "97652545-0c8e-435e-ba5d-5f4bf429fccf"
+				},
+				{
+					"kind": "Pod",
+					"uid": "842da744-d098-46ee-b987-a1426a1f1f18"
+				},
+				{
+					"kind": "Pod",
+					"uid": "89f76357-9aed-41a6-83ce-aff8f1ee66c7"
+				},
+				{
+					"kind": "Pod",
+					"uid": "0f41dec3-d67a-488d-9c04-bd281a6de7a2"
+				},
+				{
+					"kind": "Pod",
+					"uid": "c7151c22-bde4-4cbc-9b4c-eb54ea1148ea"
+				},
+				{
+					"kind": "Pod",
+					"uid": "bdcb4e5d-0117-4e7b-9c16-01aeb76a3a98"
+				},
+				{
+					"kind": "Pod",
+					"uid": "cd8ba924-6c29-48f4-bad3-5eb74f418601"
+				},
+				{
+					"kind": "Pod",
+					"uid": "205dc67f-2677-4f6f-ba13-a999a3783def"
+				},
+				{
+					"kind": "Pod",
+					"uid": "7c829d86-9909-4a6b-8d74-b36d770c3f66"
+				},
+				{
+					"kind": "Pod",
+					"uid": "b03e9d54-8e7d-4a05-b962-d6436144f57f"
+				},
+				{
+					"kind": "Pod",
+					"uid": "52f098de-1eff-446a-bdc7-82bf03149a63"
+				},
+				{
+					"kind": "Pod",
+					"uid": "2f54a392-194c-436a-a058-3e894f900fcd"
+				},
+				{
+					"kind": "Pod",
+					"uid": "5ac81032-6956-404e-b19d-a91951c59666"
+				},
+				{
+					"kind": "Pod",
+					"uid": "60242380-bab4-4522-8fe3-8a1a162f0e21"
+				},
+				{
+					"kind": "Pod",
+					"uid": "6d0ebe0e-c445-4213-af39-9a72322bece8"
+				},
+				{
+					"kind": "Pod",
+					"uid": "a612264d-aaad-48b8-b4ab-8aea79066a02"
+				},
+				{
+					"kind": "Pod",
+					"uid": "30970e5b-ebe7-4ebc-ab71-466f8ef1aa17"
+				},
+				{
+					"kind": "Pod",
+					"uid": "18bfe7ca-bbb2-4a28-97af-e417976cba0a"
+				},
+				{
+					"kind": "Pod",
+					"uid": "403d9ca8-6e16-4aba-a370-807eb91a0370"
+				},
+				{
+					"kind": "Pod",
+					"uid": "04afae40-6c7f-48b7-9ddb-61d2a5def1dd"
+				},
+				{
+					"kind": "Pod",
+					"uid": "d240c728-ac82-47c8-b313-e958ca9e0f81"
+				},
+				{
+					"kind": "Pod",
+					"uid": "24505e88-8e53-4c79-bbbf-52636176b6ea"
+				},
+				{
+					"kind": "Pod",
+					"uid": "068fbb6f-cb48-4154-9a44-0ef530d179e9"
+				},
+				{
+					"kind": "Pod",
+					"uid": "87d81375-2895-4e1b-be2e-8422825fd7b9"
+				},
+				{
+					"kind": "Pod",
+					"uid": "0bfe4f46-b1eb-4113-937a-c0038365037d"
+				},
+				{
+					"kind": "Pod",
+					"uid": "ad4b2b4a-732f-459c-87b5-dadbffc509c9"
+				},
+				{
+					"kind": "Pod",
+					"uid": "f4c334e6-723e-41c6-a299-e8f2c9c88018"
+				},
+				{
+					"kind": "Pod",
+					"uid": "4201b7d3-81b5-4f73-9067-be6a3f4bbc85"
+				},
+				{
+					"kind": "Pod",
+					"uid": "3d749c42-2e19-45d6-b9bf-1656293774f5"
+				}
+			]
+		},
+		{
+			"check": "non_isolated_pod",
+			"details": "Alert on deployment-like objects that are not selected by any NetworkPolicy.",
+			"resolution": "Ensure pod does not accept unsafe traffic by isolating it with a NetworkPolicy. See https://cloud.redhat.com/blog/gUID:e-to-kubernetes-ingress-network-policies for more details.",
+			"modified": "2022-01-01T00:00:00Z",
+			"more_info": "There is no more info about this rule, sorry",
+			"total_risk": 1,
+			"extra_data": {
+				"type": "rule",
+				"error_key": "BUGZILLA_BUG_1766907"
+			},
+			"objects": [
+				{
+					"kind": "Deployment",
+					"uid": "6970f6a2-4edf-4451-97cb-8fcee528d6e6"
+				},
+				{
+					"kind": "Deployment",
+					"uid": "9d6553b8-a616-4cba-888d-628f989a9c98"
+				},
+				{
+					"kind": "Deployment",
+					"uid": "4381b689-02eb-465a-90cf-55b3e2305d8d"
+				},
+				{
+					"kind": "Deployment",
+					"uid": "2f6a4200-d6cc-4227-9242-9581a753a228"
+				}
+			]
+		},
+		{
+			"check": "run_as_non_root",
+			"details": "Indicates when containers are not set to runAsNonRoot.",
+			"resolution": "Set runAsUser to a non-zero number and runAsNonRoot to true in your pod or container securityContext. Refer to https://kubernetes.io/docs/tasks/configure-pod-container/security-context/ for details.",
+			"modified": "1999-01-02T03:04:05Z",
+			"more_info": "no additional info provided for this rule",
+			"total_risk": 2,
+			"extra_data": {},
+			"objects": [
+				{
+					"kind": "Deployment",
+					"uid": "6970f6a2-4edf-4451-97cb-8fcee528d6e6"
+				},
+				{
+					"kind": "Deployment",
+					"uid": "9d6553b8-a616-4cba-888d-628f989a9c98"
+				},
+				{
+					"kind": "Deployment",
+					"uid": "4381b689-02eb-465a-90cf-55b3e2305d8d"
+				},
+				{
+					"kind": "Deployment",
+					"uid": "2f6a4200-d6cc-4227-9242-9581a753a228"
+				}
+			]
+		},
+		{
+			"check": "unset_cpu_requirements",
+			"details": "Indicates when containers do not have CPU requests and limits set.",
+			"resolution": "Set CPU requests and limits for your container based on its requirements. Refer to https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limits for details.",
+			"modified": "1999-01-02T03:04:05Z",
+			"more_info": "no additional info provided for this rule",
+			"total_risk": 1,
+			"extra_data": {
+				"type": "rule",
+				"error_key": "BUGZILLA_BUG_1766907"
+			},
+			"objects": [
+				{
+					"kind": "Deployment",
+					"uid": "6970f6a2-4edf-4451-97cb-8fcee528d6e6"
+				},
+				{
+					"kind": "Deployment",
+					"uid": "9d6553b8-a616-4cba-888d-628f989a9c98"
+				},
+				{
+					"kind": "Deployment",
+					"uid": "4381b689-02eb-465a-90cf-55b3e2305d8d"
+				},
+				{
+					"kind": "Deployment",
+					"uid": "2f6a4200-d6cc-4227-9242-9581a753a228"
+				}
+			]
+		},
+		{
+			"check": "unset_memory_requirements",
+			"details": "Indicates when containers do not have memory requests and limits set.",
+			"resolution": "Set memory requests and limits for your container based on its requirements. Refer to https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limits for details.",
+			"modified": "2023-01-01T00:00:00Z",
+			"more_info": "Don't panic",
+			"total_risk": 2,
+			"extra_data": {
+				"nodes_with_different_version": [
+					{
+						"Node": "oc1",
+						"Kubelet Version": "v1.14.6+0a21dd3b3",
+						"role": "worker"
+					},
+					{
+						"Node": "oc2",
+						"Kubelet Version": "v1.14.6+0a21dd3b3",
+						"role": "worker"
+					},
+					{
+						"Node": "oc3",
+						"Kubelet Version": "v1.14.6+d39ad8449",
+						"role": "worker"
+					}
+				],
+				"kcs_link": "https://access.redhat.com/solutions/4602641",
+				"type": "rule",
+				"error_key": "NODE_KUBELET_VERSION"
+			},
+			"objects": [
+				{
+					"kind": "Deployment",
+					"uid": "6970f6a2-4edf-4451-97cb-8fcee528d6e6"
+				},
+				{
+					"kind": "Deployment",
+					"uid": "9d6553b8-a616-4cba-888d-628f989a9c98"
+				},
+				{
+					"kind": "Deployment",
+					"uid": "4381b689-02eb-465a-90cf-55b3e2305d8d"
+				},
+				{
+					"kind": "Deployment",
+					"uid": "2f6a4200-d6cc-4227-9242-9581a753a228"
+				}
+			]
+		}
+	]
+}
