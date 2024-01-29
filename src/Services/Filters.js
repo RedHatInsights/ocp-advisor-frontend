@@ -58,8 +58,8 @@ export const WORKLOADS_TABLE_INITIAL_STATE = {
 };
 
 export const WORKLOADS_RECS_TABLE_INITIAL_STATE = {
-  sortIndex: 1,
-  sortDirection: 'desc',
+  sortIndex: -1,
+  sortDirection: 'asc',
   description: '',
   total_risk: [],
   object_id: '',
