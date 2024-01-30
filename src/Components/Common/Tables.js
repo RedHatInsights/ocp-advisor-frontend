@@ -321,6 +321,7 @@ export const passFilterWorkloads = (workloads, filters) => {
 
 export const passFilterWorkloadsRecs = (recommendation, filters) => {
   return Object.entries(filters).some(([filterKey, filterValue]) => {
+    console.log(filterKey, filterValue);
     if (filterValue.length === 0) {
       return false;
     } else {
@@ -333,9 +334,8 @@ export const passFilterWorkloadsRecs = (recommendation, filters) => {
           return recommendation.objects.some((obj) =>
             obj.uid.toLowerCase().includes(filterValue.toLowerCase())
           );
-        //NOTE IS NOT AVAILABLE IN THE API YET
-        /* case 'total_risk':
-        return filterValue.includes(String(recs.total_risk)); */
+        case 'total_risk':
+          return filterValue.includes(String(recommendation.total_risk));
         default:
           return false;
       }

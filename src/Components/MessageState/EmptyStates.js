@@ -339,6 +339,15 @@ const NoMatchingWorkloads = () => {
   );
 };
 
+const NoMatchingRecsForWorkloads = () => {
+  return (
+    <MessageState
+      title={'No matching recommendations found'}
+      text={'To continue, edit your filter settings and search again.'}
+    />
+  );
+};
+
 export {
   ErrorState,
   NoAffectedClusters,
@@ -357,4 +366,5 @@ export {
   NoWorkloadsRecsAvailable,
   NoRecsForWorkloadsDetails,
   NoMatchingWorkloads,
+  NoMatchingRecsForWorkloads,
 };

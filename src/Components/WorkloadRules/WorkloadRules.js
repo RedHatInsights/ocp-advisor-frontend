@@ -16,10 +16,10 @@ import PropTypes from 'prop-types';
 import Loading from '../Loading/Loading';
 import {
   ErrorState,
+  NoMatchingRecsForWorkloads,
   NoRecsForWorkloadsDetails,
   NoWorkloadsRecsAvailable,
 } from '../MessageState/EmptyStates';
-// import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat/DateFormat';
 import InsightsLabel from '@redhat-cloud-services/frontend-components/InsightsLabel';
 import ExpandedRulesDetails from '../ExpandedRulesDetails.js/ExpandedRulesDetails';
 import { useDispatch, useSelector } from 'react-redux';
@@ -63,6 +63,7 @@ const WorkloadRules = ({ workload }) => {
   const { search } = useLocation();
   //FILTERS
   const filters = useSelector(({ filters }) => filters.workloadsRecsListState);
+  const noMatchingRecs = filteredRows.length === 0 ? true : false;
 
   const updateFilters = (payload) =>
     dispatch(updateWorkloadsRecsListFilters(payload));
@@ -273,7 +274,7 @@ const WorkloadRules = ({ workload }) => {
         ouiaSafe={!loadingState}
         onCollapse={handleOnCollapse} // TODO: set undefined when there is an empty state
         rows={
-          errorState || loadingState || noInput ? (
+          errorState || loadingState || noInput || noMatchingRecs ? (
             [
               {
                 fullWidth: true,
@@ -286,6 +287,8 @@ const WorkloadRules = ({ workload }) => {
                       <NoWorkloadsRecsAvailable />
                     ) : loadingState ? (
                       <Loading />
+                    ) : noMatchingRecs ? (
+                      <NoMatchingRecsForWorkloads />
                     ) : (
                       <NoRecsForWorkloadsDetails />
                     ),
