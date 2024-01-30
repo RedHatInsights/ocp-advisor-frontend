@@ -78,13 +78,16 @@ const ExpandedRulesDetails = ({ more_info, resolution, objects }) => {
               ))}
             </Tbody>
           </Table>
-          <Button
-            variant="link"
-            isInline
-            onClick={() => setObjectsModalOpen(true)}
-          >
-            View all objects
-          </Button>
+          <StackItem>
+            <Button
+              variant="link"
+              isInline
+              onClick={() => setObjectsModalOpen(true)}
+            >
+              View all objects
+            </Button>
+          </StackItem>
+
           <br />
           <CardHeader>
             <strong>Note:</strong>
