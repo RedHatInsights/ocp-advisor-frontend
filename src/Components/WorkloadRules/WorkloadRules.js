@@ -44,6 +44,7 @@ import {
   workloadsRulesRemoveFilterParam,
 } from '../../Utilities/Workloads';
 import { useLocation } from 'react-router-dom';
+import './WorkloadRules.scss';
 
 const WorkloadRules = ({ workload }) => {
   const dispatch = useDispatch();
@@ -191,6 +192,7 @@ const WorkloadRules = ({ workload }) => {
               ),
             },
           ],
+          fullWidth: true,
         },
       ]);
   };
