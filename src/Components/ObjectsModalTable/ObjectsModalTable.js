@@ -147,7 +147,7 @@ export const ObjectsModalTable = ({ objects }) => {
         <Loading />
       ) : preparedRows ? (
         <div>
-          <Table aria-label="Cell widths">
+          <Table aria-label="Cell widths" variant="compact">
             <Thead>
               <Tr>
                 <Th width={60}>{ObjectsTableColumns.object}</Th>
