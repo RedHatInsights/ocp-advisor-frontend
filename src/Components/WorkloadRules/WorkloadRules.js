@@ -29,7 +29,6 @@ import {
   updateWorkloadsRecsListFilters,
 } from '../../Services/Filters';
 import {
-  passFilterWorkloadsRecs,
   translateSortParams,
   paramParser,
   updateSearchParams,
@@ -38,6 +37,7 @@ import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat';
 import {
   filtersAreApplied,
   flatMapRows,
+  passFilterWorkloadsRecs,
   pruneWorkloadsRulesFilters,
   sortWithSwitch,
   workloadsRulesAddFilterParam,

@@ -1,5 +1,5 @@
 import { SortByDirection } from '@patternfly/react-table';
-import _, { isEmpty } from 'lodash';
+import _ from 'lodash';
 
 export const SEVERITY_OPTIONS = [
   {
@@ -86,7 +86,7 @@ export const filtersAreApplied = (params) => {
   delete cleanedUpParams.offset;
   delete cleanedUpParams.limit;
   delete cleanedUpParams.sort;
-  return Object.values(cleanedUpParams).filter((value) => !isEmpty(value))
+  return Object.values(cleanedUpParams).filter((value) => !_.isEmpty(value))
     .length
     ? true
     : false;
@@ -226,3 +226,32 @@ export const workloadsRulesAddFilterParam = (
         ...{ [param]: values },
       })
     : workloadsRulesRemoveFilterParam(currentFilters, updateFilters, param);
+
+export const passFilterWorkloadsRecs = (recommendation, filters) => {
+  const cleanedUpFilters = _.omitBy(_.cloneDeep(filters), _.isEmpty);
+
+  return Object.entries(cleanedUpFilters).every(([filterKey, filterValue]) => {
+    switch (filterKey) {
+      case 'description':
+        return (
+          filterValue &&
+          recommendation.details
+            .toLowerCase()
+            .includes(filterValue.toLowerCase())
+        );
+      case 'object_id':
+        return (
+          filterValue &&
+          recommendation.objects.some((obj) =>
+            obj.uid.toLowerCase().includes(filterValue.toLowerCase())
+          )
+        );
+      case 'total_risk':
+        return (
+          filterValue && filterValue.includes(String(recommendation.total_risk))
+        );
+      default:
+        return true;
+    }
+  });
+};

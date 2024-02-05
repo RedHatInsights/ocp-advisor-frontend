@@ -6,6 +6,7 @@ import {
   sortWithSwitch,
   workloadsRulesRemoveFilterParam,
   workloadsRulesAddFilterParam,
+  passFilterWorkloadsRecs,
 } from '../../Utilities/Workloads';
 
 describe('capitalize function', () => {
@@ -231,5 +232,49 @@ describe('workloadsRulesAddFilterParam', () => {
       object_id: '123',
       total_risk: [],
     });
+  });
+});
+
+describe('passFilterWorkloadsRecs', () => {
+  const recommendation = {
+    details: 'Sample details',
+    objects: [{ uid: 'abc' }],
+    total_risk: 2,
+  };
+
+  it('should return true with empty filters', () => {
+    const filters = {};
+    const result = passFilterWorkloadsRecs(recommendation, filters);
+    expect(result).toBe(true);
+  });
+
+  it('should filter based on description', () => {
+    const filters = { description: 'sample' };
+    const result = passFilterWorkloadsRecs(recommendation, filters);
+    expect(result).toBe(true);
+  });
+
+  it('should filter based on object_id', () => {
+    const filters = { object_id: 'abc' };
+    const result = passFilterWorkloadsRecs(recommendation, filters);
+    expect(result).toBe(true);
+  });
+
+  it('should filter based on total_risk', () => {
+    const filters = { total_risk: ['2'] };
+    const result = passFilterWorkloadsRecs(recommendation, filters);
+    expect(result).toBe(true);
+  });
+
+  it('should return false with non-matching filters', () => {
+    const filters = { description: 'nonexistent', object_id: 'xyz' };
+    const result = passFilterWorkloadsRecs(recommendation, filters);
+    expect(result).toBe(false);
+  });
+
+  it('should handle empty string filters', () => {
+    const filters = { description: '' };
+    const result = passFilterWorkloadsRecs(recommendation, filters);
+    expect(result).toBe(true); // Empty string filter should be ignored
   });
 });
