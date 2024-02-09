@@ -23,7 +23,7 @@
 	"recommendations": [
 		{
 			"check": "non_isolated_pod",
-			"details": "Alert on deployment-like objects that are not selected by any NetworkPolicy.",
+			"details": "Foobar",
 			"resolution": "Ensure pod does not accept unsafe traffic by isolating it with a NetworkPolicy. See https://cloud.redhat.com/blog/gUID:e-to-kubernetes-ingress-network-policies for more details.",
 			"modified": "2022-01-01T00:00:00Z",
 			"more_info": "There is no more info about this rule, sorry",
@@ -494,7 +494,7 @@
 		},
 		{
 			"check": "unset_cpu_requirements",
-			"details": "Indicates when containers do not have CPU requests and limits set.",
+			"details": "Heheheheh",
 			"resolution": "Set CPU requests and limits for your container based on its requirements. Refer to https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limits for details.",
 			"modified": "1999-01-02T03:04:05Z",
 			"more_info": "no additional info provided for this rule",
@@ -524,7 +524,7 @@
 		},
 		{
 			"check": "unset_memory_requirements",
-			"details": "Indicates when containers do not have memory requests and limits set.",
+			"details": "New recommendation",
 			"resolution": "Set memory requests and limits for your container based on its requirements. Refer to https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limits for details.",
 			"modified": "2023-01-01T00:00:00Z",
 			"more_info": "Don't panic",

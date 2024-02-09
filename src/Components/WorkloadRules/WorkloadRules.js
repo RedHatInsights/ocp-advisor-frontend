@@ -145,6 +145,11 @@ const WorkloadRules = ({ workload }) => {
   const buildFilteredRows = (allRows, filters) => {
     setRowsFiltered(false);
     const filtersArePresent = filtersAreApplied(filters);
+    const expandedRowsSet = new Set(
+      displayedRows
+        .filter((ruleExpanded) => ruleExpanded?.isOpen)
+        .map((object) => object?.rule?.details)
+    );
     return allRows
       .filter((recs) =>
         filtersArePresent ? passFilterWorkloadsRecs(recs, filters) : true
@@ -152,7 +157,7 @@ const WorkloadRules = ({ workload }) => {
       .map((value, key) => [
         {
           rule: value,
-          isOpen: isAllExpanded,
+          isOpen: isAllExpanded || expandedRowsSet?.has(value?.details),
           cells: [
             {
               title: value.details,
