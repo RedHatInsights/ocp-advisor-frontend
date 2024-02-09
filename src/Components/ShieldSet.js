@@ -5,15 +5,12 @@ import { Link } from 'react-router-dom';
 import { Tooltip } from '@patternfly/react-core';
 import { SEVERITY_OPTIONS, remappingSeverity } from '../Utilities/Workloads';
 
-const ShieldSet = (hits_by_severity) => {
+const ShieldSet = ({ hits_by_severity, basePath }) => {
   const DISABLED_COLOR = 'var(--pf-global--disabled-color--200)';
-  const severitiesRemapped = remappingSeverity(
-    hits_by_severity.hits_by_severity,
-    'label'
-  );
+  const severitiesRemapped = remappingSeverity(hits_by_severity, 'label');
   return (
     <div className="shield-set">
-      {SEVERITY_OPTIONS.map((severityOption) => (
+      {SEVERITY_OPTIONS.map((severityOption, index) => (
         <Tooltip
           key={severityOption.value}
           content={`${severityOption.label} severity`}
@@ -27,7 +24,7 @@ const ShieldSet = (hits_by_severity) => {
             ) : (
               <Link
                 key={severityOption.value}
-                to={`?severity=${severityOption.value}`}
+                to={`${basePath}?total_risk=${SEVERITY_OPTIONS[index].indexNumber}`}
                 className="nowrap"
               >
                 <SecurityIcon style={{ color: severityOption.iconColor }} />
@@ -48,6 +45,7 @@ ShieldSet.propTypes = {
     low: PropTypes.number,
   }).isRequired,
   linkTo: PropTypes.string,
+  basePath: PropTypes.string,
 };
 
 export default ShieldSet;
