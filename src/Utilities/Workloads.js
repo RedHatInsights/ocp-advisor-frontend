@@ -8,6 +8,7 @@ export const SEVERITY_OPTIONS = [
     iconColor: 'var(--pf-global--danger-color--100)',
     textColor: 'var(--pf-global--danger-color--100)',
     hasIcon: true,
+    indexNumber: 4,
   },
   {
     value: 'important',
@@ -15,6 +16,7 @@ export const SEVERITY_OPTIONS = [
     iconColor: 'var(--pf-global--palette--orange-300)',
     textColor: 'var(--pf-global--palette--orange-400)',
     hasIcon: true,
+    indexNumber: 3,
   },
   {
     value: 'moderate',
@@ -22,6 +24,7 @@ export const SEVERITY_OPTIONS = [
     iconColor: 'var(--pf-global--warning-color--100)',
     textColor: 'var(--pf-global--warning-color--200)',
     hasIcon: true,
+    indexNumber: 2,
   },
   {
     value: 'low',
@@ -29,10 +32,7 @@ export const SEVERITY_OPTIONS = [
     iconColor: 'var(--pf-global--Color--200)',
     textColor: 'var(--pf-global--default-color--300)',
     hasIcon: true,
-  },
-  {
-    value: 'none',
-    label: 'Unknown',
+    indexNumber: 1,
   },
 ];
 

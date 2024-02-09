@@ -196,7 +196,10 @@ const WorkloadsListTable = ({
           </span>,
           item.metadata.recommendations,
           <span key={index}>
-            <ShieldSet hits_by_severity={item.metadata.hits_by_severity} />
+            <ShieldSet
+              hits_by_severity={item.metadata.hits_by_severity}
+              basePath={`${BASE_PATH}/workloads/${item.cluster.uuid}/${item.namespace.uuid}`}
+            />
           </span>,
           item.metadata.objects,
           <span key={index}>
