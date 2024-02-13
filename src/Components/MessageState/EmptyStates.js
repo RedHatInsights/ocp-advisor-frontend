@@ -2,13 +2,18 @@ import * as React from 'react';
 import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 
-import { Button, Stack, StackItem, EmptyStateActions } from '@patternfly/react-core';
 import {
+  Button,
+  Stack,
+  StackItem,
+  EmptyStateActions,
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
-  EmptyStateActions, EmptyStateHeader, EmptyStateFooter,
-} from '@patternfly/react-core/dist/js/components/EmptyState';
+  EmptyStateHeader,
+  EmptyStateFooter,
+} from '@patternfly/react-core';
+
 import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import CheckCircleIcon from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 import PlusCircleIcon from '@patternfly/react-icons/dist/js/icons/plus-circle-icon';
@@ -85,14 +90,20 @@ const ComingSoon = () => {
   const intl = useIntl();
   return (
     <EmptyState variant="sm" id="coming-soon-message">
-      <EmptyStateHeader titleText={<>{intl.formatMessage(messages.comingSoonTitle)}</>} icon={<EmptyStateIcon icon={InProgressIcon} color="#151515" />} headingLevel="h2" />
+      <EmptyStateHeader
+        titleText={<>{intl.formatMessage(messages.comingSoonTitle)}</>}
+        icon={<EmptyStateIcon icon={InProgressIcon} color="#151515" />}
+        headingLevel="h2"
+      />
       <EmptyStateBody>
         {intl.formatMessage(messages.comingSoonBody)}
-      </EmptyStateBody><EmptyStateFooter>
-      <Link to={`${BASE_PATH}/recommendations`}>
-        <Button variant="primary">Recommendations</Button>
-      </Link>
-    </EmptyStateFooter></EmptyState>
+      </EmptyStateBody>
+      <EmptyStateFooter>
+        <Link to={`${BASE_PATH}/recommendations`}>
+          <Button variant="primary">Recommendations</Button>
+        </Link>
+      </EmptyStateFooter>
+    </EmptyState>
   );
 };
 
@@ -100,34 +111,42 @@ const NoRecsForClusters = () => {
   const intl = useIntl();
   return (
     <EmptyState variant="sm">
-      <EmptyStateHeader titleText={<>{intl.formatMessage(messages.noRecsForClusterListTitle)}</>} icon={<EmptyStateIcon icon={PlusCircleIcon} />} headingLevel="h2" />
+      <EmptyStateHeader
+        titleText={
+          <>{intl.formatMessage(messages.noRecsForClusterListTitle)}</>
+        }
+        icon={<EmptyStateIcon icon={PlusCircleIcon} />}
+        headingLevel="h2"
+      />
       <EmptyStateBody>
         {intl.formatMessage(messages.noRecsForClusterListBody)}
-      </EmptyStateBody><EmptyStateFooter>
-      <Button
-        component="a"
-        variant="primary"
-        href="https://console.redhat.com/openshift/create"
-      >
-        Create cluster
-      </Button>
-      <EmptyStateActions>
+      </EmptyStateBody>
+      <EmptyStateFooter>
         <Button
           component="a"
-          variant="link"
-          href="https://console.redhat.com/openshift/register"
+          variant="primary"
+          href="https://console.redhat.com/openshift/create"
         >
-          Register cluster
+          Create cluster
         </Button>
-        <Button
-          component="a"
-          variant="link"
-          href="https://console.redhat.com/openshift/assisted-installer/clusters"
-        >
-          Assisted Installer clusters
-        </Button>
-      </EmptyStateActions>
-    </EmptyStateFooter></EmptyState>
+        <EmptyStateActions>
+          <Button
+            component="a"
+            variant="link"
+            href="https://console.redhat.com/openshift/register"
+          >
+            Register cluster
+          </Button>
+          <Button
+            component="a"
+            variant="link"
+            href="https://console.redhat.com/openshift/assisted-installer/clusters"
+          >
+            Assisted Installer clusters
+          </Button>
+        </EmptyStateActions>
+      </EmptyStateFooter>
+    </EmptyState>
   );
 };
 
