@@ -49,7 +49,6 @@ const DisableRule = ({
         timeout: true,
         title: intl.formatMessage(messages.recSuccessfullyDisabledForCluster),
       });
-      afterFn && afterFn();
     } catch (error) {
       notify({
         variant: 'danger',
