@@ -216,6 +216,7 @@ const WorkloadsListTable = ({
   const filterConfigItems = [
     {
       label: 'Cluster name',
+      type: 'text',
       filterValues: {
         key: 'cluster_name',
         onChange: (_event, value) =>
@@ -226,6 +227,7 @@ const WorkloadsListTable = ({
     },
     {
       label: 'Namespace name',
+      type: 'text',
       filterValues: {
         key: 'namespace_name',
         onChange: (_event, value) =>

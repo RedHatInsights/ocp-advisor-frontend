@@ -312,6 +312,7 @@ const ClusterRules = () => {
   const filterConfigItems = [
     {
       label: 'description',
+      type: 'text',
       filterValues: {
         key: 'text-filter',
         onChange: (_e, value) => addFilterParam('text', value),

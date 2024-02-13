@@ -498,6 +498,7 @@ export const WORKLOAD_RULES_FILTER_CATEGORIES = {
 export const WORKLOADS_RULES_FILTER_CONFIG = (filters, addParamFunction) => [
   {
     label: 'description',
+    type: 'text',
     filterValues: {
       key: 'description',
       onChange: (_e, value) => addParamFunction('description', value),
@@ -522,6 +523,7 @@ export const WORKLOADS_RULES_FILTER_CONFIG = (filters, addParamFunction) => [
   },
   {
     label: 'object ID',
+    type: 'text',
     filterValues: {
       key: 'object_id',
       onChange: (_e, value) => addParamFunction('object_id', value),

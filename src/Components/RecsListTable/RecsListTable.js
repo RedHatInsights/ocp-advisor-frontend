@@ -346,6 +346,7 @@ const RecsListTable = ({ query }) => {
   const filterConfigItems = [
     {
       label: intl.formatMessage(messages.name).toLowerCase(),
+      type: 'text',
       filterValues: {
         key: 'text-filter',
         onChange: (_event, value) =>
