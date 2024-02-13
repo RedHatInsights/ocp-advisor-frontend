@@ -61,6 +61,7 @@
     "@formatjs/cli": "^6.2.7",
     "@patternfly/patternfly": "^5.2.0",
     "@redhat-cloud-services/eslint-config-redhat-cloud-services": "^2.0.3",
+    "@redhat-cloud-services/frontend-components-config": "^5.1.1",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
     "@testing-library/jest-dom": "^6.4.2",
