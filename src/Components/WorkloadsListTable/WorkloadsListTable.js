@@ -142,14 +142,9 @@ const WorkloadsListTable = ({
         const d = filters.sortDirection === 'asc' ? 1 : -1;
         switch (filters.sortIndex) {
           case WORKLOADS_TABLE_CELL_NAME:
-            if (a?.cluster.display_name && b?.cluster.display_name) {
-              return (
-                d *
-                a?.cluster.display_name.localeCompare(b?.cluster.display_name)
-              );
-            } else {
-              return d * a?.cluster.uuid.localeCompare(b?.cluster.uuid);
-            }
+            fst = a.cluster?.display_name || a.cluster.uuid;
+            snd = b.cluster?.display_name || b.cluster.uuid;
+            return d * fst.localeCompare(snd);
           case WORKLOADS_TABLE_CELL_RECOMMENDATIONS:
             fst = a.metadata.recommendations || 0;
             snd = b.metadata.recommendations || 0;
