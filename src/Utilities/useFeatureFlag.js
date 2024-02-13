@@ -23,7 +23,5 @@ export const useUpdateRisksFeatureFlag = () => {
 
 export const useWorkloadsFeatureFlag = () => {
   const workloadsEnabled = useFeatureFlag(WORKLOADS_ENABLE_FLAG);
-  const chrome = useChrome();
-
-  return chrome.isBeta() || workloadsEnabled;
+  return workloadsEnabled;
 };
