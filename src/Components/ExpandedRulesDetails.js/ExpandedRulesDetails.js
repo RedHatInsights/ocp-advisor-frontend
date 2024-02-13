@@ -11,6 +11,7 @@ import {
   CardHeader,
   CodeBlock,
   Divider,
+  Icon,
   Stack,
   StackItem,
 } from '@patternfly/react-core';
@@ -41,7 +42,9 @@ const ExpandedRulesDetails = ({ more_info, resolution, objects }) => {
           <StackItem>
             <Card isCompact isPlain>
               <CardHeader>
-                <BullseyeIcon className="ins-c-report-details__icon" />
+                <Icon>
+                  <BullseyeIcon className="ins-c-report-details__icon" />
+                </Icon>
                 <strong>Detected issues</strong>
               </CardHeader>
               <CardBody>
@@ -54,7 +57,9 @@ const ExpandedRulesDetails = ({ more_info, resolution, objects }) => {
           <StackItem>
             <Card isCompact isPlain>
               <CardHeader>
-                <ThumbsUpIcon className="ins-c-report-details__icon" />
+                <Icon>
+                  <ThumbsUpIcon className="ins-c-report-details__icon" />
+                </Icon>
                 <strong>Steps to resolve</strong>
               </CardHeader>
               <CardBody>
@@ -105,7 +110,9 @@ const ExpandedRulesDetails = ({ more_info, resolution, objects }) => {
             <StackItem>
               <Card isCompact isPlain>
                 <CardHeader>
-                  <InfoCircleIcon className="ins-c-report-details__icon" />
+                  <Icon>
+                    <InfoCircleIcon className="ins-c-report-details__icon" />
+                  </Icon>
                   <strong>Additional info</strong>
                 </CardHeader>
                 <CardBody>{more_info}</CardBody>

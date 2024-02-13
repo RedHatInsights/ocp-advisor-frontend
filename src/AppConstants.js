@@ -4,7 +4,7 @@ import intlHelper from '@redhat-cloud-services/frontend-components-translations/
 
 import messages from './Messages';
 import { cellWidth, fitContent, sortable } from '@patternfly/react-table';
-import { Tooltip } from '@patternfly/react-core';
+import { Icon, Tooltip } from '@patternfly/react-core';
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
 
 const cache = createIntlCache();
@@ -395,7 +395,9 @@ export const WORKLOADS_LIST_COLUMNS = [
       <Tooltip position="top" content={'Cluster Namespace'}>
         <span className="pf-c-table__text">
           Name &nbsp;
-          <OutlinedQuestionCircleIcon className="grey-icon" />
+          <Icon className="grey-icon">
+            <OutlinedQuestionCircleIcon />
+          </Icon>
         </span>
       </Tooltip>
     ),

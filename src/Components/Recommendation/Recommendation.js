@@ -23,6 +23,7 @@ import {
   Button,
   Flex,
   FlexItem,
+  Icon,
 } from '@patternfly/react-core';
 import {
   Dropdown,
@@ -319,7 +320,9 @@ const Recommendation = ({ rule, ack, clusters, recId }) => {
                 <Card className="cardOverride" ouiaId="hosts-acked">
                   <CardHeader>
                     <Title headingLevel="h4" size="xl">
-                      <BellSlashIcon size="sm" />
+                      <Icon size="sm">
+                        <BellSlashIcon />
+                      </Icon>
                       &nbsp;
                       {intl.formatMessage(
                         (content?.hosts_acked_count ||

@@ -10,7 +10,7 @@ import {
   TableBody,
   TableHeader,
 } from '@patternfly/react-table/deprecated';
-import { Button, Modal } from '@patternfly/react-core';
+import { Button, Icon, Modal } from '@patternfly/react-core';
 import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
 import OutlinedBellIcon from '@patternfly/react-icons/dist/js/icons/outlined-bell-icon';
 import { addNotification as notification } from '@redhat-cloud-services/frontend-components-notifications/';
@@ -87,7 +87,9 @@ const ViewHostAcks = ({
               variant="link"
               onClick={() => deleteAck(item)}
             >
-              <OutlinedBellIcon size="sm" />
+              <Icon size="sm">
+                <OutlinedBellIcon />
+              </Icon>
               {` ${intl.formatMessage(messages.enable)}`}
             </Button>
           ),
