@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  TableComposable,
+  Table /* data-codemods */,
   Tbody,
   Td,
   Th,
@@ -19,7 +19,7 @@ const ClusterOperatorsList = () => {
     data?.upgrade_recommendation?.upgrade_risks_predictors || {};
 
   return (
-    <TableComposable
+    <Table
       aria-label="Cluster operators firing table"
       variant="compact"
       borders={false}
@@ -49,7 +49,7 @@ const ClusterOperatorsList = () => {
           </Tr>
         ))}
       </Tbody>
-    </TableComposable>
+    </Table>
   );
 };
 

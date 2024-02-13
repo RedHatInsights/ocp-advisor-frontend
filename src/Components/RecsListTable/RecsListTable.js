@@ -6,13 +6,12 @@ import { useIntl } from 'react-intl';
 import { Link, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import capitalize from 'lodash/capitalize';
+import { SortByDirection, TableVariant } from '@patternfly/react-table';
 import {
-  SortByDirection,
   Table,
   TableBody,
   TableHeader,
-  TableVariant,
-} from '@patternfly/react-table';
+} from '@patternfly/react-table/deprecated';
 import { Pagination, Stack, Tooltip } from '@patternfly/react-core';
 import { TooltipPosition } from '@patternfly/react-core/dist/js/components/Tooltip';
 import { PaginationVariant } from '@patternfly/react-core/dist/js/components/Pagination/Pagination';

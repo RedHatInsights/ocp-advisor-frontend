@@ -11,7 +11,11 @@ import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryTo
 import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
 import { Tooltip, Pagination } from '@patternfly/react-core';
 import { PaginationVariant } from '@patternfly/react-core/dist/js/components/Pagination/Pagination';
-import { Table, TableHeader, TableBody } from '@patternfly/react-table';
+import {
+  Table,
+  TableHeader,
+  TableBody,
+} from '@patternfly/react-table/deprecated';
 
 import {
   ErrorState,

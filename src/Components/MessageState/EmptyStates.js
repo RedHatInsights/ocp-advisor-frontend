@@ -2,12 +2,12 @@ import * as React from 'react';
 import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 
-import { Title, Button, Stack, StackItem } from '@patternfly/react-core';
+import { Button, Stack, StackItem, EmptyStateActions } from '@patternfly/react-core';
 import {
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
-  EmptyStateSecondaryActions,
+  EmptyStateActions, EmptyStateHeader, EmptyStateFooter,
 } from '@patternfly/react-core/dist/js/components/EmptyState';
 import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import CheckCircleIcon from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
@@ -84,32 +84,26 @@ const NoMatchingRecs = () => {
 const ComingSoon = () => {
   const intl = useIntl();
   return (
-    <EmptyState variant="small" id="coming-soon-message">
-      <EmptyStateIcon icon={InProgressIcon} color="#151515" />
-      <Title headingLevel="h2" size="2xl">
-        {intl.formatMessage(messages.comingSoonTitle)}
-      </Title>
+    <EmptyState variant="sm" id="coming-soon-message">
+      <EmptyStateHeader titleText={<>{intl.formatMessage(messages.comingSoonTitle)}</>} icon={<EmptyStateIcon icon={InProgressIcon} color="#151515" />} headingLevel="h2" />
       <EmptyStateBody>
         {intl.formatMessage(messages.comingSoonBody)}
-      </EmptyStateBody>
+      </EmptyStateBody><EmptyStateFooter>
       <Link to={`${BASE_PATH}/recommendations`}>
         <Button variant="primary">Recommendations</Button>
       </Link>
-    </EmptyState>
+    </EmptyStateFooter></EmptyState>
   );
 };
 
 const NoRecsForClusters = () => {
   const intl = useIntl();
   return (
-    <EmptyState variant="small">
-      <EmptyStateIcon icon={PlusCircleIcon} />
-      <Title headingLevel="h2" size="2xl">
-        {intl.formatMessage(messages.noRecsForClusterListTitle)}
-      </Title>
+    <EmptyState variant="sm">
+      <EmptyStateHeader titleText={<>{intl.formatMessage(messages.noRecsForClusterListTitle)}</>} icon={<EmptyStateIcon icon={PlusCircleIcon} />} headingLevel="h2" />
       <EmptyStateBody>
         {intl.formatMessage(messages.noRecsForClusterListBody)}
-      </EmptyStateBody>
+      </EmptyStateBody><EmptyStateFooter>
       <Button
         component="a"
         variant="primary"
@@ -117,7 +111,7 @@ const NoRecsForClusters = () => {
       >
         Create cluster
       </Button>
-      <EmptyStateSecondaryActions>
+      <EmptyStateActions>
         <Button
           component="a"
           variant="link"
@@ -132,8 +126,8 @@ const NoRecsForClusters = () => {
         >
           Assisted Installer clusters
         </Button>
-      </EmptyStateSecondaryActions>
-    </EmptyState>
+      </EmptyStateActions>
+    </EmptyStateFooter></EmptyState>
   );
 };
 

@@ -4,12 +4,12 @@ import { List } from 'react-content-loader';
 import { useIntl } from 'react-intl';
 import { useDispatch } from 'react-redux';
 
+import { cellWidth } from '@patternfly/react-table';
 import {
   Table,
   TableBody,
   TableHeader,
-  cellWidth,
-} from '@patternfly/react-table';
+} from '@patternfly/react-table/deprecated';
 import { Button, Modal } from '@patternfly/react-core';
 import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
 import OutlinedBellIcon from '@patternfly/react-icons/dist/js/icons/outlined-bell-icon';
