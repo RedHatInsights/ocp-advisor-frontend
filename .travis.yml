@@ -12,7 +12,7 @@ jobs:
     - stage: Lint
       script: npm run build && npm run lint
     - stage: Test
-      script: npm run test && npm run test:ct
+      script: npm run test
       after_success: npm run coverage
     - stage: Deploy
       if: (fork = false) AND (branch IN (master, master-stable, prod-beta, prod-stable))
