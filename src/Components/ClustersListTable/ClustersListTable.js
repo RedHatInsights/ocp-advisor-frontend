@@ -246,6 +246,7 @@ const ClustersListTable = ({
               (c) => c.cluster_version !== undefined && c.cluster_version !== ''
             )
             .map((c) => ({
+              label: c.cluster_version,
               value: toValidSemVer(c.cluster_version),
             }))
             .sort((a, b) =>

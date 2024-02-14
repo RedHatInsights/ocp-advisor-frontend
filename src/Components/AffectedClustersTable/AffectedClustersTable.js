@@ -115,6 +115,7 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
             rows
               .filter((r) => r.meta.cluster_version !== '')
               .map((r) => ({
+                label: r.meta.cluster_version,
                 value: r.meta.cluster_version,
               }))
               .sort((a, b) => compareSemVer(a.value, b.value, 1))
