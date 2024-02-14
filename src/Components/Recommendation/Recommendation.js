@@ -316,7 +316,7 @@ const Recommendation = ({ rule, ack, clusters, recId }) => {
                 <Card className="cardOverride" ouiaId="hosts-acked">
                   <CardHeader>
                     <Title headingLevel="h4" size="xl">
-                      <Icon size="sm">
+                      <Icon size="md">
                         <BellSlashIcon />
                       </Icon>
                       &nbsp;
