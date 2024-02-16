@@ -3,7 +3,7 @@ notifications:
   email: false
 sudo: required
 node_js:
-  - "16"
+  - "21"
 install:
   - npm ci
 if: tag IS blank
