@@ -3,13 +3,16 @@ import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
 
 import {
+  Dropdown,
+  DropdownItem,
+  DropdownList,
   Grid,
   GridItem,
+  MenuToggle,
   Stack,
   StackItem,
   Title,
 } from '@patternfly/react-core';
-import { Dropdown, DropdownToggle, DropdownItem } from '@patternfly/react-core';
 import Skeleton from '@redhat-cloud-services/frontend-components/Skeleton';
 import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat/DateFormat';
 
@@ -34,6 +37,7 @@ export const ClusterHeader = ({ clusterId, clusterData, clusterInfo }) => {
   } = clusterInfo;
 
   const redirectOCM = (clusterId) => {
+    // TODO: replace with isBeta from chrome
     location.assign(
       location.origin +
         (location.pathname.includes('preview') ? `/preview` : '') +
@@ -65,20 +69,24 @@ export const ClusterHeader = ({ clusterId, clusterData, clusterInfo }) => {
       </GridItem>
       <GridItem span={4} id="cluster-header-dropdown">
         <Dropdown
-          position="right"
-          onSelect={() => setIsOpen(!isOpen)}
+          popperProps={{
+            position: 'right',
+          }}
+          onOpenChange={(isOpen) => setIsOpen(isOpen)}
           autoFocus={false}
           isOpen={isOpen}
-          toggle={
-            <DropdownToggle
+          toggle={(toggleRef) => (
+            <MenuToggle
+              ref={toggleRef}
               id="toggle-id-2"
-              onToggle={(isOpen) => setIsOpen(isOpen)}
+              onClick={() => setIsOpen(!isOpen)}
             >
               {intl.formatMessage(messages.dropDownActionSingleCluster)}
-            </DropdownToggle>
-          }
-          dropdownItems={dropDownItems}
-        />
+            </MenuToggle>
+          )}
+        >
+          <DropdownList>{dropDownItems}</DropdownList>
+        </Dropdown>
       </GridItem>
       <GridItem>
         <Stack>

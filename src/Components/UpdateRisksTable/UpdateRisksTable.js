@@ -5,11 +5,12 @@ import {
   Icon,
   Label,
   Spinner,
+  EmptyStateHeader,
 } from '@patternfly/react-core';
 import ExclamationTriangleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 import {
   ExpandableRowContent,
-  TableComposable,
+  Table /* data-codemods */,
   Tbody,
   Td,
   Th,
@@ -53,10 +54,10 @@ const UpdateRisksTable = () => {
 
   return isUninitialized || isFetching ? (
     <EmptyState>
-      <EmptyStateIcon variant="container" component={Spinner} />
+      <EmptyStateHeader icon={<EmptyStateIcon icon={Spinner} />} />
     </EmptyState>
   ) : (
-    <TableComposable
+    <Table
       aria-label="Update risks table"
       isExpandable
       variant="compact"
@@ -172,7 +173,7 @@ const UpdateRisksTable = () => {
           </Tr>
         </Tbody>
       )}
-    </TableComposable>
+    </Table>
   );
 };
 

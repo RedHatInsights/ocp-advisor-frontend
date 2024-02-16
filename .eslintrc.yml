@@ -8,3 +8,6 @@ globals:
   shallow: readonly
   render: "readonly"
   mount: "readonly"
+rules:
+  'rulesdir/forbid-pf-relative-imports': 'off'
+  'cypress/unsafe-to-chain-command': 'off'

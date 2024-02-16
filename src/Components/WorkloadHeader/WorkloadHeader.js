@@ -70,6 +70,9 @@ WorkloadHeader.propTypes = {
     isUninitialized: PropTypes.bool.isRequired,
     isFetching: PropTypes.bool.isRequired,
     data: PropTypes.shape({
+      metadata: PropTypes.shape({
+        last_checked_at: PropTypes.string,
+      }),
       namespace: PropTypes.shape({
         uuid: PropTypes.string,
         name: PropTypes.string,

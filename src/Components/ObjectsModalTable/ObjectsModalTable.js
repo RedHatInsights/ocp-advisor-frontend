@@ -44,6 +44,7 @@ export const ObjectsModalTable = ({ objects }) => {
   const filterConfigItems = [
     {
       label: 'Object ID',
+      type: 'text',
       filterValues: {
         key: 'object_id',
         onChange: (_event, value) =>

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
+import { TableVariant } from '@patternfly/react-table';
 import {
   Table,
   TableBody,
   TableHeader,
-  TableVariant,
-} from '@patternfly/react-table';
+} from '@patternfly/react-table/deprecated';
 import { PaginationVariant } from '@patternfly/react-core/dist/js/components/Pagination/Pagination';
 import {
   WORKLOADS_LIST_COLUMNS,
@@ -211,6 +211,7 @@ const WorkloadsListTable = ({
   const filterConfigItems = [
     {
       label: 'Cluster name',
+      type: 'text',
       filterValues: {
         key: 'cluster_name',
         onChange: (_event, value) =>
@@ -221,6 +222,7 @@ const WorkloadsListTable = ({
     },
     {
       label: 'Namespace name',
+      type: 'text',
       filterValues: {
         key: 'namespace_name',
         onChange: (_event, value) =>

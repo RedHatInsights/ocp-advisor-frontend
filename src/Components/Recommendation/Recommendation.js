@@ -4,7 +4,6 @@ import React, { useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-
 import {
   Card,
   CardBody,
@@ -21,14 +20,15 @@ import {
   Title,
   LabelGroup,
   Button,
-  Dropdown,
-  DropdownItem,
-  DropdownToggle,
   Flex,
   FlexItem,
+  Icon,
+  Dropdown,
+  MenuToggle,
+  DropdownItem,
+  DropdownList,
 } from '@patternfly/react-core';
 import BellSlashIcon from '@patternfly/react-icons/dist/js/icons/bell-slash-icon';
-import CaretDownIcon from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
 import { addNotification } from '@redhat-cloud-services/frontend-components-notifications/';
 import { ErrorState } from '@redhat-cloud-services/frontend-components/ErrorState';
 import {
@@ -263,48 +263,47 @@ const Recommendation = ({ rule, ack, clusters, recId }) => {
                 <FlexItem align={{ default: 'alignRight' }}>
                   <Dropdown
                     className="ins-c-rec-details__actions_dropdown"
-                    onSelect={() =>
-                      setActionsDropdownOpen(!actionsDropdownOpen)
-                    }
-                    position="right"
+                    onOpenChange={(isOpen) => setActionsDropdownOpen(isOpen)}
+                    popperProps={{
+                      position: 'right',
+                    }}
                     ouiaId="actions"
-                    toggle={
-                      <DropdownToggle
-                        onToggle={(actionsDropdownOpen) =>
-                          setActionsDropdownOpen(actionsDropdownOpen)
+                    toggle={(toggleRef) => (
+                      <MenuToggle
+                        ref={toggleRef}
+                        onClick={() =>
+                          setActionsDropdownOpen(!actionsDropdownOpen)
                         }
-                        toggleIndicator={CaretDownIcon}
                       >
                         {intl.formatMessage(messages.actions)}
-                      </DropdownToggle>
-                    }
+                      </MenuToggle>
+                    )}
                     isOpen={actionsDropdownOpen}
-                    dropdownItems={
-                      content?.disabled
-                        ? [
-                            <DropdownItem
-                              key="link"
-                              ouiaId="enable"
-                              onClick={() => {
-                                enableRule(rule);
-                              }}
-                            >
-                              {intl.formatMessage(messages.enableRule)}
-                            </DropdownItem>,
-                          ]
-                        : [
-                            <DropdownItem
-                              key="link"
-                              ouiaId="disable"
-                              onClick={() => {
-                                handleModalToggle(true);
-                              }}
-                            >
-                              {intl.formatMessage(messages.disableRule)}
-                            </DropdownItem>,
-                          ]
-                    }
-                  />
+                  >
+                    <DropdownList>
+                      {content?.disabled ? (
+                        <DropdownItem
+                          key="link"
+                          ouiaId="enable"
+                          onClick={() => {
+                            enableRule(rule);
+                          }}
+                        >
+                          {intl.formatMessage(messages.enableRule)}
+                        </DropdownItem>
+                      ) : (
+                        <DropdownItem
+                          key="link"
+                          ouiaId="disable"
+                          onClick={() => {
+                            handleModalToggle(true);
+                          }}
+                        >
+                          {intl.formatMessage(messages.disableRule)}
+                        </DropdownItem>
+                      )}
+                    </DropdownList>
+                  </Dropdown>
                 </FlexItem>
               </Flex>
             </RuleDetails>
@@ -317,7 +316,9 @@ const Recommendation = ({ rule, ack, clusters, recId }) => {
                 <Card className="cardOverride" ouiaId="hosts-acked">
                   <CardHeader>
                     <Title headingLevel="h4" size="xl">
-                      <BellSlashIcon size="sm" />
+                      <Icon size="md">
+                        <BellSlashIcon />
+                      </Icon>
                       &nbsp;
                       {intl.formatMessage(
                         (content?.hosts_acked_count ||

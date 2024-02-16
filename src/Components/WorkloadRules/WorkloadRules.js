@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { TableVariant } from '@patternfly/react-table';
 import {
   Table,
   TableBody,
   TableHeader,
-  TableVariant,
-} from '@patternfly/react-table';
+} from '@patternfly/react-table/deprecated';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
 import {
   WORKLOADS_RULES_COLUMNS_KEYS,
