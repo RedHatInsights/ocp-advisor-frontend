@@ -22,7 +22,7 @@ import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat';
 import { Link, useLocation } from 'react-router-dom';
 import { BASE_PATH } from '../../Routes';
 import { Pagination } from '@patternfly/react-core';
-import { conditionalFilterType } from '@redhat-cloud-services/frontend-components/ConditionalFilter/conditionalFilterConstants';
+/* import { conditionalFilterType } from '@redhat-cloud-services/frontend-components/ConditionalFilter/conditionalFilterConstants'; */
 import { useDispatch, useSelector } from 'react-redux';
 import {
   WORKLOADS_TABLE_INITIAL_STATE,
@@ -34,7 +34,7 @@ import {
   buildFilterChips,
   passFilterWorkloads,
   removeFilterParam as _removeFilterParam,
-  addFilterParam as _addFilterParam,
+  /* addFilterParam as _addFilterParam, */
   translateSortParams,
   paramParser,
   updateSearchParams,
@@ -46,7 +46,7 @@ import {
   NoWorkloadsAvailable,
 } from '../MessageState/EmptyStates';
 import Loading from '../Loading/Loading';
-import ShieldSet from '../ShieldSet';
+/* import ShieldSet from '../ShieldSet'; */
 import { filtersAreApplied } from '../../Utilities/Workloads';
 
 const WorkloadsListTable = ({
@@ -82,8 +82,8 @@ const WorkloadsListTable = ({
   const successState = isSuccess;
   const { search } = useLocation();
 
-  const addFilterParam = (param, values) =>
-    _addFilterParam(filters, updateFilters, param, values);
+  /* const addFilterParam = (param, values) =>
+    _addFilterParam(filters, updateFilters, param, values); */
 
   useEffect(() => {
     setFilteredRows(buildFilteredRows(workloads));
@@ -190,12 +190,6 @@ const WorkloadsListTable = ({
             </Link>
           </span>,
           item.metadata.recommendations,
-          <span key={index}>
-            <ShieldSet
-              hits_by_severity={item.metadata.hits_by_severity}
-              basePath={`${BASE_PATH}/workloads/${item.cluster.uuid}/${item.namespace.uuid}`}
-            />
-          </span>,
           item.metadata.objects,
           <span key={index}>
             <DateFormat
@@ -231,7 +225,7 @@ const WorkloadsListTable = ({
         placeholder: 'Filter by namespace name',
       },
     },
-    {
+    /* {
       label: 'Severity',
       type: conditionalFilterType.checkbox,
       id: WORKLOADS_TABLE_FILTER_CATEGORIES.severity.urlParam,
@@ -243,7 +237,7 @@ const WorkloadsListTable = ({
         items: WORKLOADS_TABLE_FILTER_CATEGORIES.severity.values,
         placeholder: 'Filter by severity',
       },
-    },
+    }, */
   ];
 
   const activeFiltersConfig = {
