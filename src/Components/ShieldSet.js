@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { SecurityIcon } from '@patternfly/react-icons';
 import { Link } from 'react-router-dom';
-import { Icon, Tooltip } from '@patternfly/react-core';
+import { Tooltip } from '@patternfly/react-core';
 import { SEVERITY_OPTIONS, remappingSeverity } from '../Utilities/Workloads';
 
 const ShieldSet = ({ hits_by_severity, basePath }) => {
@@ -18,9 +18,7 @@ const ShieldSet = ({ hits_by_severity, basePath }) => {
           {severityOption.hasIcon &&
             (severitiesRemapped[severityOption.value] === 0 ? (
               <a className="disabled-shield nowrap">
-                <Icon style={{ color: DISABLED_COLOR }}>
-                  <SecurityIcon />
-                </Icon>
+                <SecurityIcon style={{ color: DISABLED_COLOR }} />
                 <span>0</span>
               </a>
             ) : (
@@ -29,9 +27,7 @@ const ShieldSet = ({ hits_by_severity, basePath }) => {
                 to={`${basePath}?total_risk=${SEVERITY_OPTIONS[index].indexNumber}`}
                 className="nowrap"
               >
-                <Icon style={{ color: severityOption.iconColor }}>
-                  <SecurityIcon />
-                </Icon>
+                <SecurityIcon style={{ color: severityOption.iconColor }} />
                 <span>{severitiesRemapped[severityOption.value]}</span>
               </Link>
             ))}
