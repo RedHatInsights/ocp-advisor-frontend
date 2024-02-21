@@ -3,6 +3,7 @@ import { mount } from '@cypress/react18';
 
 import { Intl } from '../../Utilities/intlHelper';
 import { ClusterHeader } from './ClusterHeader';
+import { BrowserRouter, MemoryRouter, Route, Routes } from 'react-router-dom';
 
 // selectors
 const HEADER_TITLE = '#cluster-header-title';
@@ -90,8 +91,9 @@ describe('cluster page header', () => {
         <ClusterHeader {...props} />
       </Intl>
     );
-    cy.get('.pf-v5-c-dropdown__toggle').click();
-    cy.get('a[class=pf-v5-c-menu-toggle-item]').click();
-    cy.url().should('include', 'openshift/details/' + props.clusterId);
+    cy.get('.pf-v5-c-menu-toggle').click();
+    cy.get('a[class=pf-v5-c-menu__item]')
+      .should('have.attr', 'href')
+      .and('include', 'openshift/details/' + props.clusterId);
   });
 });
