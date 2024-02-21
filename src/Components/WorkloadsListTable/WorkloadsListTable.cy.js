@@ -1,6 +1,7 @@
 import React from 'react';
-import { mount } from '@cypress/react';
 import _ from 'lodash';
+
+import { mount } from '@cypress/react18';
 import workloads from '../../../cypress/fixtures/api/insights-results-aggregator/v2/workloads.json';
 import { WORKLOADS_LIST_COLUMNS } from '../../AppConstants';
 import {
@@ -164,15 +165,15 @@ describe('workloads list "No workload recommendations" Empty state rendering', (
     );
   });
   it('renders the Empty State component', () => {
-    cy.get('div[class=pf-c-empty-state__content]')
+    cy.get('div[class=pf-v5-c-empty-state__content]')
       .should('have.length', 1)
       .find('h5')
       .should('have.text', 'No workload recommendations');
-    cy.get('div[class=pf-c-empty-state__body] p').should(
+    cy.get('div[class=pf-v5-c-empty-state__body] p').should(
       'have.text',
       'There are no workload-related recommendations for your clusters. This page only shows workloads if there are recommendations available.'
     );
-    cy.get('div[class=pf-c-empty-state__body] button').should(
+    cy.get('div[class=pf-v5-c-empty-state__body] button').should(
       'have.text',
       'Return to previous page'
     );
@@ -204,19 +205,19 @@ describe('workloads list "Workloads data unavailable" Empty state rendering', ()
   });
 
   it('renders the Empty State component', () => {
-    cy.get('div[class=pf-c-empty-state__content]')
+    cy.get('div[class=pf-v5-c-empty-state__content]')
       .should('have.length', 1)
       .find('h5')
       .should('have.text', 'Workloads data unavailable');
-    cy.get('div[class=pf-c-empty-state__body] p').should(
+    cy.get('div[class=pf-v5-c-empty-state__body] p').should(
       'have.text',
       'Verify that your clusters are connected and sending data to Red Hat, and that the Deployment Validation Operator is installed and configured.'
     );
-    cy.get('div[class=pf-c-empty-state__body] button').should(
+    cy.get('div[class=pf-v5-c-empty-state__body] button').should(
       'have.text',
       'Return to previous page'
     );
-    cy.get('div[class=pf-c-empty-state__body] a').should(
+    cy.get('div[class=pf-v5-c-empty-state__body] a').should(
       'have.text',
       'View documentation'
     );

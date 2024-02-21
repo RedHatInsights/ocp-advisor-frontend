@@ -1,5 +1,5 @@
 import React from 'react';
-import { mount } from '@cypress/react';
+import { mount } from '@cypress/react18';
 import { IntlProvider } from 'react-intl';
 import { MemoryRouter } from 'react-router-dom';
 

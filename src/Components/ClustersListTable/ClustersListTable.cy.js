@@ -1,6 +1,6 @@
 import React from 'react';
-import { mount } from '@cypress/react';
-import { MemoryRouter } from 'react-router-dom';
+import { mount } from '@cypress/react18';
+import { MemoryRouter } from 'react-router-dom18';
 import { Provider } from 'react-redux';
 import _ from 'lodash';
 
@@ -243,7 +243,7 @@ urlParamsList.forEach((urlParams, index) => {
       for (const [key, value] of urlSearchParameters) {
         if (key == 'text') {
           hasChip('Name', value);
-          cy.get('.pf-m-fill > .pf-c-form-control').should('have.value', value);
+          cy.get('.pf-m-fill > .pf-v5-c-form-control').should('have.value', value);
         } else {
           value.split(',').forEach((it) => {
             const [group, item] = urlParamConvert(
@@ -311,7 +311,7 @@ describe('clusters list table', () => {
     });
 
     it(`pagination is set to ${DEFAULT_ROW_COUNT}`, () => {
-      cy.get('.pf-c-options-menu__toggle-text')
+      cy.get('.pf-v5-c-options-menu__toggle-text')
         .find('b')
         .eq(0)
         .should('have.text', `1 - ${DEFAULT_DISPLAYED_SIZE}`);
@@ -327,7 +327,7 @@ describe('clusters list table', () => {
 
     it('applies total risk "All clusters" filter', () => {
       hasChip('Total risk', 'All clusters');
-      cy.get(CHIP_GROUP).find('.pf-c-chip__text').should('have.length', 1);
+      cy.get(CHIP_GROUP).find('.pf-v5-c-chip__text').should('have.length', 1);
       expect(window.location.search).to.contain(`hits=all`);
     });
 
@@ -580,23 +580,23 @@ describe('cluster list Empty state rendering', () => {
   });
 
   it('renders the Empty State component', () => {
-    cy.get('div[class=pf-c-empty-state__content]')
+    cy.get('div[class=pf-v5-c-empty-state__content]')
       .should('have.length', 1)
       .find('h2')
       .should('have.text', 'No clusters yet');
-    cy.get('div[class=pf-c-empty-state__body]').should(
+    cy.get('div[class=pf-v5-c-empty-state__body]').should(
       'have.text',
       'To get started, create or register your cluster to get recommendations from Insights Advisor.'
     );
-    cy.get('div[class=pf-c-empty-state__content]')
+    cy.get('div[class=pf-v5-c-empty-state__content]')
       .children()
       .eq(3)
       .should('have.text', 'Create cluster');
-    cy.get('div[class=pf-c-empty-state__secondary]')
+    cy.get('div[class=pf-v5-c-empty-state__secondary]')
       .children()
       .eq(0)
       .should('have.text', 'Register cluster');
-    cy.get('div[class=pf-c-empty-state__secondary]')
+    cy.get('div[class=pf-v5-c-empty-state__secondary]')
       .children()
       .eq(1)
       .should('have.text', 'Assisted Installer clusters');

@@ -1,5 +1,5 @@
 import React from 'react';
-import { mount } from '@cypress/react';
+import { mount } from '@cypress/react18';
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import _ from 'lodash';
@@ -187,7 +187,7 @@ describe('non-empty successful affected clusters table', () => {
     });
 
     it(`pagination is set to ${DEFAULT_ROW_COUNT}`, () => {
-      cy.get('.pf-c-options-menu__toggle-text')
+      cy.get('.pf-v5-c-options-menu__toggle-text')
         .find('b')
         .eq(0)
         .should('have.text', `1 - ${DEFAULT_ROW_COUNT}`);
@@ -280,7 +280,7 @@ describe('non-empty successful affected clusters table', () => {
         .click();
       cy.ouiaId(BULK_SELECT).find('input').should('not.be.checked');
       cy.ouiaId(BULK_SELECT)
-        .find('label.pf-c-dropdown__toggle-check')
+        .find('label.pf-v5-c-dropdown__toggle-check')
         .contains(`${data.length - 1} selected`);
       // bulk disabling button is still enabled
       cy.get(TOOLBAR)
@@ -310,7 +310,7 @@ describe('non-empty successful affected clusters table', () => {
       cy.ouiaId(BULK_SELECT).find('input').should('not.be.checked');
 
       cy.ouiaId(BULK_SELECT)
-        .find('label.pf-c-dropdown__toggle-check')
+        .find('label.pf-v5-c-dropdown__toggle-check')
         .contains(`1 selected`);
     });
 
@@ -556,13 +556,13 @@ describe('non-empty successful affected clusters table', () => {
       .find(TBODY)
       .find(ROW)
       .eq(0)
-      .find('.pf-c-table__action button')
+      .find('.pf-v5-c-table__action button')
       .click();
     cy.get(TABLE)
       .find(TBODY)
       .find(ROW)
       .eq(0)
-      .find('.pf-c-dropdown__menu button')
+      .find('.pf-v5-c-menu-toggle')
       .click();
     cy.get(MODAL).should('have.length', 1);
   });
@@ -597,7 +597,7 @@ describe('non-empty successful affected clusters table', () => {
         .click();
 
       cy.get(MODAL)
-        .find('.pf-c-check label')
+        .find('.pf-v5-c-check label')
         .should('have.text', 'Disable only for this cluster');
 
       cy.get(MODAL).find(CHECKBOX).should('be.checked');

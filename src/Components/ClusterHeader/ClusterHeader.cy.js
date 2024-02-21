@@ -1,5 +1,5 @@
 import React from 'react';
-import { mount } from '@cypress/react';
+import { mount } from '@cypress/react18';
 
 import { Intl } from '../../Utilities/intlHelper';
 import { ClusterHeader } from './ClusterHeader';
@@ -90,8 +90,8 @@ describe('cluster page header', () => {
         <ClusterHeader {...props} />
       </Intl>
     );
-    cy.get('.pf-c-dropdown__toggle').click();
-    cy.get('a[class=pf-c-dropdown__menu-item]').click();
+    cy.get('.pf-v5-c-dropdown__toggle').click();
+    cy.get('a[class=pf-v5-c-menu-toggle-item]').click();
     cy.url().should('include', 'openshift/details/' + props.clusterId);
   });
 });

@@ -1,5 +1,5 @@
 import React from 'react';
-import { mount } from '@cypress/react';
+import { mount } from '@cypress/react18';
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import _ from 'lodash';
@@ -60,7 +60,7 @@ import { SORTING_ORDERS } from '../../../cypress/utils/globals';
 // selectors
 const ROOT = 'div[id=recs-list-table]';
 const ROW = 'tbody[role=rowgroup]'; // FIXME use ROW from components
-const EXPANDABLES = '[class="pf-c-table__expandable-row pf-m-expanded"]';
+const EXPANDABLES = '[class="pf-v5-c-table__expandable-row pf-m-expanded"]';
 // TODO refer to https://github.com/RedHatInsights/ocp-advisor-frontend/blob/master/src/Services/Filters.js#L13
 const DEFAULT_FILTERS = {
   impacting: ['1 or more'],
@@ -205,7 +205,7 @@ Cypress.Commands.add('getRowByName', (name) => {
   cy.contains(ROW, name);
 });
 Cypress.Commands.add('clickOnRowKebab', (name) => {
-  cy.contains(ROW, name).find('.pf-c-dropdown__toggle').click();
+  cy.contains(ROW, name).find('.pf-v5-c-dropdown__toggle').click();
 });
 Cypress.Commands.add('getColumns', () => {
   /* patternfly/react-table-4.71.16, for some reason, renders extra empty `th` container;
@@ -312,7 +312,7 @@ urlParamsList.forEach((urlParams, index) => {
       for (const [key, value] of urlSearchParameters) {
         if (key == 'text') {
           hasChip('Name', value);
-          cy.get('.pf-m-fill > .pf-c-form-control').should('have.value', value);
+          cy.get('.pf-m-fill > .pf-v5-c-form-control').should('have.value', value);
         } else {
           value.split(',').forEach((it) => {
             const [group, item] = urlParamConvert(key, it, FILTER_CATEGORIES);
@@ -367,32 +367,32 @@ describe('successful non-empty recommendations list table', () => {
 
   it('renders Clusters impacted chip group', () => {
     cy.get(ROOT)
-      .find('span[class=pf-c-chip-group__label]')
+      .find('span[class=pf-v5-c-chip-group__label]')
       .should('have.length', 2)
       .eq(0)
       .and('have.text', 'Clusters impacted');
     cy.get(ROOT)
-      .find('span[class=pf-c-chip-group__label]')
+      .find('span[class=pf-v5-c-chip-group__label]')
       .eq(1)
       .and('have.text', 'Status');
     cy.get(ROOT)
-      .find('li[class=pf-c-chip-group__list-item]')
+      .find('li[class=pf-v5-c-chip-group__list-item]')
       .should('have.length', 2)
       .eq(0)
       .and('have.text', '1 or more');
     cy.get(ROOT)
-      .find('li[class=pf-c-chip-group__list-item]')
+      .find('li[class=pf-v5-c-chip-group__list-item]')
       .eq(1)
       .and('have.text', 'Enabled');
   });
 
   it('Expected filters available', () => {
-    const FILTERS_DROPDOWN = 'ul[class=pf-c-dropdown__menu]';
-    const FILTER_ITEM = 'button[class=pf-c-dropdown__menu-item]';
+    const FILTERS_DROPDOWN = 'ul[class=pf-v5-c-menu-toggle]';
+    const FILTER_ITEM = 'button[class=pf-v5-c-menu-toggle-item]';
 
     cy.get(ROOT)
       .should('have.length', 1)
-      .find('button[class=pf-c-dropdown__toggle]')
+      .find('button[class=pf-v5-c-dropdown__toggle]')
       .should('have.length', 1)
       .click();
     const filtersNames = _.map(filtersConf, 'selectorText');
@@ -411,7 +411,7 @@ describe('successful non-empty recommendations list table', () => {
     });
 
     it(`pagination is set to ${DEFAULT_ROW_COUNT}`, () => {
-      cy.get('.pf-c-options-menu__toggle-text')
+      cy.get('.pf-v5-c-options-menu__toggle-text')
         .find('b')
         .eq(0)
         .should('have.text', `1 - ${DEFAULT_DISPLAYED_SIZE}`);
@@ -644,7 +644,7 @@ describe('successful non-empty recommendations list table', () => {
         .then(() => {
           expect(window.location.search).to.not.contain('text=');
         });
-      cy.get(TOOLBAR_FILTER).find('.pf-c-form-control').should('be.empty');
+      cy.get(TOOLBAR_FILTER).find('.pf-v5-c-form-control').should('be.empty');
     });
 
     it('clears text input after resetting all filters', () => {
@@ -657,7 +657,7 @@ describe('successful non-empty recommendations list table', () => {
         .then(() => {
           expect(window.location.search).to.not.contain('text=');
         });
-      cy.get(TOOLBAR_FILTER).find('.pf-c-form-control').should('be.empty');
+      cy.get(TOOLBAR_FILTER).find('.pf-v5-c-form-control').should('be.empty');
     });
 
     it('will reset filters but not pagination and sorting', () => {
@@ -688,7 +688,7 @@ describe('successful non-empty recommendations list table', () => {
       cy.getRowByName(
         'Super atomic nuclear cluster on the brink of the world destruction'
       )
-        .find('.pf-c-table__toggle button')
+        .find('.pf-v5-c-table__toggle button')
         .click();
       cy.get(EXPANDABLES)
         .eq(0)
@@ -699,7 +699,7 @@ describe('successful non-empty recommendations list table', () => {
 
     it('present resolution risk is shown in expanded details', () => {
       cy.getRowByName('1Lorem ipsum dolor sit amet')
-        .find('.pf-c-table__toggle button')
+        .find('.pf-v5-c-table__toggle button')
         .click();
       cy.get(EXPANDABLES)
         .eq(0)
@@ -721,7 +721,7 @@ describe('successful non-empty recommendations list table', () => {
       cy.get(`td[data-label="Name"]`).then(($els) => {
         cy.wrap($els).each(($el) => {
           cy.wrap($el)
-            .find('span[class=pf-c-label__content]')
+            .find('span[class=pf-v5-c-label__content]')
             .should('have.text', 'Disabled');
         });
       });
@@ -729,7 +729,7 @@ describe('successful non-empty recommendations list table', () => {
 
     it('each row has a kebab', () => {
       cy.get(TABLE)
-        .find('tbody[role=rowgroup] .pf-c-dropdown__toggle')
+        .find('tbody[role=rowgroup] .pf-v5-c-dropdown__toggle')
         .should('have.length', DEFAULT_DISPLAYED_SIZE);
     });
 
@@ -740,7 +740,7 @@ describe('successful non-empty recommendations list table', () => {
       cy.getRowByName(
         'Super atomic nuclear cluster on the brink of the world destruction'
       )
-        .find('.pf-c-dropdown__menu button')
+        .find('.pf-v5-c-menu-toggle')
         .should('have.text', 'Disable recommendation');
     });
 
@@ -752,7 +752,7 @@ describe('successful non-empty recommendations list table', () => {
       )[0];
       cy.clickOnRowKebab(firstDisabledRecommendation.description);
       cy.getRowByName(firstDisabledRecommendation.description)
-        .find('.pf-c-dropdown__menu button')
+        .find('.pf-v5-c-menu-toggle')
         .should('have.text', 'Enable recommendation');
     });
   });
@@ -760,7 +760,7 @@ describe('successful non-empty recommendations list table', () => {
   it('rule content is rendered', () => {
     cy.get(ROWS_TOGGLER).click();
     cy.get(TABLE)
-      .find('.pf-c-table__expandable-row.pf-m-expanded')
+      .find('.pf-v5-c-table__expandable-row.pf-m-expanded')
       .each((el, index) => {
         // contains description
         cy.wrap(el).contains(
