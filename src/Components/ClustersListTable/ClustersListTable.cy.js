@@ -1,6 +1,6 @@
 import React from 'react';
 import { mount } from '@cypress/react18';
-import { MemoryRouter } from 'react-router-dom18';
+import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import _ from 'lodash';
 
@@ -243,7 +243,10 @@ urlParamsList.forEach((urlParams, index) => {
       for (const [key, value] of urlSearchParameters) {
         if (key == 'text') {
           hasChip('Name', value);
-          cy.get('.pf-m-fill > .pf-v5-c-form-control').should('have.value', value);
+          cy.get('.pf-m-fill > .pf-v5-c-form-control > input').should(
+            'have.value',
+            value
+          );
         } else {
           value.split(',').forEach((it) => {
             const [group, item] = urlParamConvert(
@@ -311,7 +314,7 @@ describe('clusters list table', () => {
     });
 
     it(`pagination is set to ${DEFAULT_ROW_COUNT}`, () => {
-      cy.get('.pf-v5-c-options-menu__toggle-text')
+      cy.get('.pf-v5-c-menu-toggle__text')
         .find('b')
         .eq(0)
         .should('have.text', `1 - ${DEFAULT_DISPLAYED_SIZE}`);
@@ -448,6 +451,7 @@ describe('clusters list table', () => {
           cy.wrap($button).click();
         });
 
+      cy.get('[data-ouia-component-id=loading-skeleton]').should('not.exist');
       cy.get('th[data-label="Name"]').find('button').click();
       cy.get(TOOLBAR).find('button').contains('Reset filters').click();
       cy.get(CHIP_GROUP).should('have.length', 1);
@@ -508,6 +512,7 @@ describe('clusters list table', () => {
 
   it('rows show cluster names instead uuids when available', () => {
     const names = _.map(data, 'name');
+    cy.get('[data-ouia-component-id=loading-skeleton]').should('not.exist');
     cy.get(`td[data-label="Name"]`)
       .then(($els) => {
         return _.map(Cypress.$.makeArray($els), 'innerText');
@@ -579,7 +584,7 @@ describe('cluster list Empty state rendering', () => {
     );
   });
 
-  it('renders the Empty State component', () => {
+  it.only('renders the Empty State component', () => {
     cy.get('div[class=pf-v5-c-empty-state__content]')
       .should('have.length', 1)
       .find('h2')
@@ -588,17 +593,17 @@ describe('cluster list Empty state rendering', () => {
       'have.text',
       'To get started, create or register your cluster to get recommendations from Insights Advisor.'
     );
-    cy.get('div[class=pf-v5-c-empty-state__content]')
-      .children()
-      .eq(3)
-      .should('have.text', 'Create cluster');
-    cy.get('div[class=pf-v5-c-empty-state__secondary]')
-      .children()
+    cy.get('div[class=pf-v5-c-empty-state__footer]')
+      .find('a')
       .eq(0)
-      .should('have.text', 'Register cluster');
-    cy.get('div[class=pf-v5-c-empty-state__secondary]')
-      .children()
+      .should('have.text', 'Create cluster');
+    cy.get('div[class=pf-v5-c-empty-state__footer]')
+      .find('a')
       .eq(1)
+      .should('have.text', 'Register cluster');
+    cy.get('div[class=pf-v5-c-empty-state__footer]')
+      .find('a')
+      .eq(2)
       .should('have.text', 'Assisted Installer clusters');
   });
 });

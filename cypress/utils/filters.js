@@ -38,7 +38,9 @@ function applyFilters(filters, filtersConf) {
     const item = filtersConf[key];
     // open filter selector
     cy.get('div.ins-c-primary-toolbar__filter')
-      .find('button[class*=pf-v5-c-menu-toggle]')
+      .find(
+        'button[class*="pf-v5-c-menu-toggle ins-c-conditional-filter__group"]'
+      )
       .click();
 
     // select appropriate filter

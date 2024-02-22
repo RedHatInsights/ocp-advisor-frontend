@@ -115,11 +115,10 @@ describe('recommendation page for enabled recommendation with clusters enabled a
   });
 
   it('actions can ack recommendation', () => {
-    cy.ouiaId('actions')
-      .click()
-      .within(() => {
-        cy.get('a').should('have.text', 'Disable recommendation').click();
-      });
+    cy.ouiaId('actions-toggle').click();
+    cy.ouiaId('actions').within(() => {
+      cy.get('button').should('have.text', 'Disable recommendation').click();
+    });
     cy.ouiaId('recommendation-disable').should('exist');
   });
 
@@ -274,11 +273,10 @@ describe('recommendation page for enabled recommendation without disabled cluste
   });
 
   it('actions can ack recommendation', () => {
-    cy.ouiaId('actions')
-      .click()
-      .within(() => {
-        cy.get('a').should('have.text', 'Disable recommendation').click();
-      });
+    cy.ouiaId('actions-toggle').click();
+    cy.ouiaId('actions').within(() => {
+      cy.get('button').should('have.text', 'Disable recommendation').click();
+    });
     cy.ouiaId('recommendation-disable').should('exist');
   });
 });
@@ -317,7 +315,10 @@ describe('recommendation page for disabled recommendation', () => {
         'include.text',
         'Recommendation is disabled'
       );
-      cy.get('.pf-v5-c-card__body').should('include.text', `and has no results`);
+      cy.get('.pf-v5-c-card__body').should(
+        'include.text',
+        `and has no results`
+      );
       cy.ouiaId('enable').should('have.text', 'Enable recommendation');
     });
   });
@@ -325,7 +326,7 @@ describe('recommendation page for disabled recommendation', () => {
   it('table is not displayed', () => {
     cy.get('#affected-list-table').should('not.exist');
     cy.ouiaId('empty-state').within(() => {
-      cy.ouiaType('PF5/Title').should(
+      cy.get('.pf-v5-c-empty-state__title-text').should(
         'include.text',
         'Recommendation is disabled'
       );
@@ -333,10 +334,11 @@ describe('recommendation page for disabled recommendation', () => {
   });
 
   it('actions button allow for enabling', () => {
+    cy.ouiaId('actions-toggle').click();
     cy.ouiaId('actions')
       .click()
       .within(() => {
-        cy.get('a')
+        cy.get('button')
           .should('have.text', 'Enable recommendation')
           .click()
           .then(() => {

@@ -312,7 +312,10 @@ urlParamsList.forEach((urlParams, index) => {
       for (const [key, value] of urlSearchParameters) {
         if (key == 'text') {
           hasChip('Name', value);
-          cy.get('.pf-m-fill > .pf-v5-c-form-control').should('have.value', value);
+          cy.get('.pf-m-fill > .pf-v5-c-form-control > input').should(
+            'have.value',
+            value
+          );
         } else {
           value.split(',').forEach((it) => {
             const [group, item] = urlParamConvert(key, it, FILTER_CATEGORIES);
@@ -387,12 +390,14 @@ describe('successful non-empty recommendations list table', () => {
   });
 
   it('Expected filters available', () => {
-    const FILTERS_DROPDOWN = 'ul[class=pf-v5-c-menu-toggle]';
-    const FILTER_ITEM = 'button[class=pf-v5-c-menu-toggle-item]';
+    const FILTERS_DROPDOWN = 'ul[class=pf-v5-c-menu__list]';
+    const FILTER_ITEM = 'button[class=pf-v5-c-menu__item]';
 
     cy.get(ROOT)
       .should('have.length', 1)
-      .find('button[class=pf-v5-c-dropdown__toggle]')
+      .find(
+        'button[class*="pf-v5-c-menu-toggle ins-c-conditional-filter__group"]'
+      )
       .should('have.length', 1)
       .click();
     const filtersNames = _.map(filtersConf, 'selectorText');
