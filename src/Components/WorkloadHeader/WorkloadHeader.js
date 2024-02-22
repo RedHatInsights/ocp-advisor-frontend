@@ -20,8 +20,8 @@ export const WorkloadHeader = ({ workloadData, namespaceId, clusterId }) => {
         <Title
           size="2xl"
           headingLevel="h1"
-          id="cluster-header-title"
-          ouiaId="cluster-name"
+          id="workloads-header-title"
+          ouiaId="workloads-name"
         >
           {isUninitialized || isFetching ? (
             <>
@@ -30,8 +30,8 @@ export const WorkloadHeader = ({ workloadData, namespaceId, clusterId }) => {
             </>
           ) : (
             <>
-              <p>{workload.cluster.display_name}</p>
-              <p>{workload.namespace.name}</p>
+              <p>{workload?.cluster?.display_name}</p>
+              <p>{workload?.namespace?.name}</p>
             </>
           )}
         </Title>

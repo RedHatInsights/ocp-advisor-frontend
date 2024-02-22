@@ -160,3 +160,27 @@ export const clusterInfoInterceptors = {
       .as('clusterInfo');
   },
 };
+
+export const featureFlagsInterceptors = {
+  successful: () => {
+    cy.intercept('GET', '/feature_flags*', {
+      statusCode: 200,
+      body: {
+        toggles: [],
+      },
+    }).as('getFeatureFlag');
+  },
+  ocpWorkloadsSuccessful: () => {
+    cy.intercept('GET', '/feature_flags*', {
+      statusCode: 200,
+      body: {
+        toggles: [
+          {
+            name: 'ocp-advisor-ui-workloads',
+            enabled: true,
+          },
+        ],
+      },
+    }).as('getOcpWorkloadsFlag');
+  },
+};

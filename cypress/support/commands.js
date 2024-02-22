@@ -24,7 +24,7 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-import { mount } from '@cypress/react';
+import { mount } from '@cypress/react18';
 import FlagProvider from '@unleash/proxy-client-react';
 import React from 'react';
 import { Provider } from 'react-redux';
