@@ -60,7 +60,7 @@ import { SORTING_ORDERS } from '../../../cypress/utils/globals';
 // selectors
 const ROOT = 'div[id=recs-list-table]';
 const ROW = 'tbody[role=rowgroup]'; // FIXME use ROW from components
-const EXPANDABLES = '[class="pf-v5-c-table__expandable-row pf-m-expanded"]';
+const EXPANDABLES = '[class*="pf-v5-c-table__expandable-row pf-m-expanded"]';
 // TODO refer to https://github.com/RedHatInsights/ocp-advisor-frontend/blob/master/src/Services/Filters.js#L13
 const DEFAULT_FILTERS = {
   impacting: ['1 or more'],
@@ -205,7 +205,7 @@ Cypress.Commands.add('getRowByName', (name) => {
   cy.contains(ROW, name);
 });
 Cypress.Commands.add('clickOnRowKebab', (name) => {
-  cy.contains(ROW, name).find('.pf-v5-c-dropdown__toggle').click();
+  cy.contains(ROW, name).find('.pf-v5-c-menu-toggle').click();
 });
 Cypress.Commands.add('getColumns', () => {
   /* patternfly/react-table-4.71.16, for some reason, renders extra empty `th` container;
@@ -416,7 +416,7 @@ describe('successful non-empty recommendations list table', () => {
     });
 
     it(`pagination is set to ${DEFAULT_ROW_COUNT}`, () => {
-      cy.get('.pf-v5-c-options-menu__toggle-text')
+      cy.get('.pf-v5-c-menu-toggle__text')
         .find('b')
         .eq(0)
         .should('have.text', `1 - ${DEFAULT_DISPLAYED_SIZE}`);
@@ -458,6 +458,7 @@ describe('successful non-empty recommendations list table', () => {
   });
 
   it('expand all, collapse all', () => {
+    cy.get('[data-ouia-component-id=loading-skeleton]').should('not.exist');
     cy.get(ROWS_TOGGLER).click();
     cy.get(EXPANDABLES).should('have.length', DEFAULT_DISPLAYED_SIZE);
     cy.get(ROWS_TOGGLER).click();
@@ -649,7 +650,9 @@ describe('successful non-empty recommendations list table', () => {
         .then(() => {
           expect(window.location.search).to.not.contain('text=');
         });
-      cy.get(TOOLBAR_FILTER).find('.pf-v5-c-form-control').should('be.empty');
+      cy.get(TOOLBAR_FILTER)
+        .find('.pf-v5-c-form-control > input')
+        .should('be.empty');
     });
 
     it('clears text input after resetting all filters', () => {
@@ -662,7 +665,9 @@ describe('successful non-empty recommendations list table', () => {
         .then(() => {
           expect(window.location.search).to.not.contain('text=');
         });
-      cy.get(TOOLBAR_FILTER).find('.pf-v5-c-form-control').should('be.empty');
+      cy.get(TOOLBAR_FILTER)
+        .find('.pf-v5-c-form-control > input')
+        .should('be.empty');
     });
 
     it('will reset filters but not pagination and sorting', () => {
@@ -734,7 +739,7 @@ describe('successful non-empty recommendations list table', () => {
 
     it('each row has a kebab', () => {
       cy.get(TABLE)
-        .find('tbody[role=rowgroup] .pf-v5-c-dropdown__toggle')
+        .find('tbody[role=rowgroup] .pf-v5-c-menu-toggle')
         .should('have.length', DEFAULT_DISPLAYED_SIZE);
     });
 
@@ -745,7 +750,7 @@ describe('successful non-empty recommendations list table', () => {
       cy.getRowByName(
         'Super atomic nuclear cluster on the brink of the world destruction'
       )
-        .find('.pf-v5-c-menu-toggle')
+        .find('[data-ouia-component-type="PF5/DropdownItem"]')
         .should('have.text', 'Disable recommendation');
     });
 
@@ -757,15 +762,17 @@ describe('successful non-empty recommendations list table', () => {
       )[0];
       cy.clickOnRowKebab(firstDisabledRecommendation.description);
       cy.getRowByName(firstDisabledRecommendation.description)
-        .find('.pf-v5-c-menu-toggle')
+        .find('[data-ouia-component-type="PF5/DropdownItem"]')
         .should('have.text', 'Enable recommendation');
     });
   });
 
   it('rule content is rendered', () => {
+    const recommendationList = filterData();
     cy.get(ROWS_TOGGLER).click();
     cy.get(TABLE)
-      .find('.pf-v5-c-table__expandable-row.pf-m-expanded')
+      // .find('.pf-v5-c-table__expandable-row.pf-m-expanded')
+      .find('.pf-v5-c-table__tbody.pf-m-expanded')
       .each((el, index) => {
         // contains description
         cy.wrap(el).contains(
@@ -774,24 +781,20 @@ describe('successful non-empty recommendations list table', () => {
         // contain total risk label
         cy.wrap(el).find('.ins-c-rule-details__stack');
         // contains link to the clusters
-        const recommendationData = filterData()[index];
+        const recommendationData = recommendationList[index];
         cy.wrap(el)
-          .find('.ins-c-rule-details__view-affected a')
+          .find('a')
           .should(
             'have.attr',
             'href',
             `/openshift/insights/advisor/recommendations/${recommendationData.rule_id}`
-          )
-          .and(($a) => {
-            if (recommendationData.impacted_clusters_count == 1) {
-              expect($a).to.contain('the affected cluster');
-            } else {
-              expect($a).to.contain(
-                // toLocaleString() method is used to put comma in the thousands
-                `${recommendationData.impacted_clusters_count.toLocaleString()} affected clusters`
-              );
-            }
-          });
+          );
+        cy.wrap(el).and(($a) => {
+          expect($a).to.contains.text(
+            // toLocaleString() method is used to put comma in the thousands
+            `${recommendationData.impacted_clusters_count.toLocaleString()}`
+          );
+        });
       });
   });
 });

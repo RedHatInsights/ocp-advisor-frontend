@@ -18,7 +18,7 @@ const TBODY = 'tbody[role=rowgroup]';
 const TOOLBAR_FILTER = '.ins-c-primary-toolbar__filter';
 const TABLE = 'table';
 const TABLE_HEADER = 'thead';
-const ROWS_TOGGLER = `${TABLE_HEADER} .pf-v5-c-table__toggle`;
+const ROWS_TOGGLER = `${TABLE_HEADER} #expandable-toggle-1`;
 const TITLE = '.pf-v5-c-empty-state__title-text';
 const ouiaId = (id) => `[data-ouia-component-id="${id}"]`;
 
