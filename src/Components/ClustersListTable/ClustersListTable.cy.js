@@ -584,7 +584,7 @@ describe('cluster list Empty state rendering', () => {
     );
   });
 
-  it.only('renders the Empty State component', () => {
+  it('renders the Empty State component', () => {
     cy.get('div[class=pf-v5-c-empty-state__content]')
       .should('have.length', 1)
       .find('h2')

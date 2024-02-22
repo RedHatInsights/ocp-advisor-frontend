@@ -173,6 +173,7 @@ describe('non-empty successful affected clusters table', () => {
   });
 
   it('names of rows are links', () => {
+    cy.get('[data-ouia-component-id=loading-skeleton]').should('not.exist');
     cy.get(TBODY)
       .children()
       .each(($el, index) => {
