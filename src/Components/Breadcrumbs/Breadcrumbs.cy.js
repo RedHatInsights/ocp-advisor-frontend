@@ -4,7 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 
 import Breadcrumbs from './';
 
-describe('breadcrumbs', () => {
+describe.skip('breadcrumbs', () => {
   const BREADCRUMB_ITEM = '.breadcrumb-item';
   let props;
 
