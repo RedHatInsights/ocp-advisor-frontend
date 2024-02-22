@@ -1,5 +1,5 @@
 import React from 'react';
-import { mount } from '@cypress/react18';
+
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 
@@ -18,7 +18,7 @@ const CANCEL_BUTTON = ouiaId('cancel');
 
 describe('modal without hosts', () => {
   beforeEach(() => {
-    mount(
+    cy.mount(
       <MemoryRouter>
         <Intl>
           <Provider store={getStore()}>
@@ -69,7 +69,7 @@ describe('modal without hosts', () => {
 
 describe('modal with 1 host', () => {
   beforeEach(() => {
-    mount(
+    cy.mount(
       <MemoryRouter>
         <Intl>
           <Provider store={getStore()}>
@@ -119,7 +119,7 @@ describe('modal with 1 host', () => {
 
 describe('modal with multiple hosts', () => {
   beforeEach(() => {
-    mount(
+    cy.mount(
       <MemoryRouter>
         <Intl>
           <Provider store={getStore()}>

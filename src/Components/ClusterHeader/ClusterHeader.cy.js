@@ -1,5 +1,5 @@
 import React from 'react';
-import { mount } from '@cypress/react18';
+
 
 import { Intl } from '../../Utilities/intlHelper';
 import { ClusterHeader } from './ClusterHeader';
@@ -37,7 +37,7 @@ describe('cluster page header', () => {
     };
   });
   it('cluster page header with the display name available', () => {
-    mount(
+    cy.mount(
       <Intl>
         <ClusterHeader {...props} />
       </Intl>
@@ -58,7 +58,7 @@ describe('cluster page header', () => {
         data: null,
       },
     };
-    mount(
+    cy.mount(
       <Intl>
         <ClusterHeader {...props} />
       </Intl>
@@ -74,7 +74,7 @@ describe('cluster page header', () => {
   // this test is not checking UUID but name
   it('show UUID when display name is unavailable', () => {
     props.clusterInfo.data.display_name = undefined;
-    mount(
+    cy.mount(
       <Intl>
         <ClusterHeader {...props} />
       </Intl>
@@ -86,7 +86,7 @@ describe('cluster page header', () => {
   });
 
   it('action redirect button works', () => {
-    mount(
+    cy.mount(
       <Intl>
         <ClusterHeader {...props} />
       </Intl>

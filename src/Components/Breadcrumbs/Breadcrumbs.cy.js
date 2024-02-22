@@ -1,5 +1,4 @@
 import React from 'react';
-import { mount } from '@cypress/react18';
 import { IntlProvider } from 'react-intl';
 import { MemoryRouter } from 'react-router-dom';
 
@@ -13,7 +12,7 @@ describe('breadcrumbs', () => {
     props = {
       current: 'Cluster update will fail when default SCC gets changed',
     };
-    mount(
+    cy.cy.mount(
       <MemoryRouter
         initialEntries={[
           '/openshift/insights/advisor/recommendations/ccxdev.external.123|ERROR_KEY',
@@ -50,7 +49,7 @@ describe('breadcrumbs', () => {
     props = {
       current: 'Cluster with issues',
     };
-    mount(
+    cy.mount(
       <MemoryRouter
         initialEntries={[
           '/openshift/insights/advisor/clusters/d6964a24-a78c-4bdc-8100-17e797efe3d3',
@@ -77,7 +76,7 @@ describe('breadcrumbs', () => {
       current: 'Cluster name 000000001 | Namespace name c1-94f525441c75',
       workloads: true,
     };
-    mount(
+    cy.mount(
       <MemoryRouter
         initialEntries={[
           '/openshift/insights/advisor/workloads/000000001/c1-94f525441c75?sort=-description',

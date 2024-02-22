@@ -1,5 +1,5 @@
 import React from 'react';
-import { mount } from '@cypress/react18';
+
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import _ from 'lodash';
@@ -215,7 +215,7 @@ const urlParamsList = [
 urlParamsList.forEach((urlParams, index) => {
   describe(`pre-filled url search parameters ${index}`, () => {
     beforeEach(() => {
-      mount(
+      cy.mount(
         <MemoryRouter
           initialEntries={[`/openshift/insights/advisor/clusters?${urlParams}`]}
           initialIndex={0}
@@ -269,7 +269,7 @@ urlParamsList.forEach((urlParams, index) => {
 
 describe('clusters list table', () => {
   beforeEach(() => {
-    mount(
+    cy.mount(
       <MemoryRouter
         initialEntries={['/openshift/insights/advisor/clusters']}
         initialIndex={0}
@@ -562,7 +562,7 @@ describe('clusters list table', () => {
 
 describe('cluster list Empty state rendering', () => {
   beforeEach(() => {
-    mount(
+    cy.mount(
       <MemoryRouter
         initialEntries={['/openshift/insights/advisor/clusters']}
         initialIndex={0}

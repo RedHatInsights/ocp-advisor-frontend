@@ -1,5 +1,5 @@
 import React from 'react';
-import { mount } from '@cypress/react18';
+
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import _ from 'lodash';
@@ -130,7 +130,7 @@ describe('test data', () => {
 
 describe('non-empty successful affected clusters table', () => {
   beforeEach(() => {
-    mount(
+    cy.mount(
       <MemoryRouter>
         <Intl>
           <Provider store={getStore()}>
@@ -633,7 +633,7 @@ describe('non-empty successful affected clusters table', () => {
 
 describe('empty successful affected clusters table', () => {
   beforeEach(() => {
-    mount(
+    cy.mount(
       <MemoryRouter>
         <Intl>
           <Provider store={getStore()}>
@@ -668,7 +668,7 @@ describe('empty successful affected clusters table', () => {
 
 describe('empty failed affected clusters table', () => {
   beforeEach(() => {
-    mount(
+    cy.mount(
       <MemoryRouter>
         <Intl>
           <Provider store={getStore()}>

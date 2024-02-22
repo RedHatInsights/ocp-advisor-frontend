@@ -1,5 +1,4 @@
 import React from 'react';
-import { mount } from '@cypress/react18';
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import _ from 'lodash';
@@ -283,7 +282,7 @@ const urlParamsList = [
 urlParamsList.forEach((urlParams, index) => {
   describe(`pre-filled url search parameters ${index}`, () => {
     beforeEach(() => {
-      mount(
+      cy.mount(
         <MemoryRouter
           initialEntries={[
             `/openshift/insights/advisor/recommendations?${urlParams}`,
@@ -334,7 +333,7 @@ urlParamsList.forEach((urlParams, index) => {
 
 describe('successful non-empty recommendations list table', () => {
   beforeEach(() => {
-    mount(
+    cy.mount(
       <MemoryRouter
         initialEntries={['/openshift/insights/advisor/recommendations']}
         initialIndex={0}
@@ -801,7 +800,7 @@ describe('successful non-empty recommendations list table', () => {
 
 describe('empty recommendations list table', () => {
   beforeEach(() => {
-    mount(
+    cy.mount(
       <MemoryRouter
         initialEntries={['/openshift/insights/advisor/recommendations']}
         initialIndex={0}
@@ -830,7 +829,7 @@ describe('empty recommendations list table', () => {
 
 describe('error recommendations list table', () => {
   beforeEach(() => {
-    mount(
+    cy.mount(
       <MemoryRouter
         initialEntries={['/openshift/insights/advisor/recommendations']}
         initialIndex={0}

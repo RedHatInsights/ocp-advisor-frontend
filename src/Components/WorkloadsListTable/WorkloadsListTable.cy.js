@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 
-import { mount } from '@cypress/react18';
+
 import workloads from '../../../cypress/fixtures/api/insights-results-aggregator/v2/workloads.json';
 import { WORKLOADS_LIST_COLUMNS } from '../../AppConstants';
 import {
@@ -147,7 +147,7 @@ describe('data', () => {
 
 describe('workloads list "No workload recommendations" Empty state rendering', () => {
   beforeEach(() => {
-    mount(
+    cy.mount(
       <MemoryRouter
         initialEntries={['/openshift/insights/advisor/workloads']}
         initialIndex={0}
@@ -185,7 +185,7 @@ describe('workloads list "No workload recommendations" Empty state rendering', (
 
 describe('workloads list "Workloads data unavailable" Empty state rendering', () => {
   beforeEach(() => {
-    mount(
+    cy.mount(
       <MemoryRouter
         initialEntries={['/openshift/insights/advisor/workloads']}
         initialIndex={0}
@@ -229,7 +229,7 @@ describe('workloads list "Workloads data unavailable" Empty state rendering', ()
 
 describe('workloads list table', () => {
   beforeEach(() => {
-    mount(
+    cy.mount(
       <MemoryRouter
         initialEntries={['/openshift/insights/advisor/workloads']}
         initialIndex={0}

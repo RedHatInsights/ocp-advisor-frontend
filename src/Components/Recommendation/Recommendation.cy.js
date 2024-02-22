@@ -1,5 +1,5 @@
 import React from 'react';
-import { mount } from '@cypress/react18';
+
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { Intl } from '../../Utilities/intlHelper';
@@ -47,7 +47,7 @@ nulledResolutionRisk.content.resolution_risk = 0;
 
 describe('recommendation page for enabled recommendation with clusters enabled and disabled', () => {
   beforeEach(() => {
-    mount(
+    cy.mount(
       <MemoryRouter>
         <Intl>
           <Provider store={getStore()}>
@@ -201,7 +201,7 @@ describe('recommendation page for enabled recommendation with clusters enabled a
 
 describe('recommendation page for enabled recommedation with nulled resolution risk', () => {
   beforeEach(() => {
-    mount(
+    cy.mount(
       <MemoryRouter>
         <Intl>
           <Provider store={getStore()}>
@@ -228,7 +228,7 @@ describe('recommendation page for enabled recommendation without disabled cluste
   let data = _.cloneDeep(clusterDetails.data);
   data.disabled = [];
   beforeEach(() => {
-    mount(
+    cy.mount(
       <MemoryRouter>
         <Intl>
           <Provider store={getStore()}>
@@ -283,7 +283,7 @@ describe('recommendation page for enabled recommendation without disabled cluste
 
 describe('recommendation page for disabled recommendation', () => {
   beforeEach(() => {
-    mount(
+    cy.mount(
       <MemoryRouter>
         <Intl>
           <Provider store={getStore()}>
@@ -357,7 +357,7 @@ describe('recommendation page for disabled recommendation', () => {
 describe('justification message', () => {
   describe('when not provided', () => {
     before(() => {
-      mount(
+      cy.mount(
         <MemoryRouter>
           <Intl>
             <Provider store={getStore()}>
@@ -390,7 +390,7 @@ describe('justification message', () => {
   describe('when provided', () => {
     const justification = 'I would like to see it';
     before(() => {
-      mount(
+      cy.mount(
         <MemoryRouter>
           <Intl>
             <Provider store={getStore()}>
@@ -470,7 +470,7 @@ describe('category labels are displayed', () => {
       const taggedRule = _.cloneDeep(rule);
       taggedRule.content.tags = tags;
       beforeEach(() => {
-        mount(
+        cy.mount(
           <MemoryRouter>
             <Intl>
               <Provider store={getStore()}>
