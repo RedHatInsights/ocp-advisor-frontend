@@ -1,9 +1,7 @@
 import React from 'react';
 
-
 import { Intl } from '../../Utilities/intlHelper';
 import { ClusterHeader } from './ClusterHeader';
-import { BrowserRouter, MemoryRouter, Route, Routes } from 'react-router-dom';
 
 // selectors
 const HEADER_TITLE = '#cluster-header-title';

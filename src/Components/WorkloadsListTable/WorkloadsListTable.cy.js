@@ -1,7 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
 
-
 import workloads from '../../../cypress/fixtures/api/insights-results-aggregator/v2/workloads.json';
 import { WORKLOADS_LIST_COLUMNS } from '../../AppConstants';
 import {

@@ -189,7 +189,10 @@ describe('error, service down', () => {
 
   it('renders empty state', () => {
     // can't apply checkEmptyState since "something went wrong" component doesn't use OUIA id
-    cy.get('.pf-v5-c-empty-state h4').should('have.text', 'Something went wrong');
+    cy.get('.pf-v5-c-empty-state h4').should(
+      'have.text',
+      'Something went wrong'
+    );
     cy.get('.pf-v5-c-empty-state__icon').should('be.visible');
   });
 
@@ -221,7 +224,10 @@ describe('error, other', () => {
 
   it('renders empty state', () => {
     // can't apply checkEmptyState since "something went wrong" component doesn't use OUIA id
-    cy.get('.pf-v5-c-empty-state h4').should('have.text', 'Something went wrong');
+    cy.get('.pf-v5-c-empty-state h4').should(
+      'have.text',
+      'Something went wrong'
+    );
     cy.get('.pf-v5-c-empty-state__icon').should('be.visible');
   });
 
