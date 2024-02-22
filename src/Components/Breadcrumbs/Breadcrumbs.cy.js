@@ -12,7 +12,7 @@ describe('breadcrumbs', () => {
     props = {
       current: 'Cluster update will fail when default SCC gets changed',
     };
-    cy.cy.mount(
+    cy.mount(
       <MemoryRouter
         initialEntries={[
           '/openshift/insights/advisor/recommendations/ccxdev.external.123|ERROR_KEY',
