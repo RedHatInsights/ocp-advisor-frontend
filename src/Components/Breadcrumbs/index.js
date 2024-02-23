@@ -14,7 +14,7 @@ const Breadcrumbs = ({ current, workloads }) => {
 
   return (
     <div>
-      <Breadcrumb ouiaId="detail">
+      <Breadcrumb ouiaId="detail" data-testid="breadcrumb-item">
         <BreadcrumbItem className="breadcrumb-item">
           <Link to={workloads ? `../..` : `..`} relative="path">
             {`${intl.formatMessage(messages.insightsHeader)} ${splitUrl[4]}`}
