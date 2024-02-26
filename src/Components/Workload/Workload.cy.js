@@ -7,15 +7,14 @@ import { IntlProvider } from 'react-intl';
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import getStore from '../../Store';
-import {
-  checkNoMatchingRecs,
-  checkRowCounts,
-} from '../../../cypress/utils/table';
+import { checkRowCounts } from '../../../cypress/utils/table';
 
 const BREADCRUMBS = 'nav[class=pf-v5-c-breadcrumb]';
 const WORKLOAD_HEADER = '#workload-header';
 const WORKLOAD_RULES_TABLE = '#workload-recs-list-table';
 const FILTER_CHIPS = 'li[class=pf-v5-c-chip-group__list-item]';
+const WORKLOAD_NAME =
+  'Advisor workloadsCluster name 00000001-0001-0001-0001-000000000001 | Namespace name 7eb1d18b-701b-4f51-aea0-5f235daf1e07';
 const namespaceId = '7eb1d18b-701b-4f51-aea0-5f235daf1e07';
 const clusterId = '00000001-0001-0001-0001-000000000001';
 const uuid = `${clusterId}/${namespaceId}`;
@@ -106,10 +105,7 @@ describe('workloads list "No workload recommendations" Empty state rendering', (
     mount();
     cy.get(BREADCRUMBS)
       .should('have.length', 1)
-      .should(
-        'have.text',
-        'Advisor workloadsCluster name 00000001-0001-0001-0001-000000000001 | Namespace name 7eb1d18b-701b-4f51-aea0-5f235daf1e07'
-      );
+      .should('have.text', WORKLOAD_NAME);
     cy.get(WORKLOAD_HEADER).should('have.length', 1);
     // renders table component
     cy.get(WORKLOAD_RULES_TABLE).should('have.length', 1);
@@ -136,6 +132,58 @@ describe('workloads list "No workload recommendations" Empty state rendering', (
     );
     tempCheckEmptyState('No matching recommendations found');
   });
+
+  it('adds additional filters passed by the query parameters, 2', () => {
+    mount(
+      '/openshift/insights/advisor/workloads/clustername/namespacename?description=foobar'
+    );
+
+    cy.get(BREADCRUMBS).should('have.length', 1);
+    cy.get(WORKLOAD_HEADER).should('have.length', 1);
+    cy.get(WORKLOAD_RULES_TABLE);
+    cy.get(FILTER_CHIPS).each(($el) =>
+      expect($el.text()).to.be.oneOf(['foobar', 'description'])
+    );
+  });
+
+  it('adds additional filters passed by the query parameters, 3', () => {
+    mount(
+      '/openshift/insights/advisor/workloads/clustername/namespacename?total_risk=2'
+    );
+
+    cy.get(BREADCRUMBS).should('have.length', 1);
+    cy.get(WORKLOAD_HEADER).should('have.length', 1);
+    cy.get(WORKLOAD_RULES_TABLE);
+    cy.get(FILTER_CHIPS).each(($el) =>
+      expect($el.text()).to.be.oneOf(['Total risk', 'Moderate'])
+    );
+  });
+
+  it('adds additional filters passed by the query parameters, 4', () => {
+    mount(
+      '/openshift/insights/advisor/workloads/clustername/namespacename?object_id=bb78507b-cc1c-4c53-af2c-7807d9cbeab4'
+    );
+
+    cy.get(BREADCRUMBS).should('have.length', 1);
+    cy.get(WORKLOAD_HEADER).should('have.length', 1);
+    cy.get(WORKLOAD_RULES_TABLE);
+    cy.get(FILTER_CHIPS).each(($el) =>
+      expect($el.text()).to.be.oneOf([
+        'Object ID',
+        'bb78507b-cc1c-4c53-af2c-7807d9cbeab4',
+      ])
+    );
+  });
+
+  it('last breadcrumb is cluster name', () => {
+    mount();
+
+    cy.get(BREADCRUMBS)
+      .should('have.length', 1)
+      .get('.pf-v5-c-breadcrumb__list > :nth-child(2)')
+      .should(
+        'have.text',
+        'Cluster name 00000001-0001-0001-0001-000000000001 | Namespace name 7eb1d18b-701b-4f51-aea0-5f235daf1e07'
+      );
+  });
 });
-
-
