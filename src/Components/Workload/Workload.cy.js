@@ -1,13 +1,17 @@
 import React from 'react';
 import mockdata from '../../../cypress/fixtures/api/insights-results-aggregator/v2/workload/00000001-0001-0001-0001-000000000005-fad82c1f-96db-430f-b3ec-503fb9eeb7bb/info.json';
 import mockList from '../../../cypress/fixtures/api/insights-results-aggregator/v2/workload/list.json';
+import _ from 'lodash';
 import { featureFlagsInterceptors } from '../../../cypress/utils/interceptors';
 import { Workload } from './Workload';
 import { IntlProvider } from 'react-intl';
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import getStore from '../../Store';
-import { checkRowCounts } from '../../../cypress/utils/table';
+import { checkRowCounts, checkSorting } from '../../../cypress/utils/table';
+import { SORTING_ORDERS } from '../../../cypress/utils/globals';
+import { WORKLOAD_RULES_COLUMNS } from '../../AppConstants';
+import { applyFilters } from '../../../cypress/utils/filters';
 
 const BREADCRUMBS = 'nav[class=pf-v5-c-breadcrumb]';
 const WORKLOAD_HEADER = '#workload-header';
@@ -15,6 +19,13 @@ const WORKLOAD_RULES_TABLE = '#workload-recs-list-table';
 const FILTER_CHIPS = 'li[class=pf-v5-c-chip-group__list-item]';
 const WORKLOAD_NAME =
   'Advisor workloadsCluster name 00000001-0001-0001-0001-000000000001 | Namespace name 7eb1d18b-701b-4f51-aea0-5f235daf1e07';
+const TABLE_HEADERS = _.map(WORKLOAD_RULES_COLUMNS, (it) => it.title);
+const SEARCH_ITEMS_DESCRIPTION = ['ff', 'CUSTOM', 'Foobar'];
+const SEARCH_ITEMS_OBJECTS = [
+  'ff',
+  'CUSTOM',
+  '4381b689-02eb-465a-90cf-55b3e2305d8d',
+];
 const namespaceId = '7eb1d18b-701b-4f51-aea0-5f235daf1e07';
 const clusterId = '00000001-0001-0001-0001-000000000001';
 const uuid = `${clusterId}/${namespaceId}`;
@@ -27,6 +38,33 @@ let workload = {
   data: {},
   refetch: () => null,
 };
+
+const filtersConf = {
+  description: {
+    selectorText: 'Description',
+    values: SEARCH_ITEMS_DESCRIPTION,
+    type: 'input',
+    filterFunc: (it, value) =>
+      it.details.toLowerCase().includes(value.toLowerCase()),
+  },
+  objects_id: {
+    selectorText: 'Objects ID',
+    values: SEARCH_ITEMS_OBJECTS,
+    type: 'input',
+    filterFunc: (it, value) =>
+      it.objects.some((obj) =>
+        obj.uid.toLowerCase().includes(value.toLowerCase())
+      ),
+  },
+  total_risk: {
+    selectorText: 'Total risk',
+    values: SEARCH_ITEMS_OBJECTS,
+    type: 'checkbox',
+    filterFunc: (it, value) => value.includes(String(it.total_risk)),
+  },
+};
+
+const filterApply = (filters) => applyFilters(filters, filtersConf);
 
 if (mockList.includes(uuid)) {
   const customData = {
@@ -185,5 +223,45 @@ describe('workloads list "No workload recommendations" Empty state rendering', (
         'have.text',
         'Cluster name 00000001-0001-0001-0001-000000000001 | Namespace name 7eb1d18b-701b-4f51-aea0-5f235daf1e07'
       );
+  });
+
+  it('test', () => {
+    mount();
+    filterApply({ description: 'a' });
+  });
+});
+
+describe('sorting', () => {
+  // all tables must preserve original ordering
+  _.zip(
+    ['description', 'total_risk', 'objects', 'modified'],
+    TABLE_HEADERS
+  ).forEach(([category, label]) => {
+    SORTING_ORDERS.forEach((order) => {
+      it(`${order} by ${label}`, () => {
+        mount();
+        let sortingParameter = category;
+        if (category === 'description') {
+          sortingParameter = (it) => it.details;
+        } else if (category === 'total_risk') {
+          sortingParameter = (it) => it.total_risk;
+        } else if (category === 'objects') {
+          sortingParameter = (it) => it.objects.length;
+        } else if (category === 'modified') {
+          sortingParameter = (it) => it.modified;
+        }
+
+        checkSorting(
+          mockdata.recommendations,
+          sortingParameter,
+          label,
+          order,
+          'Description',
+          'details',
+          5,
+          null
+        );
+      });
+    });
   });
 });
