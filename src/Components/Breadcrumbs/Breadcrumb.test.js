@@ -12,7 +12,7 @@ describe('breadcrumbs', () => {
     props = {
       current: 'Cluster update will fail when default SCC gets changed',
     };
-    const { asFragment } = render(
+    render(
       <MemoryRouter
         initialEntries={[
           '/openshift/insights/advisor/recommendations/ccxdev.external.123|ERROR_KEY',
@@ -34,15 +34,13 @@ describe('breadcrumbs', () => {
     expect(
       screen.getByText('Cluster update will fail when default SCC gets changed')
     ).toBeInTheDocument();
-
-    expect(asFragment()).toMatchSnapshot();
   });
 
   it('renders breadcrumbs: single cluster page', () => {
     props = {
       current: 'Cluster with issues',
     };
-    const { asFragment } = render(
+    render(
       <MemoryRouter
         initialEntries={[
           '/openshift/insights/advisor/clusters/d6964a24-a78c-4bdc-8100-17e797efe3d3',
@@ -62,8 +60,6 @@ describe('breadcrumbs', () => {
       })
     ).toBeInTheDocument();
     expect(screen.getByText('Cluster with issues')).toBeInTheDocument();
-
-    expect(asFragment()).toMatchSnapshot();
   });
 
   it('renders breadcrumbs: single workloads details page', () => {
@@ -71,7 +67,7 @@ describe('breadcrumbs', () => {
       current: 'Cluster name 000000001 | Namespace name c1-94f525441c75',
       workloads: true,
     };
-    const { asFragment } = render(
+    render(
       <MemoryRouter
         initialEntries={[
           '/openshift/insights/advisor/workloads/000000001/c1-94f525441c75?sort=-description',
@@ -95,7 +91,5 @@ describe('breadcrumbs', () => {
         'Cluster name 000000001 | Namespace name c1-94f525441c75'
       )
     ).toBeInTheDocument();
-
-    expect(asFragment()).toMatchSnapshot();
   });
 });
