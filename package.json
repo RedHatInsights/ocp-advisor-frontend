@@ -122,7 +122,15 @@
     },
     "prepare": [],
     "publish": [
-      "@semantic-release/github"
+      [
+        "@semantic-release/github",
+        {
+          "successComment": false,
+          "failComment": false,
+          "labels": false,
+          "releasedLabels": false
+        }
+      ]
     ]
   },
   "repository": "git@github.com:RedHatInsights/ocp-advisor-frontend.git",
