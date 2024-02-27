@@ -11,7 +11,8 @@ import getStore from '../../Store';
 import { checkRowCounts, checkSorting } from '../../../cypress/utils/table';
 import { SORTING_ORDERS } from '../../../cypress/utils/globals';
 import { WORKLOAD_RULES_COLUMNS } from '../../AppConstants';
-import { applyFilters } from '../../../cypress/utils/filters';
+// eslint-disable-next-line rulesdir/disallow-fec-relative-imports
+import { applyFilters } from '@redhat-cloud-services/frontend-components-utilities';
 
 const BREADCRUMBS = 'nav[class=pf-v5-c-breadcrumb]';
 const WORKLOAD_HEADER = '#workload-header';
@@ -64,6 +65,7 @@ const filtersConf = {
   },
 };
 
+// eslint-disable-next-line no-unused-vars
 const filterApply = (filters) => applyFilters(filters, filtersConf);
 
 if (mockList.includes(uuid)) {
@@ -225,9 +227,45 @@ describe('workloads list "No workload recommendations" Empty state rendering', (
       );
   });
 
-  it('test', () => {
+  it('Setting text filter', () => {
     mount();
-    filterApply({ description: 'a' });
+    cy.get('div.ins-c-primary-toolbar__filter')
+      .find('button[aria-label="Conditional filter"]')
+      .click();
+    cy.get('li[data-ouia-component-type="PF5/DropdownItem"]')
+      .contains('Description')
+      .click();
+    cy.get('input[data-ouia-component-type="PF5/TextInput"]').type('Foobar');
+  });
+
+  it('Setting objects filter', () => {
+    mount();
+    cy.get('div.ins-c-primary-toolbar__filter')
+      .find('button[aria-label="Conditional filter"]')
+      .click();
+    cy.get('li[data-ouia-component-type="PF5/DropdownItem"]')
+      .contains('Object ID')
+      .click();
+    cy.get('input[data-ouia-component-type="PF5/TextInput"]').type(
+      '4381b689-02eb-465a-90cf-55b3e2305d8d'
+    );
+  });
+
+  it('Setting critical severity filter', () => {
+    mount();
+    cy.get('div.ins-c-primary-toolbar__filter')
+      .find('button[aria-label="Conditional filter"]')
+      .click();
+    cy.get('li[data-ouia-component-type="PF5/DropdownItem"]')
+      .contains('Total risk')
+      .click();
+    cy.get('button[aria-label="Options menu"]').click();
+    cy.get('div[data-ouia-component-type="PF5/Select"]')
+      .find('label')
+      .contains('Critical')
+      .parent()
+      .find('input[type=checkbox]')
+      .check();
   });
 });
 
