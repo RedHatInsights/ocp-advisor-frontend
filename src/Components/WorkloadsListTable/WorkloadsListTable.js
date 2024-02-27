@@ -42,8 +42,7 @@ import {
 import {
   ErrorState,
   NoMatchingWorkloads,
-  NoRecsForWorkloads,
-  NoWorkloadsAvailable,
+  NoDVOInstalledOrDataCollected,
 } from '../MessageState/EmptyStates';
 import Loading from '../Loading/Loading';
 /* import ShieldSet from '../ShieldSet'; */
@@ -287,9 +286,9 @@ const WorkloadsListTable = ({
   };
 
   return isError && error.status === 404 ? (
-    <NoWorkloadsAvailable />
+    <NoDVOInstalledOrDataCollected />
   ) : isSuccess && workloads.length === 0 ? (
-    <NoRecsForWorkloads />
+    <NoDVOInstalledOrDataCollected />
   ) : (
     <div id="workloads-list-table">
       <PrimaryToolbar
