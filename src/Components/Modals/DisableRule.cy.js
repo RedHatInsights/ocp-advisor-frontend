@@ -6,15 +6,15 @@ import { Provider } from 'react-redux';
 import DisableRule from './DisableRule';
 import { Intl } from '../../Utilities/intlHelper';
 import getStore from '../../Store';
+
 import {
-  ouiaId,
   CHECKBOX,
   TEXT_INPUT,
-} from '../../../cypress/utils/components';
+} from '@redhat-cloud-services/frontend-components-utilities';
 
-const MODAL = ouiaId('recommendation-disable');
-const SAVE_BUTTON = ouiaId('confirm');
-const CANCEL_BUTTON = ouiaId('cancel');
+const MODAL = 'recommendation-disable';
+const SAVE_BUTTON = 'confirm';
+const CANCEL_BUTTON = 'cancel';
 
 describe('modal without hosts', () => {
   beforeEach(() => {
@@ -37,7 +37,7 @@ describe('modal without hosts', () => {
   });
 
   it('exits', () => {
-    cy.get(MODAL).should('exist');
+    cy.ouiaId(MODAL).should('exist');
     cy.get(CHECKBOX).should('not.exist');
 
     // TODO check that no request is send
@@ -46,21 +46,21 @@ describe('modal without hosts', () => {
   });
 
   it('does not trigger function on cancel', () => {
-    cy.get(CANCEL_BUTTON).click();
+    cy.ouiaId(CANCEL_BUTTON).click();
     // TODO which component is the function that needs to be triggered?
     // TODO add a stub to that function
   });
 
   it('justification note is fillable', () => {
     cy.get(TEXT_INPUT).type('query');
-    cy.get(SAVE_BUTTON).click();
+    cy.ouiaId(SAVE_BUTTON).click();
     cy.wait('@ackRequest').then((xhr) =>
       expect(xhr.request.body.justification).to.eq('query')
     );
   });
 
   it('justification note can be empty', () => {
-    cy.get(SAVE_BUTTON).click();
+    cy.ouiaId(SAVE_BUTTON).click();
     cy.wait('@ackRequest').then(
       (xhr) => expect(xhr.request.body.justification).to.be.empty
     );
@@ -97,12 +97,12 @@ describe('modal with 1 host', () => {
   });
 
   it('exits', () => {
-    cy.get(MODAL).should('exist');
+    cy.ouiaId(MODAL).should('exist');
     cy.get(CHECKBOX).should('exist').and('be.checked');
   });
 
   it('triggers only 1 disable call', () => {
-    cy.get(SAVE_BUTTON).click();
+    cy.ouiaId(SAVE_BUTTON).click();
     cy.wait('@disableRequest');
 
     // TODO check page is reloaded afterwards
@@ -110,7 +110,7 @@ describe('modal with 1 host', () => {
 
   it('removing checkbox triggers ack', () => {
     cy.get(CHECKBOX).click().should('not.be.checked');
-    cy.get(SAVE_BUTTON).click();
+    cy.ouiaId(SAVE_BUTTON).click();
     cy.wait('@ackRequest').then((xhr) =>
       expect(xhr.request.body.rule_id).to.eq('foo|BAR')
     );
@@ -154,12 +154,12 @@ describe('modal with multiple hosts', () => {
   });
 
   it('exits', () => {
-    cy.get(MODAL).should('exist');
+    cy.ouiaId(MODAL).should('exist');
     cy.get(CHECKBOX).should('exist').and('be.checked');
   });
 
   it('triggers multiple disable call', () => {
-    cy.get(SAVE_BUTTON).click();
+    cy.ouiaId(SAVE_BUTTON).click();
     cy.wait('@disableRequest').then(
       (xhr) =>
         expect(
@@ -174,7 +174,7 @@ describe('modal with multiple hosts', () => {
 
   it('removing checkbox triggers ack', () => {
     cy.get(CHECKBOX).click().should('not.be.checked');
-    cy.get(SAVE_BUTTON).click();
+    cy.ouiaId(SAVE_BUTTON).click();
     cy.wait('@ackRequest').then((xhr) =>
       expect(xhr.request.body.rule_id).to.eq('foo|BAR')
     );

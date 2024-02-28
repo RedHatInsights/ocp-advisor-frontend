@@ -3,7 +3,7 @@ import Cluster from '.';
 import singleClusterPageReport from '../../../cypress/fixtures/api/insights-results-aggregator/v2/cluster/dcb95bbf-8673-4f3a-a63c-12d4a530aa6f/reports-disabled-false.json';
 import {
   checkNoMatchingRecs,
-  checkRowCounts,
+  checkRowGroupCounts,
 } from '../../../cypress/utils/table';
 import {
   clusterInfoInterceptors,
@@ -11,12 +11,14 @@ import {
   updateRisksInterceptors,
 } from '../../../cypress/utils/interceptors';
 
+/* eslint-disable camelcase */
+import { TAB_BUTTON } from '@redhat-cloud-services/frontend-components-utilities';
+
 // selectors
 const CLUSTER_HEADER = '#cluster-header';
 const BREADCRUMBS = 'nav[class=pf-v5-c-breadcrumb]';
 const RULES_TABLE = '#cluster-recs-list-table';
 const FILTER_CHIPS = 'li[class=pf-v5-c-chip-group__list-item]';
-const TAB_BUTTON = '[data-ouia-component-type="PF5/TabButton"]'; // TODO: move to utils
 
 const CLUSTER_ID = '123';
 const CLUSTER_NAME = 'Cluster With Issues';
@@ -47,7 +49,8 @@ describe('cluster page', () => {
       // renders table component
       cy.get(RULES_TABLE).should('have.length', 1);
       // test how many rows were rendered
-      checkRowCounts(singleClusterPageReport.report.data.length, true);
+      checkRowGroupCounts(singleClusterPageReport.report.data.length);
+      // checkExpandedRowCounts();
     });
 
     it('adds additional filters passed by the query parameters, 1', () => {

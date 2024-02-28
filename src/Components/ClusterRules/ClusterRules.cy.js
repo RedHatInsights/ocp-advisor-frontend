@@ -13,20 +13,21 @@ import {
 import { applyFilters, filter } from '../../../cypress/utils/filters';
 import { cumulativeCombinations } from '../../../cypress/utils/combine';
 import {
-  checkEmptyState,
   checkNoMatchingRecs,
-  checkTableHeaders,
-  checkRowCounts,
   checkFiltering,
   checkSorting,
+  checkRowGroupCounts,
 } from '../../../cypress/utils/table';
+import { TBODY, ROWS_TOGGLER } from '../../../cypress/utils/components';
+
 import {
   CHIP_GROUP,
-  ROW,
-  TOOLBAR,
   TABLE,
-  ROWS_TOGGLER,
-} from '../../../cypress/utils/components';
+  TOOLBAR,
+  checkEmptyState,
+  checkTableHeaders,
+} from '@redhat-cloud-services/frontend-components-utilities';
+
 import { clusterReportsInterceptors as interceptors } from '../../../cypress/utils/interceptors';
 
 const data = singleClusterPageReport.report.data;
@@ -175,7 +176,8 @@ describe('cluster rules table', () => {
     });
     it('all expected rows are displayed', () => {
       cy.contains('1Lorem ipsum dolor sit amet'); // find the first row
-      checkRowCounts(RULES_ENABLED);
+      // checkRowCounts(RULES_ENABLED)
+      checkRowGroupCounts(RULES_ENABLED);
     });
   });
 
@@ -237,7 +239,7 @@ describe('cluster rules table', () => {
       cy.get('button').contains('Reset filters').should('not.exist');
       // expandable rows are duplicated, so we get one label
       cy.get(TABLE)
-        .find(ROW)
+        .find(TBODY)
         .find(`td[data-label="Description"]`)
         .should('have.length', RULES_ENABLED);
     });

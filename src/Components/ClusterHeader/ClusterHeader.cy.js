@@ -3,6 +3,12 @@ import React from 'react';
 import { Intl } from '../../Utilities/intlHelper';
 import { ClusterHeader } from './ClusterHeader';
 
+/* eslint-disable camelcase */
+import {
+  MENU_ITEM,
+  MENU_TOGGLE,
+} from '@redhat-cloud-services/frontend-components-utilities';
+
 // selectors
 const HEADER_TITLE = '#cluster-header-title';
 const UUID_FIELD = '#cluster-header-uuid > :nth-child(2)';
@@ -89,8 +95,10 @@ describe('cluster page header', () => {
         <ClusterHeader {...props} />
       </Intl>
     );
-    cy.get('.pf-v5-c-menu-toggle').click();
-    cy.get('a[class=pf-v5-c-menu__item]')
+    cy.get(MENU_TOGGLE).click();
+    cy.get(MENU_ITEM)
+      .children()
+      .eq(0)
       .should('have.attr', 'href')
       .and('include', 'openshift/details/' + props.clusterId);
   });

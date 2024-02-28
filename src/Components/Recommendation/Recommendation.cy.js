@@ -12,6 +12,7 @@ import ack from '../../../cypress/fixtures/api/insights-results-aggregator/v2/ac
 import clusterDetails from '../../../cypress/fixtures/api/insights-results-aggregator/v2/rule/external.rules.rule|ERROR_KEY/clusters_detail.json';
 import { CATEGORIES } from '../../../cypress/utils/globals';
 import { TBODY, ROW } from '../../../cypress/utils/components';
+import { TITLE } from '@redhat-cloud-services/frontend-components-utilities';
 
 const defaultPropsRule = {
   isError: false,
@@ -78,14 +79,15 @@ describe('recommendation page for enabled recommendation with clusters enabled a
   it('header shows description', () => {
     // See https://github.com/RedHatInsights/frontend-components/blob/master/packages/advisor-components/src/RuleDetails/RuleDetails.spec.ct.js
     // for further test on the header
-    cy.ouiaType('PF5/Title', 'h1')
+    cy.get(TITLE)
+      .get('h1')
       .should(($el) => expect($el.text().trim()).to.equal(ruleDescription))
       .and('have.length', 1);
   });
 
   it('shows info about some disabled clusters', () => {
     cy.ouiaId('hosts-acked').within(() => {
-      cy.ouiaType('PF5/Title').should(
+      cy.get(TITLE).should(
         'include.text',
         'Recommendation is disabled for some clusters'
       );
@@ -106,7 +108,8 @@ describe('recommendation page for enabled recommendation with clusters enabled a
         cy.ouiaId('clusters').should('have.length', 1);
       })
       .parent()
-      .ouiaType('PF5/Title', 'h3')
+      .get(TITLE)
+      .get('h3')
       .should('have.text', 'Affected clusters');
   });
 
@@ -249,7 +252,8 @@ describe('recommendation page for enabled recommendation without disabled cluste
   });
 
   it('header shows description', () => {
-    cy.ouiaType('PF5/Title', 'h1')
+    cy.get(TITLE)
+      .get('h1')
       .should(($el) => expect($el.text().trim()).to.equal(ruleDescription))
       .and('have.length', 1);
   });
@@ -264,7 +268,8 @@ describe('recommendation page for enabled recommendation without disabled cluste
         cy.ouiaId('clusters').should('have.length', 1);
       })
       .parent()
-      .ouiaType('PF5/Title', 'h3')
+      .get(TITLE)
+      .get('h3')
       .should('have.text', 'Affected clusters');
   });
 
@@ -304,17 +309,16 @@ describe('recommendation page for disabled recommendation', () => {
   });
 
   it('header shows disabled label', () => {
-    cy.ouiaType('PF5/Title', 'h1').should(($el) =>
-      expect($el.text().trim()).to.equal(ruleDescription + ' Disabled')
-    );
+    cy.get(TITLE)
+      .get('h1')
+      .should(($el) =>
+        expect($el.text().trim()).to.equal(ruleDescription + ' Disabled')
+      );
   });
 
   it('shows info about the recommendation being acked', () => {
     cy.ouiaId('hosts-acked').within(() => {
-      cy.ouiaType('PF5/Title').should(
-        'include.text',
-        'Recommendation is disabled'
-      );
+      cy.get(TITLE).should('include.text', 'Recommendation is disabled');
       cy.get('.pf-v5-c-card__body').should(
         'include.text',
         `and has no results`

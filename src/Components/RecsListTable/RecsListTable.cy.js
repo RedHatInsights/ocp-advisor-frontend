@@ -9,32 +9,18 @@ import ruleResponse from '../../../cypress/fixtures/api/insights-results-aggrega
 import { Intl } from '../../Utilities/intlHelper';
 // TODO: use cypress utils from FEC
 import {
-  TOOLBAR,
   TOOLBAR_FILTER,
-  CHIP,
-  CHIP_GROUP,
-  PAGINATION,
-  TABLE,
   ROWS_TOGGLER,
 } from '../../../cypress/utils/components';
-import {
-  hasChip,
-  urlParamConvert,
-  filter,
-  applyFilters,
-  removeAllChips,
-} from '../../../cypress/utils/filters';
+import { applyFilters } from '../../../cypress/utils/filters';
 import {
   DEFAULT_ROW_COUNT,
   PAGINATION_VALUES,
 } from '../../../cypress/utils/defaults';
 import { cumulativeCombinations } from '../../../cypress/utils/combine';
 import {
-  checkPaginationTotal,
   checkCurrentPage,
   checkPaginationSelected,
-  checkPaginationValues,
-  changePagination,
   itemsPerPage,
 } from '../../../cypress/utils/pagination';
 import { TOTAL_RISK, CATEGORIES } from '../../../cypress/utils/globals';
@@ -44,15 +30,31 @@ import {
   RULE_CATEGORIES,
 } from '../../AppConstants';
 import {
-  checkRowCounts,
-  columnName2UrlParam,
-  checkTableHeaders,
-  tableIsSortedBy,
-  checkEmptyState,
+  checkRowGroupCounts,
   checkNoMatchingRecs,
   checkFiltering,
   checkSorting,
 } from '../../../cypress/utils/table';
+
+import {
+  TOOLBAR,
+  CHIP,
+  CHIP_GROUP,
+  PAGINATION,
+  TABLE,
+  checkPaginationTotal,
+  checkPaginationValues,
+  changePagination,
+  checkTableHeaders,
+  columnName2UrlParam,
+  tableIsSortedBy,
+  filter,
+  hasChip,
+  removeAllChips,
+  urlParamConvert,
+  checkEmptyState,
+} from '@redhat-cloud-services/frontend-components-utilities';
+
 import { SORTING_ORDERS } from '../../../cypress/utils/globals';
 // TODO make more use of ../../../cypress/utils/components
 
@@ -208,8 +210,8 @@ Cypress.Commands.add('clickOnRowKebab', (name) => {
 });
 Cypress.Commands.add('getColumns', () => {
   /* patternfly/react-table-4.71.16, for some reason, renders extra empty `th` container;
-       thus, it is necessary to look at the additional `scope` attr to distinguish between visible columns
-  */
+             thus, it is necessary to look at the additional `scope` attr to distinguish between visible columns
+        */
   cy.get(`${TABLE} > thead > tr > th[scope="col"]`);
 });
 
@@ -311,10 +313,9 @@ urlParamsList.forEach((urlParams, index) => {
       for (const [key, value] of urlSearchParameters) {
         if (key == 'text') {
           hasChip('Name', value);
-          cy.get('.pf-m-fill > .pf-v5-c-form-control > input').should(
-            'have.value',
-            value
-          );
+          cy.get(
+            '.pf-m-fill [data-ouia-component-type="PF5/TextInput"]'
+          ).should('have.value', value);
         } else {
           value.split(',').forEach((it) => {
             const [group, item] = urlParamConvert(key, it, FILTER_CATEGORIES);
@@ -368,24 +369,8 @@ describe('successful non-empty recommendations list table', () => {
   });
 
   it('renders Clusters impacted chip group', () => {
-    cy.get(ROOT)
-      .find('span[class=pf-v5-c-chip-group__label]')
-      .should('have.length', 2)
-      .eq(0)
-      .and('have.text', 'Clusters impacted');
-    cy.get(ROOT)
-      .find('span[class=pf-v5-c-chip-group__label]')
-      .eq(1)
-      .and('have.text', 'Status');
-    cy.get(ROOT)
-      .find('li[class=pf-v5-c-chip-group__list-item]')
-      .should('have.length', 2)
-      .eq(0)
-      .and('have.text', '1 or more');
-    cy.get(ROOT)
-      .find('li[class=pf-v5-c-chip-group__list-item]')
-      .eq(1)
-      .and('have.text', 'Enabled');
+    hasChip('Clusters impacted', '1 or more');
+    hasChip('Status', 'Enabled');
   });
 
   it('Expected filters available', () => {
@@ -410,7 +395,7 @@ describe('successful non-empty recommendations list table', () => {
 
   describe('defaults', () => {
     it(`shows maximum ${DEFAULT_ROW_COUNT} recommendations`, () => {
-      checkRowCounts(DEFAULT_DISPLAYED_SIZE);
+      checkRowGroupCounts(DEFAULT_DISPLAYED_SIZE);
       expect(window.location.search).to.contain(`limit=${DEFAULT_ROW_COUNT}`);
     });
 
@@ -478,13 +463,13 @@ describe('successful non-empty recommendations list table', () => {
       cy.wrap(PAGINATION_VALUES).each((el) => {
         changePagination(el).then(() => {
           expect(window.location.search).to.contain(`limit=${el}`);
-          checkRowCounts(Math.min(el, filterData().length));
+          checkRowGroupCounts(Math.min(el, filterData().length));
         });
       });
     });
     it('can iterate over pages', () => {
       cy.wrap(itemsPerPage(filterData().length)).each((el, index, list) => {
-        checkRowCounts(Math.min(el, filterData().length)).then(() => {
+        checkRowGroupCounts(Math.min(el, filterData().length)).then(() => {
           expect(window.location.search).to.contain(
             `offset=${DEFAULT_ROW_COUNT * index}`
           );
@@ -564,7 +549,7 @@ describe('successful non-empty recommendations list table', () => {
         Object.keys(DEFAULT_FILTERS).length
       );
       cy.get('button').contains('Reset filters').should('exist');
-      checkRowCounts(DEFAULT_DISPLAYED_SIZE);
+      checkRowGroupCounts(DEFAULT_DISPLAYED_SIZE);
     });
 
     it('empty state is displayed when filters do not match any rule', () => {
@@ -578,7 +563,7 @@ describe('successful non-empty recommendations list table', () => {
 
     it('no filters show all recommendations', () => {
       removeAllChips();
-      checkRowCounts(Math.min(DEFAULT_ROW_COUNT, data.length));
+      checkRowGroupCounts(Math.min(DEFAULT_ROW_COUNT, data.length));
       checkPaginationTotal(data.length);
     });
 

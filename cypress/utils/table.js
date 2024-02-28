@@ -22,6 +22,10 @@ function checkTableHeaders(expectedHeaders) {
 
 // TODO fucntion to get rowgroup
 
+function checkRowGroupCounts(n) {
+  return cy.get(TABLE).find(TBODY).should('have.length', n);
+}
+
 function checkRowCounts(n, isSelectableTable = false) {
   return isSelectableTable
     ? cy.get('table').find(TBODY).should('have.length', n)
@@ -214,6 +218,7 @@ function checkSorting(
 
 export {
   checkTableHeaders,
+  checkRowGroupCounts,
   checkRowCounts,
   columnName2UrlParam,
   tableIsSortedBy,

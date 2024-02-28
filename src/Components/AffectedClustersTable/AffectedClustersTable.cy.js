@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import _ from 'lodash';
@@ -8,37 +7,42 @@ import { AffectedClustersTable } from './AffectedClustersTable';
 import clusterDetailData from '../../../cypress/fixtures/api/insights-results-aggregator/v2/rule/external.rules.rule|ERROR_KEY/clusters_detail.json';
 import { Intl } from '../../Utilities/intlHelper';
 import getStore from '../../Store';
+
+/* eslint-disable camelcase */
 import {
   TOOLBAR,
-  ROW,
   PAGINATION,
   CHIP_GROUP,
-  // DROPDOWN,
-  MODAL,
+  MODAL_CONTENT,
   CHECKBOX,
-  TBODY,
   TABLE,
-} from '../../../cypress/utils/components';
+  TABLE_ROW,
+  checkTableHeaders,
+  checkRowCounts,
+  tableIsSortedBy,
+  checkEmptyState,
+  itemsPerPage,
+  checkPaginationTotal,
+  checkPaginationValues,
+  changePagination,
+  MENU_TOGGLE,
+  MENU_TOGGLE_TEXT,
+  MENU_ITEM,
+  DROPDOWN_ITEM,
+} from '@redhat-cloud-services/frontend-components-utilities';
+
 import {
   DEFAULT_ROW_COUNT,
   PAGINATION_VALUES,
 } from '../../../cypress/utils/defaults';
 import { SORTING_ORDERS } from '../../../cypress/utils/globals';
 import {
-  checkTableHeaders,
-  checkRowCounts,
-  tableIsSortedBy,
-  checkEmptyState,
   checkNoMatchingClusters,
   checkFiltering,
   checkSorting,
 } from '../../../cypress/utils/table';
 import {
-  itemsPerPage,
-  checkPaginationTotal,
   checkPaginationSelected,
-  checkPaginationValues,
-  changePagination,
   checkCurrentPage,
 } from '../../../cypress/utils/pagination';
 import rule from '../../../cypress/fixtures/api/insights-results-aggregator/v2/rule/external.rules.rule|ERROR_KEY.json';
@@ -174,8 +178,8 @@ describe('non-empty successful affected clusters table', () => {
 
   it('names of rows are links', () => {
     cy.get('[data-ouia-component-id=loading-skeleton]').should('not.exist');
-    cy.get(TBODY)
-      .children()
+    cy.get(TABLE)
+      .find(TABLE_ROW)
       .each(($el, index) => {
         cy.wrap($el)
           .find('td[data-label=Name]')
@@ -190,18 +194,16 @@ describe('non-empty successful affected clusters table', () => {
     });
 
     it(`pagination is set to ${DEFAULT_ROW_COUNT}`, () => {
-      cy.get('.pf-v5-c-menu-toggle__text')
+      cy.get(MENU_TOGGLE_TEXT)
         .find('b')
         .eq(0)
         .should('have.text', `1 - ${DEFAULT_ROW_COUNT}`);
     });
 
     it('bulk selection is disabled', () => {
-      cy.get(TOOLBAR)
-        .find('.pf-m-spacer-sm')
-        .find('.pf-v5-c-menu-toggle')
-        .click();
-      cy.get('.pf-m-spacer-sm .pf-v5-c-menu__list-item')
+      cy.get(TOOLBAR).find('.pf-m-spacer-sm').find(MENU_TOGGLE).click();
+      cy.get('.pf-m-spacer-sm')
+        .find(MENU_ITEM)
         .should('have.class', 'pf-m-disabled')
         .contains('Disable recommendation for selected clusters');
       cy.get(`[aria-label=${BULK_SELECT}]`)
@@ -218,29 +220,22 @@ describe('non-empty successful affected clusters table', () => {
     it('checkbox can be clicked', () => {
       cy.ouiaId(BULK_SELECT, 'input').click().should('be.checked');
       // contains right text
-      cy.get(`[aria-label=${BULK_SELECT}]`)
+      cy.get(TOOLBAR)
         .find('.pf-v5-c-check__label')
         .contains(`${filterData({}).length} selected`);
       // checks all rows
       cy.get(TABLE)
-        .find(TBODY)
-        .find(ROW)
+        .find(TABLE_ROW)
         .each((row) => {
           cy.wrap(row).find('td').first().find('input').should('be.checked');
         });
       // bulk disabling button is enabled
-      cy.get(TOOLBAR)
-        .find('.pf-m-spacer-sm')
-        .find('.pf-v5-c-menu-toggle')
-        .click();
+      cy.get(TOOLBAR).find('.pf-m-spacer-sm').find(MENU_TOGGLE).click();
       cy.get('.pf-m-spacer-sm .pf-v5-c-menu__list-item')
         .should('not.have.class', 'pf-m-disabled')
         .contains('Disable recommendation for selected clusters');
       // modal is opened
-      cy.get('[data-ouia-component-type="PF5/DropdownItem"]').should(
-        'have.length',
-        1
-      );
+      cy.get(DROPDOWN_ITEM).should('have.length', 1);
     });
 
     it('checkbox can be un-clicked and all row are unselected', () => {
@@ -249,8 +244,7 @@ describe('non-empty successful affected clusters table', () => {
       cy.get('#toggle-checkbox-text').should('not.exist');
       // checks all rows
       cy.get(TABLE)
-        .find(TBODY)
-        .find(ROW)
+        .find(TABLE_ROW)
         .each((row) => {
           cy.wrap(row)
             .find('td')
@@ -259,18 +253,14 @@ describe('non-empty successful affected clusters table', () => {
             .should('not.be.checked');
         });
       // bulk disabling button is not enabled
+      cy.get(TOOLBAR).find('.pf-m-spacer-sm').find(MENU_TOGGLE).click();
       cy.get(TOOLBAR)
         .find('.pf-m-spacer-sm')
-        .find('.pf-v5-c-menu-toggle')
-        .click();
-      cy.get('.pf-m-spacer-sm .pf-v5-c-menu__list-item')
+        .get(MENU_ITEM)
         .should('have.class', 'pf-m-disabled')
         .contains('Disable recommendation for selected clusters');
       // modal is opened
-      cy.get('[data-ouia-component-type="PF5/DropdownItem"]').should(
-        'have.length',
-        1
-      );
+      cy.get(DROPDOWN_ITEM).should('have.length', 1);
     });
 
     it('checkbox is unselected when a row is unselected', () => {
@@ -279,8 +269,7 @@ describe('non-empty successful affected clusters table', () => {
       // cy.ouiaId(BULK_SELECT).find('input').click().should('be.checked');
       // removing one row unselects it
       cy.get(TABLE)
-        .find(TBODY)
-        .find(ROW)
+        .find(TABLE_ROW)
         .first()
         .find('td')
         .first()
@@ -305,8 +294,7 @@ describe('non-empty successful affected clusters table', () => {
 
       // selecting from rows display the correct text
       cy.get(TABLE)
-        .find(TBODY)
-        .find(ROW)
+        .find(TABLE_ROW)
         .first()
         .find('td')
         .first()
@@ -343,8 +331,7 @@ describe('non-empty successful affected clusters table', () => {
         .contains(`${data.length} selected`);
       // checks all rows
       cy.get(TABLE)
-        .find(TBODY)
-        .find(ROW)
+        .find(TABLE_ROW)
         .each((row) => {
           cy.wrap(row).find('td').first().find('input').should('be.checked');
         });
@@ -367,8 +354,7 @@ describe('non-empty successful affected clusters table', () => {
         .should('not.be.checked');
       // checks all rows
       cy.get(TABLE)
-        .find(TBODY)
-        .find(ROW)
+        .find(TABLE_ROW)
         .each((row) => {
           cy.wrap(row)
             .find('td')
@@ -393,8 +379,7 @@ describe('non-empty successful affected clusters table', () => {
       let nSelectedRows = 0;
       // select some rows
       cy.get(TABLE)
-        .find(TBODY)
-        .find(ROW)
+        .find(TABLE_ROW)
         .each((row, index) => {
           if (index % 2 == 0 && index < DEFAULT_ROW_COUNT) {
             cy.wrap(row).find('td').first().find('input').click();
@@ -427,19 +412,21 @@ describe('non-empty successful affected clusters table', () => {
     });
 
     it('can iterate over pages', () => {
-      cy.wrap(itemsPerPage(filterData({}).length)).each((el, index, list) => {
-        checkRowCounts(el);
-        cy.get(TOOLBAR)
-          .find(PAGINATION)
-          .find('button[data-action="next"]')
-          .then(($button) => {
-            if (index === list.length - 1) {
-              cy.wrap($button).should('be.disabled');
-            } else {
-              cy.wrap($button).click();
-            }
-          });
-      });
+      cy.wrap(itemsPerPage(filterData({}).length, DEFAULT_ROW_COUNT)).each(
+        (el, index, list) => {
+          checkRowCounts(el);
+          cy.get(TOOLBAR)
+            .find(PAGINATION)
+            .find('button[data-action="next"]')
+            .then(($button) => {
+              if (index === list.length - 1) {
+                cy.wrap($button).should('be.disabled');
+              } else {
+                cy.wrap($button).click();
+              }
+            });
+        }
+      );
     });
   });
 
@@ -563,18 +550,12 @@ describe('non-empty successful affected clusters table', () => {
 
   it('can disable one cluster', () => {
     cy.get(TABLE)
-      .find(TBODY)
-      .find(ROW)
+      .find(TABLE_ROW)
       .eq(0)
       .find('.pf-v5-c-table__action button')
       .click();
-    cy.get(TABLE)
-      .find(TBODY)
-      .find(ROW)
-      .eq(0)
-      .find('.pf-v5-c-menu__item')
-      .click();
-    cy.get(MODAL).should('have.length', 1);
+    cy.get(TABLE).find(TABLE_ROW).eq(0).find('.pf-v5-c-menu__item').click();
+    cy.get(MODAL_CONTENT).should('have.length', 1);
   });
 
   describe('modal for bulk disabling', () => {
@@ -597,8 +578,7 @@ describe('non-empty successful affected clusters table', () => {
 
     it('modal for cluster disabling', () => {
       cy.get(TABLE)
-        .find(TBODY)
-        .find(ROW)
+        .find(TABLE_ROW)
         .first()
         .find('td')
         .eq(AFFECTED_CLUSTERS_COLUMNS.length + 1)
@@ -606,13 +586,15 @@ describe('non-empty successful affected clusters table', () => {
         .contains('Disable')
         .click();
 
-      cy.get(MODAL)
+      cy.get(MODAL_CONTENT)
         .find('.pf-v5-c-check label')
         .should('have.text', 'Disable only for this cluster');
 
-      cy.get(MODAL).find(CHECKBOX).should('be.checked');
+      cy.get(MODAL_CONTENT).find(CHECKBOX).should('be.checked');
 
-      cy.get(MODAL).find('button[data-ouia-component-id="confirm"]').click();
+      cy.get(MODAL_CONTENT)
+        .find('button[data-ouia-component-id="confirm"]')
+        .click();
       // Should catch at one PUT and at one POST requests after clusters rule disable
       cy.wait('@disableRequest');
       cy.wait('@disableFeedbackRequest');

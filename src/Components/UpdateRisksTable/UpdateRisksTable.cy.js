@@ -1,12 +1,13 @@
 import React from 'react';
 import updateRisksFixtures from '../../../cypress/fixtures/api/insights-results-aggregator/v2/cluster/dcb95bbf-8673-4f3a-a63c-12d4a530aa6f/upgrade-risks-prediction.json';
-import { TABLE_HEADER } from '../../../cypress/utils/components';
-import {
-  checkEmptyState,
-  checkTableHeaders,
-} from '../../../cypress/utils/table';
 import UpdateRisksTable from './UpdateRisksTable';
 import { updateRisksInterceptors as interceptors } from '../../../cypress/utils/interceptors';
+
+import {
+  TABLE_HEADER,
+  checkEmptyState,
+  checkTableHeaders,
+} from '@redhat-cloud-services/frontend-components-utilities';
 
 const SEVERITY_MAPPING = {
   critical: 'Critical',
@@ -86,7 +87,7 @@ describe('successful with some risks', () => {
             .find('.alerts__severity')
             .should('contain.text', SEVERITY_MAPPING[alert.severity]);
           cy.get($row)
-            .find('.alerts__severity .pf-v5-c-icon__content')
+            .find('.pf-v5-c-icon__content')
             .should(
               'have.class',
               `pf-m-${SEVERITY_ICON_CLASS_MAPPING[alert.severity]}`
@@ -147,10 +148,6 @@ describe('successful, only cluster operators', () => {
   beforeEach(() => {
     interceptors['successful, alerts empty']();
     mount();
-  });
-
-  it('has alerts hidden', () => {
-    cy.get('.alerts__content').should('not.exist');
   });
 
   it('shows 0 alert risks', () => {

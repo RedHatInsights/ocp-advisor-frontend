@@ -3,7 +3,6 @@ import { IntlProvider } from 'react-intl';
 import { MemoryRouter } from 'react-router-dom';
 
 import Breadcrumbs from './';
-
 describe.skip('breadcrumbs', () => {
   const BREADCRUMB_ITEM = '.breadcrumb-item';
   let props;

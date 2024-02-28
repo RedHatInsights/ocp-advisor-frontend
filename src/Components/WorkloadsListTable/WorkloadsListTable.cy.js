@@ -12,12 +12,6 @@ import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import getStore from '../../Store';
 import {
-  CHIP_GROUP,
-  PAGINATION,
-  TABLE,
-  TOOLBAR,
-} from '../../../cypress/utils/components';
-import {
   checkFiltering,
   checkNoMatchingWorkloads,
   checkRowCounts,
@@ -25,17 +19,24 @@ import {
   checkTableHeaders,
 } from '../../../cypress/utils/table';
 import {
-  changePagination,
-  checkCurrentPage,
-  checkPaginationSelected,
   checkPaginationTotal,
   checkPaginationValues,
   itemsPerPage,
+  changePagination,
+  checkCurrentPage,
+  checkPaginationSelected,
 } from '../../../cypress/utils/pagination';
-// import { cumulativeCombinations } from '../../../cypress/utils/combine';
-// import { SORTING_ORDERS, TOTAL_RISK } from '../../../cypress/utils/globals';
 import { SORTING_ORDERS } from '../../../cypress/utils/globals';
 import { applyFilters, filter } from '../../../cypress/utils/filters';
+
+import {
+  CHIP_GROUP,
+  MENU_TOGGLE,
+  PAGINATION,
+  PAGINATION_NEXT,
+  TABLE,
+  TOOLBAR,
+} from '@redhat-cloud-services/frontend-components-utilities';
 
 let values = _.cloneDeep(workloads);
 const dataUnsorted = _.cloneDeep(values);
@@ -271,7 +272,8 @@ describe('workloads list table', () => {
     });
 
     it(`pagination is set to ${DEFAULT_ROW_COUNT}`, () => {
-      cy.get('.pf-v5-c-menu-toggle.pf-m-text')
+      cy.get(MENU_TOGGLE)
+        .get('.pf-m-text')
         .find('b')
         .eq(0)
         .should('have.text', `1 - ${DEFAULT_DISPLAYED_SIZE}`);
@@ -305,7 +307,7 @@ describe('workloads list table', () => {
         });
         cy.get(TOOLBAR)
           .find(PAGINATION)
-          .find('button[data-action="next"]')
+          .find(PAGINATION_NEXT)
           .then(($button) => {
             if (index === list.length - 1) {
               cy.wrap($button).should('be.disabled');

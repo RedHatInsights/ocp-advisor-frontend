@@ -9,14 +9,7 @@ import getStore from '../../Store';
 import { ClustersListTable } from './ClustersListTable';
 import clusters from '../../../cypress/fixtures/api/insights-results-aggregator/v2/clusters.json';
 import { CLUSTER_FILTER_CATEGORIES } from '../../AppConstants';
-import {
-  TOOLBAR,
-  PAGINATION,
-  CHIP_GROUP,
-  TBODY,
-  TABLE,
-  ROW,
-} from '../../../cypress/utils/components';
+import { TBODY, ROW } from '../../../cypress/utils/components';
 import {
   DEFAULT_ROW_COUNT,
   PAGINATION_VALUES,
@@ -24,31 +17,39 @@ import {
 import { SORTING_ORDERS, TOTAL_RISK } from '../../../cypress/utils/globals';
 import { cumulativeCombinations } from '../../../cypress/utils/combine';
 import {
-  applyFilters,
-  filter,
-  hasChip,
-  removeAllChips,
-  urlParamConvert,
-} from '../../../cypress/utils/filters';
-import {
-  checkTableHeaders,
-  checkRowCounts,
-  columnName2UrlParam,
-  tableIsSortedBy,
   checkNoMatchingClusters,
   checkFiltering,
   checkSorting,
+  checkRowCounts,
 } from '../../../cypress/utils/table';
 import { CLUSTERS_LIST_COLUMNS } from '../../AppConstants';
 import {
   itemsPerPage,
-  checkPaginationTotal,
   checkCurrentPage,
   checkPaginationSelected,
+} from '../../../cypress/utils/pagination';
+
+import {
+  TOOLBAR,
+  PAGINATION,
+  CHIP_GROUP,
+  TABLE,
+  checkPaginationTotal,
   checkPaginationValues,
   changePagination,
-} from '../../../cypress/utils/pagination';
-import { VERSION_COMBINATIONS } from '../../../cypress/utils/filters';
+  checkTableHeaders,
+  columnName2UrlParam,
+  tableIsSortedBy,
+  filter,
+  hasChip,
+  removeAllChips,
+  urlParamConvert,
+} from '@redhat-cloud-services/frontend-components-utilities';
+
+import {
+  VERSION_COMBINATIONS,
+  applyFilters,
+} from '../../../cypress/utils/filters';
 
 // add property name to clusters
 let values = _.cloneDeep(clusters['data']);
