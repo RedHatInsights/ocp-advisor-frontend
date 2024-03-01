@@ -1,5 +1,5 @@
 import React from 'react';
-import { mount } from '@cypress/react';
+
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { Intl } from '../../Utilities/intlHelper';
@@ -12,6 +12,7 @@ import ack from '../../../cypress/fixtures/api/insights-results-aggregator/v2/ac
 import clusterDetails from '../../../cypress/fixtures/api/insights-results-aggregator/v2/rule/external.rules.rule|ERROR_KEY/clusters_detail.json';
 import { CATEGORIES } from '../../../cypress/utils/globals';
 import { TBODY, ROW } from '../../../cypress/utils/components';
+import { TITLE } from '@redhat-cloud-services/frontend-components-utilities';
 
 const defaultPropsRule = {
   isError: false,
@@ -47,7 +48,7 @@ nulledResolutionRisk.content.resolution_risk = 0;
 
 describe('recommendation page for enabled recommendation with clusters enabled and disabled', () => {
   beforeEach(() => {
-    mount(
+    cy.mount(
       <MemoryRouter>
         <Intl>
           <Provider store={getStore()}>
@@ -78,18 +79,19 @@ describe('recommendation page for enabled recommendation with clusters enabled a
   it('header shows description', () => {
     // See https://github.com/RedHatInsights/frontend-components/blob/master/packages/advisor-components/src/RuleDetails/RuleDetails.spec.ct.js
     // for further test on the header
-    cy.ouiaType('PF4/Title', 'h1')
+    cy.get(TITLE)
+      .get('h1')
       .should(($el) => expect($el.text().trim()).to.equal(ruleDescription))
       .and('have.length', 1);
   });
 
   it('shows info about some disabled clusters', () => {
     cy.ouiaId('hosts-acked').within(() => {
-      cy.ouiaType('PF4/Title').should(
+      cy.get(TITLE).should(
         'include.text',
         'Recommendation is disabled for some clusters'
       );
-      cy.get('.pf-c-card__body').should(
+      cy.get('.pf-v5-c-card__body').should(
         'include.text',
         `${clusterDetails.data.disabled.length} cluster`
       );
@@ -106,7 +108,8 @@ describe('recommendation page for enabled recommendation with clusters enabled a
         cy.ouiaId('clusters').should('have.length', 1);
       })
       .parent()
-      .ouiaType('PF4/Title', 'h3')
+      .get(TITLE)
+      .get('h3')
       .should('have.text', 'Affected clusters');
   });
 
@@ -115,11 +118,10 @@ describe('recommendation page for enabled recommendation with clusters enabled a
   });
 
   it('actions can ack recommendation', () => {
-    cy.ouiaId('actions')
-      .click()
-      .within(() => {
-        cy.get('a').should('have.text', 'Disable recommendation').click();
-      });
+    cy.ouiaId('actions-toggle').click();
+    cy.ouiaId('actions').within(() => {
+      cy.get('button').should('have.text', 'Disable recommendation').click();
+    });
     cy.ouiaId('recommendation-disable').should('exist');
   });
 
@@ -165,7 +167,7 @@ describe('recommendation page for enabled recommendation with clusters enabled a
       cy.get('.ins-c-rule-details__stack').within(() => {
         cy.get('.ins-c-rule-details__total-risk').contains('Moderate');
         cy.get('.ins-c-rule-details__total-risk')
-          .find('.pf-c-label__icon')
+          .find('.pf-v5-c-label__icon')
           .should('have.length', 1); // contains an icon
       });
     });
@@ -202,7 +204,7 @@ describe('recommendation page for enabled recommendation with clusters enabled a
 
 describe('recommendation page for enabled recommedation with nulled resolution risk', () => {
   beforeEach(() => {
-    mount(
+    cy.mount(
       <MemoryRouter>
         <Intl>
           <Provider store={getStore()}>
@@ -229,7 +231,7 @@ describe('recommendation page for enabled recommendation without disabled cluste
   let data = _.cloneDeep(clusterDetails.data);
   data.disabled = [];
   beforeEach(() => {
-    mount(
+    cy.mount(
       <MemoryRouter>
         <Intl>
           <Provider store={getStore()}>
@@ -250,7 +252,8 @@ describe('recommendation page for enabled recommendation without disabled cluste
   });
 
   it('header shows description', () => {
-    cy.ouiaType('PF4/Title', 'h1')
+    cy.get(TITLE)
+      .get('h1')
       .should(($el) => expect($el.text().trim()).to.equal(ruleDescription))
       .and('have.length', 1);
   });
@@ -265,7 +268,8 @@ describe('recommendation page for enabled recommendation without disabled cluste
         cy.ouiaId('clusters').should('have.length', 1);
       })
       .parent()
-      .ouiaType('PF4/Title', 'h3')
+      .get(TITLE)
+      .get('h3')
       .should('have.text', 'Affected clusters');
   });
 
@@ -274,18 +278,17 @@ describe('recommendation page for enabled recommendation without disabled cluste
   });
 
   it('actions can ack recommendation', () => {
-    cy.ouiaId('actions')
-      .click()
-      .within(() => {
-        cy.get('a').should('have.text', 'Disable recommendation').click();
-      });
+    cy.ouiaId('actions-toggle').click();
+    cy.ouiaId('actions').within(() => {
+      cy.get('button').should('have.text', 'Disable recommendation').click();
+    });
     cy.ouiaId('recommendation-disable').should('exist');
   });
 });
 
 describe('recommendation page for disabled recommendation', () => {
   beforeEach(() => {
-    mount(
+    cy.mount(
       <MemoryRouter>
         <Intl>
           <Provider store={getStore()}>
@@ -306,18 +309,20 @@ describe('recommendation page for disabled recommendation', () => {
   });
 
   it('header shows disabled label', () => {
-    cy.ouiaType('PF4/Title', 'h1').should(($el) =>
-      expect($el.text().trim()).to.equal(ruleDescription + ' Disabled')
-    );
+    cy.get(TITLE)
+      .get('h1')
+      .should(($el) =>
+        expect($el.text().trim()).to.equal(ruleDescription + ' Disabled')
+      );
   });
 
   it('shows info about the recommendation being acked', () => {
     cy.ouiaId('hosts-acked').within(() => {
-      cy.ouiaType('PF4/Title').should(
+      cy.get(TITLE).should('include.text', 'Recommendation is disabled');
+      cy.get('.pf-v5-c-card__body').should(
         'include.text',
-        'Recommendation is disabled'
+        `and has no results`
       );
-      cy.get('.pf-c-card__body').should('include.text', `and has no results`);
       cy.ouiaId('enable').should('have.text', 'Enable recommendation');
     });
   });
@@ -325,7 +330,7 @@ describe('recommendation page for disabled recommendation', () => {
   it('table is not displayed', () => {
     cy.get('#affected-list-table').should('not.exist');
     cy.ouiaId('empty-state').within(() => {
-      cy.ouiaType('PF4/Title').should(
+      cy.get('.pf-v5-c-empty-state__title-text').should(
         'include.text',
         'Recommendation is disabled'
       );
@@ -333,10 +338,11 @@ describe('recommendation page for disabled recommendation', () => {
   });
 
   it('actions button allow for enabling', () => {
+    cy.ouiaId('actions-toggle').click();
     cy.ouiaId('actions')
       .click()
       .within(() => {
-        cy.get('a')
+        cy.get('button')
           .should('have.text', 'Enable recommendation')
           .click()
           .then(() => {
@@ -355,7 +361,7 @@ describe('recommendation page for disabled recommendation', () => {
 describe('justification message', () => {
   describe('when not provided', () => {
     before(() => {
-      mount(
+      cy.mount(
         <MemoryRouter>
           <Intl>
             <Provider store={getStore()}>
@@ -378,7 +384,7 @@ describe('justification message', () => {
     });
     it('should not display reason', () => {
       cy.ouiaId('hosts-acked').within(() => {
-        cy.get('.pf-c-card__body')
+        cy.get('.pf-v5-c-card__body')
           .should('not.include.text', 'because')
           .and('not.include.text', 'None');
       });
@@ -388,7 +394,7 @@ describe('justification message', () => {
   describe('when provided', () => {
     const justification = 'I would like to see it';
     before(() => {
-      mount(
+      cy.mount(
         <MemoryRouter>
           <Intl>
             <Provider store={getStore()}>
@@ -411,7 +417,7 @@ describe('justification message', () => {
     });
     it('should display reason', () => {
       cy.ouiaId('hosts-acked').within(() => {
-        cy.get('.pf-c-card__body').should(
+        cy.get('.pf-v5-c-card__body').should(
           'include.text',
           `because ${justification}`
         );
@@ -468,7 +474,7 @@ describe('category labels are displayed', () => {
       const taggedRule = _.cloneDeep(rule);
       taggedRule.content.tags = tags;
       beforeEach(() => {
-        mount(
+        cy.mount(
           <MemoryRouter>
             <Intl>
               <Provider store={getStore()}>

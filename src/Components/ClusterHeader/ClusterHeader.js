@@ -36,17 +36,15 @@ export const ClusterHeader = ({ clusterId, clusterData, clusterInfo }) => {
     data: info,
   } = clusterInfo;
 
-  const redirectOCM = (clusterId) => {
-    // TODO: replace with isBeta from chrome
-    location.assign(
-      location.origin +
+  const dropDownItems = [
+    <DropdownItem
+      key="link"
+      to={
+        location.origin +
         (location.pathname.includes('preview') ? `/preview` : '') +
         `/openshift/details/${clusterId}`
-    );
-  };
-
-  const dropDownItems = [
-    <DropdownItem key="link" onClick={() => redirectOCM(clusterId)}>
+      }
+    >
       <snap>{intl.formatMessage(messages.clusterDetailsRedirect)}</snap>
     </DropdownItem>,
   ];

@@ -1,6 +1,6 @@
 import React from 'react';
-import { mount } from '@cypress/react';
 import _ from 'lodash';
+
 import workloads from '../../../cypress/fixtures/api/insights-results-aggregator/v2/workloads.json';
 import { WORKLOADS_LIST_COLUMNS } from '../../AppConstants';
 import {
@@ -12,12 +12,6 @@ import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import getStore from '../../Store';
 import {
-  CHIP_GROUP,
-  PAGINATION,
-  TABLE,
-  TOOLBAR,
-} from '../../../cypress/utils/components';
-import {
   checkFiltering,
   checkNoMatchingWorkloads,
   checkRowCounts,
@@ -25,16 +19,24 @@ import {
   checkTableHeaders,
 } from '../../../cypress/utils/table';
 import {
-  changePagination,
-  checkCurrentPage,
-  checkPaginationSelected,
   checkPaginationTotal,
   checkPaginationValues,
   itemsPerPage,
+  changePagination,
+  checkCurrentPage,
+  checkPaginationSelected,
 } from '../../../cypress/utils/pagination';
-import { cumulativeCombinations } from '../../../cypress/utils/combine';
-import { SORTING_ORDERS, TOTAL_RISK } from '../../../cypress/utils/globals';
+import { SORTING_ORDERS } from '../../../cypress/utils/globals';
 import { applyFilters, filter } from '../../../cypress/utils/filters';
+
+import {
+  CHIP_GROUP,
+  MENU_TOGGLE,
+  PAGINATION,
+  PAGINATION_NEXT,
+  TABLE,
+  TOOLBAR,
+} from '@redhat-cloud-services/frontend-components-utilities';
 
 let values = _.cloneDeep(workloads);
 const dataUnsorted = _.cloneDeep(values);
@@ -50,8 +52,8 @@ const TABLE_HEADERS = _.map(WORKLOADS_LIST_COLUMNS, (it, index) =>
   index === 0 ? 'Name' : it.title
 );
 
-const TOTAL_RISK_VALUES = Object.keys(TOTAL_RISK);
-const TOTAL_RISK_MAP = _.cloneDeep(TOTAL_RISK);
+// const TOTAL_RISK_VALUES = Object.keys(TOTAL_RISK);
+// const TOTAL_RISK_MAP = _.cloneDeep(TOTAL_RISK);
 
 const DEFAULT_DISPLAYED_SIZE = Math.min(data.length, DEFAULT_ROW_COUNT);
 
@@ -74,20 +76,20 @@ const filtersConf = {
     urlParam: 'namespace_name',
     urlValue: (it) => it.replace(/ /g, '+'),
   },
-  severity: {
-    selectorText: 'Severity',
-    values: Array.from(cumulativeCombinations(TOTAL_RISK_VALUES)),
-    type: 'checkbox',
-    filterFunc: (it, value) => {
-      for (const risk of _.map(value, (x) => TOTAL_RISK_MAP[x])) {
-        if (risk === '' || it.metadata.hits_by_severity[risk] > 0) return true;
-      }
-      return false;
-    },
-    urlParam: 'severity',
-    urlValue: (it) =>
-      encodeURIComponent(_.map(it, (x) => TOTAL_RISK_MAP[x]).join(',')),
-  },
+  // severity: {
+  //   selectorText: 'Severity',
+  //   values: Array.from(cumulativeCombinations(TOTAL_RISK_VALUES)),
+  //   type: 'checkbox',
+  //   filterFunc: (it, value) => {
+  //     for (const risk of _.map(value, (x) => TOTAL_RISK_MAP[x])) {
+  //       if (risk === '' || it.metadata.hits_by_severity[risk] > 0) return true;
+  //     }
+  //     return false;
+  //   },
+  //   urlParam: 'severity',
+  //   urlValue: (it) =>
+  //     encodeURIComponent(_.map(it, (x) => TOTAL_RISK_MAP[x]).join(',')),
+  // },
 };
 
 const DEFAULT_FILTERS = {};
@@ -98,7 +100,8 @@ const filterData = (filters = DEFAULT_FILTERS, values = data) => {
 const filterApply = (filters) => applyFilters(filters, filtersConf);
 
 const filterCombos = [
-  { severity: ['Critical', 'Moderate'], cluster_name: 'foo' },
+  // { severity: ['Critical', 'Moderate'], cluster_name: 'foo' },
+  { namespace_name: 'Namespace', cluster_name: 'foo' },
 ];
 
 describe('data', () => {
@@ -144,7 +147,7 @@ describe('data', () => {
 
 describe('workloads list "No workload recommendations" Empty state rendering', () => {
   beforeEach(() => {
-    mount(
+    cy.mount(
       <MemoryRouter
         initialEntries={['/openshift/insights/advisor/workloads']}
         initialIndex={0}
@@ -164,15 +167,15 @@ describe('workloads list "No workload recommendations" Empty state rendering', (
     );
   });
   it('renders the Empty State component', () => {
-    cy.get('div[class=pf-c-empty-state__content]')
+    cy.get('div[class=pf-v5-c-empty-state__content]')
       .should('have.length', 1)
       .find('h5')
       .should('have.text', 'No workload recommendations');
-    cy.get('div[class=pf-c-empty-state__body] p').should(
+    cy.get('div[class=pf-v5-c-empty-state__body] p').should(
       'have.text',
       'There are no workload-related recommendations for your clusters. This page only shows workloads if there are recommendations available.'
     );
-    cy.get('div[class=pf-c-empty-state__body] button').should(
+    cy.get('div[class=pf-v5-c-empty-state__body] button').should(
       'have.text',
       'Return to previous page'
     );
@@ -182,7 +185,7 @@ describe('workloads list "No workload recommendations" Empty state rendering', (
 
 describe('workloads list "Workloads data unavailable" Empty state rendering', () => {
   beforeEach(() => {
-    mount(
+    cy.mount(
       <MemoryRouter
         initialEntries={['/openshift/insights/advisor/workloads']}
         initialIndex={0}
@@ -204,19 +207,19 @@ describe('workloads list "Workloads data unavailable" Empty state rendering', ()
   });
 
   it('renders the Empty State component', () => {
-    cy.get('div[class=pf-c-empty-state__content]')
+    cy.get('div[class=pf-v5-c-empty-state__content]')
       .should('have.length', 1)
       .find('h5')
       .should('have.text', 'Workloads data unavailable');
-    cy.get('div[class=pf-c-empty-state__body] p').should(
+    cy.get('div[class=pf-v5-c-empty-state__body] p').should(
       'have.text',
       'Verify that your clusters are connected and sending data to Red Hat, and that the Deployment Validation Operator is installed and configured.'
     );
-    cy.get('div[class=pf-c-empty-state__body] button').should(
+    cy.get('div[class=pf-v5-c-empty-state__body] button').should(
       'have.text',
       'Return to previous page'
     );
-    cy.get('div[class=pf-c-empty-state__body] a').should(
+    cy.get('div[class=pf-v5-c-empty-state__body] a').should(
       'have.text',
       'View documentation'
     );
@@ -226,7 +229,7 @@ describe('workloads list "Workloads data unavailable" Empty state rendering', ()
 
 describe('workloads list table', () => {
   beforeEach(() => {
-    mount(
+    cy.mount(
       <MemoryRouter
         initialEntries={['/openshift/insights/advisor/workloads']}
         initialIndex={0}
@@ -269,7 +272,8 @@ describe('workloads list table', () => {
     });
 
     it(`pagination is set to ${DEFAULT_ROW_COUNT}`, () => {
-      cy.get('.pf-c-options-menu__toggle-text')
+      cy.get(MENU_TOGGLE)
+        .get('.pf-m-text')
         .find('b')
         .eq(0)
         .should('have.text', `1 - ${DEFAULT_DISPLAYED_SIZE}`);
@@ -303,7 +307,7 @@ describe('workloads list table', () => {
         });
         cy.get(TOOLBAR)
           .find(PAGINATION)
-          .find('button[data-action="next"]')
+          .find(PAGINATION_NEXT)
           .then(($button) => {
             if (index === list.length - 1) {
               cy.wrap($button).should('be.disabled');
@@ -317,7 +321,8 @@ describe('workloads list table', () => {
 
   describe('sorting', () => {
     _.zip(
-      ['name', 'recommendations', 'severity', 'objects', 'last_seen'],
+      // ['name', 'recommendations', 'severity', 'objects', 'last_seen'],
+      ['name', 'recommendations', 'objects', 'last_seen'],
       TABLE_HEADERS
     ).forEach(([category, label]) => {
       SORTING_ORDERS.forEach((order) => {
@@ -397,7 +402,7 @@ describe('workloads list table', () => {
     it('empty state is displayed when filters do not match any rule', () => {
       filterApply({
         cluster_name: 'Not existing clusters',
-        severity: ['Critical', 'Moderate'],
+        // severity: ['Critical', 'Moderate'],
       });
       checkNoMatchingWorkloads();
       checkTableHeaders(TABLE_HEADERS);

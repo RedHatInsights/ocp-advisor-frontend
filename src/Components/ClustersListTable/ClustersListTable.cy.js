@@ -1,5 +1,5 @@
 import React from 'react';
-import { mount } from '@cypress/react';
+
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import _ from 'lodash';
@@ -9,14 +9,7 @@ import getStore from '../../Store';
 import { ClustersListTable } from './ClustersListTable';
 import clusters from '../../../cypress/fixtures/api/insights-results-aggregator/v2/clusters.json';
 import { CLUSTER_FILTER_CATEGORIES } from '../../AppConstants';
-import {
-  TOOLBAR,
-  PAGINATION,
-  CHIP_GROUP,
-  TBODY,
-  TABLE,
-  ROW,
-} from '../../../cypress/utils/components';
+import { TBODY, ROW } from '../../../cypress/utils/components';
 import {
   DEFAULT_ROW_COUNT,
   PAGINATION_VALUES,
@@ -24,31 +17,39 @@ import {
 import { SORTING_ORDERS, TOTAL_RISK } from '../../../cypress/utils/globals';
 import { cumulativeCombinations } from '../../../cypress/utils/combine';
 import {
-  applyFilters,
-  filter,
-  hasChip,
-  removeAllChips,
-  urlParamConvert,
-} from '../../../cypress/utils/filters';
-import {
-  checkTableHeaders,
-  checkRowCounts,
-  columnName2UrlParam,
-  tableIsSortedBy,
   checkNoMatchingClusters,
   checkFiltering,
   checkSorting,
+  checkRowCounts,
 } from '../../../cypress/utils/table';
 import { CLUSTERS_LIST_COLUMNS } from '../../AppConstants';
 import {
   itemsPerPage,
-  checkPaginationTotal,
   checkCurrentPage,
   checkPaginationSelected,
+} from '../../../cypress/utils/pagination';
+
+import {
+  TOOLBAR,
+  PAGINATION,
+  CHIP_GROUP,
+  TABLE,
+  checkPaginationTotal,
   checkPaginationValues,
   changePagination,
-} from '../../../cypress/utils/pagination';
-import { VERSION_COMBINATIONS } from '../../../cypress/utils/filters';
+  checkTableHeaders,
+  columnName2UrlParam,
+  tableIsSortedBy,
+  filter,
+  hasChip,
+  removeAllChips,
+  urlParamConvert,
+} from '@redhat-cloud-services/frontend-components-utilities';
+
+import {
+  VERSION_COMBINATIONS,
+  applyFilters,
+} from '../../../cypress/utils/filters';
 
 // add property name to clusters
 let values = _.cloneDeep(clusters['data']);
@@ -215,7 +216,7 @@ const urlParamsList = [
 urlParamsList.forEach((urlParams, index) => {
   describe(`pre-filled url search parameters ${index}`, () => {
     beforeEach(() => {
-      mount(
+      cy.mount(
         <MemoryRouter
           initialEntries={[`/openshift/insights/advisor/clusters?${urlParams}`]}
           initialIndex={0}
@@ -243,7 +244,10 @@ urlParamsList.forEach((urlParams, index) => {
       for (const [key, value] of urlSearchParameters) {
         if (key == 'text') {
           hasChip('Name', value);
-          cy.get('.pf-m-fill > .pf-c-form-control').should('have.value', value);
+          cy.get('.pf-m-fill > .pf-v5-c-form-control > input').should(
+            'have.value',
+            value
+          );
         } else {
           value.split(',').forEach((it) => {
             const [group, item] = urlParamConvert(
@@ -266,7 +270,7 @@ urlParamsList.forEach((urlParams, index) => {
 
 describe('clusters list table', () => {
   beforeEach(() => {
-    mount(
+    cy.mount(
       <MemoryRouter
         initialEntries={['/openshift/insights/advisor/clusters']}
         initialIndex={0}
@@ -311,7 +315,7 @@ describe('clusters list table', () => {
     });
 
     it(`pagination is set to ${DEFAULT_ROW_COUNT}`, () => {
-      cy.get('.pf-c-options-menu__toggle-text')
+      cy.get('.pf-v5-c-menu-toggle__text')
         .find('b')
         .eq(0)
         .should('have.text', `1 - ${DEFAULT_DISPLAYED_SIZE}`);
@@ -327,7 +331,7 @@ describe('clusters list table', () => {
 
     it('applies total risk "All clusters" filter', () => {
       hasChip('Total risk', 'All clusters');
-      cy.get(CHIP_GROUP).find('.pf-c-chip__text').should('have.length', 1);
+      cy.get(CHIP_GROUP).find('.pf-v5-c-chip__text').should('have.length', 1);
       expect(window.location.search).to.contain(`hits=all`);
     });
 
@@ -448,6 +452,7 @@ describe('clusters list table', () => {
           cy.wrap($button).click();
         });
 
+      cy.get('[data-ouia-component-id=loading-skeleton]').should('not.exist');
       cy.get('th[data-label="Name"]').find('button').click();
       cy.get(TOOLBAR).find('button').contains('Reset filters').click();
       cy.get(CHIP_GROUP).should('have.length', 1);
@@ -508,6 +513,7 @@ describe('clusters list table', () => {
 
   it('rows show cluster names instead uuids when available', () => {
     const names = _.map(data, 'name');
+    cy.get('[data-ouia-component-id=loading-skeleton]').should('not.exist');
     cy.get(`td[data-label="Name"]`)
       .then(($els) => {
         return _.map(Cypress.$.makeArray($els), 'innerText');
@@ -557,7 +563,7 @@ describe('clusters list table', () => {
 
 describe('cluster list Empty state rendering', () => {
   beforeEach(() => {
-    mount(
+    cy.mount(
       <MemoryRouter
         initialEntries={['/openshift/insights/advisor/clusters']}
         initialIndex={0}
@@ -580,25 +586,25 @@ describe('cluster list Empty state rendering', () => {
   });
 
   it('renders the Empty State component', () => {
-    cy.get('div[class=pf-c-empty-state__content]')
+    cy.get('div[class=pf-v5-c-empty-state__content]')
       .should('have.length', 1)
       .find('h2')
       .should('have.text', 'No clusters yet');
-    cy.get('div[class=pf-c-empty-state__body]').should(
+    cy.get('div[class=pf-v5-c-empty-state__body]').should(
       'have.text',
       'To get started, create or register your cluster to get recommendations from Insights Advisor.'
     );
-    cy.get('div[class=pf-c-empty-state__content]')
-      .children()
-      .eq(3)
-      .should('have.text', 'Create cluster');
-    cy.get('div[class=pf-c-empty-state__secondary]')
-      .children()
+    cy.get('div[class=pf-v5-c-empty-state__footer]')
+      .find('a')
       .eq(0)
-      .should('have.text', 'Register cluster');
-    cy.get('div[class=pf-c-empty-state__secondary]')
-      .children()
+      .should('have.text', 'Create cluster');
+    cy.get('div[class=pf-v5-c-empty-state__footer]')
+      .find('a')
       .eq(1)
+      .should('have.text', 'Register cluster');
+    cy.get('div[class=pf-v5-c-empty-state__footer]')
+      .find('a')
+      .eq(2)
       .should('have.text', 'Assisted Installer clusters');
   });
 });

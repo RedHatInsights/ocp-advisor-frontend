@@ -22,6 +22,10 @@ function checkTableHeaders(expectedHeaders) {
 
 // TODO fucntion to get rowgroup
 
+function checkRowGroupCounts(n) {
+  return cy.get(TABLE).find(TBODY).should('have.length', n);
+}
+
 function checkRowCounts(n, isSelectableTable = false) {
   return isSelectableTable
     ? cy.get('table').find(TBODY).should('have.length', n)
@@ -36,7 +40,7 @@ function tableIsSortedBy(columnTitle) {
   return cy
     .get('table')
     .find(`th[data-label="${columnTitle}"]`)
-    .should('have.class', 'pf-c-table__sort pf-m-selected');
+    .should('have.class', 'pf-v5-c-table__sort pf-m-selected');
 }
 
 function checkEmptyState(title, checkIcon = false) {
@@ -45,7 +49,7 @@ function checkEmptyState(title, checkIcon = false) {
     .ouiaId('empty-state')
     .should('have.length', 1)
     .within(() => {
-      cy.get('.pf-c-empty-state__icon').should(
+      cy.get('.pf-v5-c-empty-state__icon').should(
         'have.length',
         checkIcon ? 1 : 0
       );
@@ -214,6 +218,7 @@ function checkSorting(
 
 export {
   checkTableHeaders,
+  checkRowGroupCounts,
   checkRowCounts,
   columnName2UrlParam,
   tableIsSortedBy,

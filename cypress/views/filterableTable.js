@@ -1,14 +1,14 @@
 const TOOLBAR = 'div[id="ins-primary-data-toolbar"]';
-const PAGINATION = 'div[data-ouia-component-type="PF4/Pagination"]';
-const PAGINATION_MENU = `${TOOLBAR} ${PAGINATION} div[data-ouia-component-type="PF4/PaginationOptionsMenu"]`;
+const PAGINATION = 'div[data-ouia-component-type="PF5/Pagination"]';
+const PAGINATION_MENU = `${TOOLBAR} ${PAGINATION} div[data-ouia-component-type="PF5/PaginationOptionsMenu"]`;
 const PAGINATION_NEXT = `${TOOLBAR} ${PAGINATION} button[data-action="next"]`;
-const CHIPS = `${TOOLBAR} div[data-ouia-component-type="PF4/ChipGroup"]`;
-const CHIP_GROUP = 'div[data-ouia-component-type="PF4/ChipGroup"]';
-const CHIP = '[data-ouia-component-type="PF4/Chip"]';
-const EMPTY_STATE = 'table .pf-c-empty-state';
+const CHIPS = `${TOOLBAR} div[data-ouia-component-type="PF5/ChipGroup"]`;
+const CHIP_GROUP = 'div[data-ouia-component-type="PF5/ChipGroup"]';
+const CHIP = '[data-ouia-component-type="PF5/Chip"]';
+const EMPTY_STATE = 'table .pf-v5-c-empty-state';
 const TOGGLE_CHECKBOX = `${TOOLBAR} [data-ouia-component-id="clusters-selector-toggle-checkbox"]`;
 const TOGGLE_CHECKBOX_TEXT = `${TOOLBAR} #toggle-checkbox-text`;
-const ROWS = '[data-ouia-component-type="PF4/TableRow"]';
+const ROWS = '[data-ouia-component-type="PF5/TableRow"]';
 
 function checkRowCounts(n) {
   return cy
@@ -33,11 +33,11 @@ const filterableTable = {
   rows: () =>
     cy
       .get('table tbody[role=rowgroup]')
-      .find('[data-ouia-component-type="PF4/TableRow"]'),
+      .find('[data-ouia-component-type="PF5/TableRow"]'),
   checkRowCounts: (n) =>
     cy
       .get('table tbody[role=rowgroup]')
-      .find('[data-ouia-component-type="PF4/TableRow"]')
+      .find('[data-ouia-component-type="PF5/TableRow"]')
       .should('have.length', n),
   headers: () => cy.get('table').find('th'),
   chips: () => cy.get(CHIPS),
@@ -46,10 +46,10 @@ const filterableTable = {
   pagination: {
     checkValues: (expected) => {
       cy.get(PAGINATION_MENU)
-        .find('button[data-ouia-component-type="PF4/DropdownToggle"]')
+        .find('button[data-ouia-component-type="PF5/DropdownToggle"]')
         .click();
       cy.get(PAGINATION_MENU)
-        .find('ul[class=pf-c-options-menu__menu]')
+        .find('ul[class=pf-v5-c-options-menu__menu]')
         .find('li')
         .each(($el, index) => {
           cy.wrap($el).should('have.text', `${expected[index]} per page`);
@@ -57,11 +57,11 @@ const filterableTable = {
     },
     changeValue: (value) => {
       cy.get(PAGINATION_MENU)
-        .find('button[data-ouia-component-type="PF4/DropdownToggle"]')
+        .find('button[data-ouia-component-type="PF5/DropdownToggle"]')
         .click();
       cy.get(PAGINATION_MENU)
-        .find('ul[class=pf-c-options-menu__menu]')
-        .find('[data-ouia-component-type="PF4/DropdownItem"]')
+        .find('ul[class=pf-v5-c-options-menu__menu]')
+        .find('[data-ouia-component-type="PF5/DropdownItem"]')
         .contains(`${value}`)
         .click();
     },

@@ -24,7 +24,7 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-import { mount } from '@cypress/react';
+import { mount } from '@cypress/react18';
 import FlagProvider from '@unleash/proxy-client-react';
 import React from 'react';
 import { Provider } from 'react-redux';
@@ -32,23 +32,15 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import getStore from '../../src/Store';
 import { Intl } from '../../src/Utilities/intlHelper';
 
-Cypress.Commands.add(
-  'ouiaId',
-  { prevSubject: 'optional' },
-  (subject, item, el = '') => {
-    const attr = `${el}[data-ouia-component-id="${item}"]`;
-    return subject ? cy.wrap(subject).find(attr) : cy.get(attr);
-  }
-);
+/* eslint-disable camelcase */
+import {
+  findElementByOuiaId,
+  findElementByOuiaType,
+} from '@redhat-cloud-services/frontend-components-utilities';
 
-Cypress.Commands.add(
-  'ouiaType',
-  { prevSubject: 'optional' },
-  (subject, item, el = '') => {
-    const attr = `${el}[data-ouia-component-type="${item}"]`;
-    return subject ? cy.wrap(subject).find(attr) : cy.get(attr);
-  }
-);
+// Init commands
+findElementByOuiaId();
+findElementByOuiaType();
 
 Cypress.Commands.add('mountWithContext', (component, options = {}) => {
   const { path, routerProps = { initialEntries: ['/'] } } = options;
