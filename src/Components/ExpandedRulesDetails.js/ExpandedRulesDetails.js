@@ -20,7 +20,6 @@ import PropTypes from 'prop-types';
 import TemplateProcessor from '@redhat-cloud-services/frontend-components-advisor-components/TemplateProcessor/TemplateProcessor';
 import ObjectsModal from '../ObjectsModal/ObjectsModal';
 import { ObjectsTableColumns } from '../../AppConstants';
-import isEmpty from 'lodash/isEmpty';
 
 const code = `oc get namespace -o jsonpath={range .items[*]}{.metadata.name}{"\t"}{.metadata.uid}{"\n"}{end}
   oc -n <namespace> get <resourceKind> -o jsonpath={range .items[*]}{.metadata.name}{"\t"}{.metadata.uid}{"\n"}{end}`;
@@ -33,7 +32,7 @@ const ExpandedRulesDetails = ({
   reason,
   extra_data,
 }) => {
-  const objectsArePresent = !isEmpty(objects);
+  const objectsArePresent = Array.isArray(objects) && objects.length > 0;
   const [objectsModalOpen, setObjectsModalOpen] = useState(false);
   return (
     <Card className="ins-c-report-details" style={{ boxShadow: 'none' }}>
