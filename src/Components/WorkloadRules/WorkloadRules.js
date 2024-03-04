@@ -143,6 +143,7 @@ const WorkloadRules = ({ workload, namespaceName }) => {
   };
 
   const buildFilteredRows = (allRows, filters) => {
+    console.log(allRows, 'allrows');
     setRowsFiltered(false);
     const filtersArePresent = filtersAreApplied(filters);
     const expandedRowsSet = new Set(
@@ -189,12 +190,12 @@ const WorkloadRules = ({ workload, namespaceName }) => {
             {
               title: (
                 <ExpandedRulesDetails
-                  extra_data={value.extra_data}
                   more_info={value.more_info}
                   resolution={value.resolution}
                   objects={value.objects}
-                  definitions={value.details}
                   namespaceName={namespaceName}
+                  reason={value.reason}
+                  extra_data={value.extra_data}
                 />
               ),
             },

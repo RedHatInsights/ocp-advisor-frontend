@@ -29,8 +29,9 @@ const ExpandedRulesDetails = ({
   more_info,
   resolution,
   objects,
-  definitions,
   namespaceName,
+  reason,
+  extra_data,
 }) => {
   const objectsArePresent = !_.isEmpty(objects);
   const [objectsModalOpen, setObjectsModalOpen] = useState(false);
@@ -56,8 +57,7 @@ const ExpandedRulesDetails = ({
                 <strong>Detected issues</strong>
               </CardHeader>
               <CardBody>
-                This should be a reason field and extradata should provide us an
-                array of reasons to list here
+                <TemplateProcessor template={reason} definitions={extra_data} />
               </CardBody>
             </Card>
           </StackItem>
@@ -73,7 +73,7 @@ const ExpandedRulesDetails = ({
               <CardBody>
                 <TemplateProcessor
                   template={resolution}
-                  definitions={definitions}
+                  definitions={extra_data}
                 />
               </CardBody>
             </Card>
@@ -120,7 +120,7 @@ const ExpandedRulesDetails = ({
                 in-cluster commands like the ones below to translate UIDs of
                 affected resources to their names.
                 <CodeBlock>
-                  <TemplateProcessor template={code} />
+                  <TemplateProcessor template={code} definitions={extra_data} />
                 </CodeBlock>
               </CardBody>
             </React.Fragment>
@@ -136,12 +136,10 @@ const ExpandedRulesDetails = ({
                   <strong>Additional info</strong>
                 </CardHeader>
                 <CardBody>
-                  {
-                    <TemplateProcessor
-                      template={more_info}
-                      definitions={definitions}
-                    />
-                  }
+                  <TemplateProcessor
+                    template={more_info}
+                    definitions={extra_data}
+                  />
                 </CardBody>
               </Card>
             </StackItem>
@@ -161,6 +159,10 @@ ExpandedRulesDetails.propTypes = {
     kind: PropTypes.string,
     uid: PropTypes.string,
   }),
-  definitions: PropTypes.string.isRequired,
+  extra_data: PropTypes.shape({
+    check_name: PropTypes.string.isRequired,
+    check_url: PropTypes.string.isRequired,
+  }),
   namespaceName: PropTypes.string.isRequired,
+  reason: PropTypes.string.isRequired,
 };
