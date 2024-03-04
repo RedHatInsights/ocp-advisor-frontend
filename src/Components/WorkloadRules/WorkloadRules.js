@@ -46,7 +46,7 @@ import {
 import { useLocation } from 'react-router-dom';
 import './WorkloadRules.scss';
 
-const WorkloadRules = ({ workload }) => {
+const WorkloadRules = ({ workload, namespaceName }) => {
   const dispatch = useDispatch();
   const { isError, isUninitialized, isFetching, isSuccess, data } = workload;
   const recommendations = data?.recommendations || [];
@@ -193,6 +193,8 @@ const WorkloadRules = ({ workload }) => {
                   more_info={value.more_info}
                   resolution={value.resolution}
                   objects={value.objects}
+                  definitions={value.details}
+                  namespaceName={namespaceName}
                 />
               ),
             },
@@ -359,4 +361,5 @@ WorkloadRules.propTypes = {
       ),
     }),
   }),
+  namespaceName: PropTypes.string.isRequired,
 };

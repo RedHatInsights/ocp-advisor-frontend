@@ -28,7 +28,10 @@ export const Workload = ({ workload, namespaceId, clusterId }) => {
         <Title className="pf-u-mb-lg" headingLevel="h3" size="2xl">
           Recommendations
         </Title>
-        <WorkloadRules workload={workload} />
+        <WorkloadRules
+          workload={workload}
+          namespaceName={workload?.data?.namespace?.name}
+        />
       </PageSection>
     </React.Fragment>
   );

@@ -25,7 +25,13 @@ import _ from 'lodash';
 const code = `oc get namespace -o jsonpath={range .items[*]}{.metadata.name}{"\t"}{.metadata.uid}{"\n"}{end}
   oc -n <namespace> get <resourceKind> -o jsonpath={range .items[*]}{.metadata.name}{"\t"}{.metadata.uid}{"\n"}{end}`;
 
-const ExpandedRulesDetails = ({ more_info, resolution, objects }) => {
+const ExpandedRulesDetails = ({
+  more_info,
+  resolution,
+  objects,
+  definitions,
+  namespaceName,
+}) => {
   const objectsArePresent = !_.isEmpty(objects);
   const [objectsModalOpen, setObjectsModalOpen] = useState(false);
   return (
@@ -65,7 +71,10 @@ const ExpandedRulesDetails = ({ more_info, resolution, objects }) => {
                 <strong>Steps to resolve</strong>
               </CardHeader>
               <CardBody>
-                <TemplateProcessor template={resolution} />
+                <TemplateProcessor
+                  template={resolution}
+                  definitions={definitions}
+                />
               </CardBody>
             </Card>
           </StackItem>
@@ -99,17 +108,23 @@ const ExpandedRulesDetails = ({ more_info, resolution, objects }) => {
             </StackItem>
           )}
           <br />
-          <CardHeader>
-            <strong>Note:</strong>
-          </CardHeader>
-          <CardBody>
-            Red Hat avoids gathering and processing namespace and resource names
-            as these may reveal confidential information. Namespaces and
-            resources are identified by their UIDs instead. You can use
-            in-cluster commands like the ones below to translate UIDs of
-            affected resources to their names.
-            <CodeBlock>{code}</CodeBlock>
-          </CardBody>
+          {!namespaceName && (
+            <React.Fragment>
+              <CardHeader>
+                <strong>Note:</strong>
+              </CardHeader>
+              <CardBody>
+                Red Hat avoids gathering and processing namespace and resource
+                names as these may reveal confidential information. Namespaces
+                and resources are identified by their UIDs instead. You can use
+                in-cluster commands like the ones below to translate UIDs of
+                affected resources to their names.
+                <CodeBlock>
+                  <TemplateProcessor template={code} />
+                </CodeBlock>
+              </CardBody>
+            </React.Fragment>
+          )}
           <React.Fragment>
             <Divider />
             <StackItem>
@@ -120,7 +135,14 @@ const ExpandedRulesDetails = ({ more_info, resolution, objects }) => {
                   </Icon>
                   <strong>Additional info</strong>
                 </CardHeader>
-                <CardBody>{more_info}</CardBody>
+                <CardBody>
+                  {
+                    <TemplateProcessor
+                      template={more_info}
+                      definitions={definitions}
+                    />
+                  }
+                </CardBody>
               </Card>
             </StackItem>
           </React.Fragment>
@@ -139,4 +161,6 @@ ExpandedRulesDetails.propTypes = {
     kind: PropTypes.string,
     uid: PropTypes.string,
   }),
+  definitions: PropTypes.string.isRequired,
+  namespaceName: PropTypes.string.isRequired,
 };
