@@ -9,7 +9,10 @@ import {
   Card,
   CardBody,
   CardHeader,
+  ClipboardCopyButton,
   CodeBlock,
+  CodeBlockAction,
+  CodeBlockCode,
   Divider,
   Icon,
   Stack,
@@ -21,8 +24,53 @@ import TemplateProcessor from '@redhat-cloud-services/frontend-components-adviso
 import ObjectsModal from '../ObjectsModal/ObjectsModal';
 import { ObjectsTableColumns } from '../../AppConstants';
 
-const code = `oc get namespace -o jsonpath={range .items[*]}{.metadata.name}{"\t"}{.metadata.uid}{"\n"}{end}
-  oc -n <namespace> get <resourceKind> -o jsonpath={range .items[*]}{.metadata.name}{"\t"}{.metadata.uid}{"\n"}{end}`;
+const OpenshiftCodeBlocks = () => {
+  const code1 = `oc get namespace -o jsonpath='{range .items[*]}{.metadata.name}{"\\t"}{.metadata.uid}{"\\n"}{end}'`;
+
+  const code2 = `oc -n <namespace> get <resourceKind> -o jsonpath='{range .items[*]}{.metadata.name}{"\\t"}{.metadata.uid}{"\\n"}{end}'`;
+
+  const clipboardCopyFunc = (event, text) => {
+    navigator.clipboard.writeText(text.toString());
+  };
+
+  const onClick = (event, text) => {
+    clipboardCopyFunc(event, text);
+    setCopied(true);
+  };
+
+  const [copied, setCopied] = React.useState(false);
+
+  const action = (code) => (
+    <React.Fragment>
+      <CodeBlockAction>
+        <ClipboardCopyButton
+          id="basic-copy-button"
+          textId="code-content"
+          aria-label="Copy to clipboard"
+          onClick={(e) => onClick(e, code)}
+          exitDelay={copied ? 1500 : 600}
+          maxWidth="110px"
+          variant="plain"
+          onTooltipHidden={() => setCopied(false)}
+        >
+          {copied ? 'Successfully copied to clipboard!' : 'Copy to clipboard'}
+        </ClipboardCopyButton>
+      </CodeBlockAction>
+    </React.Fragment>
+  );
+
+  return (
+    <>
+      <CodeBlock actions={action(code1)} className="pf-v5-u-mt-md">
+        <CodeBlockCode>{code1}</CodeBlockCode>
+      </CodeBlock>
+
+      <CodeBlock actions={action(code2)} className="pf-v5-u-mt-md">
+        <CodeBlockCode>{code2}</CodeBlockCode>
+      </CodeBlock>
+    </>
+  );
+};
 
 const ExpandedRulesDetails = ({ more_info, resolution, objects }) => {
   const [objectsModalOpen, setObjectsModalOpen] = useState(false);
@@ -103,7 +151,7 @@ const ExpandedRulesDetails = ({ more_info, resolution, objects }) => {
             resources are identified by their UIDs instead. You can use
             in-cluster commands like the ones below to translate UIDs of
             affected resources to their names.
-            <CodeBlock>{code}</CodeBlock>
+            <OpenshiftCodeBlocks />
           </CardBody>
           <React.Fragment>
             <Divider />
