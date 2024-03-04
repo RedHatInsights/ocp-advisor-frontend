@@ -143,7 +143,6 @@ const WorkloadRules = ({ workload, namespaceName }) => {
   };
 
   const buildFilteredRows = (allRows, filters) => {
-    console.log(allRows, 'allrows');
     setRowsFiltered(false);
     const filtersArePresent = filtersAreApplied(filters);
     const expandedRowsSet = new Set(
