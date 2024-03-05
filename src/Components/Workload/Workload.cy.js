@@ -102,7 +102,7 @@ if (mockList.includes(uuid)) {
 }
 
 function tempCheckEmptyState(title, checkIcon = false) {
-  checkRowCounts(0);
+  checkRowCounts(1);
   cy.get('table')
     .ouiaId('empty-state')
     .should('have.length', 1)

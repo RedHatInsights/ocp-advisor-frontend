@@ -24,7 +24,15 @@ import { ObjectsTableColumns } from '../../AppConstants';
 const code = `oc get namespace -o jsonpath={range .items[*]}{.metadata.name}{"\t"}{.metadata.uid}{"\n"}{end}
   oc -n <namespace> get <resourceKind> -o jsonpath={range .items[*]}{.metadata.name}{"\t"}{.metadata.uid}{"\n"}{end}`;
 
-const ExpandedRulesDetails = ({ more_info, resolution, objects }) => {
+const ExpandedRulesDetails = ({
+  more_info,
+  resolution,
+  objects,
+  namespaceName,
+  reason,
+  extra_data,
+}) => {
+  const objectsArePresent = Array.isArray(objects) && objects.length > 0;
   const [objectsModalOpen, setObjectsModalOpen] = useState(false);
   return (
     <Card className="ins-c-report-details" style={{ boxShadow: 'none' }}>
@@ -48,8 +56,7 @@ const ExpandedRulesDetails = ({ more_info, resolution, objects }) => {
                 <strong>Detected issues</strong>
               </CardHeader>
               <CardBody>
-                This should be a reason field and extradata should provide us an
-                array of reasons to list here
+                <TemplateProcessor template={reason} definitions={extra_data} />
               </CardBody>
             </Card>
           </StackItem>
@@ -63,48 +70,60 @@ const ExpandedRulesDetails = ({ more_info, resolution, objects }) => {
                 <strong>Steps to resolve</strong>
               </CardHeader>
               <CardBody>
-                <TemplateProcessor template={resolution} />
+                <TemplateProcessor
+                  template={resolution}
+                  definitions={extra_data}
+                />
               </CardBody>
             </Card>
           </StackItem>
-          <Table borders={'compactBorderless'} aria-label="Objects table">
-            <Thead>
-              <Tr>
-                <Th modifier="fitContent">{ObjectsTableColumns.object}</Th>
-                <Th modifier="fitContent">{ObjectsTableColumns.kind}</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {objects.slice(0, 3).map((object, key) => (
-                <Tr key={key}>
-                  <Td dataLabel={ObjectsTableColumns.object}>{object.uid}</Td>
-                  <Td dataLabel={ObjectsTableColumns.kind}>{object.kind}</Td>
+          {objectsArePresent && (
+            <Table borders={'compactBorderless'} aria-label="Objects table">
+              <Thead>
+                <Tr>
+                  <Th modifier="fitContent">{ObjectsTableColumns.object}</Th>
+                  <Th modifier="fitContent">{ObjectsTableColumns.kind}</Th>
                 </Tr>
-              ))}
-            </Tbody>
-          </Table>
-          <StackItem>
-            <Button
-              variant="link"
-              isInline
-              onClick={() => setObjectsModalOpen(true)}
-            >
-              View all objects
-            </Button>
-          </StackItem>
-
+              </Thead>
+              <Tbody>
+                {objects.slice(0, 3).map((object, key) => (
+                  <Tr key={key}>
+                    <Td dataLabel={ObjectsTableColumns.object}>{object.uid}</Td>
+                    <Td dataLabel={ObjectsTableColumns.kind}>{object.kind}</Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          )}
+          {objectsArePresent && (
+            <StackItem>
+              <Button
+                variant="link"
+                isInline
+                onClick={() => setObjectsModalOpen(true)}
+              >
+                View all objects
+              </Button>
+            </StackItem>
+          )}
           <br />
-          <CardHeader>
-            <strong>Note:</strong>
-          </CardHeader>
-          <CardBody>
-            Red Hat avoids gathering and processing namespace and resource names
-            as these may reveal confidential information. Namespaces and
-            resources are identified by their UIDs instead. You can use
-            in-cluster commands like the ones below to translate UIDs of
-            affected resources to their names.
-            <CodeBlock>{code}</CodeBlock>
-          </CardBody>
+          {!namespaceName && (
+            <React.Fragment>
+              <CardHeader>
+                <strong>Note:</strong>
+              </CardHeader>
+              <CardBody>
+                Red Hat avoids gathering and processing namespace and resource
+                names as these may reveal confidential information. Namespaces
+                and resources are identified by their UIDs instead. You can use
+                in-cluster commands like the ones below to translate UIDs of
+                affected resources to their names.
+                <CodeBlock>
+                  <TemplateProcessor template={code} definitions={extra_data} />
+                </CodeBlock>
+              </CardBody>
+            </React.Fragment>
+          )}
           <React.Fragment>
             <Divider />
             <StackItem>
@@ -115,7 +134,12 @@ const ExpandedRulesDetails = ({ more_info, resolution, objects }) => {
                   </Icon>
                   <strong>Additional info</strong>
                 </CardHeader>
-                <CardBody>{more_info}</CardBody>
+                <CardBody>
+                  <TemplateProcessor
+                    template={more_info}
+                    definitions={extra_data}
+                  />
+                </CardBody>
               </Card>
             </StackItem>
           </React.Fragment>
@@ -134,4 +158,10 @@ ExpandedRulesDetails.propTypes = {
     kind: PropTypes.string,
     uid: PropTypes.string,
   }),
+  extra_data: PropTypes.shape({
+    check_name: PropTypes.string.isRequired,
+    check_url: PropTypes.string.isRequired,
+  }),
+  namespaceName: PropTypes.string.isRequired,
+  reason: PropTypes.string.isRequired,
 };

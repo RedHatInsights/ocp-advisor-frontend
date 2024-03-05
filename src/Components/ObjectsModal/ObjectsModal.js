@@ -2,9 +2,8 @@ import React from 'react';
 import { Modal as PfModal } from '@patternfly/react-core';
 import { ObjectsModalTable } from '../ObjectsModalTable/ObjectsModalTable';
 import PropTypes from 'prop-types';
-import mockObjects from '../../../cypress/fixtures/api/insights-results-aggregator/objects.json';
 
-const ObjectsModal = ({ isModalOpen, setIsModalOpen }) => {
+const ObjectsModal = ({ isModalOpen, setIsModalOpen, objects }) => {
   return (
     <PfModal
       isOpen={isModalOpen}
@@ -12,11 +11,7 @@ const ObjectsModal = ({ isModalOpen, setIsModalOpen }) => {
       variant={'medium'}
       title="Objects"
     >
-      <ObjectsModalTable
-        //objects={objects}
-        //replace with the real objects when API is implemented
-        objects={mockObjects}
-      />
+      <ObjectsModalTable objects={objects} />
     </PfModal>
   );
 };
