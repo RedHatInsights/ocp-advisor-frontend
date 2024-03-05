@@ -33,6 +33,8 @@ const ExpandedRulesDetails = ({
   extra_data,
 }) => {
   const objectsArePresent = Array.isArray(objects) && objects.length > 0;
+  console.log(objects);
+  const moreInfoIsPresent = more_info.length > 0 ? true : false;
   const [objectsModalOpen, setObjectsModalOpen] = useState(false);
   return (
     <Card className="ins-c-report-details" style={{ boxShadow: 'none' }}>
@@ -60,23 +62,28 @@ const ExpandedRulesDetails = ({
               </CardBody>
             </Card>
           </StackItem>
-          <Divider />
-          <StackItem>
-            <Card isCompact isPlain>
-              <CardHeader>
-                <Icon>
-                  <ThumbsUpIcon className="ins-c-report-details__icon" />
-                </Icon>
-                <strong>Steps to resolve</strong>
-              </CardHeader>
-              <CardBody>
-                <TemplateProcessor
-                  template={resolution}
-                  definitions={extra_data}
-                />
-              </CardBody>
-            </Card>
-          </StackItem>
+
+          {objectsArePresent && (
+            <React.Fragment>
+              <Divider />
+              <StackItem>
+                <Card isCompact isPlain>
+                  <CardHeader>
+                    <Icon>
+                      <ThumbsUpIcon className="ins-c-report-details__icon" />
+                    </Icon>
+                    <strong>Steps to resolve</strong>
+                  </CardHeader>
+                  <CardBody>
+                    <TemplateProcessor
+                      template={resolution}
+                      definitions={extra_data}
+                    />
+                  </CardBody>
+                </Card>
+              </StackItem>
+            </React.Fragment>
+          )}
           {objectsArePresent && (
             <Table borders={'compactBorderless'} aria-label="Objects table">
               <Thead>
@@ -124,25 +131,27 @@ const ExpandedRulesDetails = ({
               </CardBody>
             </React.Fragment>
           )}
-          <React.Fragment>
-            <Divider />
-            <StackItem>
-              <Card isCompact isPlain>
-                <CardHeader>
-                  <Icon>
-                    <InfoCircleIcon className="ins-c-report-details__icon" />
-                  </Icon>
-                  <strong>Additional info</strong>
-                </CardHeader>
-                <CardBody>
-                  <TemplateProcessor
-                    template={more_info}
-                    definitions={extra_data}
-                  />
-                </CardBody>
-              </Card>
-            </StackItem>
-          </React.Fragment>
+          {moreInfoIsPresent && (
+            <React.Fragment>
+              <Divider />
+              <StackItem>
+                <Card isCompact isPlain>
+                  <CardHeader>
+                    <Icon>
+                      <InfoCircleIcon className="ins-c-report-details__icon" />
+                    </Icon>
+                    <strong>Additional info</strong>
+                  </CardHeader>
+                  <CardBody>
+                    <TemplateProcessor
+                      template={more_info}
+                      definitions={extra_data}
+                    />
+                  </CardBody>
+                </Card>
+              </StackItem>
+            </React.Fragment>
+          )}
         </Stack>
       </CardBody>
     </Card>
