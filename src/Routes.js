@@ -12,7 +12,6 @@ import useFeatureFlag, {
   WORKLOADS_ENABLE_FLAG,
 } from './Utilities/useFeatureFlag';
 import { ErrorState } from './Components/MessageState/EmptyStates';
-import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 
 const Cluster = lazy(() =>
   import(/* webpackChunkName: "ClusterDetails" */ './Components/Cluster')
@@ -42,8 +41,6 @@ export const BASE_PATH = '/openshift/insights/advisor';
 
 export const AppRoutes = () => {
   const workloadsEnabled = useFeatureFlag(WORKLOADS_ENABLE_FLAG);
-  const chrome = useChrome();
-  const beta = chrome.isBeta();
   return (
     <Suspense
       fallback={
@@ -100,7 +97,7 @@ export const AppRoutes = () => {
         <Route
           path="/workloads"
           element={
-            workloadsEnabled && beta ? (
+            workloadsEnabled ? (
               <WorkloadsList
                 /**
                  * Generate random `key` to force component re-render,
@@ -115,7 +112,7 @@ export const AppRoutes = () => {
         <Route
           path="/workloads/:clusterId/:namespaceId"
           element={
-            workloadsEnabled && beta ? (
+            workloadsEnabled ? (
               <Workload
                 /**
                  * Generate random `key` to force component re-render,
