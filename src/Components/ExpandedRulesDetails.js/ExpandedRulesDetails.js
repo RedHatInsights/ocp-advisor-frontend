@@ -78,39 +78,44 @@ const ExpandedRulesDetails = ({
                       template={resolution}
                       definitions={extra_data}
                     />
+                    <Table
+                      borders={'compactBorderless'}
+                      aria-label="Objects table"
+                    >
+                      <Thead>
+                        <Tr>
+                          <Th modifier="fitContent">
+                            {ObjectsTableColumns.object}
+                          </Th>
+                          <Th modifier="fitContent">
+                            {ObjectsTableColumns.kind}
+                          </Th>
+                        </Tr>
+                      </Thead>
+                      <Tbody>
+                        {objects.slice(0, 3).map((object, key) => (
+                          <Tr key={key}>
+                            <Td dataLabel={ObjectsTableColumns.object}>
+                              {object.uid}
+                            </Td>
+                            <Td dataLabel={ObjectsTableColumns.kind}>
+                              {object.kind}
+                            </Td>
+                          </Tr>
+                        ))}
+                      </Tbody>
+                    </Table>
+                    <Button
+                      variant="link"
+                      isInline
+                      onClick={() => setObjectsModalOpen(true)}
+                    >
+                      View all objects
+                    </Button>
                   </CardBody>
                 </Card>
               </StackItem>
             </React.Fragment>
-          )}
-          {objectsArePresent && (
-            <Table borders={'compactBorderless'} aria-label="Objects table">
-              <Thead>
-                <Tr>
-                  <Th modifier="fitContent">{ObjectsTableColumns.object}</Th>
-                  <Th modifier="fitContent">{ObjectsTableColumns.kind}</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {objects.slice(0, 3).map((object, key) => (
-                  <Tr key={key}>
-                    <Td dataLabel={ObjectsTableColumns.object}>{object.uid}</Td>
-                    <Td dataLabel={ObjectsTableColumns.kind}>{object.kind}</Td>
-                  </Tr>
-                ))}
-              </Tbody>
-            </Table>
-          )}
-          {objectsArePresent && (
-            <StackItem>
-              <Button
-                variant="link"
-                isInline
-                onClick={() => setObjectsModalOpen(true)}
-              >
-                View all objects
-              </Button>
-            </StackItem>
           )}
           {!namespaceName && (
             <React.Fragment>
