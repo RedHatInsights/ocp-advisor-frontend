@@ -62,7 +62,6 @@ const ExpandedRulesDetails = ({
               </CardBody>
             </Card>
           </StackItem>
-
           {objectsArePresent && (
             <React.Fragment>
               <Divider />
@@ -113,7 +112,6 @@ const ExpandedRulesDetails = ({
               </Button>
             </StackItem>
           )}
-          <br />
           {!namespaceName && (
             <React.Fragment>
               <CardHeader>
