@@ -12,7 +12,10 @@ import { checkRowCounts, checkSorting } from '../../../cypress/utils/table';
 import { SORTING_ORDERS } from '../../../cypress/utils/globals';
 import { WORKLOAD_RULES_COLUMNS } from '../../AppConstants';
 // eslint-disable-next-line rulesdir/disallow-fec-relative-imports
-import { applyFilters } from '@redhat-cloud-services/frontend-components-utilities';
+import {
+  applyFilters,
+  checkEmptyState,
+} from '@redhat-cloud-services/frontend-components-utilities';
 
 const BREADCRUMBS = 'nav[class=pf-v5-c-breadcrumb]';
 const WORKLOAD_HEADER = '#workload-header';
@@ -101,23 +104,6 @@ if (mockList.includes(uuid)) {
   };
 }
 
-function tempCheckEmptyState(title, checkIcon = false) {
-  checkRowCounts(1);
-  cy.get('table')
-    .ouiaId('empty-state')
-    .should('have.length', 1)
-    .within(() => {
-      cy.get('.pf-c-empty-state__icon').should(
-        'have.length',
-        checkIcon ? 1 : 0
-      );
-      cy.get(`h5[class="pf-v5-c-empty-state__title-text"]`).should(
-        'have.text',
-        title
-      );
-    });
-}
-
 const mount = (
   url = '/openshift/insights/advisor/workloads/clustername/namespacename'
 ) => {
@@ -170,7 +156,7 @@ describe('workloads list "No workload recommendations" Empty state rendering', (
         'Critical',
       ])
     );
-    tempCheckEmptyState('No matching recommendations found');
+    checkEmptyState('No matching recommendations found');
   });
 
   it('adds additional filters passed by the query parameters, 2', () => {
