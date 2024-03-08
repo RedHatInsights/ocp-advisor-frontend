@@ -2,8 +2,10 @@
 
 import _ from 'lodash';
 
-import { ROW, TBODY, TABLE, TITLE, CHIP_GROUP, CHIP } from './components';
+import { ROW, TBODY, TABLE, CHIP_GROUP, CHIP } from './components';
 import { removeAllChips, applyFilters } from './filters';
+// eslint-disable-next-line rulesdir/disallow-fec-relative-imports
+import { checkEmptyState } from '@redhat-cloud-services/frontend-components-utilities';
 
 function checkTableHeaders(expectedHeaders) {
   /* patternfly/react-table-4.71.16, for some reason, renders extra empty `th` container;
@@ -41,20 +43,6 @@ function tableIsSortedBy(columnTitle) {
     .get('table')
     .find(`th[data-label="${columnTitle}"]`)
     .should('have.class', 'pf-v5-c-table__sort pf-m-selected');
-}
-
-function checkEmptyState(title, checkIcon = false) {
-  checkRowCounts(1);
-  cy.get(TABLE)
-    .ouiaId('empty-state')
-    .should('have.length', 1)
-    .within(() => {
-      cy.get('.pf-v5-c-empty-state__icon').should(
-        'have.length',
-        checkIcon ? 1 : 0
-      );
-      cy.get(`h5${TITLE}`).should('have.text', title);
-    });
 }
 
 function checkNoMatchingClusters() {
@@ -222,7 +210,6 @@ export {
   checkRowCounts,
   columnName2UrlParam,
   tableIsSortedBy,
-  checkEmptyState,
   checkNoMatchingClusters,
   checkNoMatchingRecs,
   checkNoMatchingWorkloads,

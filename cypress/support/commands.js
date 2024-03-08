@@ -32,11 +32,12 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import getStore from '../../src/Store';
 import { Intl } from '../../src/Utilities/intlHelper';
 
-/* eslint-disable camelcase */
+// eslint-disable-next-line rulesdir/disallow-fec-relative-imports
 import {
   findElementByOuiaId,
   findElementByOuiaType,
 } from '@redhat-cloud-services/frontend-components-utilities';
+import { checkRowCounts } from '../utils/table';
 
 // Init commands
 findElementByOuiaId();
@@ -68,4 +69,21 @@ Cypress.Commands.add('mountWithContext', (component, options = {}) => {
       </Intl>
     </FlagProvider>
   );
+});
+
+Cypress.Commands.add('checkEmptyState', (title, checkIcon) => {
+  checkRowCounts(1);
+  cy.get('table')
+    .ouiaId('empty-state')
+    .should('have.length', 1)
+    .within(() => {
+      cy.get('.pf-c-empty-state__icon').should(
+        'have.length',
+        checkIcon ? 1 : 0
+      );
+      cy.get(`h5[class="pf-v5-c-empty-state__title-text"]`).should(
+        'have.text',
+        title
+      );
+    });
 });
