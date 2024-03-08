@@ -167,14 +167,13 @@ const ExpandedRulesDetails = ({
           {!namespaceName && (
             <React.Fragment>
               <CardHeader>
-                <strong>Note:</strong>
+                <strong>Note: </strong>Red Hat avoids gathering and processing
+                namespace and resource names as these may reveal confidential
+                information. Namespaces and resources are identified by their
+                UIDs instead. You can use in-cluster commands like the ones
+                below to translate UIDs of affected resources to their names.
               </CardHeader>
               <CardBody>
-                Red Hat avoids gathering and processing namespace and resource
-                names as these may reveal confidential information. Namespaces
-                and resources are identified by their UIDs instead. You can use
-                in-cluster commands like the ones below to translate UIDs of
-                affected resources to their names.
                 <OpenshiftCodeBlocks />
               </CardBody>
             </React.Fragment>
