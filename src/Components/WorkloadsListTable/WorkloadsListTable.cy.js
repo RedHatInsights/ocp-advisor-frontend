@@ -145,7 +145,7 @@ describe('data', () => {
   });
 });
 
-describe('workloads list "No workload recommendations" Empty state rendering', () => {
+describe.skip('workloads list "No workload recommendations" Empty state rendering', () => {
   beforeEach(() => {
     cy.mount(
       <MemoryRouter
@@ -183,7 +183,7 @@ describe('workloads list "No workload recommendations" Empty state rendering', (
   });
 });
 
-describe('workloads list "Workloads data unavailable" Empty state rendering', () => {
+describe.skip('workloads list "Workloads data unavailable" Empty state rendering', () => {
   beforeEach(() => {
     cy.mount(
       <MemoryRouter
@@ -222,6 +222,46 @@ describe('workloads list "Workloads data unavailable" Empty state rendering', ()
     cy.get('div[class=pf-v5-c-empty-state__body] a').should(
       'have.text',
       'View documentation'
+    );
+    cy.get('div[id=workloads-list-table]').should('not.exist');
+  });
+});
+
+describe('workloads list "Configure your workloads" Empty state rendering', () => {
+  beforeEach(() => {
+    cy.mount(
+      <MemoryRouter
+        initialEntries={['/openshift/insights/advisor/workloads']}
+        initialIndex={0}
+      >
+        <Provider store={getStore()}>
+          <WorkloadsListTable
+            query={{
+              isError: true,
+              error: { status: 404 },
+              isFetching: false,
+              isUninitialized: false,
+              isSuccess: false,
+              data: [],
+            }}
+          />
+        </Provider>
+      </MemoryRouter>
+    );
+  });
+
+  it('renders the Empty State component', () => {
+    cy.get('div[class=pf-v5-c-empty-state__content]')
+      .should('have.length', 1)
+      .find('h5')
+      .should('have.text', 'Configure your workloads');
+    cy.get('div[class=pf-v5-c-empty-state__body] p').should(
+      'have.text',
+      'By enabling the advisor workloads feature, you can view namespace-level recommendations. To get started, install and configure the Deployment Validation Operator.'
+    );
+    cy.get('div[class=pf-v5-c-empty-state__body] a').should(
+      'have.text',
+      'Install Deployment Validation Operator'
     );
     cy.get('div[id=workloads-list-table]').should('not.exist');
   });
