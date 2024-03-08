@@ -225,8 +225,9 @@ const UpdateRisksNotAvailable = () => {
     />
   );
 };
-
-const NoRecsForWorkloads = () => {
+//This empty state is going to be hidden until the API can collect the data to differentiate the empty states
+//CCXDEV-12491
+/* const NoRecsForWorkloads = () => {
   return (
     <MessageState
       icon={CheckCircleIcon}
@@ -252,9 +253,10 @@ const NoRecsForWorkloads = () => {
       }
     />
   );
-};
-
-const NoWorkloadsAvailable = () => {
+}; */
+//This empty state is going to be hidden until the API can collect the data to differentiate the empty states
+//CCXDEV-12491
+/* const NoWorkloadsAvailable = () => {
   return (
     <MessageState
       icon={WrenchIcon}
@@ -284,7 +286,7 @@ const NoWorkloadsAvailable = () => {
       }
     />
   );
-};
+}; */
 
 // used in the workloads objects
 const NoMatchingWorkloadsObjects = () => {
@@ -361,6 +363,31 @@ const NoMatchingRecsForWorkloads = () => {
   );
 };
 
+const NoDVOInstalledOrDataCollected = () => {
+  return (
+    <MessageState
+      icon={WrenchIcon}
+      title="Configure your workloads"
+      text={
+        <>
+          <p>
+            By enabling the advisor workloads feature, you can view
+            namespace-level recommendations. To get started, install and
+            configure the Deployment Validation Operator.
+          </p>
+          <br />
+          <a
+            className="pf-v5-u-display-inline-block pf-v5-u-mt-xl"
+            href="https://operatorhub.io/operator/deployment-validation-operator"
+          >
+            Install Deployment Validation Operator
+          </a>
+        </>
+      }
+    />
+  );
+};
+
 export {
   ErrorState,
   NoAffectedClusters,
@@ -373,11 +400,10 @@ export {
   NoRecsAffecting,
   NoUpdateRisks,
   UpdateRisksNotAvailable,
-  NoRecsForWorkloads,
-  NoWorkloadsAvailable,
   NoMatchingWorkloadsObjects,
   NoWorkloadsRecsAvailable,
   NoRecsForWorkloadsDetails,
   NoMatchingWorkloads,
   NoMatchingRecsForWorkloads,
+  NoDVOInstalledOrDataCollected,
 };
