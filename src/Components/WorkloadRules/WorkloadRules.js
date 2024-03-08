@@ -48,7 +48,8 @@ import './WorkloadRules.scss';
 
 const WorkloadRules = ({ workload, namespaceName }) => {
   const dispatch = useDispatch();
-  const { isError, isUninitialized, isFetching, isSuccess, data } = workload;
+  const { isError, isUninitialized, isFetching, isSuccess, data, error } =
+    workload;
   const recommendations = data?.recommendations || [];
   const errorState = isError;
   const successState = isSuccess;
@@ -293,7 +294,11 @@ const WorkloadRules = ({ workload, namespaceName }) => {
                       colSpan: WORKLOAD_RULES_COLUMNS.length + 1,
                     },
                     title: errorState ? (
-                      <NoWorkloadsRecsAvailable />
+                      error?.status === 404 ? (
+                        <NoRecsForWorkloadsDetails />
+                      ) : (
+                        <NoWorkloadsRecsAvailable />
+                      )
                     ) : loadingState ? (
                       <Loading />
                     ) : noMatchingRecs ? (
