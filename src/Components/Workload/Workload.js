@@ -20,7 +20,11 @@ export const Workload = ({ workload, namespaceId, clusterId }) => {
               }
               workloads="true"
             />
-            <WorkloadsHeader />
+            <WorkloadsHeader
+              workload={workload}
+              namespaceId={namespaceId}
+              clusterId={namespaceId}
+            />
           </FlexItem>
         </Flex>
       </PageHeader>
