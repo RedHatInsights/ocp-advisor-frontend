@@ -14,7 +14,7 @@ import {
   TableBody,
   TableHeader,
 } from '@patternfly/react-table/deprecated';
-import { Pagination, Tooltip } from '@patternfly/react-core';
+import { Label, Pagination, Tooltip } from '@patternfly/react-core';
 import { PaginationVariant } from '@patternfly/react-core/dist/js/components/Pagination/Pagination';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar/PrimaryToolbar';
 import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat';
@@ -53,6 +53,7 @@ import {
 } from '../MessageState/EmptyStates';
 import { coerce } from 'semver';
 import { BASE_PATH } from '../../Routes';
+import { useLazyGetClustersUpgradeRisksQuery } from '../../Services/SmartProxy';
 
 const ClustersListTable = ({
   query: { isError, isUninitialized, isFetching, isSuccess, data, refetch },
@@ -62,6 +63,7 @@ const ClustersListTable = ({
   const updateFilters = (payload) =>
     dispatch(updateClustersListFilters(payload));
   const filters = useSelector(({ filters }) => filters.clustersListState);
+  const [getClustersUpgradeRisks] = useLazyGetClustersUpgradeRisksQuery();
 
   const clusters = data?.data || [];
   const page = filters.offset / filters.limit + 1;
@@ -74,8 +76,11 @@ const ClustersListTable = ({
   const { search } = useLocation();
   const loadingState = isUninitialized || isFetching || !rowsFiltered;
   const errorState = isError;
-  const noMatch = clusters.length > 0 && filteredRows.length === 0;
   const successState = isSuccess;
+  const noMatch =
+    clusters.length > 0 &&
+    filteredRows.length === 0 &&
+    displayedRows.length === 0;
 
   const removeFilterParam = (param) =>
     _removeFilterParam(filters, updateFilters, param);
@@ -89,7 +94,11 @@ const ClustersListTable = ({
   }, [filteredRows, filters.limit, filters.offset]);
 
   useEffect(() => {
-    setFilteredRows(buildFilteredRows(clusters));
+    const getBuildFitleredRows = async (clusters) => {
+      const res = await buildFilteredRows(clusters);
+      setFilteredRows(res);
+    };
+    getBuildFitleredRows(clusters);
   }, [
     data,
     filters.text,
@@ -128,11 +137,26 @@ const ClustersListTable = ({
     }
   }, [filters, filterBuilding]);
 
-  const buildFilteredRows = (items) => {
+  const buildFilteredRows = async (items) => {
     setRowsFiltered(false);
     const filtered = items.filter((it) => {
       return passFiltersCluster(it, filters);
     });
+    const clusterArr = filtered.map((cluster) => cluster.cluster_id);
+    let upgradeArr = [];
+    if (clusterArr.length > 0) {
+      try {
+        const upgradeRisks = await getClustersUpgradeRisks({
+          clusters: clusterArr,
+        }).unwrap();
+        if (upgradeRisks.status === 'ok') {
+          upgradeArr = upgradeRisks.predictions;
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
     const mapped = filtered.map((it, index) => {
       if (
         it.cluster_version !== undefined &&
@@ -144,14 +168,24 @@ const ClustersListTable = ({
         );
       }
       const ver = toValidSemVer(it.cluster_version);
+      const upgrade =
+        upgradeArr.length > 0 ? upgradeArr[index]?.upgrade_recommended : null;
 
       return {
         entity: it,
         cells: [
-          <span key={index}>
-            <Link to={`${BASE_PATH}/clusters/${it.cluster_id}`}>
+          <span key={it.cluster_id} className="pf-v5-l-flex">
+            <Link
+              to={`${BASE_PATH}/clusters/${it.cluster_id}`}
+              className="pf-v5-l-flex__item"
+            >
               {it.cluster_name || it.cluster_id}
             </Link>
+            {upgrade && (
+              <Label isCompact color="orange" className="pf-v5-l-flex__item">
+                Update risk
+              </Label>
+            )}
           </span>,
           ver === '0.0.0' ? intl.formatMessage(messages.nA) : ver,
           it.total_hit_count,

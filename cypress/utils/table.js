@@ -88,7 +88,9 @@ function checkFiltering(
     checkEmptyState(emptyStateTitle);
     checkTableHeaders(tableHeaders);
   } else {
+    cy.get('[data-ouia-component-id=loading-skeleton]').should('not.exist');
     cy.get(`td[data-label="${columnName}"]`)
+      .should('have.length', values.length)
       .then(($els) => {
         return _.map(Cypress.$.makeArray($els), 'innerText');
       })
@@ -197,7 +199,10 @@ function checkSorting(
     ),
     dataField
   );
+  cy.get('[data-ouia-component-id=loading-skeleton]').should('not.exist');
+  const expectedLength = sortedValues.slice(0, nExpectedRows).length;
   cy.get(`td[data-label="${columnField}"]`)
+    .should('have.length', expectedLength)
     .then(($els) => {
       return _.map(Cypress.$.makeArray($els), 'innerText');
     })
