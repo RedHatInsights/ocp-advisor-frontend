@@ -2,12 +2,29 @@ import React from 'react';
 import { Modal as PfModal } from '@patternfly/react-core';
 import { ObjectsModalTable } from '../ObjectsModalTable/ObjectsModalTable';
 import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  WORKLOADS_OBJECTS_TABLE_INITIAL_STATE,
+  resetFilters,
+  updateWorkloadsObjectsListFilters,
+} from '../../Services/Filters';
 
 const ObjectsModal = ({ isModalOpen, setIsModalOpen, objects }) => {
+  const dispatch = useDispatch();
+  const filters = useSelector(
+    ({ filters }) => filters.workloadsObjectsListState
+  );
+  const updateFilters = (payload) =>
+    dispatch(updateWorkloadsObjectsListFilters(payload));
+  const onClose = () => {
+    setIsModalOpen(false);
+    resetFilters(filters, WORKLOADS_OBJECTS_TABLE_INITIAL_STATE, updateFilters);
+  };
+
   return (
     <PfModal
       isOpen={isModalOpen}
-      onClose={() => setIsModalOpen(false)}
+      onClose={() => onClose()}
       variant={'medium'}
       title="Objects"
     >
