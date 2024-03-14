@@ -201,18 +201,6 @@ describe('workloads list "No workload recommendations" Empty state rendering', (
     );
   });
 
-  it('last breadcrumb is cluster name', () => {
-    mount();
-
-    cy.get(BREADCRUMBS)
-      .should('have.length', 1)
-      .get('.pf-v5-c-breadcrumb__list > :nth-child(2)')
-      .should(
-        'have.text',
-        'Cluster name 00000001-0001-0001-0001-000000000001 | Namespace name 7eb1d18b-701b-4f51-aea0-5f235daf1e07'
-      );
-  });
-
   it('Setting text filter', () => {
     mount();
     cy.get('div.ins-c-primary-toolbar__filter')
@@ -252,6 +240,44 @@ describe('workloads list "No workload recommendations" Empty state rendering', (
       .parent()
       .find('input[type=checkbox]')
       .check();
+  });
+});
+
+describe('header rendered correct', () => {
+  it('last breadcrumb', () => {
+    mount();
+
+    cy.get(BREADCRUMBS)
+      .should('have.length', 1)
+      .get('.pf-v5-c-breadcrumb__list > :nth-child(2)')
+      .should(
+        'have.text',
+        'Cluster name 00000001-0001-0001-0001-000000000001 | Namespace name 7eb1d18b-701b-4f51-aea0-5f235daf1e07'
+      );
+  });
+
+  it.only('title', () => {
+    mount(`/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`);
+    cy.get('#workloads-header-title').should(
+      'have.text',
+      'Cluster name 00000001-0001-0001-0001-000000000001Namespace name 7eb1d18b-701b-4f51-aea0-5f235daf1e07'
+    );
+  });
+
+  it('cluster id and namespace id', () => {
+    mount(`/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`);
+    cy.get('#workload-header-uuid').should(
+      'have.text',
+      'Cluster UUID: 00000001-0001-0001-0001-000000000001 Namespace UUID: 7eb1d18b-701b-4f51-aea0-5f235daf1e07'
+    );
+  });
+
+  it('last seen values', () => {
+    mount(`/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`);
+    cy.get('#workload-header-last-seen').should(
+      'have.text',
+      'Last seen: 23 Jan 2024 11:57 UTC'
+    );
   });
 });
 
