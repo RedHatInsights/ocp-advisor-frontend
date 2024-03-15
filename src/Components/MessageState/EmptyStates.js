@@ -378,7 +378,7 @@ const NoDVOInstalledOrDataCollected = () => {
           <br />
           <a
             className="pf-v5-u-display-inline-block pf-v5-u-mt-xl"
-            href="https://operatorhub.io/operator/deployment-validation-operator"
+            href="https://catalog.redhat.com/search?gs&q=dvo"
           >
             Install Deployment Validation Operator
           </a>
