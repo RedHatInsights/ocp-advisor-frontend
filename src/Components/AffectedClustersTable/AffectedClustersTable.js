@@ -371,7 +371,7 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
             allSelected
               ? onSelect(event, false, -1)
               : onSelect(event, true, -1),
-          ouiaId: 'clusters-selector',
+          checkboxOuiaId: 'clusters-selector',
         }}
         actionsConfig={{
           actions: [
