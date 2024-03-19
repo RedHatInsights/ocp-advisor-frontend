@@ -256,7 +256,7 @@ describe('header rendered correct', () => {
       );
   });
 
-  it.only('title', () => {
+  it('title', () => {
     mount(`/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`);
     cy.get('#workloads-header-title').should(
       'have.text',
