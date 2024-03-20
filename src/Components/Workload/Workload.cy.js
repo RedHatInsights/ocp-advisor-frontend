@@ -200,13 +200,12 @@ describe('Workload component renders and filters data', () => {
       ])
     );
   });
-
   it('Setting text filter', () => {
     mount();
     cy.get('div.ins-c-primary-toolbar__filter')
-      .find('button[aria-label="Conditional filter"]')
+      .find('button[data-ouia-component-id="ConditionalFilterToggle"]')
       .click();
-    cy.get('li[data-ouia-component-type="PF5/DropdownItem"]')
+    cy.get('li[data-ouia-component-id="description"]')
       .contains('Description')
       .click();
     cy.get('input[data-ouia-component-type="PF5/TextInput"]').type('Foobar');
@@ -215,9 +214,9 @@ describe('Workload component renders and filters data', () => {
   it('Setting objects filter', () => {
     mount();
     cy.get('div.ins-c-primary-toolbar__filter')
-      .find('button[aria-label="Conditional filter"]')
+      .find('button[data-ouia-component-id="ConditionalFilterToggle"]')
       .click();
-    cy.get('li[data-ouia-component-type="PF5/DropdownItem"]')
+    cy.get('li[data-ouia-component-id="object ID"]')
       .contains('Object ID')
       .click();
     cy.get('input[data-ouia-component-type="PF5/TextInput"]').type(
@@ -228,9 +227,9 @@ describe('Workload component renders and filters data', () => {
   it('Setting critical severity filter', () => {
     mount();
     cy.get('div.ins-c-primary-toolbar__filter')
-      .find('button[aria-label="Conditional filter"]')
+      .find('button[data-ouia-component-id="ConditionalFilterToggle"]')
       .click();
-    cy.get('li[data-ouia-component-type="PF5/DropdownItem"]')
+    cy.get('li[data-ouia-component-id="total risk"]')
       .contains('Total risk')
       .click();
     cy.get('button[aria-label="Options menu"]').click();
@@ -256,7 +255,7 @@ describe('header rendered correct', () => {
       );
   });
 
-  it.only('title', () => {
+  it('title', () => {
     mount(`/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`);
     cy.get('#workloads-header-title').should(
       'have.text',
