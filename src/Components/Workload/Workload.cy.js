@@ -122,7 +122,7 @@ const mount = (
   );
 };
 
-describe('workloads list "No workload recommendations" Empty state rendering', () => {
+describe('Workload component renders and filters data', () => {
   beforeEach(() => {
     featureFlagsInterceptors.ocpWorkloadsSuccessful();
   });
