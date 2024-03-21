@@ -82,6 +82,8 @@ const ClustersListTable = ({
     filteredRows.length === 0 &&
     displayedRows.length === 0;
 
+  console.log(displayedRows);
+
   const removeFilterParam = (param) =>
     _removeFilterParam(filters, updateFilters, param);
 
@@ -89,8 +91,8 @@ const ClustersListTable = ({
     _addFilterParam(filters, updateFilters, param, values);
 
   useEffect(() => {
+    console.log('SET SET');
     setDisplayedRows(buildDisplayedRows(filteredRows));
-    setRowsFiltered(true);
   }, [filteredRows, filters.limit, filters.offset]);
 
   useEffect(() => {
@@ -107,6 +109,15 @@ const ClustersListTable = ({
     filters.sortDirection,
     filters.sortIndex,
   ]);
+
+  useEffect(() => {
+    if (
+      (filteredRows.length > 0 && displayedRows.length > 0) ||
+      (filteredRows.length === 0 && displayedRows.length === 0)
+    ) {
+      setRowsFiltered(true);
+    }
+  }, [displayedRows]);
 
   useEffect(() => {
     if (search && filterBuilding) {

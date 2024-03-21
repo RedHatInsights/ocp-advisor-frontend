@@ -212,7 +212,7 @@ export const clustersUpdateRisksInterceptors = {
           });
         });
       }
-    );
+    ).as('clustersUpdateRisksOne');
   },
   'successful, two labels': () => {
     cy.intercept(
@@ -239,7 +239,7 @@ export const clustersUpdateRisksInterceptors = {
           });
         });
       }
-    );
+    ).as('clustersUpdateRisksTwo');
   },
   'successful, no labels': () => {
     cy.intercept(
@@ -257,7 +257,7 @@ export const clustersUpdateRisksInterceptors = {
           });
         });
       }
-    );
+    ).as('clustersUpdateRisksNone');
   },
   'error, status not ok': () =>
     cy.intercept(

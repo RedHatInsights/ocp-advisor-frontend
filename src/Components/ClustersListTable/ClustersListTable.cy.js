@@ -656,6 +656,7 @@ describe('update risk', () => {
     });
 
     it('displays one label', () => {
+      cy.wait('@clustersUpdateRisksOne');
       cy.get(
         'span[class=pf-v5-c-label__content]:contains("Update risk")'
       ).should('have.length', 1);
@@ -669,6 +670,7 @@ describe('update risk', () => {
     });
 
     it('displays two labels', () => {
+      cy.wait('@clustersUpdateRisksTwo');
       cy.get(
         'span[class=pf-v5-c-label__content]:contains("Update risk")'
       ).should('have.length', 2);
@@ -682,6 +684,7 @@ describe('update risk', () => {
     });
 
     it('displays no labels', () => {
+      cy.wait('@clustersUpdateRisksNone');
       cy.get(
         'span[class=pf-v5-c-label__content]:contains("Update risk")'
       ).should('have.length', 0);
