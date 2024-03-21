@@ -1,0 +1,33 @@
+{
+  "predictions": [
+    {
+      "cluster_id": "e488c993-821c-4915-bd08-5a51ed7aa3a2",
+      "last_checked_at": "2011-15-04T00:05:23Z",
+      "prediction_status": "ok",
+      "upgrade_recommended": true,
+      "upgrade_risks_predictors": {
+        "alerts": [
+          {
+            "name": "SomeCriticalAlert",
+            "namespace": "openshift-kube-apiserver",
+            "severity": "critical",
+            "url": "https://some_url.com/monitoring/alerts?orderBy=asc&sortBy=Severity&alert-name=SomeCriticalAlert"
+          }
+        ],
+        "operator_conditions": [
+          {
+            "condition": "Degraded",
+            "name": "authentication",
+            "reason": "AsExpected",
+            "url": "https://some_url.com/k8s/cluster/config.openshift.io~v1~ClusterOperator/authentication"
+          }
+        ]
+      }
+    },
+    {
+      "cluster_id": "bbbbbbb",
+      "prediction_status": "No data for the cluster"
+    }
+  ],
+  "status": "ok"
+}

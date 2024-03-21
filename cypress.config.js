@@ -18,5 +18,4 @@ module.exports = defineConfig({
       return config;
     },
   },
-  retries: 2,
 });

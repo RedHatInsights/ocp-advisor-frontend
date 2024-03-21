@@ -50,6 +50,15 @@ import {
   VERSION_COMBINATIONS,
   applyFilters,
 } from '../../../cypress/utils/filters';
+import { clustersUpdateRisksInterceptors } from '../../../cypress/utils/interceptors';
+
+const lessClusters = {
+  data: [...clusters.data.slice(0, 28)],
+  meta: {
+    count: 28,
+  },
+  status: 'ok',
+};
 
 // add property name to clusters
 let values = _.cloneDeep(clusters['data']);
@@ -216,6 +225,7 @@ const urlParamsList = [
 urlParamsList.forEach((urlParams, index) => {
   describe(`pre-filled url search parameters ${index}`, () => {
     beforeEach(() => {
+      clustersUpdateRisksInterceptors['error, status not ok']();
       cy.mount(
         <MemoryRouter
           initialEntries={[`/openshift/insights/advisor/clusters?${urlParams}`]}
@@ -270,6 +280,7 @@ urlParamsList.forEach((urlParams, index) => {
 
 describe('clusters list table', () => {
   beforeEach(() => {
+    clustersUpdateRisksInterceptors['error, status not ok']();
     cy.mount(
       <MemoryRouter
         initialEntries={['/openshift/insights/advisor/clusters']}
@@ -395,6 +406,9 @@ describe('clusters list table', () => {
     ).forEach(([category, label]) => {
       SORTING_ORDERS.forEach((order) => {
         it(`${order} by ${label}`, () => {
+          cy.get('[data-ouia-component-id=loading-skeleton]').should(
+            'not.exist'
+          );
           let sortingParameter = category;
           // modify sortingParameters for certain values
 
@@ -563,6 +577,7 @@ describe('clusters list table', () => {
 
 describe('cluster list Empty state rendering', () => {
   beforeEach(() => {
+    clustersUpdateRisksInterceptors['error, status not ok']();
     cy.mount(
       <MemoryRouter
         initialEntries={['/openshift/insights/advisor/clusters']}
@@ -606,6 +621,133 @@ describe('cluster list Empty state rendering', () => {
       .find('a')
       .eq(2)
       .should('have.text', 'Assisted Installer clusters');
+  });
+});
+
+describe('update risk', () => {
+  const mountLessClusters = () => {
+    cy.mount(
+      <MemoryRouter
+        initialEntries={['/openshift/insights/advisor/clusters']}
+        initialIndex={0}
+      >
+        <Intl>
+          <Provider store={getStore()}>
+            <ClustersListTable
+              query={{
+                isError: false,
+                isFetching: false,
+                isUninitialized: false,
+                isSuccess: true,
+                data: lessClusters,
+                refetch: cy.stub(),
+              }}
+            />
+          </Provider>
+        </Intl>
+      </MemoryRouter>
+    );
+  };
+
+  describe('one label', () => {
+    beforeEach(() => {
+      clustersUpdateRisksInterceptors['successful']();
+      mountLessClusters();
+    });
+
+    it('displays one label', () => {
+      cy.get(
+        'span[class=pf-v5-c-label__content]:contains("Update risk")'
+      ).should('have.length', 1);
+    });
+  });
+
+  describe('two labels', () => {
+    beforeEach(() => {
+      clustersUpdateRisksInterceptors['successful, two labels']();
+      mountLessClusters();
+    });
+
+    it('displays two labels', () => {
+      cy.get(
+        'span[class=pf-v5-c-label__content]:contains("Update risk")'
+      ).should('have.length', 2);
+    });
+  });
+
+  describe('no labels', () => {
+    beforeEach(() => {
+      clustersUpdateRisksInterceptors['successful, no labels']();
+      mountLessClusters();
+    });
+
+    it('displays no labels', () => {
+      cy.get(
+        'span[class=pf-v5-c-label__content]:contains("Update risk")'
+      ).should('have.length', 0);
+    });
+  });
+
+  describe('no labels', () => {
+    beforeEach(() => {
+      clustersUpdateRisksInterceptors['successful, no labels']();
+      mountLessClusters();
+    });
+
+    it('displays no labels', () => {
+      cy.get(
+        'span[class=pf-v5-c-label__content]:contains("Update risk")'
+      ).should('have.length', 0);
+    });
+  });
+
+  describe('status not ok', () => {
+    beforeEach(() => {
+      clustersUpdateRisksInterceptors['error, status not ok']();
+      mountLessClusters();
+    });
+
+    it("don't block table rendering on error", () => {
+      cy.ouiaId('loading-skeleton').should('not.exist');
+      expect(filterData()).to.have.length.gte(1);
+    });
+  });
+
+  describe('error not found', () => {
+    beforeEach(() => {
+      clustersUpdateRisksInterceptors['error, not found']();
+      mountLessClusters();
+    });
+
+    it("don't block table rendering on error", () => {
+      cy.ouiaId('loading-skeleton').should('not.exist');
+      expect(filterData()).to.have.length.gte(1);
+    });
+  });
+
+  describe('error other', () => {
+    beforeEach(() => {
+      clustersUpdateRisksInterceptors['error, other']();
+      mountLessClusters();
+    });
+
+    it("don't block table rendering on error", () => {
+      cy.ouiaId('loading-skeleton').should('not.exist');
+      expect(filterData()).to.have.length.gte(1);
+    });
+  });
+
+  describe('long responding', () => {
+    beforeEach(() => {
+      clustersUpdateRisksInterceptors['long responding']();
+      mountLessClusters();
+    });
+
+    it("don't block table rendering on ", () => {
+      cy.wait('@clustersUpdateRisksLong');
+      cy.ouiaId('loading-skeleton').should('not.exist');
+      expect(filterData()).to.have.length.gte(1);
+    });
   });
 });
 

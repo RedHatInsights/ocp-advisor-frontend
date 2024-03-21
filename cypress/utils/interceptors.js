@@ -1,6 +1,7 @@
 import singleClusterPageReport from '../fixtures/api/insights-results-aggregator/v2/cluster/dcb95bbf-8673-4f3a-a63c-12d4a530aa6f/reports-disabled-false.json';
 import updateRisksFixtures from '../fixtures/api/insights-results-aggregator/v2/cluster/dcb95bbf-8673-4f3a-a63c-12d4a530aa6f/upgrade-risks-prediction.json';
 import clusterInfoFixtures from '../fixtures/api/insights-results-aggregator/v2/cluster/dcb95bbf-8673-4f3a-a63c-12d4a530aa6f/info.json';
+import clustersUpdateRisks from '../fixtures/api/insights-results-aggregator/v2/upgrade-risks-prediction.json';
 import _ from 'lodash';
 
 export const clusterReportsInterceptors = {
@@ -183,4 +184,116 @@ export const featureFlagsInterceptors = {
       },
     }).as('getOcpWorkloadsFlag');
   },
+};
+
+export const clustersUpdateRisksInterceptors = {
+  successful: () => {
+    cy.intercept(
+      'POST',
+      /\/api\/insights-results-aggregator\/v2\/upgrade-risks-prediction/,
+      (req) => {
+        const fixtureWithOneUpdateRisk = req?.body?.clusters.map(
+          (item, index) => {
+            return index === 0
+              ? {
+                  ...clustersUpdateRisks.predictions[0],
+                  cluster_id: item,
+                }
+              : {
+                  ...clustersUpdateRisks.predictions[1],
+                  cluster_id: item,
+                };
+          }
+        );
+        req.continue((res) => {
+          res.send({
+            statusCode: 200,
+            body: { predictions: fixtureWithOneUpdateRisk, status: 'ok' },
+          });
+        });
+      }
+    );
+  },
+  'successful, two labels': () => {
+    cy.intercept(
+      'POST',
+      /\/api\/insights-results-aggregator\/v2\/upgrade-risks-prediction/,
+      (req) => {
+        const fixtureWithTwoUpdateRisks = req?.body?.clusters.map(
+          (item, index) => {
+            return index === 0 || index === 3
+              ? {
+                  ...clustersUpdateRisks.predictions[0],
+                  cluster_id: item,
+                }
+              : {
+                  ...clustersUpdateRisks.predictions[1],
+                  cluster_id: item,
+                };
+          }
+        );
+        req.continue((res) => {
+          res.send({
+            statusCode: 200,
+            body: { predictions: fixtureWithTwoUpdateRisks, status: 'ok' },
+          });
+        });
+      }
+    );
+  },
+  'successful, no labels': () => {
+    cy.intercept(
+      'POST',
+      /\/api\/insights-results-aggregator\/v2\/upgrade-risks-prediction/,
+      (req) => {
+        const fixtureWithOneUpdateRisk = req?.body?.clusters.map((item) => ({
+          ...clustersUpdateRisks.predictions[1],
+          cluster_id: item,
+        }));
+        req.continue((res) => {
+          res.send({
+            statusCode: 200,
+            body: { predictions: fixtureWithOneUpdateRisk, status: 'ok' },
+          });
+        });
+      }
+    );
+  },
+  'error, status not ok': () =>
+    cy.intercept(
+      'POST',
+      /\/api\/insights-results-aggregator\/v2\/upgrade-risks-prediction/,
+      {
+        statusCode: 200,
+        body: {
+          status: 'not ok',
+        },
+      }
+    ),
+  'error, not found': () =>
+    cy.intercept(
+      'POST',
+      /\/api\/insights-results-aggregator\/v2\/upgrade-risks-prediction/,
+      {
+        statusCode: 404,
+      }
+    ),
+  'error, other': () =>
+    cy.intercept(
+      'POST',
+      /\/api\/insights-results-aggregator\/v2\/upgrade-risks-prediction/,
+      {
+        statusCode: 500,
+      }
+    ),
+  'long responding': () =>
+    cy
+      .intercept(
+        'POST',
+        /\/api\/insights-results-aggregator\/v2\/upgrade-risks-prediction/,
+        {
+          delay: 4200,
+        }
+      )
+      .as('clustersUpdateRisksLong'),
 };
