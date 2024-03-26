@@ -212,7 +212,7 @@ export const clustersUpdateRisksInterceptors = {
           });
         });
       }
-    );
+    ).as('clustersUpdateRisksOKOne');
   },
   'successful, two labels': () => {
     cy.intercept(
@@ -239,7 +239,7 @@ export const clustersUpdateRisksInterceptors = {
           });
         });
       }
-    );
+    ).as('clustersUpdateRisksOKTwo');
   },
   'successful, no labels': () => {
     cy.intercept(
@@ -257,35 +257,41 @@ export const clustersUpdateRisksInterceptors = {
           });
         });
       }
-    );
+    ).as('clustersUpdateRisksOKNoLabels');
   },
   'error, status not ok': () =>
-    cy.intercept(
-      'POST',
-      /\/api\/insights-results-aggregator\/v2\/upgrade-risks-prediction/,
-      {
-        statusCode: 200,
-        body: {
-          status: 'not ok',
-        },
-      }
-    ),
+    cy
+      .intercept(
+        'POST',
+        /\/api\/insights-results-aggregator\/v2\/upgrade-risks-prediction/,
+        {
+          statusCode: 200,
+          body: {
+            status: 'not ok',
+          },
+        }
+      )
+      .as('clustersUpdateRisksNotOk'),
   'error, not found': () =>
-    cy.intercept(
-      'POST',
-      /\/api\/insights-results-aggregator\/v2\/upgrade-risks-prediction/,
-      {
-        statusCode: 404,
-      }
-    ),
+    cy
+      .intercept(
+        'POST',
+        /\/api\/insights-results-aggregator\/v2\/upgrade-risks-prediction/,
+        {
+          statusCode: 404,
+        }
+      )
+      .as('clustersUpdateRisks404'),
   'error, other': () =>
-    cy.intercept(
-      'POST',
-      /\/api\/insights-results-aggregator\/v2\/upgrade-risks-prediction/,
-      {
-        statusCode: 500,
-      }
-    ),
+    cy
+      .intercept(
+        'POST',
+        /\/api\/insights-results-aggregator\/v2\/upgrade-risks-prediction/,
+        {
+          statusCode: 500,
+        }
+      )
+      .as('clustersUpdateRisks500'),
   'long responding': () =>
     cy
       .intercept(
