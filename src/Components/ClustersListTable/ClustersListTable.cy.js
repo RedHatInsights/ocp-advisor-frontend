@@ -536,6 +536,7 @@ describe('clusters list table', () => {
   });
 
   it('names of rows are links', () => {
+    cy.get('[data-ouia-component-id=loading-skeleton]').should('not.exist');
     cy.get(TBODY)
       .children()
       .each(($el, index) => {
@@ -549,6 +550,7 @@ describe('clusters list table', () => {
   });
 
   it('total risk hits are mapped correctly', () => {
+    cy.get('[data-ouia-component-id=loading-skeleton]').should('not.exist');
     cy.get('table')
       .find(TBODY)
       .find(ROW)
@@ -708,8 +710,9 @@ describe('update risk', () => {
     });
 
     it("don't block table rendering on error", () => {
+      cy.wait('@clustersUpdateRisksNotOk');
       cy.ouiaId('loading-skeleton').should('not.exist');
-      expect(filterData()).to.have.length.gte(1);
+      checkRowCounts(lessClusters.meta.count);
     });
   });
 
@@ -720,8 +723,9 @@ describe('update risk', () => {
     });
 
     it("don't block table rendering on error", () => {
+      cy.wait('@clustersUpdateRisks404');
       cy.ouiaId('loading-skeleton').should('not.exist');
-      expect(filterData()).to.have.length.gte(1);
+      checkRowCounts(lessClusters.meta.count);
     });
   });
 
@@ -732,8 +736,9 @@ describe('update risk', () => {
     });
 
     it("don't block table rendering on error", () => {
+      cy.wait('@clustersUpdateRisks500');
       cy.ouiaId('loading-skeleton').should('not.exist');
-      expect(filterData()).to.have.length.gte(1);
+      checkRowCounts(lessClusters.meta.count);
     });
   });
 
@@ -746,7 +751,7 @@ describe('update risk', () => {
     it("don't block table rendering on ", () => {
       cy.wait('@clustersUpdateRisksLong');
       cy.ouiaId('loading-skeleton').should('not.exist');
-      expect(filterData()).to.have.length.gte(1);
+      checkRowCounts(lessClusters.meta.count);
     });
   });
 });
