@@ -169,7 +169,11 @@ const ClustersListTable = ({
       }
       const ver = toValidSemVer(it.cluster_version);
       const upgrade =
-        upgradeArr.length > 0 ? upgradeArr[index]?.upgrade_recommended : null;
+        Array.isArray(upgradeArr) &&
+        upgradeArr.find((el) => el?.cluster_id === it?.cluster_id)
+          ?.upgrade_recommended === false
+          ? true
+          : null;
 
       return {
         entity: it,
