@@ -14,14 +14,13 @@
 ### Running a development server
 
 1. Install dependencies with `npm install`.
-2. Run development server with `npm run start:beta` (`npm run start` for the non-beta release).
+2. Run development server with `npm run start` then in terminal choose stage and beta or stable environment.
 3. Local version of the application is available at https://stage.foo.redhat.com:1337/preview/openshift/insights/advisor (https://stage.foo.redhat.com:1337/openshift/insights/advisor for the non-beta release).
 
 ### Running in the production environment
 
-1. Set the `env` field in [dev.webpack.config.js](https://github.com/RedHatInsights/ocp-advisor-frontend/blob/master/config/dev.webpack.config.js) to `process.env.BETA ? 'prod-beta' : 'prod-stable'`.
-2. Run development server with `npm run start:beta` (`npm run start` for the non-beta release).
-3. Local version of the application is available at https://prod.foo.redhat.com:1337/preview/openshift/insights/advisor (https://prod.foo.redhat.com:1337/openshift/insights/advisor for the non-beta release).
+1. Run development server with `npm run start` then in terminal choose prod and beta or stable environment.
+2. Local version of the application is available at https://prod.foo.redhat.com:1337/preview/openshift/insights/advisor (https://prod.foo.redhat.com:1337/openshift/insights/advisor for the non-beta release).
 
 ### Using insights-results-aggregator-mock
 
@@ -29,7 +28,7 @@ You can use the mocked version of Insights Results Aggregator (or Smart Proxy) A
 
 1. Clone https://github.com/RedHatInsights/insights-results-aggregator-mock.
 2. Follow "How to build the service" and "How to start the service."
-3. Once having IRA-mock server running locally, run the OCP Advisor with `npm run start:beta:mock`.
+3. Once having IRA-mock server running locally, run the OCP Advisor with `npm run start:mock`.
 
 ### Recommendation ID examples
 
