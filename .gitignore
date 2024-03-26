@@ -29,3 +29,6 @@ codecov*
 cypress/downloads
 cypress/screenshots
 cypress/videos
+
+# cache
+.cache/
