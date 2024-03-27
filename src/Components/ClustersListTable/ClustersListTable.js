@@ -53,7 +53,7 @@ import {
 } from '../MessageState/EmptyStates';
 import { coerce } from 'semver';
 import { BASE_PATH } from '../../Routes';
-import axios from 'axios';
+import { useAxiosWithPlatformInterceptors } from '@redhat-cloud-services/frontend-components-utilities/interceptors';
 
 const ClustersListTable = ({
   query: { isError, isUninitialized, isFetching, isSuccess, data, refetch },
@@ -80,6 +80,8 @@ const ClustersListTable = ({
     clusters.length > 0 &&
     filteredRows.length === 0 &&
     displayedRows.length === 0;
+
+  const axios = useAxiosWithPlatformInterceptors();
 
   const removeFilterParam = (param) =>
     _removeFilterParam(filters, updateFilters, param);
@@ -152,25 +154,20 @@ const ClustersListTable = ({
     const clusterArr = filtered.map((cluster) => cluster.cluster_id);
     let upgradeArr = [];
     if (clusterArr.length > 0) {
-      try {
-        const res = await axios.post(
-          '/api/insights-results-aggregator/v2/upgrade-risks-prediction',
-          { clusters: clusterArr },
-          {
-            signal,
-          }
-        );
-        const upgradeRisks = res.data;
-        if (upgradeRisks?.status === 'ok') {
-          upgradeArr = upgradeRisks?.predictions;
+      const upgradeRisks = await axios.post(
+        '/api/insights-results-aggregator/v2/upgrade-risks-prediction',
+        { clusters: clusterArr },
+        {
+          signal,
         }
-      } catch (error) {
-        if (axios.isCancel(error)) {
-          // Return early, when request is cancelled to prevent unwanted state update
-          return 'cancel';
-        } else {
-          console.log(error);
-        }
+      );
+
+      // Return early, when request is cancelled to prevent unwanted state update
+      if (upgradeRisks === undefined) {
+        return 'cancel';
+      }
+      if (upgradeRisks?.status === 'ok') {
+        upgradeArr = upgradeRisks?.predictions;
       }
     }
 
