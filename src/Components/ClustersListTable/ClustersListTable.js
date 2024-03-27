@@ -53,7 +53,7 @@ import {
 } from '../MessageState/EmptyStates';
 import { coerce } from 'semver';
 import { BASE_PATH } from '../../Routes';
-import { useLazyGetClustersUpgradeRisksQuery } from '../../Services/SmartProxy';
+import axios from 'axios';
 
 const ClustersListTable = ({
   query: { isError, isUninitialized, isFetching, isSuccess, data, refetch },
@@ -63,7 +63,6 @@ const ClustersListTable = ({
   const updateFilters = (payload) =>
     dispatch(updateClustersListFilters(payload));
   const filters = useSelector(({ filters }) => filters.clustersListState);
-  const [getClustersUpgradeRisks] = useLazyGetClustersUpgradeRisksQuery();
 
   const clusters = data?.data || [];
   const page = filters.offset / filters.limit + 1;
@@ -94,11 +93,20 @@ const ClustersListTable = ({
   }, [filteredRows, filters.limit, filters.offset]);
 
   useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+    setRowsFiltered(false);
     const getBuildFitleredRows = async (clusters) => {
-      const res = await buildFilteredRows(clusters);
-      setFilteredRows(res);
+      const res = await buildFilteredRows(clusters, signal);
+      if (res !== 'cancel') {
+        setFilteredRows(res);
+      }
     };
     getBuildFitleredRows(clusters);
+    return () => {
+      // Cancel the request when the component unmounts
+      controller.abort();
+    };
   }, [
     data,
     filters.text,
@@ -137,8 +145,7 @@ const ClustersListTable = ({
     }
   }, [filters, filterBuilding]);
 
-  const buildFilteredRows = async (items) => {
-    setRowsFiltered(false);
+  const buildFilteredRows = async (items, signal) => {
     const filtered = items.filter((it) => {
       return passFiltersCluster(it, filters);
     });
@@ -146,14 +153,24 @@ const ClustersListTable = ({
     let upgradeArr = [];
     if (clusterArr.length > 0) {
       try {
-        const upgradeRisks = await getClustersUpgradeRisks({
-          clusters: clusterArr,
-        }).unwrap();
-        if (upgradeRisks.status === 'ok') {
-          upgradeArr = upgradeRisks.predictions;
+        const res = await axios.post(
+          '/api/insights-results-aggregator/v2/upgrade-risks-prediction',
+          { clusters: clusterArr },
+          {
+            signal,
+          }
+        );
+        const upgradeRisks = res.data;
+        if (upgradeRisks?.status === 'ok') {
+          upgradeArr = upgradeRisks?.predictions;
         }
-      } catch (e) {
-        console.error(e);
+      } catch (error) {
+        if (axios.isCancel(error)) {
+          // Return early, when request is cancelled to prevent unwanted state update
+          return 'cancel';
+        } else {
+          console.log(error);
+        }
       }
     }
 
