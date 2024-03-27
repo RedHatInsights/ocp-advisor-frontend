@@ -18,4 +18,16 @@ module.exports = defineConfig({
       return config;
     },
   },
+  retries: {
+    experimentalStrategy: 'detect-flake-and-pass-on-threshold',
+    experimentalOptions: {
+      maxRetries: 2,
+      passesRequired: 2,
+    },
+
+    // you must also explicitly set openMode and runMode to
+    // either true or false when using experimental retries
+    openMode: true,
+    runMode: true,
+  },
 });
