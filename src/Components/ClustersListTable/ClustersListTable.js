@@ -19,6 +19,7 @@ import { PaginationVariant } from '@patternfly/react-core/dist/js/components/Pag
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar/PrimaryToolbar';
 import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat';
 import { conditionalFilterType } from '@redhat-cloud-services/frontend-components/ConditionalFilter/conditionalFilterConstants';
+import useFetchBatched from '../../Utilities/useFetchBatched';
 
 import {
   CLUSTERS_LIST_INITIAL_STATE,
@@ -82,6 +83,7 @@ const ClustersListTable = ({
     displayedRows.length === 0;
 
   const axios = useAxiosWithPlatformInterceptors();
+  const { fetchBatchedInline } = useFetchBatched();
 
   const removeFilterParam = (param) =>
     _removeFilterParam(filters, updateFilters, param);
@@ -154,20 +156,24 @@ const ClustersListTable = ({
     const clusterArr = filtered.map((cluster) => cluster.cluster_id);
     let upgradeArr = [];
     if (clusterArr.length > 0) {
-      const upgradeRisks = await axios.post(
-        '/api/insights-results-aggregator/v2/upgrade-risks-prediction',
-        { clusters: clusterArr },
-        {
-          signal,
-        }
-      );
+      const getUpgradeRisks = (clusters) =>
+        axios.post(
+          '/api/insights-results-aggregator/v2/upgrade-risks-prediction',
+          { clusters: clusters },
+          {
+            signal,
+          }
+        );
+
+      const res = await fetchBatchedInline(getUpgradeRisks, clusterArr, 100);
 
       // Return early, when request is cancelled to prevent unwanted state update
-      if (upgradeRisks === undefined) {
+      if (res.some((item) => item === undefined)) {
         return 'cancel';
       }
-      if (upgradeRisks?.status === 'ok') {
-        upgradeArr = upgradeRisks?.predictions;
+
+      if (res.every((item) => item?.status === 'ok')) {
+        upgradeArr = res.flatMap((item) => item?.predictions);
       }
     }
 
