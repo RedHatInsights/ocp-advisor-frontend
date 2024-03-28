@@ -79,8 +79,8 @@ const ClustersListTable = ({
   const successState = isSuccess;
   const noMatch =
     clusters.length > 0 &&
-    filteredRows.length === 0 &&
-    displayedRows.length === 0;
+    filteredRows?.length === 0 &&
+    displayedRows?.length === 0;
 
   const axios = useAxiosWithPlatformInterceptors();
   const { fetchBatchedInline } = useFetchBatched();
@@ -92,25 +92,24 @@ const ClustersListTable = ({
     _addFilterParam(filters, updateFilters, param, values);
 
   useEffect(() => {
-    setDisplayedRows(buildDisplayedRows(filteredRows));
-    setRowsFiltered(true);
+    const controller = new AbortController();
+    const signal = controller.signal;
+    const buildRows = async () => {
+      const res = await buildDisplayedRows(filteredRows, signal);
+      if (res !== 'cancel') {
+        setDisplayedRows(res);
+        setRowsFiltered(true);
+      }
+    };
+    buildRows();
+    return () => {
+      controller.abort();
+    };
   }, [filteredRows, filters.limit, filters.offset]);
 
   useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
     setRowsFiltered(false);
-    const getBuildFitleredRows = async (clusters) => {
-      const res = await buildFilteredRows(clusters, signal);
-      if (res !== 'cancel') {
-        setFilteredRows(res);
-      }
-    };
-    getBuildFitleredRows(clusters);
-    return () => {
-      // Cancel the request when the component unmounts
-      controller.abort();
-    };
+    setFilteredRows(buildFilteredRows(clusters));
   }, [
     data,
     filters.text,
@@ -149,13 +148,66 @@ const ClustersListTable = ({
     }
   }, [filters, filterBuilding]);
 
-  const buildFilteredRows = async (items, signal) => {
+  const buildFilteredRows = (items) => {
     const filtered = items.filter((it) => {
       return passFiltersCluster(it, filters);
     });
-    const clusterArr = filtered.map((cluster) => cluster.cluster_id);
+
+    const mapped = filtered.map((it) => {
+      return {
+        it,
+        cells: [
+          it.cluster_name || it.cluster_id,
+          it.cluster_version,
+          it.total_hit_count,
+          it.hits_by_total_risk?.[4] || 0,
+          it.hits_by_total_risk?.[3] || 0,
+          it.hits_by_total_risk?.[2] || 0,
+          it.hits_by_total_risk?.[1] || 0,
+          it.last_checked_at,
+        ],
+      };
+    });
+
+    const sorted =
+      filters.sortIndex === -1
+        ? mapped
+        : mapped.sort((a, b) => {
+            let fst, snd;
+            const d = filters.sortDirection === SortByDirection.asc ? 1 : -1;
+            switch (filters.sortIndex) {
+              case CLUSTERS_TABLE_CELL_NAME:
+                fst = a.it.cluster_name || a.it.cluster_id;
+                snd = b.it.cluster_name || b.it.cluster_id;
+                return fst.localeCompare(snd) ? fst.localeCompare(snd) * d : 0;
+              case CLUSTERS_TABLE_CELL_VERSION:
+                return compareSemVer(
+                  toValidSemVer(a.it.cluster_version),
+                  toValidSemVer(b.it.cluster_version),
+                  d
+                );
+              case CLUSTERS_TABLE_CELL_LAST_SEEN:
+                fst = new Date(a.it.last_checked_at || 0);
+                snd = new Date(b.it.last_checked_at || 0);
+                return fst > snd ? d : snd > fst ? -d : 0;
+              default:
+                fst = a.cells[filters.sortIndex];
+                snd = b.cells[filters.sortIndex];
+                return fst > snd ? d : snd > fst ? -d : 0;
+            }
+          });
+    return sorted;
+  };
+
+  const buildDisplayedRows = async (items, signal) => {
+    const paginatedItems = items?.slice(
+      filters.limit * (page - 1),
+      filters.limit * (page - 1) + filters.limit
+    );
+
+    const clusterArr = paginatedItems?.map((cluster) => cluster.it.cluster_id);
     let upgradeArr = [];
-    if (clusterArr.length > 0) {
+    if (clusterArr?.length > 0) {
       const getUpgradeRisks = (clusters) =>
         axios.post(
           '/api/insights-results-aggregator/v2/upgrade-risks-prediction',
@@ -177,7 +229,7 @@ const ClustersListTable = ({
       }
     }
 
-    const mapped = filtered.map((it, index) => {
+    const mapped = paginatedItems?.map(({ it }, index) => {
       if (
         it.cluster_version !== undefined &&
         it.cluster_version !== '' &&
@@ -191,15 +243,14 @@ const ClustersListTable = ({
       const upgrade =
         Array.isArray(upgradeArr) &&
         upgradeArr.find((el) => el?.cluster_id === it?.cluster_id)
-          ?.upgrade_recommended === false
-          ? true
-          : null;
+          ?.upgrade_recommended === false;
 
       return {
         entity: it,
         cells: [
           <span key={it.cluster_id} className="pf-v5-l-flex">
             <Link
+              key={`${it.cluster_id}-link`}
               to={`${BASE_PATH}/clusters/${it.cluster_id}`}
               className="pf-v5-l-flex__item"
             >
@@ -241,41 +292,9 @@ const ClustersListTable = ({
         ],
       };
     });
-    const sorted =
-      filters.sortIndex === -1
-        ? mapped
-        : mapped.sort((a, b) => {
-            let fst, snd;
-            const d = filters.sortDirection === SortByDirection.asc ? 1 : -1;
-            switch (filters.sortIndex) {
-              case CLUSTERS_TABLE_CELL_NAME:
-                fst = a.entity.cluster_name || a.entity.cluster_id;
-                snd = b.entity.cluster_name || b.entity.cluster_id;
-                return fst.localeCompare(snd) ? fst.localeCompare(snd) * d : 0;
-              case CLUSTERS_TABLE_CELL_VERSION:
-                return compareSemVer(
-                  toValidSemVer(a.entity.cluster_version),
-                  toValidSemVer(b.entity.cluster_version),
-                  d
-                );
-              case CLUSTERS_TABLE_CELL_LAST_SEEN:
-                fst = new Date(a.entity.last_checked_at || 0);
-                snd = new Date(b.entity.last_checked_at || 0);
-                return fst > snd ? d : snd > fst ? -d : 0;
-              default:
-                fst = a.cells[filters.sortIndex];
-                snd = b.cells[filters.sortIndex];
-                return fst > snd ? d : snd > fst ? -d : 0;
-            }
-          });
-    return sorted;
-  };
 
-  const buildDisplayedRows = (items) =>
-    items.slice(
-      filters.limit * (page - 1),
-      filters.limit * (page - 1) + filters.limit
-    );
+    return mapped;
+  };
 
   const filterConfigItems = [
     {
