@@ -4,7 +4,7 @@
       "cluster_id": "e488c993-821c-4915-bd08-5a51ed7aa3a2",
       "last_checked_at": "2011-15-04T00:05:23Z",
       "prediction_status": "ok",
-      "upgrade_recommended": true,
+      "upgrade_recommended": false,
       "upgrade_risks_predictors": {
         "alerts": [
           {
