@@ -52,6 +52,7 @@ import {
 import { getErrorKey, getPluginName } from '../../Utilities/Rule';
 import Loading from '../Loading/Loading';
 import { useGetClusterByIdQuery } from '../../Services/SmartProxy';
+import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 
 const ClusterRules = () => {
   const intl = useIntl();
@@ -60,6 +61,7 @@ const ClusterRules = () => {
     dispatch(updateClusterRulesFilters(filters));
   const filters = useSelector(({ filters }) => filters.clusterRulesState);
   const { clusterId } = useParams();
+  const { isProd } = useChrome();
 
   const { isError, isUninitialized, isFetching, isSuccess, data, error } =
     useGetClusterByIdQuery({
@@ -254,6 +256,7 @@ const ClusterRules = () => {
                     resolution: value.resolution,
                     details: value.extra_data,
                   }}
+                  isProd={isProd}
                 />
               ),
             },
