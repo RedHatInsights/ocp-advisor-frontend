@@ -309,6 +309,7 @@ const WorkloadsListTable = ({
       <Table
         aria-label="Table of workloads"
         ouiaId="workloads"
+        ouiaSafe={!loadingState}
         variant={TableVariant.compact}
         cells={WORKLOADS_LIST_COLUMNS}
         rows={
