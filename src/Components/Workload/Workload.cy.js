@@ -21,8 +21,6 @@ const BREADCRUMBS = 'nav[class=pf-v5-c-breadcrumb]';
 const WORKLOAD_HEADER = '#workload-header';
 const WORKLOAD_RULES_TABLE = '#workload-recs-list-table';
 const FILTER_CHIPS = 'li[class=pf-v5-c-chip-group__list-item]';
-const WORKLOAD_NAME =
-  'Advisor workloadsCluster name 00000001-0001-0001-0001-000000000001 | Namespace name 7eb1d18b-701b-4f51-aea0-5f235daf1e07';
 const TABLE_HEADERS = _.map(WORKLOAD_RULES_COLUMNS, (it) => it.title);
 const SEARCH_ITEMS_DESCRIPTION = ['ff', 'CUSTOM', 'Foobar'];
 const SEARCH_ITEMS_OBJECTS = [
@@ -75,11 +73,11 @@ if (mockList.includes(uuid)) {
   const customData = {
     ...mockdata,
     cluster: {
-      display_name: `Cluster name ${clusterId}`,
+      display_name: `Cluster name`,
       uuid: clusterId,
     },
     namespace: {
-      name: `Namespace name ${namespaceId}`,
+      name: `Namespace name`,
       uuid: namespaceId,
     },
   };
@@ -105,14 +103,15 @@ if (mockList.includes(uuid)) {
 }
 
 const mount = (
-  url = '/openshift/insights/advisor/workloads/clustername/namespacename'
+  url = '/openshift/insights/advisor/workloads/clustername/namespacename',
+  customWorkload
 ) => {
   cy.mount(
     <MemoryRouter initialEntries={[url]} initialIndex={0}>
       <IntlProvider locale="en">
         <Provider store={getStore()}>
           <Workload
-            workload={workload}
+            workload={customWorkload}
             namespaceId={namespaceId}
             clusterId={clusterId}
           />
@@ -128,10 +127,13 @@ describe('Workload component renders and filters data', () => {
   });
 
   it('renders main components', () => {
-    mount();
+    mount(
+      `/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`,
+      workload
+    );
     cy.get(BREADCRUMBS)
       .should('have.length', 1)
-      .should('have.text', WORKLOAD_NAME);
+      .should('have.text', 'Advisor workloadsCluster name | Namespace name');
     cy.get(WORKLOAD_HEADER).should('have.length', 1);
     // renders table component
     cy.get(WORKLOAD_RULES_TABLE).should('have.length', 1);
@@ -142,7 +144,8 @@ describe('Workload component renders and filters data', () => {
 
   it('adds additional filters passed by the query parameters, 1', () => {
     mount(
-      '/openshift/insights/advisor/workloads/clustername/namespacename?description=name&total_risk=4'
+      '/openshift/insights/advisor/workloads/clustername/namespacename?description=name&total_risk=4',
+      workload
     );
 
     cy.get(BREADCRUMBS).should('have.length', 1);
@@ -161,7 +164,8 @@ describe('Workload component renders and filters data', () => {
 
   it('adds additional filters passed by the query parameters, 2', () => {
     mount(
-      '/openshift/insights/advisor/workloads/clustername/namespacename?description=foobar'
+      '/openshift/insights/advisor/workloads/clustername/namespacename?description=foobar',
+      workload
     );
 
     cy.get(BREADCRUMBS).should('have.length', 1);
@@ -174,7 +178,8 @@ describe('Workload component renders and filters data', () => {
 
   it('adds additional filters passed by the query parameters, 3', () => {
     mount(
-      '/openshift/insights/advisor/workloads/clustername/namespacename?total_risk=2'
+      '/openshift/insights/advisor/workloads/clustername/namespacename?total_risk=2',
+      workload
     );
 
     cy.get(BREADCRUMBS).should('have.length', 1);
@@ -187,7 +192,8 @@ describe('Workload component renders and filters data', () => {
 
   it('adds additional filters passed by the query parameters, 4', () => {
     mount(
-      '/openshift/insights/advisor/workloads/clustername/namespacename?object_id=bb78507b-cc1c-4c53-af2c-7807d9cbeab4'
+      '/openshift/insights/advisor/workloads/clustername/namespacename?object_id=bb78507b-cc1c-4c53-af2c-7807d9cbeab4',
+      workload
     );
 
     cy.get(BREADCRUMBS).should('have.length', 1);
@@ -201,7 +207,10 @@ describe('Workload component renders and filters data', () => {
     );
   });
   it('Setting text filter', () => {
-    mount();
+    mount(
+      `/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`,
+      workload
+    );
     cy.get('div.ins-c-primary-toolbar__filter')
       .find('button[data-ouia-component-id="ConditionalFilterToggle"]')
       .click();
@@ -212,7 +221,10 @@ describe('Workload component renders and filters data', () => {
   });
 
   it('Setting objects filter', () => {
-    mount();
+    mount(
+      `/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`,
+      workload
+    );
     cy.get('div.ins-c-primary-toolbar__filter')
       .find('button[data-ouia-component-id="ConditionalFilterToggle"]')
       .click();
@@ -225,7 +237,10 @@ describe('Workload component renders and filters data', () => {
   });
 
   it('Setting critical severity filter', () => {
-    mount();
+    mount(
+      `/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`,
+      workload
+    );
     cy.get('div.ins-c-primary-toolbar__filter')
       .find('button[data-ouia-component-id="ConditionalFilterToggle"]')
       .click();
@@ -243,28 +258,166 @@ describe('Workload component renders and filters data', () => {
 });
 
 describe('header rendered correct', () => {
-  it('last breadcrumb', () => {
-    mount();
+  it('breadcrumb with only names', () => {
+    mount(
+      `/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`,
+      workload
+    );
+
+    cy.get(BREADCRUMBS)
+      .should('have.length', 1)
+      .get('.pf-v5-c-breadcrumb__list > :nth-child(2)')
+      .should('have.text', 'Cluster name | Namespace name');
+  });
+
+  it('breadcrumb with only cluaster name and namespace ID', () => {
+    const noNamespaceNameData = {
+      ...mockdata,
+      cluster: {
+        display_name: `Cluster name`,
+        uuid: clusterId,
+      },
+      namespace: {
+        name: ``,
+        uuid: namespaceId,
+      },
+    };
+    const customWorkload = {
+      isError: false,
+      isFetching: false,
+      isUninitialized: false,
+      isLoading: false,
+      isSuccess: true,
+      data: { ...noNamespaceNameData },
+      refetch: () => null,
+    };
+    mount(
+      `/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`,
+      customWorkload
+    );
 
     cy.get(BREADCRUMBS)
       .should('have.length', 1)
       .get('.pf-v5-c-breadcrumb__list > :nth-child(2)')
       .should(
         'have.text',
-        'Cluster name 00000001-0001-0001-0001-000000000001 | Namespace name 7eb1d18b-701b-4f51-aea0-5f235daf1e07'
+        'Cluster name | 7eb1d18b-701b-4f51-aea0-5f235daf1e07'
       );
   });
 
-  it('title', () => {
-    mount(`/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`);
+  it('breadcrumb with only IDs', () => {
+    const noNamespaceNameData = {
+      ...mockdata,
+      cluster: {
+        display_name: ``,
+        uuid: clusterId,
+      },
+      namespace: {
+        name: ``,
+        uuid: namespaceId,
+      },
+    };
+    const customWorkload = {
+      isError: false,
+      isFetching: false,
+      isUninitialized: false,
+      isLoading: false,
+      isSuccess: true,
+      data: { ...noNamespaceNameData },
+      refetch: () => null,
+    };
+    mount(
+      `/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`,
+      customWorkload
+    );
+
+    cy.get(BREADCRUMBS)
+      .should('have.length', 1)
+      .get('.pf-v5-c-breadcrumb__list > :nth-child(2)')
+      .should(
+        'have.text',
+        '00000001-0001-0001-0001-000000000001 | 7eb1d18b-701b-4f51-aea0-5f235daf1e07'
+      );
+  });
+
+  it('title with names', () => {
+    mount(
+      `/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`,
+      workload
+    );
     cy.get('#workloads-header-title').should(
       'have.text',
-      'Cluster name 00000001-0001-0001-0001-000000000001Namespace name 7eb1d18b-701b-4f51-aea0-5f235daf1e07'
+      'Cluster nameNamespace name'
+    );
+  });
+
+  it('title with cluster name and namespace ID', () => {
+    const noNamespaceNameData = {
+      ...mockdata,
+      cluster: {
+        display_name: `Cluster name`,
+        uuid: clusterId,
+      },
+      namespace: {
+        name: ``,
+        uuid: namespaceId,
+      },
+    };
+    const customWorkload = {
+      isError: false,
+      isFetching: false,
+      isUninitialized: false,
+      isLoading: false,
+      isSuccess: true,
+      data: { ...noNamespaceNameData },
+      refetch: () => null,
+    };
+    mount(
+      `/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`,
+      customWorkload
+    );
+    cy.get('#workloads-header-title').should(
+      'have.text',
+      'Cluster name7eb1d18b-701b-4f51-aea0-5f235daf1e07'
+    );
+  });
+
+  it('title with only IDs', () => {
+    const noNamespaceNameData = {
+      ...mockdata,
+      cluster: {
+        display_name: ``,
+        uuid: clusterId,
+      },
+      namespace: {
+        name: ``,
+        uuid: namespaceId,
+      },
+    };
+    const customWorkload = {
+      isError: false,
+      isFetching: false,
+      isUninitialized: false,
+      isLoading: false,
+      isSuccess: true,
+      data: { ...noNamespaceNameData },
+      refetch: () => null,
+    };
+    mount(
+      `/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`,
+      customWorkload
+    );
+    cy.get('#workloads-header-title').should(
+      'have.text',
+      '00000001-0001-0001-0001-0000000000017eb1d18b-701b-4f51-aea0-5f235daf1e07'
     );
   });
 
   it('cluster id and namespace id', () => {
-    mount(`/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`);
+    mount(
+      `/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`,
+      workload
+    );
     cy.get('#workload-header-uuid').should(
       'have.text',
       'Cluster UUID: 00000001-0001-0001-0001-000000000001 Namespace UUID: 7eb1d18b-701b-4f51-aea0-5f235daf1e07'
@@ -272,7 +425,10 @@ describe('header rendered correct', () => {
   });
 
   it('last seen values', () => {
-    mount(`/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`);
+    mount(
+      `/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`,
+      workload
+    );
     cy.get('#workload-header-last-seen').should(
       'have.text',
       'Last seen: 23 Jan 2024 11:57 UTC'
@@ -288,7 +444,10 @@ describe('sorting', () => {
   ).forEach(([category, label]) => {
     SORTING_ORDERS.forEach((order) => {
       it(`${order} by ${label}`, () => {
-        mount();
+        mount(
+          `/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`,
+          workload
+        );
         let sortingParameter = category;
         if (category === 'description') {
           sortingParameter = (it) => it.details;

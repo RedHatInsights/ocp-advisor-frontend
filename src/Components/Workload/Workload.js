@@ -7,19 +7,15 @@ import PropTypes from 'prop-types';
 import WorkloadRules from '../WorkloadRules/WorkloadRules';
 
 export const Workload = ({ workload, namespaceId, clusterId }) => {
+  const constructBreadcrumbs = `${
+    workload?.data?.cluster?.display_name || clusterId
+  } | ${workload?.data?.namespace?.name || namespaceId}`;
   return (
     <React.Fragment>
       <PageHeader className="pf-m-light ins-inventory-detail">
         <Flex direction={{ default: 'column' }}>
           <FlexItem>
-            <Breadcrumbs
-              current={
-                workload?.data?.status === 'ok'
-                  ? `${workload.data.cluster.display_name} | ${workload.data.namespace.name}`
-                  : `${clusterId} | ${namespaceId}`
-              }
-              workloads="true"
-            />
+            <Breadcrumbs current={constructBreadcrumbs} workloads="true" />
             <WorkloadsHeader
               workload={workload}
               namespaceId={namespaceId}
