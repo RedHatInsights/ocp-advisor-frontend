@@ -30,8 +30,8 @@ export const WorkloadHeader = ({ workloadData, namespaceId, clusterId }) => {
             </>
           ) : (
             <>
-              <p>{workload?.cluster?.display_name}</p>
-              <p>{workload?.namespace?.name}</p>
+              <p>{workload?.cluster?.display_name || clusterId}</p>
+              <p>{workload?.namespace?.name || namespaceId}</p>
             </>
           )}
         </Title>
