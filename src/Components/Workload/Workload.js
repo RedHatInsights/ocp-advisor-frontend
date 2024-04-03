@@ -7,23 +7,9 @@ import PropTypes from 'prop-types';
 import WorkloadRules from '../WorkloadRules/WorkloadRules';
 
 export const Workload = ({ workload, namespaceId, clusterId }) => {
-  const namespaceName = workload.data?.namespace?.name;
-  const clusterName = workload.data?.cluster?.display_name;
-  let constructBreadcrumbs;
-
-  switch (true) {
-    case clusterName?.length > 0 && namespaceName?.length > 0:
-      constructBreadcrumbs = `${workload.data?.cluster?.display_name} | ${workload.data?.namespace?.name}`;
-      break;
-    case clusterName?.length > 0 && namespaceName?.length === 0:
-      constructBreadcrumbs = `${workload.data?.cluster?.display_name} | ${namespaceId}`;
-      break;
-    case clusterName?.length === 0 && namespaceName?.length > 0:
-      constructBreadcrumbs = `${clusterId} | ${workload.data?.namespace?.name}`;
-      break;
-    case clusterName?.length === 0 && namespaceName?.length === 0:
-      constructBreadcrumbs = `${clusterId} | ${namespaceId}`;
-  }
+  const constructBreadcrumbs = `${
+    workload?.data?.cluster?.display_name || clusterId
+  } | ${workload?.data?.namespace?.name || namespaceId}`;
   return (
     <React.Fragment>
       <PageHeader className="pf-m-light ins-inventory-detail">
