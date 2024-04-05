@@ -28,6 +28,7 @@ import {
   checkCurrentPage,
   checkPaginationSelected,
 } from '../../../cypress/utils/pagination';
+import FlagProvider from '@unleash/proxy-client-react';
 
 import {
   TOOLBAR,
@@ -50,7 +51,10 @@ import {
   VERSION_COMBINATIONS,
   applyFilters,
 } from '../../../cypress/utils/filters';
-import { clustersUpdateRisksInterceptors } from '../../../cypress/utils/interceptors';
+import {
+  clustersUpdateRisksInterceptors,
+  featureFlagsInterceptors,
+} from '../../../cypress/utils/interceptors';
 
 const lessClusters = {
   data: [...clusters.data.slice(0, 28)],
@@ -147,6 +151,38 @@ const filterData = (filters = DEFAULT_FILTERS, values = data) => {
 };
 const filterApply = (filters) => applyFilters(filters, filtersConf);
 
+const mountLessClusters = () => {
+  cy.mount(
+    <FlagProvider
+      config={{
+        url: 'http://localhost:8002/feature_flags',
+        clientKey: 'abc',
+        appName: 'abc',
+      }}
+    >
+      <MemoryRouter
+        initialEntries={['/openshift/insights/advisor/clusters']}
+        initialIndex={0}
+      >
+        <Intl>
+          <Provider store={getStore()}>
+            <ClustersListTable
+              query={{
+                isError: false,
+                isFetching: false,
+                isUninitialized: false,
+                isSuccess: true,
+                data: lessClusters,
+                refetch: cy.stub(),
+              }}
+            />
+          </Provider>
+        </Intl>
+      </MemoryRouter>
+    </FlagProvider>
+  );
+};
+
 // TODO add more combinations of filters for testing
 const filterCombos = [{ risk: ['Critical', 'Moderate'], name: 'foo' }];
 
@@ -227,25 +263,35 @@ urlParamsList.forEach((urlParams, index) => {
     beforeEach(() => {
       clustersUpdateRisksInterceptors['error, status not ok']();
       cy.mount(
-        <MemoryRouter
-          initialEntries={[`/openshift/insights/advisor/clusters?${urlParams}`]}
-          initialIndex={0}
+        <FlagProvider
+          config={{
+            url: 'http://localhost:8002/feature_flags',
+            clientKey: 'abc',
+            appName: 'abc',
+          }}
         >
-          <Intl>
-            <Provider store={getStore()}>
-              <ClustersListTable
-                query={{
-                  isError: false,
-                  isFetching: false,
-                  isUninitialized: false,
-                  isSuccess: true,
-                  data: clusters,
-                  refetch: cy.stub(),
-                }}
-              />
-            </Provider>
-          </Intl>
-        </MemoryRouter>
+          <MemoryRouter
+            initialEntries={[
+              `/openshift/insights/advisor/clusters?${urlParams}`,
+            ]}
+            initialIndex={0}
+          >
+            <Intl>
+              <Provider store={getStore()}>
+                <ClustersListTable
+                  query={{
+                    isError: false,
+                    isFetching: false,
+                    isUninitialized: false,
+                    isSuccess: true,
+                    data: clusters,
+                    refetch: cy.stub(),
+                  }}
+                />
+              </Provider>
+            </Intl>
+          </MemoryRouter>
+        </FlagProvider>
       );
     });
 
@@ -282,25 +328,33 @@ describe('clusters list table', () => {
   beforeEach(() => {
     clustersUpdateRisksInterceptors['error, status not ok']();
     cy.mount(
-      <MemoryRouter
-        initialEntries={['/openshift/insights/advisor/clusters']}
-        initialIndex={0}
+      <FlagProvider
+        config={{
+          url: 'http://localhost:8002/feature_flags',
+          clientKey: 'abc',
+          appName: 'abc',
+        }}
       >
-        <Intl>
-          <Provider store={getStore()}>
-            <ClustersListTable
-              query={{
-                isError: false,
-                isFetching: false,
-                isUninitialized: false,
-                isSuccess: true,
-                data: clusters,
-                refetch: cy.stub(),
-              }}
-            />
-          </Provider>
-        </Intl>
-      </MemoryRouter>
+        <MemoryRouter
+          initialEntries={['/openshift/insights/advisor/clusters']}
+          initialIndex={0}
+        >
+          <Intl>
+            <Provider store={getStore()}>
+              <ClustersListTable
+                query={{
+                  isError: false,
+                  isFetching: false,
+                  isUninitialized: false,
+                  isSuccess: true,
+                  data: clusters,
+                  refetch: cy.stub(),
+                }}
+              />
+            </Provider>
+          </Intl>
+        </MemoryRouter>
+      </FlagProvider>
     );
   });
 
@@ -581,24 +635,32 @@ describe('cluster list Empty state rendering', () => {
   beforeEach(() => {
     clustersUpdateRisksInterceptors['error, status not ok']();
     cy.mount(
-      <MemoryRouter
-        initialEntries={['/openshift/insights/advisor/clusters']}
-        initialIndex={0}
+      <FlagProvider
+        config={{
+          url: 'http://localhost:8002/feature_flags',
+          clientKey: 'abc',
+          appName: 'abc',
+        }}
       >
-        <Intl>
-          <Provider store={getStore()}>
-            <ClustersListTable
-              query={{
-                isError: false,
-                isFetching: false,
-                isUninitialized: false,
-                isSuccess: true,
-                data: [],
-              }}
-            />
-          </Provider>
-        </Intl>
-      </MemoryRouter>
+        <MemoryRouter
+          initialEntries={['/openshift/insights/advisor/clusters']}
+          initialIndex={0}
+        >
+          <Intl>
+            <Provider store={getStore()}>
+              <ClustersListTable
+                query={{
+                  isError: false,
+                  isFetching: false,
+                  isUninitialized: false,
+                  isSuccess: true,
+                  data: [],
+                }}
+              />
+            </Provider>
+          </Intl>
+        </MemoryRouter>
+      </FlagProvider>
     );
   });
 
@@ -627,29 +689,9 @@ describe('cluster list Empty state rendering', () => {
 });
 
 describe('update risk', () => {
-  const mountLessClusters = () => {
-    cy.mount(
-      <MemoryRouter
-        initialEntries={['/openshift/insights/advisor/clusters']}
-        initialIndex={0}
-      >
-        <Intl>
-          <Provider store={getStore()}>
-            <ClustersListTable
-              query={{
-                isError: false,
-                isFetching: false,
-                isUninitialized: false,
-                isSuccess: true,
-                data: lessClusters,
-                refetch: cy.stub(),
-              }}
-            />
-          </Provider>
-        </Intl>
-      </MemoryRouter>
-    );
-  };
+  beforeEach(() => {
+    featureFlagsInterceptors.upgradeRisksSuccessful();
+  });
 
   describe('one label', () => {
     beforeEach(() => {
@@ -752,6 +794,33 @@ describe('update risk', () => {
       cy.wait('@clustersUpdateRisksLong');
       cy.ouiaId('loading-skeleton').should('not.exist');
       checkRowCounts(lessClusters.meta.count);
+    });
+  });
+});
+
+describe('update risk disabled', () => {
+  beforeEach(() => {
+    featureFlagsInterceptors.upgradeRisksDisabled();
+  });
+
+  describe('two clusters enabled', () => {
+    beforeEach(() => {
+      clustersUpdateRisksInterceptors['successful, two labels']();
+      mountLessClusters();
+    });
+
+    it("doesn't displays two labels", () => {
+      cy.wait('@upgradeRisksFlagDisabled');
+      // Expect no requests
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(2000);
+      cy.get('@clustersUpdateRisksOKTwo.all').then((interceptions) => {
+        expect(interceptions).to.have.length(0);
+      });
+      cy.ouiaId('loading-skeleton').should('not.exist');
+      cy.get(
+        'span[class=pf-v5-c-label__content]:contains("Update risk")'
+      ).should('have.length', 0);
     });
   });
 });
