@@ -184,6 +184,40 @@ export const featureFlagsInterceptors = {
       },
     }).as('getOcpWorkloadsFlag');
   },
+  upgradeRisksSuccessful: () => {
+    cy.intercept('/feature_flags*', {
+      statusCode: 200,
+      body: {
+        toggles: [
+          {
+            name: 'ocp-advisor.upgrade-risks.enable-in-stable',
+            enabled: true,
+            variant: {
+              name: 'disabled',
+              enabled: true,
+            },
+          },
+        ],
+      },
+    }).as('upgradeRisksFlag');
+  },
+  upgradeRisksDisabled: () => {
+    cy.intercept('/feature_flags*', {
+      statusCode: 200,
+      body: {
+        toggles: [
+          {
+            name: 'ocp-advisor.upgrade-risks.enable-in-stable',
+            enabled: false,
+            variant: {
+              name: 'disabled',
+              enabled: true,
+            },
+          },
+        ],
+      },
+    }).as('upgradeRisksFlagDisabled');
+  },
 };
 
 export const clustersUpdateRisksInterceptors = {
