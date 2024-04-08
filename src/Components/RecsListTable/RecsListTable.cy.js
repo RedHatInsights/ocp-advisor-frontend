@@ -53,6 +53,7 @@ import {
   removeAllChips,
   urlParamConvert,
   checkEmptyState,
+  TABLE_ROW,
 } from '@redhat-cloud-services/frontend-components-utilities';
 
 import { SORTING_ORDERS } from '../../../cypress/utils/globals';
@@ -254,6 +255,14 @@ describe('data', () => {
   it('at least one recommendation in default list has more than 1 cluster hit', () => {
     expect(
       _.filter(filterData(), (it) => it.impacted_clusters_count > 1)
+    ).to.have.length.gte(1);
+  });
+  it('at least one rule has no affecting clutsers', () => {
+    expect(
+      filterData({
+        impacting: ['None'],
+      }),
+      (it) => it.impacted_clusters_count === 0
     ).to.have.length.gte(1);
   });
   it('at least one recommendation in default list has resolution risk set to non 0 value', () => {
@@ -704,6 +713,29 @@ describe('successful non-empty recommendations list table', () => {
         .eq(0)
         .find('.ins-c-rule-details__risk-of-ch-label')
         .should('have.text', 'High');
+    });
+
+    it('view affected link is present for rules affecting at least one cluster', () => {
+      cy.getRowByName(
+        'Super atomic nuclear cluster on the brink of the world destruction'
+      )
+        .find('[aria-label="Details"]')
+        .click();
+      cy.get(EXPANDABLES)
+        .first()
+        .contains(/View [\d\w,]* affected clusters/);
+    });
+
+    it('view affected link is missing for non-affecting rules', () => {
+      removeAllChips();
+      filterApply({
+        impacting: ['None'],
+      });
+      cy.get(TABLE_ROW).first().find('[aria-label="Details"]').click();
+      cy.get(EXPANDABLES)
+        .first()
+        .contains(/View [\d\w,]* affected clusters/)
+        .should('not.exist');
     });
   });
 

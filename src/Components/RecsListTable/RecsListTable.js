@@ -265,8 +265,20 @@ const RecsListTable = ({ query }) => {
                       product={AdvisorProduct.ocp}
                       rule={adjustOCPRule(value)}
                       isDetailsPage={false}
-                      showViewAffected
-                      linkComponent={Link}
+                      {...(value.impacted_clusters_count > 0
+                        ? {
+                            ViewAffectedLink: (
+                              <Link to={value.rule_id}>
+                                {intl.formatMessage(
+                                  messages.viewAffectedClusters,
+                                  {
+                                    clusters: value.impacted_clusters_count,
+                                  }
+                                )}
+                              </Link>
+                            ),
+                          }
+                        : {})}
                       {...(inRange(value?.resolution_risk, 1, 5) // resolution risk can be 0 (not defined for particular rule)
                         ? {
                             resolutionRisk: value?.resolution_risk,
