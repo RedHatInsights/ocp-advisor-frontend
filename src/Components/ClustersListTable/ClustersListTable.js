@@ -54,12 +54,16 @@ import {
 import { coerce } from 'semver';
 import { BASE_PATH } from '../../Routes';
 import { useAxiosWithPlatformInterceptors } from '@redhat-cloud-services/frontend-components-utilities/interceptors';
-import { useUpdateRisksFeatureFlag } from '../../Utilities/useFeatureFlag';
+import {
+  useUpdateRisksFeatureFlag,
+  useUpdateRisksUIFeatureFlag,
+} from '../../Utilities/useFeatureFlag';
 
 const ClustersListTable = ({
   query: { isError, isUninitialized, isFetching, isSuccess, data, refetch },
 }) => {
   const areUpdateRisksEnabled = useUpdateRisksFeatureFlag();
+  const areUpdateRisksUIEnabled = useUpdateRisksUIFeatureFlag();
   const intl = useIntl();
   const dispatch = useDispatch();
   const updateFilters = (payload) =>
@@ -106,7 +110,13 @@ const ClustersListTable = ({
     return () => {
       controller.abort();
     };
-  }, [filteredRows, filters.limit, filters.offset, areUpdateRisksEnabled]);
+  }, [
+    filteredRows,
+    filters.limit,
+    filters.offset,
+    areUpdateRisksEnabled,
+    areUpdateRisksUIEnabled,
+  ]);
 
   useEffect(() => {
     setRowsFiltered(false);
@@ -208,7 +218,11 @@ const ClustersListTable = ({
 
     const clusterArr = paginatedItems?.map((cluster) => cluster.it.cluster_id);
     let upgradeArr = [];
-    if (clusterArr?.length > 0 && areUpdateRisksEnabled) {
+    if (
+      clusterArr?.length > 0 &&
+      areUpdateRisksEnabled &&
+      areUpdateRisksUIEnabled
+    ) {
       let res = null;
       try {
         res = await axios.post(
