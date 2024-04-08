@@ -197,6 +197,14 @@ export const featureFlagsInterceptors = {
               enabled: true,
             },
           },
+          {
+            name: 'ocp-advisor-ui-upgrade-risks',
+            enabled: true,
+            variant: {
+              name: 'disabled',
+              enabled: true,
+            },
+          },
         ],
       },
     }).as('upgradeRisksFlag');
@@ -208,6 +216,39 @@ export const featureFlagsInterceptors = {
         toggles: [
           {
             name: 'ocp-advisor.upgrade-risks.enable-in-stable',
+            enabled: true,
+            variant: {
+              name: 'disabled',
+              enabled: true,
+            },
+          },
+          {
+            name: 'ocp-advisor-ui-upgrade-risks',
+            enabled: false,
+            variant: {
+              name: 'disabled',
+              enabled: true,
+            },
+          },
+        ],
+      },
+    }).as('upgradeRisksFlagDisabled');
+  },
+  upgradeRisksDisabled2: () => {
+    cy.intercept('/feature_flags*', {
+      statusCode: 200,
+      body: {
+        toggles: [
+          {
+            name: 'ocp-advisor.upgrade-risks.enable-in-stable',
+            enabled: false,
+            variant: {
+              name: 'disabled',
+              enabled: true,
+            },
+          },
+          {
+            name: 'ocp-advisor-ui-upgrade-risks',
             enabled: false,
             variant: {
               name: 'disabled',
