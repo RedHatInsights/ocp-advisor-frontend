@@ -51,7 +51,7 @@ export const ClusterHeader = ({ clusterId, clusterData, clusterInfo }) => {
 
   return (
     <Grid id="cluster-header" md={12} hasGutter>
-      <GridItem span={8}>
+      <GridItem span={11}>
         <Title
           size="2xl"
           headingLevel="h1"
@@ -65,11 +65,8 @@ export const ClusterHeader = ({ clusterId, clusterData, clusterInfo }) => {
           )}
         </Title>
       </GridItem>
-      <GridItem span={4} id="cluster-header-dropdown">
+      <GridItem span={1} id="cluster-header-dropdown">
         <Dropdown
-          popperProps={{
-            position: 'right',
-          }}
           onOpenChange={(isOpen) => setIsOpen(isOpen)}
           autoFocus={false}
           isOpen={isOpen}
