@@ -15,7 +15,7 @@ import {
 import { TAB_BUTTON } from '@redhat-cloud-services/frontend-components-utilities';
 
 // selectors
-const CLUSTER_HEADER = '#cluster-header';
+const CLUSTER_HEADER = '#cluster-header-title';
 const BREADCRUMBS = 'nav[class=pf-v5-c-breadcrumb]';
 const RULES_TABLE = '#cluster-recs-list-table';
 const FILTER_CHIPS = 'li[class=pf-v5-c-chip-group__list-item]';
