@@ -6,8 +6,8 @@ import {
   Dropdown,
   DropdownItem,
   DropdownList,
-  Grid,
-  GridItem,
+  Flex,
+  FlexItem,
   MenuToggle,
   Stack,
   StackItem,
@@ -50,65 +50,65 @@ export const ClusterHeader = ({ clusterId, clusterData, clusterInfo }) => {
   ];
 
   return (
-    <Grid id="cluster-header" md={12} hasGutter>
-      <GridItem span={8}>
-        <Title
-          size="2xl"
-          headingLevel="h1"
-          id="cluster-header-title"
-          ouiaId="cluster-name"
-        >
-          {isUninitializedInfo || isFetchingInfo ? (
-            <Skeleton size="sm" />
-          ) : (
-            info?.display_name || clusterId
-          )}
-        </Title>
-      </GridItem>
-      <GridItem span={4} id="cluster-header-dropdown">
-        <Dropdown
-          popperProps={{
-            position: 'right',
-          }}
-          onOpenChange={(isOpen) => setIsOpen(isOpen)}
-          autoFocus={false}
-          isOpen={isOpen}
-          toggle={(toggleRef) => (
-            <MenuToggle
-              ref={toggleRef}
-              id="toggle-id-2"
-              onClick={() => setIsOpen(!isOpen)}
-            >
-              {intl.formatMessage(messages.dropDownActionSingleCluster)}
-            </MenuToggle>
-          )}
-        >
-          <DropdownList>{dropDownItems}</DropdownList>
-        </Dropdown>
-      </GridItem>
-      <GridItem>
-        <Stack>
-          <StackItem id="cluster-header-uuid">
-            <span>UUID:</span> <span>{clusterId}</span>
-          </StackItem>
-          <StackItem id="cluster-header-last-seen">
-            <span>{intl.formatMessage(messages.lastSeen)}: </span>
-            <span>
-              {isUninitializedCluster || isFetchingCluster ? (
-                <OneLineLoader />
-              ) : cluster?.report?.meta?.last_checked_at ? (
-                <DateFormat
-                  date={cluster?.report?.meta?.last_checked_at}
-                  type="exact"
-                />
-              ) : (
-                intl.formatMessage(messages.unknown)
-              )}
-            </span>
-          </StackItem>
-        </Stack>
-      </GridItem>
-    </Grid>
+    <Stack hasGutter>
+      <Flex
+        justifyContent={{ default: 'justifyContentSpaceBetween' }}
+        flexWrap={{ default: 'nowrap' }}
+      >
+        <FlexItem>
+          <Title
+            size="2xl"
+            headingLevel="h1"
+            id="cluster-header-title"
+            ouiaId="cluster-name"
+          >
+            {isUninitializedInfo || isFetchingInfo ? (
+              <Skeleton size="sm" />
+            ) : (
+              info?.display_name || clusterId
+            )}
+          </Title>
+        </FlexItem>
+        <FlexItem>
+          <Dropdown
+            onOpenChange={(isOpen) => setIsOpen(isOpen)}
+            autoFocus={false}
+            isOpen={isOpen}
+            toggle={(toggleRef) => (
+              <MenuToggle
+                ref={toggleRef}
+                id="toggle-id-2"
+                onClick={() => setIsOpen(!isOpen)}
+              >
+                {intl.formatMessage(messages.dropDownActionSingleCluster)}
+              </MenuToggle>
+            )}
+          >
+            <DropdownList>{dropDownItems}</DropdownList>
+          </Dropdown>
+        </FlexItem>
+      </Flex>
+      <Stack>
+        <StackItem id="cluster-header-uuid">
+          <span>UUID:</span> <span>{clusterId}</span>
+        </StackItem>
+        <StackItem id="cluster-header-last-seen">
+          <span>{intl.formatMessage(messages.lastSeen)}: </span>
+          <span>
+            {isUninitializedCluster || isFetchingCluster ? (
+              <OneLineLoader />
+            ) : cluster?.report?.meta?.last_checked_at ? (
+              <DateFormat
+                date={cluster?.report?.meta?.last_checked_at}
+                type="exact"
+              />
+            ) : (
+              intl.formatMessage(messages.unknown)
+            )}
+          </span>
+        </StackItem>
+      </Stack>
+    </Stack>
   );
 };
 
