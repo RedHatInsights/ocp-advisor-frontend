@@ -60,7 +60,7 @@
     "@cypress/react18": "^2.0.0",
     "@cypress/webpack-dev-server": "^3.7.4",
     "@formatjs/cli": "^6.2.7",
-    "@patternfly/patternfly": "^5.2.0",
+    "@patternfly/patternfly": "^5.3.0",
     "@redhat-cloud-services/eslint-config-redhat-cloud-services": "^2.0.3",
     "@redhat-cloud-services/frontend-components-config": "^6.0.12",
     "@redhat-cloud-services/tsc-transform-imports": "^1.0.8",
