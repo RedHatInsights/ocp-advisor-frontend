@@ -798,36 +798,9 @@ describe('update risk', () => {
   });
 });
 
-describe('update risk enabled and ui flag disabled', () => {
+describe('update risk flag disabled', () => {
   beforeEach(() => {
     featureFlagsInterceptors.upgradeRisksDisabled();
-  });
-
-  describe('two clusters enabled', () => {
-    beforeEach(() => {
-      clustersUpdateRisksInterceptors['successful, two labels']();
-      mountLessClusters();
-    });
-
-    it("doesn't displays two labels", () => {
-      cy.wait('@upgradeRisksFlagDisabled');
-      // Expect no requests
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(2000);
-      cy.get('@clustersUpdateRisksOKTwo.all').then((interceptions) => {
-        expect(interceptions).to.have.length(0);
-      });
-      cy.ouiaId('loading-skeleton').should('not.exist');
-      cy.get(
-        'span[class=pf-v5-c-label__content]:contains("Update risk")'
-      ).should('have.length', 0);
-    });
-  });
-});
-
-describe('both update risk flags disabled', () => {
-  beforeEach(() => {
-    featureFlagsInterceptors.upgradeRisksDisabled2();
   });
 
   describe('two clusters enabled', () => {
