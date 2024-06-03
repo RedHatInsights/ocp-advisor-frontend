@@ -407,10 +407,10 @@ export const WORKLOADS_LIST_COLUMNS = [
     title: 'Recommendations',
     transforms: [sortable, cellWidth(15)],
   },
-  /*   {
+  {
     title: 'Severity',
     transforms: [sortable, cellWidth(15)],
-  }, */
+  },
   {
     title: 'Objects',
     transforms: [sortable, fitContent],
