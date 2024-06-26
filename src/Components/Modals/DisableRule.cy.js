@@ -180,3 +180,110 @@ describe('modal with multiple hosts', () => {
     );
   });
 });
+
+describe.only('call order checking', () => {
+  it('single host', () => {
+    let responded = false;
+
+    cy.mount(
+      <MemoryRouter>
+        <Intl>
+          <Provider store={getStore()}>
+            <DisableRule
+              isModalOpen={true}
+              rule={{ rule_id: 'foo|BAR', disabled: false }}
+              host={'7795cbcd-0353-4e59-b920-fc1c39a27014'}
+              afterFn={() => {
+                responded = true;
+              }}
+            />
+          </Provider>
+        </Intl>
+      </MemoryRouter>
+    );
+
+    cy.intercept(
+      'PUT',
+      '/api/insights-results-aggregator/v1/clusters/**/rules/**/error_key/**/disable',
+      {
+        statusCode: 200,
+        delay: 2 * 1000, // 2 secs
+      }
+    ).as('disableRequest');
+
+    cy.ouiaId(SAVE_BUTTON).click();
+    // wait for half the delay time, we expect the machine to be able to respond faster
+    cy.wait(1000).then(() => expect(responded).to.be.false);
+  });
+
+  it('multiple hosts', () => {
+    let responded = false;
+
+    // beforeEach(() => {
+    cy.mount(
+      <MemoryRouter>
+        <Intl>
+          <Provider store={getStore()}>
+            <DisableRule
+              isModalOpen={true}
+              rule={{ rule_id: 'foo|BAR', disabled: false }}
+              hosts={[
+                {
+                  id: '084ac7a7-1c7d-49ff-b56e-f94881da242d',
+                },
+                {
+                  id: '7795cbcd-0353-4e59-b920-fc1c39a27014',
+                },
+              ]}
+              afterFn={() => {
+                responded = true;
+              }}
+            />
+          </Provider>
+        </Intl>
+      </MemoryRouter>
+    );
+
+    cy.intercept(
+      'PUT',
+      '/api/insights-results-aggregator/v1/clusters/**/rules/**/error_key/**/disable',
+      {
+        statusCode: 200,
+        delay: 2 * 1000, // 2 secs
+      }
+    ).as('disableRequest');
+
+    cy.ouiaId(SAVE_BUTTON).click();
+    // wait for half the delay time, we expect the machine to be able to respond faster
+    cy.wait(1000).then(() => expect(responded).to.be.false);
+  });
+
+  it('no hosts', () => {
+    let responded = false;
+
+    cy.mount(
+      <MemoryRouter>
+        <Intl>
+          <Provider store={getStore()}>
+            <DisableRule
+              isModalOpen={true}
+              rule={{ rule_id: 'abc', disabled: false }}
+              afterFn={() => {
+                responded = true;
+              }}
+            />
+          </Provider>
+        </Intl>
+      </MemoryRouter>
+    );
+
+    cy.intercept('POST', '/api/insights-results-aggregator/v2/ack', {
+      statusCode: 200,
+      delay: 2 * 1000, // 2 secs
+    }).as('ackRequest');
+
+    cy.ouiaId(SAVE_BUTTON).click();
+    // wait for half the delay time, we expect the machine to be able to respond faster
+    cy.wait(1000).then(() => expect(responded).to.be.false);
+  });
+});
