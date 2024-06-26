@@ -181,7 +181,7 @@ describe('modal with multiple hosts', () => {
   });
 });
 
-describe.only('call order checking', () => {
+describe('call order checking', () => {
   it('single host', () => {
     let responded = false;
 
