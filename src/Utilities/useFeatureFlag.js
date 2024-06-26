@@ -1,5 +1,4 @@
 import { useFlag, useFlagsStatus } from '@unleash/proxy-client-react';
-import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 
 const useFeatureFlag = (flag) => {
   const { flagsReady } = useFlagsStatus();
@@ -16,9 +15,8 @@ export const WORKLOADS_ENABLE_FLAG = 'ocp-advisor-ui-workloads';
 
 export const useUpdateRisksFeatureFlag = () => {
   const updateRisksEnabled = useFeatureFlag(UPDATE_RISKS_ENABLE_FLAG);
-  const chrome = useChrome();
 
-  return chrome.isBeta() || updateRisksEnabled;
+  return updateRisksEnabled;
 };
 
 export const useWorkloadsFeatureFlag = () => {
