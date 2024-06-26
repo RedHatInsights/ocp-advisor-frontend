@@ -213,6 +213,7 @@ describe.only('call order checking', () => {
 
     cy.ouiaId(SAVE_BUTTON).click();
     // wait for half the delay time, we expect the machine to be able to respond faster
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(1000).then(() => expect(responded).to.be.false);
   });
 
@@ -255,6 +256,7 @@ describe.only('call order checking', () => {
 
     cy.ouiaId(SAVE_BUTTON).click();
     // wait for half the delay time, we expect the machine to be able to respond faster
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(1000).then(() => expect(responded).to.be.false);
   });
 
@@ -284,6 +286,7 @@ describe.only('call order checking', () => {
 
     cy.ouiaId(SAVE_BUTTON).click();
     // wait for half the delay time, we expect the machine to be able to respond faster
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(1000).then(() => expect(responded).to.be.false);
   });
 });
