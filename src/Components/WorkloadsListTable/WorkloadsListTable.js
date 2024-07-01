@@ -16,13 +16,14 @@ import {
   WORKLOADS_TABLE_CELL_OBJECTS,
   WORKLOADS_TABLE_CELL_RECOMMENDATIONS,
   WORKLOADS_TABLE_FILTER_CATEGORIES,
+  WORKLOADS_TABLE_SEVERITY,
   // WORKLOADS_TABLE_SEVERITY,
 } from '../../AppConstants';
 import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat';
 import { Link, useLocation } from 'react-router-dom';
 import { BASE_PATH } from '../../Routes';
 import { Pagination } from '@patternfly/react-core';
-/* import { conditionalFilterType } from '@redhat-cloud-services/frontend-components/ConditionalFilter/conditionalFilterConstants'; */
+import { conditionalFilterType } from '@redhat-cloud-services/frontend-components/ConditionalFilter/conditionalFilterConstants';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   WORKLOADS_TABLE_INITIAL_STATE,
@@ -34,7 +35,7 @@ import {
   buildFilterChips,
   passFilterWorkloads,
   removeFilterParam as _removeFilterParam,
-  /* addFilterParam as _addFilterParam, */
+  addFilterParam as _addFilterParam,
   translateSortParams,
   paramParser,
   updateSearchParams,
@@ -47,6 +48,7 @@ import {
 import Loading from '../Loading/Loading';
 /* import ShieldSet from '../ShieldSet'; */
 import { filtersAreApplied } from '../../Utilities/Workloads';
+import ShieldSet from '../ShieldSet';
 
 const WorkloadsListTable = ({
   query: {
@@ -81,8 +83,8 @@ const WorkloadsListTable = ({
   const successState = isSuccess;
   const { search } = useLocation();
 
-  /* const addFilterParam = (param, values) =>
-    _addFilterParam(filters, updateFilters, param, values); */
+  const addFilterParam = (param, values) =>
+    _addFilterParam(filters, updateFilters, param, values);
 
   useEffect(() => {
     setFilteredRows(buildFilteredRows(workloads));
@@ -148,14 +150,14 @@ const WorkloadsListTable = ({
             fst = a.metadata.recommendations || 0;
             snd = b.metadata.recommendations || 0;
             return fst > snd ? d : snd > fst ? -d : 0;
-          // case WORKLOADS_TABLE_SEVERITY:
-          //   fst = a.metadata.hits_by_severity || { 1: 0, 2: 0, 3: 0, 4: 0 };
-          //   snd = b.metadata.hits_by_severity || { 1: 0, 2: 0, 3: 0, 4: 0 };
-          //   for (let i = 4; i > 0; i--) {
-          //     if (fst[i] > snd[i]) return d;
-          //     if (fst[i] < snd[i]) return -d;
-          //   }
-          //   return 0;
+          case WORKLOADS_TABLE_SEVERITY:
+            fst = a.metadata.hits_by_severity || { 1: 0, 2: 0, 3: 0, 4: 0 };
+            snd = b.metadata.hits_by_severity || { 1: 0, 2: 0, 3: 0, 4: 0 };
+            for (let i = 4; i > 0; i--) {
+              if (fst[i] > snd[i]) return d;
+              if (fst[i] < snd[i]) return -d;
+            }
+            return 0;
           case WORKLOADS_TABLE_CELL_OBJECTS:
             fst = a.metadata.objects || 0;
             snd = b.metadata.objects || 0;
@@ -189,6 +191,12 @@ const WorkloadsListTable = ({
             </Link>
           </span>,
           item.metadata.recommendations,
+          <span key={index}>
+            <ShieldSet
+              hits_by_severity={item.metadata.hits_by_severity}
+              basePath={`${BASE_PATH}/workloads/${item.cluster.uuid}/${item.namespace.uuid}`}
+            />
+          </span>,
           item.metadata.objects,
           <span key={index}>
             <DateFormat
@@ -224,7 +232,7 @@ const WorkloadsListTable = ({
         placeholder: 'Filter by namespace name',
       },
     },
-    /* {
+    {
       label: 'Severity',
       type: conditionalFilterType.checkbox,
       id: WORKLOADS_TABLE_FILTER_CATEGORIES.severity.urlParam,
@@ -236,7 +244,7 @@ const WorkloadsListTable = ({
         items: WORKLOADS_TABLE_FILTER_CATEGORIES.severity.values,
         placeholder: 'Filter by severity',
       },
-    }, */
+    },
   ];
 
   const activeFiltersConfig = {
