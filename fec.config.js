@@ -9,7 +9,6 @@ module.exports = {
    * Change to false after your app is registered in configuration files
    */
   sassPrefix: 'ocp-advisor, ocpAdvisor',
-  interceptChromeConfig: false,
   /**
    * Add additional webpack plugins
    */
