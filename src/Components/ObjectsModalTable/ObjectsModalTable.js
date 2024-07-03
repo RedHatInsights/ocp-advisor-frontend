@@ -53,18 +53,38 @@ export const ObjectsModalTable = ({ objects }) => {
         placeholder: 'Filter by Object ID',
       },
     },
+    {
+      label: 'Object name',
+      type: 'text',
+      filterValues: {
+        key: 'display_name',
+        onChange: (_event, value) =>
+          updateFilters({ ...filters, offset: 0, display_name: value }),
+        value: filters.display_name,
+        placeholder: 'Filter by name',
+      },
+    },
   ];
 
   const buildFilterChips = () => {
     const localFilters = { ...filters };
     delete localFilters.sortIndex;
     delete localFilters.sortDirection;
-    return pruneWorkloadsRulesFilters(localFilters, {
-      label: 'Object ID',
-      type: 'text',
-      title: 'object ID',
-      urlParam: 'object_id',
-    });
+    return pruneWorkloadsRulesFilters(
+      localFilters,
+      {
+        label: 'Object ID',
+        type: 'text',
+        title: 'object ID',
+        urlParam: 'object_id',
+      },
+      {
+        label: 'Object name',
+        type: 'text',
+        title: 'object name',
+        urlParam: 'display_name',
+      }
+    );
   };
 
   const activeFiltersConfig = {
@@ -151,6 +171,7 @@ export const ObjectsModalTable = ({ objects }) => {
           <Table aria-label="Cell widths" variant="compact">
             <Thead>
               <Tr>
+                <Th width={30}>{ObjectsTableColumns.display_name}</Th>
                 <Th width={60}>{ObjectsTableColumns.object}</Th>
                 <Th width={30}>{ObjectsTableColumns.kind}</Th>
               </Tr>
@@ -158,6 +179,9 @@ export const ObjectsModalTable = ({ objects }) => {
             <Tbody>
               {displayedRows?.map((object, index) => (
                 <Tr key={index}>
+                  <Td dataLabel={ObjectsTableColumns.display_name}>
+                    {object.display_name}
+                  </Td>
                   <Td dataLabel={ObjectsTableColumns.object}>{object.uid}</Td>
                   <Td dataLabel={ObjectsTableColumns.kind}>{object.kind}</Td>
                 </Tr>

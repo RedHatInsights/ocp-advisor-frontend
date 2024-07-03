@@ -20,6 +20,7 @@ const ObjectsModal = ({ isModalOpen, setIsModalOpen, objects }) => {
     setIsModalOpen(false);
     resetFilters(filters, WORKLOADS_OBJECTS_TABLE_INITIAL_STATE, updateFilters);
   };
+  const objectsWithNames = objects.filter((object) => object.display_name);
 
   return (
     <PfModal
@@ -28,7 +29,10 @@ const ObjectsModal = ({ isModalOpen, setIsModalOpen, objects }) => {
       variant={'medium'}
       title="Objects"
     >
-      <ObjectsModalTable objects={objects} />
+      <ObjectsModalTable
+        objects={objects}
+        objectsWithNames={objectsWithNames}
+      />
     </PfModal>
   );
 };
@@ -42,6 +46,14 @@ ObjectsModal.propTypes = {
     PropTypes.shape({
       kind: PropTypes.string,
       uid: PropTypes.string,
+      display_name: PropTypes.string,
+    })
+  ),
+  objectsNamesArePresent: PropTypes.arrayOf(
+    PropTypes.shape({
+      kind: PropTypes.string,
+      uid: PropTypes.string,
+      display_name: PropTypes.string,
     })
   ),
 };

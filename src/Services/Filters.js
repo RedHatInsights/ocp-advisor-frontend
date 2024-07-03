@@ -69,6 +69,7 @@ export const WORKLOADS_OBJECTS_TABLE_INITIAL_STATE = {
   limit: 50,
   offset: 0,
   object_id: '',
+  display_name: '',
 };
 
 const filtersInitialState = {

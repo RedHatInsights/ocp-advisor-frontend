@@ -133,7 +133,9 @@ export const pruneWorkloadsRulesFilters = (localFilters, filterCategories) => {
         });
       }
     } else if (
-      (name === 'description' || name === 'object_id') &&
+      (name === 'description' ||
+        name === 'object_id' ||
+        name === 'display_name') &&
       value.trim() !== ''
     ) {
       arr.push({
@@ -186,12 +188,28 @@ export const flatMapRows = (filteredRows, expandFirst) => {
 };
 
 export const passObjectsFilters = (objects, filters) => {
-  return Object.entries(filters).some(([filterKey, filterValue]) => {
+  console.log(filters);
+  const cleanedUpFilters = _.omitBy(_.cloneDeep(filters), _.isEmpty);
+  return Object.entries(cleanedUpFilters).every(([filterKey, filterValue]) => {
     switch (filterKey) {
+      case 'display_name':
+        return (
+          filterValue &&
+          objects.display_name.toLowerCase().includes(filterValue.toLowerCase())
+        );
       case 'object_id':
+        return (
+          filterValue &&
+          objects.uid.toLowerCase().includes(filterValue.toLowerCase())
+        );
+      /* case 'object_id':
         return objects.uid.toLowerCase().includes(filterValue.toLowerCase());
+      case 'display_name':
+        return objects.display_name
+          .toLowerCase()
+          .includes(filterValue.toLowerCase()); */
       default:
-        return false;
+        return true;
     }
   });
 };

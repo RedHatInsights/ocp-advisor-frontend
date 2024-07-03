@@ -533,6 +533,7 @@ export const WORKLOADS_RULES_FILTER_CONFIG = (filters, addParamFunction) => [
 ];
 
 export const ObjectsTableColumns = {
+  display_name: 'Name',
   object: 'Object ID',
   kind: 'Kind',
 };
