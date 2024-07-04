@@ -192,26 +192,21 @@ export const flatMapRows = (filteredRows, expandFirst) => {
 };
 
 export const passObjectsFilters = (objects, filters) => {
-  console.log(filters);
   const cleanedUpFilters = _.omitBy(_.cloneDeep(filters), _.isEmpty);
   return Object.entries(cleanedUpFilters).every(([filterKey, filterValue]) => {
     switch (filterKey) {
       case 'display_name':
         return (
           filterValue &&
-          objects.display_name.toLowerCase().includes(filterValue.toLowerCase())
+          objects?.display_name
+            ?.toLowerCase()
+            .includes(filterValue.toLowerCase())
         );
       case 'object_id':
         return (
           filterValue &&
-          objects.uid.toLowerCase().includes(filterValue.toLowerCase())
+          objects?.uid?.toLowerCase().includes(filterValue.toLowerCase())
         );
-      /* case 'object_id':
-        return objects.uid.toLowerCase().includes(filterValue.toLowerCase());
-      case 'display_name':
-        return objects.display_name
-          .toLowerCase()
-          .includes(filterValue.toLowerCase()); */
       default:
         return true;
     }

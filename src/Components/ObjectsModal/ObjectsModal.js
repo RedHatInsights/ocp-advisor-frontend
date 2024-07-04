@@ -9,7 +9,12 @@ import {
   updateWorkloadsObjectsListFilters,
 } from '../../Services/Filters';
 
-const ObjectsModal = ({ isModalOpen, setIsModalOpen, objects }) => {
+const ObjectsModal = ({
+  isModalOpen,
+  setIsModalOpen,
+  objects,
+  objectsWithNames,
+}) => {
   const dispatch = useDispatch();
   const filters = useSelector(
     ({ filters }) => filters.workloadsObjectsListState
@@ -20,7 +25,6 @@ const ObjectsModal = ({ isModalOpen, setIsModalOpen, objects }) => {
     setIsModalOpen(false);
     resetFilters(filters, WORKLOADS_OBJECTS_TABLE_INITIAL_STATE, updateFilters);
   };
-  const objectsWithNames = objects.filter((object) => object.display_name);
 
   return (
     <PfModal
@@ -56,4 +60,5 @@ ObjectsModal.propTypes = {
       display_name: PropTypes.string,
     })
   ),
+  objectsWithNames: PropTypes.bool,
 };

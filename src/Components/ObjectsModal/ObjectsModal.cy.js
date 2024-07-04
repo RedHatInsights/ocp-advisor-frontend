@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import { IntlProvider } from 'react-intl';
 import { MemoryRouter } from 'react-router-dom';
 import mockObjects from '../../../cypress/fixtures/api/insights-results-aggregator/objects.json';
+import objectsWithNames from '../../../cypress/fixtures/api/insights-results-aggregator/objectsWithNames.json';
 import _ from 'lodash';
 import {
   MENU_TOGGLE,
@@ -21,12 +22,16 @@ import {
   itemsPerPage,
 } from '../../../cypress/utils/pagination';
 
-const mount = (url, objects) => {
+const mount = (url, objects, objectsWithNames) => {
   cy.mount(
     <MemoryRouter initialEntries={[url]} initialIndex={0}>
       <IntlProvider locale="en">
         <Provider store={getStore()}>
-          <ObjectsModal isModalOpen={true} objects={objects} />
+          <ObjectsModal
+            isModalOpen={true}
+            objects={objects}
+            objectsWithNames={objectsWithNames}
+          />
         </Provider>
       </IntlProvider>
     </MemoryRouter>
@@ -38,13 +43,13 @@ const DEFAULT_ROW_COUNT = 50;
 const DEFAULT_DISPLAYED_SIZE = Math.min(mockObjects.length, DEFAULT_ROW_COUNT);
 let values = _.cloneDeep(mockObjects);
 const data = _.orderBy(values, [(it) => it.uid], ['desc']);
-console.log(data, 'data');
 
 describe('Objects modal renders and filters data', () => {
   it('renders main components', () => {
     mount(
       '/openshift/insights/advisor/workloads/clustername/namespacename',
-      mockObjects
+      mockObjects,
+      false
     );
     // renders table component
     cy.get('#objects-list-table').should('have.length', 1);
@@ -55,7 +60,8 @@ describe('Objects modal renders and filters data', () => {
   it('renders empty state', () => {
     mount(
       '/openshift/insights/advisor/workloads/clustername/namespacename',
-      []
+      [],
+      false
     );
     cy.get('#objects-list-table')
       .ouiaId('empty-state')
@@ -69,10 +75,11 @@ describe('Objects modal renders and filters data', () => {
   it('Adds filters and produces chips correctly', () => {
     mount(
       '/openshift/insights/advisor/workloads/clustername/namespacename',
-      mockObjects
+      mockObjects,
+      false
     );
     cy.get('#objects-list-table');
-    cy.get('input[data-ouia-component-type="PF5/TextInput"]').type('foobar', {
+    cy.get('input[data-ouia-component-id="ConditionalFilter"]').type('foobar', {
       force: true,
     });
     cy.get(FILTER_CHIPS).each(($el) =>
@@ -84,7 +91,8 @@ describe('Objects modal renders and filters data', () => {
   it('Adds filters and produces empty state with no results', () => {
     mount(
       '/openshift/insights/advisor/workloads/clustername/namespacename',
-      mockObjects
+      mockObjects,
+      false
     );
     cy.get('#objects-list-table');
     cy.get('input[data-ouia-component-type="PF5/TextInput"]').type(
@@ -107,7 +115,8 @@ describe('Pagination', () => {
   it('shows correct total number of objects', () => {
     mount(
       '/openshift/insights/advisor/workloads/clustername/namespacename',
-      mockObjects
+      mockObjects,
+      false
     );
     checkPaginationTotal(mockObjects.length);
   });
@@ -115,7 +124,8 @@ describe('Pagination', () => {
   it(`is set to ${DEFAULT_ROW_COUNT}`, () => {
     mount(
       '/openshift/insights/advisor/workloads/clustername/namespacename',
-      mockObjects
+      mockObjects,
+      false
     );
     cy.get(MENU_TOGGLE)
       .get('.pf-m-text')
@@ -127,7 +137,8 @@ describe('Pagination', () => {
   it('values are expected ones', () => {
     mount(
       '/openshift/insights/advisor/workloads/clustername/namespacename',
-      mockObjects
+      mockObjects,
+      false
     );
     checkPaginationValues(PAGINATION_VALUES);
   });
@@ -135,7 +146,8 @@ describe('Pagination', () => {
   it('can change page limit', () => {
     mount(
       '/openshift/insights/advisor/workloads/clustername/namespacename',
-      mockObjects
+      mockObjects,
+      false
     );
     cy.wrap(PAGINATION_VALUES).each((el) => {
       changePagination(el).then(() => {
@@ -147,7 +159,8 @@ describe('Pagination', () => {
   it('can iterate over pages', () => {
     mount(
       '/openshift/insights/advisor/workloads/clustername/namespacename',
-      mockObjects
+      mockObjects,
+      false
     );
     cy.wrap(itemsPerPage(data.length)).each((el, index, list) => {
       checkRowCounts(el);
@@ -162,5 +175,75 @@ describe('Pagination', () => {
           }
         });
     });
+  });
+});
+
+describe('Objects modal with names', () => {
+  it('renders main components', () => {
+    mount(
+      '/openshift/insights/advisor/workloads/clustername/namespacename',
+      objectsWithNames,
+      true
+    );
+    // renders table component
+    cy.get('#objects-list-table').should('have.length', 1);
+    // test how many rows were rendered
+    checkRowCounts(DEFAULT_DISPLAYED_SIZE, true);
+  });
+
+  it('renders empty state', () => {
+    mount(
+      '/openshift/insights/advisor/workloads/clustername/namespacename',
+      [],
+      true
+    );
+    cy.get('#objects-list-table')
+      .ouiaId('empty-state')
+      .should('have.length', 1);
+    cy.get(`h5[class="pf-v5-c-empty-state__title-text"]`).should(
+      'have.text',
+      'No matching workloads found'
+    );
+  });
+
+  it('Adds filters and produces chips correctly', () => {
+    mount(
+      '/openshift/insights/advisor/workloads/clustername/namespacename',
+      objectsWithNames,
+      true
+    );
+    cy.get('#objects-list-table');
+    cy.get('input[data-ouia-component-id="ConditionalFilter"]').type(
+      'display name',
+      {
+        force: true,
+      }
+    );
+    cy.get(FILTER_CHIPS).each(($el) =>
+      expect($el.text()).to.be.oneOf(['Name', 'display name'])
+    );
+    checkRowCounts(1, true);
+  });
+
+  it('Adds filters and produces empty state with no results', () => {
+    mount(
+      '/openshift/insights/advisor/workloads/clustername/namespacename',
+      objectsWithNames,
+      true
+    );
+    cy.get('#objects-list-table');
+    cy.get('input[data-ouia-component-id="ConditionalFilter"]').type(
+      'wrong filter',
+      {
+        force: true,
+      }
+    );
+    cy.get(FILTER_CHIPS).each(($el) =>
+      expect($el.text()).to.be.oneOf(['Object id', 'wrong filter'])
+    );
+    cy.get(`h5[class="pf-v5-c-empty-state__title-text"]`).should(
+      'have.text',
+      'No matching workloads found'
+    );
   });
 });
