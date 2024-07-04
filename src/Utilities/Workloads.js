@@ -1,5 +1,7 @@
 import { SortByDirection } from '@patternfly/react-table';
-import _ from 'lodash';
+import { omitBy } from 'lodash/omitBy';
+import { cloneDeep } from 'lodash/cloneDeep';
+import { isEmpty } from 'lodash/isEmpty';
 
 export const SEVERITY_OPTIONS = [
   {
@@ -80,13 +82,13 @@ export const severityTypeToText = (value) => {
 };
 
 export const filtersAreApplied = (params) => {
-  const cleanedUpParams = _.cloneDeep(params);
+  const cleanedUpParams = cloneDeep(params);
   delete cleanedUpParams.sortIndex;
   delete cleanedUpParams.sortDirection;
   delete cleanedUpParams.offset;
   delete cleanedUpParams.limit;
   delete cleanedUpParams.sort;
-  return Object.values(cleanedUpParams).filter((value) => !_.isEmpty(value))
+  return Object.values(cleanedUpParams).filter((value) => !isEmpty(value))
     .length
     ? true
     : false;
@@ -192,7 +194,7 @@ export const flatMapRows = (filteredRows, expandFirst) => {
 };
 
 export const passObjectsFilters = (objects, filters) => {
-  const cleanedUpFilters = _.omitBy(_.cloneDeep(filters), _.isEmpty);
+  const cleanedUpFilters = omitBy(cloneDeep(filters), isEmpty);
   return Object.entries(cleanedUpFilters).every(([filterKey, filterValue]) => {
     switch (filterKey) {
       case 'display_name':
@@ -245,7 +247,7 @@ export const workloadsRulesAddFilterParam = (
     : workloadsRulesRemoveFilterParam(currentFilters, updateFilters, param);
 
 export const passFilterWorkloadsRecs = (recommendation, filters) => {
-  const cleanedUpFilters = _.omitBy(_.cloneDeep(filters), _.isEmpty);
+  const cleanedUpFilters = omitBy(cloneDeep(filters), isEmpty);
 
   return Object.entries(cleanedUpFilters).every(([filterKey, filterValue]) => {
     switch (filterKey) {
