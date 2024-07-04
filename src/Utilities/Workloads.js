@@ -132,10 +132,14 @@ export const pruneWorkloadsRulesFilters = (localFilters, filterCategories) => {
           urlParam: category.urlParam,
         });
       }
+    } else if (name === 'display_name' && value.trim() !== '') {
+      arr.push({
+        category: capitalize(name.replace('display_name', 'Name')),
+        chips: [{ name: value, value }],
+        urlParam: 'display_name',
+      });
     } else if (
-      (name === 'description' ||
-        name === 'object_id' ||
-        name === 'display_name') &&
+      (name === 'description' || name === 'object_id') &&
       value.trim() !== ''
     ) {
       arr.push({

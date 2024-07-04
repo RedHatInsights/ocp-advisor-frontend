@@ -20,7 +20,7 @@ import { NoMatchingWorkloadsObjects } from '../MessageState/EmptyStates';
 import Loading from '../Loading/Loading';
 import { PaginationVariant } from '@patternfly/react-core/dist/js/components/Pagination/Pagination';
 
-export const ObjectsModalTable = ({ objects }) => {
+export const ObjectsModalTable = ({ objects, objectsWithNames }) => {
   const objectsData = objects || [];
   const dispatch = useDispatch();
   const [filtersApplied, setFiltersApplied] = useState(false);
@@ -39,32 +39,38 @@ export const ObjectsModalTable = ({ objects }) => {
   const updateFilters = (payload) =>
     dispatch(updateWorkloadsObjectsListFilters(payload));
   const preparedRows = displayedRows.length > 0 ? true : false;
+  const renderTableWithNames = objectsWithNames;
   const loadingState = !rowsFiltered;
 
-  const filterConfigItems = [
-    {
-      label: 'Object ID',
-      type: 'text',
-      filterValues: {
-        key: 'object_id',
-        onChange: (_event, value) =>
-          updateFilters({ ...filters, offset: 0, object_id: value }),
-        value: filters.object_id,
-        placeholder: 'Filter by Object ID',
-      },
-    },
-    {
-      label: 'Object name',
-      type: 'text',
-      filterValues: {
-        key: 'display_name',
-        onChange: (_event, value) =>
-          updateFilters({ ...filters, offset: 0, display_name: value }),
-        value: filters.display_name,
-        placeholder: 'Filter by name',
-      },
-    },
-  ];
+  const filterConfigItems = (renderTableWithNames) => {
+    return renderTableWithNames
+      ? [
+          {
+            label: 'Object name',
+            type: 'text',
+            filterValues: {
+              key: 'display_name',
+              onChange: (_event, value) =>
+                updateFilters({ ...filters, offset: 0, display_name: value }),
+              value: filters.display_name,
+              placeholder: 'Filter by name',
+            },
+          },
+        ]
+      : [
+          {
+            label: 'Object ID',
+            type: 'text',
+            filterValues: {
+              key: 'object_id',
+              onChange: (_event, value) =>
+                updateFilters({ ...filters, offset: 0, object_id: value }),
+              value: filters.object_id,
+              placeholder: 'Filter by Object ID',
+            },
+          },
+        ];
+  };
 
   const buildFilterChips = () => {
     const localFilters = { ...filters };
@@ -161,18 +167,58 @@ export const ObjectsModalTable = ({ objects }) => {
           ouiaId: 'pager',
           itemCount: filteredRows.length,
         }}
-        filterConfig={{ items: filterConfigItems }}
+        filterConfig={{ items: filterConfigItems(renderTableWithNames) }}
         activeFiltersConfig={activeFiltersConfig}
       />
       {loadingState ? (
         <Loading />
-      ) : preparedRows ? (
+      ) : preparedRows && !renderTableWithNames ? (
         <div>
           <Table aria-label="Cell widths" variant="compact">
             <Thead>
               <Tr>
-                <Th width={30}>{ObjectsTableColumns.display_name}</Th>
                 <Th width={60}>{ObjectsTableColumns.object}</Th>
+                <Th width={30}>{ObjectsTableColumns.kind}</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {displayedRows?.map((object, index) => (
+                <Tr key={index}>
+                  <Td dataLabel={ObjectsTableColumns.object}>{object.uid}</Td>
+                  <Td dataLabel={ObjectsTableColumns.kind}>{object.kind}</Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+          {displayedRows.length > 0 ? (
+            <Pagination
+              ouiaId="pager"
+              itemCount={filteredRows.length}
+              page={page}
+              perPage={perPage}
+              onSetPage={onSetPage}
+              onPerPageSelect={onPerPageSelect}
+              onPageInput={onSetPage}
+              widgetId={`pagination-options-menu-bottom`}
+              variant={PaginationVariant.bottom}
+            />
+          ) : (
+            <Pagination
+              itemCount={0}
+              perPage
+              page
+              onSetPage
+              onPerPageSelect
+              isDisabled
+            />
+          )}
+        </div>
+      ) : preparedRows && renderTableWithNames ? (
+        <div>
+          <Table aria-label="Cell widths" variant="compact">
+            <Thead>
+              <Tr>
+                <Th width={60}>{ObjectsTableColumns.display_name}</Th>
                 <Th width={30}>{ObjectsTableColumns.kind}</Th>
               </Tr>
             </Thead>
@@ -182,7 +228,6 @@ export const ObjectsModalTable = ({ objects }) => {
                   <Td dataLabel={ObjectsTableColumns.display_name}>
                     {object.display_name}
                   </Td>
-                  <Td dataLabel={ObjectsTableColumns.object}>{object.uid}</Td>
                   <Td dataLabel={ObjectsTableColumns.kind}>{object.kind}</Td>
                 </Tr>
               ))}
@@ -223,6 +268,13 @@ ObjectsModalTable.propTypes = {
     PropTypes.shape({
       kind: PropTypes.string,
       uid: PropTypes.string,
+    })
+  ),
+  objectsWithNames: PropTypes.arrayOf(
+    PropTypes.shape({
+      kind: PropTypes.string,
+      uid: PropTypes.string,
+      display_name: PropTypes.string,
     })
   ),
 };
