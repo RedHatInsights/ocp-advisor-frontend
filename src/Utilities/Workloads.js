@@ -1,7 +1,7 @@
 import { SortByDirection } from '@patternfly/react-table';
-import { omitBy } from 'lodash/omitBy';
-import { cloneDeep } from 'lodash/cloneDeep';
-import { isEmpty } from 'lodash/isEmpty';
+import omitBy from 'lodash/omitBy';
+import cloneDeep from 'lodash/cloneDeep';
+import isEmpty from 'lodash/isEmpty';
 
 export const SEVERITY_OPTIONS = [
   {

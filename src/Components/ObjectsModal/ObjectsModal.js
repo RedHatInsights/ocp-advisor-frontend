@@ -21,6 +21,7 @@ const ObjectsModal = ({
   );
   const updateFilters = (payload) =>
     dispatch(updateWorkloadsObjectsListFilters(payload));
+
   const onClose = () => {
     setIsModalOpen(false);
     resetFilters(filters, WORKLOADS_OBJECTS_TABLE_INITIAL_STATE, updateFilters);
