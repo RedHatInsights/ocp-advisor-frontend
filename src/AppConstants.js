@@ -424,7 +424,7 @@ export const WORKLOADS_LIST_COLUMNS = [
 export const WORKLOADS_LIST_COLUMNS_KEYS = [
   'name',
   'recommendations',
-  // 'severity',
+  'severity',
   'objects',
   'last_seen',
 ];
@@ -432,8 +432,8 @@ export const WORKLOADS_LIST_COLUMNS_KEYS = [
 export const WORKLOADS_TABLE_CELL_NAME = 0;
 export const WORKLOADS_TABLE_CELL_RECOMMENDATIONS = 1;
 export const WORKLOADS_TABLE_SEVERITY = 2;
-export const WORKLOADS_TABLE_CELL_OBJECTS = 3; // 3
-export const WORKLOADS_TABLE_CELL_LAST_SEEN = 4; // 4
+export const WORKLOADS_TABLE_CELL_OBJECTS = 3;
+export const WORKLOADS_TABLE_CELL_LAST_SEEN = 4;
 
 export const WORKLOADS_TABLE_FILTER_CATEGORIES = {
   severity: {
