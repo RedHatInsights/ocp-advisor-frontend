@@ -361,8 +361,7 @@ describe('workloads list table', () => {
 
   describe('sorting', () => {
     _.zip(
-      // ['name', 'recommendations', 'severity', 'objects', 'last_seen'],
-      ['name', 'recommendations', 'objects', 'last_seen'],
+      ['name', 'recommendations', 'severity', 'objects', 'last_seen'],
       TABLE_HEADERS
     ).forEach(([category, label]) => {
       SORTING_ORDERS.forEach((order) => {
