@@ -226,6 +226,7 @@ ExpandedRulesDetails.propTypes = {
   resolution: PropTypes.string.isRequired,
   objects: PropTypes.arrayOf({
     kind: PropTypes.string,
+    display_name: PropTypes.string,
     uid: PropTypes.string,
   }),
   extra_data: PropTypes.shape({
