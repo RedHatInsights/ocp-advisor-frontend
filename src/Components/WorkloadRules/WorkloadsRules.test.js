@@ -39,6 +39,7 @@ describe('pruneWorkloadsRulesFilters function', () => {
       description: 'Sample Description',
       total_risk: [1, 2],
       object_id: '12345',
+      object_name: 'name name',
     };
 
     const filterCategories = {
@@ -54,6 +55,7 @@ describe('pruneWorkloadsRulesFilters function', () => {
         ],
       },
       object_id: { label: 'Object ID', urlParam: 'object_id' },
+      object_name: { label: 'Object name', urlParam: 'object_name' },
     };
 
     const result = pruneWorkloadsRulesFilters(localFilters, filterCategories);
@@ -76,6 +78,11 @@ describe('pruneWorkloadsRulesFilters function', () => {
         category: 'Object ID',
         chips: [{ name: '12345', value: '12345' }],
         urlParam: 'object_id',
+      },
+      {
+        category: 'Object name',
+        chips: [{ name: 'name name', value: 'name name' }],
+        urlParam: 'object_name',
       },
     ]);
   });
@@ -187,6 +194,27 @@ describe('workloadsRulesRemoveFilterParam', () => {
       total_risk: [],
     });
   });
+
+  it('should remove the object_name filter param', () => {
+    const currentFilters = {
+      description: 'example',
+      object_id: '123',
+      object_name: 'name of an object',
+    };
+    const updateFiltersMock = jest.fn();
+
+    workloadsRulesRemoveFilterParam(
+      currentFilters,
+      updateFiltersMock,
+      'object_name'
+    );
+
+    expect(updateFiltersMock).toHaveBeenCalledWith({
+      description: 'example',
+      object_id: '123',
+      object_name: '',
+    });
+  });
 });
 
 describe('workloadsRulesAddFilterParam', () => {
@@ -238,7 +266,7 @@ describe('workloadsRulesAddFilterParam', () => {
 describe('passFilterWorkloadsRecs', () => {
   const recommendation = {
     details: 'Sample details',
-    objects: [{ uid: 'abc' }],
+    objects: [{ uid: 'abc', display_name: 'object_name' }],
     total_risk: 2,
   };
 
@@ -276,5 +304,17 @@ describe('passFilterWorkloadsRecs', () => {
     const filters = { description: '' };
     const result = passFilterWorkloadsRecs(recommendation, filters);
     expect(result).toBe(true); // Empty string filter should be ignored
+  });
+
+  it('should filter based on object_name', () => {
+    const filters = { object_name: 'object_name' };
+    const result = passFilterWorkloadsRecs(recommendation, filters);
+    expect(result).toBe(true);
+  });
+
+  it('should filter based on object_name if object name is partially written', () => {
+    const filters = { object_name: 'object_n' };
+    const result = passFilterWorkloadsRecs(recommendation, filters);
+    expect(result).toBe(true);
   });
 });

@@ -493,6 +493,12 @@ export const WORKLOAD_RULES_FILTER_CATEGORIES = {
     title: 'object ID',
     urlParam: 'object_id',
   },
+  object_name: {
+    label: 'Object name',
+    type: 'text',
+    title: 'object name',
+    urlParam: 'object_name',
+  },
 };
 
 export const WORKLOADS_RULES_FILTER_CONFIG = (filters, addParamFunction) => [
@@ -528,6 +534,16 @@ export const WORKLOADS_RULES_FILTER_CONFIG = (filters, addParamFunction) => [
       key: 'object_id',
       onChange: (_e, value) => addParamFunction('object_id', value),
       value: filters.object_id,
+    },
+  },
+  {
+    label: 'object name',
+    type: 'text',
+    filterValues: {
+      key: 'object_name',
+      onChange: (_e, value) => addParamFunction('object_name', value),
+      value: filters.object_name,
+      placeholder: 'Filter by object name',
     },
   },
 ];

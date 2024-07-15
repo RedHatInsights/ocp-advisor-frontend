@@ -63,6 +63,7 @@ export const WORKLOADS_RECS_TABLE_INITIAL_STATE = {
   description: '',
   total_risk: [],
   object_id: '',
+  display_name: '',
 };
 
 export const WORKLOADS_OBJECTS_TABLE_INITIAL_STATE = {
