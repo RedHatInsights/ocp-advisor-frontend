@@ -84,6 +84,7 @@ const ExpandedRulesDetails = ({
   const moreInfoIsPresent = more_info.length > 0 ? true : false;
   const [objectsModalOpen, setObjectsModalOpen] = useState(false);
   const objectsWithNames = objects?.filter((object) => object.display_name);
+
   return (
     <Card className="ins-c-report-details" style={{ boxShadow: 'none' }}>
       <CardBody>
@@ -91,7 +92,7 @@ const ExpandedRulesDetails = ({
           isModalOpen={objectsModalOpen}
           setIsModalOpen={setObjectsModalOpen}
           objects={objects}
-          objectsWithNames={objectsWithNames ? true : false}
+          objectsWithNames={objectsWithNames.length > 0 ? true : false}
         />
         <Stack
           className="ins-c-report-details__cards-stack"
@@ -136,7 +137,12 @@ const ExpandedRulesDetails = ({
                           <Th modifier="fitContent">
                             {ObjectsTableColumns.object}
                           </Th>
-                          <Th modifier="fitContent">Object name</Th>
+                          {/* for the case when the object names are missing */}
+                          {objectsWithNames.slice(0, 3).length > 0 ? (
+                            <Th modifier="fitContent">Object name</Th>
+                          ) : (
+                            ''
+                          )}
                           <Th modifier="fitContent">
                             {ObjectsTableColumns.kind}
                           </Th>
@@ -148,9 +154,11 @@ const ExpandedRulesDetails = ({
                             <Td dataLabel={ObjectsTableColumns.object}>
                               {object.uid}
                             </Td>
-                            <Td dataLabel={ObjectsTableColumns.object}>
-                              {object.display_name}
-                            </Td>
+                            {object.display_name && (
+                              <Td dataLabel={ObjectsTableColumns.display_name}>
+                                {object.display_name}
+                              </Td>
+                            )}
                             <Td dataLabel={ObjectsTableColumns.kind}>
                               {object.kind}
                             </Td>
