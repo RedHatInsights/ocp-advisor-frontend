@@ -83,6 +83,7 @@ const ExpandedRulesDetails = ({
   const objectsArePresent = Array.isArray(objects) && objects.length > 0;
   const moreInfoIsPresent = more_info.length > 0 ? true : false;
   const [objectsModalOpen, setObjectsModalOpen] = useState(false);
+  const objectsWithNames = objects?.filter((object) => object.display_name);
   return (
     <Card className="ins-c-report-details" style={{ boxShadow: 'none' }}>
       <CardBody>
@@ -90,6 +91,7 @@ const ExpandedRulesDetails = ({
           isModalOpen={objectsModalOpen}
           setIsModalOpen={setObjectsModalOpen}
           objects={objects}
+          objectsWithNames={objectsWithNames ? true : false}
         />
         <Stack
           className="ins-c-report-details__cards-stack"

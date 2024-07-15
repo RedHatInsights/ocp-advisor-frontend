@@ -1,5 +1,7 @@
 import { SortByDirection } from '@patternfly/react-table';
-import _ from 'lodash';
+import omitBy from 'lodash/omitBy';
+import cloneDeep from 'lodash/cloneDeep';
+import isEmpty from 'lodash/isEmpty';
 
 export const SEVERITY_OPTIONS = [
   {
@@ -80,13 +82,13 @@ export const severityTypeToText = (value) => {
 };
 
 export const filtersAreApplied = (params) => {
-  const cleanedUpParams = _.cloneDeep(params);
+  const cleanedUpParams = cloneDeep(params);
   delete cleanedUpParams.sortIndex;
   delete cleanedUpParams.sortDirection;
   delete cleanedUpParams.offset;
   delete cleanedUpParams.limit;
   delete cleanedUpParams.sort;
-  return Object.values(cleanedUpParams).filter((value) => !_.isEmpty(value))
+  return Object.values(cleanedUpParams).filter((value) => !isEmpty(value))
     .length
     ? true
     : false;
@@ -132,6 +134,12 @@ export const pruneWorkloadsRulesFilters = (localFilters, filterCategories) => {
           urlParam: category.urlParam,
         });
       }
+    } else if (name === 'display_name' && value.trim() !== '') {
+      arr.push({
+        category: capitalize(name.replace('display_name', 'Name')),
+        chips: [{ name: value, value }],
+        urlParam: 'display_name',
+      });
     } else if (
       (name === 'description' || name === 'object_id') &&
       value.trim() !== ''
@@ -186,12 +194,23 @@ export const flatMapRows = (filteredRows, expandFirst) => {
 };
 
 export const passObjectsFilters = (objects, filters) => {
-  return Object.entries(filters).some(([filterKey, filterValue]) => {
+  const cleanedUpFilters = omitBy(cloneDeep(filters), isEmpty);
+  return Object.entries(cleanedUpFilters).every(([filterKey, filterValue]) => {
     switch (filterKey) {
+      case 'display_name':
+        return (
+          filterValue &&
+          objects?.display_name
+            ?.toLowerCase()
+            .includes(filterValue.toLowerCase())
+        );
       case 'object_id':
-        return objects.uid.toLowerCase().includes(filterValue.toLowerCase());
+        return (
+          filterValue &&
+          objects?.uid?.toLowerCase().includes(filterValue.toLowerCase())
+        );
       default:
-        return false;
+        return true;
     }
   });
 };
@@ -228,7 +247,7 @@ export const workloadsRulesAddFilterParam = (
     : workloadsRulesRemoveFilterParam(currentFilters, updateFilters, param);
 
 export const passFilterWorkloadsRecs = (recommendation, filters) => {
-  const cleanedUpFilters = _.omitBy(_.cloneDeep(filters), _.isEmpty);
+  const cleanedUpFilters = omitBy(cloneDeep(filters), isEmpty);
 
   return Object.entries(cleanedUpFilters).every(([filterKey, filterValue]) => {
     switch (filterKey) {
