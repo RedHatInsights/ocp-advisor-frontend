@@ -201,6 +201,7 @@ export const paramParser = (search) => {
         'namespace_name',
         'description',
         'object_id',
+        'object_name',
       ].includes(key)
         ? value // just copy the full value
         : value === 'true' || value === 'false'

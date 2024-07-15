@@ -136,6 +136,7 @@ const ExpandedRulesDetails = ({
                           <Th modifier="fitContent">
                             {ObjectsTableColumns.object}
                           </Th>
+                          <Th modifier="fitContent">Object name</Th>
                           <Th modifier="fitContent">
                             {ObjectsTableColumns.kind}
                           </Th>
@@ -146,6 +147,9 @@ const ExpandedRulesDetails = ({
                           <Tr key={key}>
                             <Td dataLabel={ObjectsTableColumns.object}>
                               {object.uid}
+                            </Td>
+                            <Td dataLabel={ObjectsTableColumns.object}>
+                              {object.display_name}
                             </Td>
                             <Td dataLabel={ObjectsTableColumns.kind}>
                               {object.kind}
@@ -214,6 +218,7 @@ ExpandedRulesDetails.propTypes = {
   resolution: PropTypes.string.isRequired,
   objects: PropTypes.arrayOf({
     kind: PropTypes.string,
+    display_name: PropTypes.string,
     uid: PropTypes.string,
   }),
   extra_data: PropTypes.shape({

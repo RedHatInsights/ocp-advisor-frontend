@@ -229,6 +229,8 @@ export const workloadsRulesRemoveFilterParam = (
       ? { total_risk: [] }
       : param === 'object_id'
       ? { object_id: '' }
+      : param === 'object_name'
+      ? { object_name: '' }
       : {}),
   });
 };
@@ -268,6 +270,13 @@ export const passFilterWorkloadsRecs = (recommendation, filters) => {
       case 'total_risk':
         return (
           filterValue && filterValue.includes(String(recommendation.total_risk))
+        );
+      case 'object_name':
+        return (
+          filterValue &&
+          recommendation.objects.some((obj) =>
+            obj.display_name.toLowerCase().includes(filterValue.toLowerCase())
+          )
         );
       default:
         return true;
