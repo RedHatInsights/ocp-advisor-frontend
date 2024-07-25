@@ -14,13 +14,13 @@
 ### Running a development server
 
 1. Install dependencies with `npm install`.
-2. Run development server with `npm run start` then in terminal choose stage and beta or stable environment.
-3. Local version of the application is available at https://stage.foo.redhat.com:1337/preview/openshift/insights/advisor (https://stage.foo.redhat.com:1337/openshift/insights/advisor for the non-beta release).
+2. Run development server with `npm run start` then in terminal choose stage and preview or stable environment.
+3. Local version of the application is available at https://stage.foo.redhat.com:1337/openshift/insights/advisor.
 
 ### Running in the production environment
 
-1. Run development server with `npm run start` then in terminal choose prod and beta or stable environment.
-2. Local version of the application is available at https://prod.foo.redhat.com:1337/preview/openshift/insights/advisor (https://prod.foo.redhat.com:1337/openshift/insights/advisor for the non-beta release).
+1. Run development server with `npm run start` then in terminal choose prod and preview or stable environment.
+2. Local version of the application is available at https://prod.foo.redhat.com:1337/openshift/insights/advisor.
 
 ### Using insights-results-aggregator-mock
 

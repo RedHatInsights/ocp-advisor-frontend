@@ -39,11 +39,7 @@ export const ClusterHeader = ({ clusterId, clusterData, clusterInfo }) => {
   const dropDownItems = [
     <DropdownItem
       key="link"
-      to={
-        location.origin +
-        (location.pathname.includes('preview') ? `/preview` : '') +
-        `/openshift/details/${clusterId}`
-      }
+      to={location.origin + `/openshift/details/${clusterId}`}
     >
       <snap>{intl.formatMessage(messages.clusterDetailsRedirect)}</snap>
     </DropdownItem>,
