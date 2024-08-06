@@ -298,16 +298,27 @@ export const passFilterWorkloads = (workloads, filters) => {
     workloads.metadata.hits_by_severity,
     'general'
   );
+
   return Object.entries(filters).every(([filterKey, filterValue]) => {
     switch (filterKey) {
       case 'cluster_name':
-        return (workloads.cluster.display_name || workloads.cluster.uuid)
-          .toLowerCase()
-          .includes(filterValue.toLowerCase());
+        return (
+          workloads.cluster.display_name
+            .toLowerCase()
+            .includes(filterValue.toLowerCase()) ||
+          workloads.cluster.uuid
+            .toLowerCase()
+            .includes(filterValue.toLowerCase())
+        );
       case 'namespace_name':
-        return (workloads.namespace.name || workloads.namespace.uuid)
-          .toLowerCase()
-          .includes(filterValue.toLowerCase());
+        return (
+          workloads.namespace.name
+            .toLowerCase()
+            .includes(filterValue.toLowerCase()) ||
+          workloads.namespace.uuid
+            .toLowerCase()
+            .includes(filterValue.toLowerCase())
+        );
       case 'severity':
         return (
           filterValue.length === 0 ||
