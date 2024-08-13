@@ -5,7 +5,7 @@ export default defineMessages({
   documentTitle: {
     id: 'documentTitle',
     description: 'The title of the page as it appears in the browser tab',
-    defaultMessage: '{subnav} - OCP Advisor | Red Hat Insights',
+    defaultMessage: '{subnav} - Advisor | OpenShift',
   },
   clusters: {
     id: 'clusters',

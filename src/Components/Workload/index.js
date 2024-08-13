@@ -22,7 +22,7 @@ const WorkloadWrapper = () => {
         ? `${workload?.data?.cluster.display_name} | ${workload?.data?.namespace.name} - Workloads`
         : `${clusterId} | ${namespaceId} - Workloads`
     }`;
-    chrome.updateDocumentTitle(`${subnav} - OCP Advisor | Red Hat Insights`);
+    chrome.updateDocumentTitle(`${subnav} - Advisor | OpenShift`);
   }, [workload, namespaceId, clusterId]);
 
   return (
