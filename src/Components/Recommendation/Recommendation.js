@@ -270,7 +270,7 @@ const Recommendation = ({ rule, ack, clusters, recId }) => {
                     ouiaId="actions"
                     toggle={(toggleRef) => (
                       <MenuToggle
-                        data-ouia-component-id="actions-toggle"
+                        ouiaId="actions-toggle"
                         // ouiaId="actions-toggle"
                         ref={toggleRef}
                         onClick={() =>

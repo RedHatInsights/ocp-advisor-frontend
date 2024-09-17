@@ -174,7 +174,7 @@ describe('successful, empty', () => {
   });
 
   it('header is present', () => {
-    checkTableHeaders(['Name']);
+    cy.get(TABLE_HEADER).contains('Name');
   });
 });
 
@@ -194,7 +194,7 @@ describe('error, service down', () => {
   });
 
   it('header is present', () => {
-    checkTableHeaders(['Name']);
+    cy.get(TABLE_HEADER).contains('Name');
   });
 });
 
@@ -209,7 +209,7 @@ describe('error, not found', () => {
   });
 
   it('header is present', () => {
-    checkTableHeaders(['Name']);
+    cy.get(TABLE_HEADER).contains('Name');
   });
 });
 
@@ -229,7 +229,7 @@ describe('error, other', () => {
   });
 
   it('header is present', () => {
-    checkTableHeaders(['Name']);
+    cy.get(TABLE_HEADER).contains('Name');
   });
 });
 

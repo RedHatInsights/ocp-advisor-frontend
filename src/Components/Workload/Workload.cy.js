@@ -211,9 +211,7 @@ describe('Workload component renders and filters data', () => {
       `/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`,
       workload
     );
-    cy.get('div.ins-c-primary-toolbar__filter')
-      .find('button[data-ouia-component-id="ConditionalFilterToggle"]')
-      .click();
+    cy.get('div.ins-c-primary-toolbar__filter').find('button').click();
     cy.get('li[data-ouia-component-id="description"]')
       .contains('Description')
       .click();
@@ -225,9 +223,7 @@ describe('Workload component renders and filters data', () => {
       `/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`,
       workload
     );
-    cy.get('div.ins-c-primary-toolbar__filter')
-      .find('button[data-ouia-component-id="ConditionalFilterToggle"]')
-      .click();
+    cy.get('div.ins-c-primary-toolbar__filter').find('button').click();
     cy.get('li[data-ouia-component-id="object ID"]')
       .contains('Object ID')
       .click();
@@ -241,9 +237,7 @@ describe('Workload component renders and filters data', () => {
       `/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`,
       workload
     );
-    cy.get('div.ins-c-primary-toolbar__filter')
-      .find('button[data-ouia-component-id="ConditionalFilterToggle"]')
-      .click();
+    cy.get('div.ins-c-primary-toolbar__filter').find('button').click();
     cy.get('li[data-ouia-component-id="total risk"]')
       .contains('Total risk')
       .click();

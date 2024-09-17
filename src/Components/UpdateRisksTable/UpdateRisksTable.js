@@ -63,6 +63,7 @@ const UpdateRisksTable = () => {
       variant="compact"
       id="update-risks-table"
       borders={hasRisks}
+      ouiaId="update-risks-table"
     >
       <Thead>
         <Tr>
