@@ -56,7 +56,7 @@ import {
 
 // selectors
 const ROOT = 'div[id=affected-list-table]';
-const BULK_SELECT = '[data-ouia-component-id="BulkSelect"]';
+const BULK_SELECT = '[data-ouia-component-type="PF5/MenuToggleCheckbox"]';
 const SEARCH_ITEMS = ['ff', 'CUSTOM', 'Foobar', 'Not existing cluster'];
 const TABLE_HEADERS = _.map(AFFECTED_CLUSTERS_COLUMNS, (it) => it.title);
 
@@ -206,7 +206,7 @@ describe('non-empty successful affected clusters table', () => {
         .find(MENU_ITEM)
         .should('have.class', 'pf-m-disabled')
         .contains('Disable recommendation for selected clusters');
-      cy.get(`${BULK_SELECT}`).find('input').should('not.be.checked');
+      cy.get(`${BULK_SELECT}`).should('not.be.checked');
     });
 
     it('sorting using last seen', () => {
@@ -216,7 +216,7 @@ describe('non-empty successful affected clusters table', () => {
 
   describe('bulk selector', () => {
     it('checkbox can be clicked', () => {
-      cy.get(`${BULK_SELECT}`).find('input').click().should('be.checked');
+      cy.get(`${BULK_SELECT}`).click().should('be.checked');
       // contains right text
       cy.get(TOOLBAR)
         .find('.pf-v5-c-check__label')
@@ -237,10 +237,7 @@ describe('non-empty successful affected clusters table', () => {
     });
 
     it('checkbox can be un-clicked and all row are unselected', () => {
-      cy.get(`${BULK_SELECT}`)
-        .find('input')
-        .dblclick()
-        .should('not.be.checked');
+      cy.get(`${BULK_SELECT}`).dblclick().should('not.be.checked');
       // contains right text
       cy.get('#toggle-checkbox-text').should('not.exist');
       // checks all rows
@@ -265,7 +262,7 @@ describe('non-empty successful affected clusters table', () => {
     });
 
     it('checkbox is unselected when a row is unselected', () => {
-      cy.get(`${BULK_SELECT}`).find('input').click().should('be.checked');
+      cy.get(`${BULK_SELECT}`).click().should('be.checked');
       cy.get('[data-ouia-component-id="clusters-selector"]').click();
       // cy.ouiaId(BULK_SELECT).find('input').click().should('be.checked');
       // removing one row unselects it
@@ -276,8 +273,8 @@ describe('non-empty successful affected clusters table', () => {
         .first()
         .find('input')
         .click();
-      cy.get(`${BULK_SELECT}`).find('input').should('not.be.checked');
-      cy.get(`${BULK_SELECT}`)
+      cy.get(`${BULK_SELECT}`).should('not.be.checked');
+      cy.get(`[data-ouia-component-type="PF5/MenuToggle"]`)
         .find('.pf-v5-c-check__label')
         .should('have.text', `1 selected`);
       // bulk disabling button is still enabled
@@ -291,7 +288,7 @@ describe('non-empty successful affected clusters table', () => {
     });
 
     it('is updated when checking one row', () => {
-      cy.get(`${BULK_SELECT}`).find('input').should('not.be.checked');
+      cy.get(`${BULK_SELECT}`).should('not.be.checked');
 
       // selecting from rows display the correct text
       cy.get(TABLE)
@@ -302,9 +299,9 @@ describe('non-empty successful affected clusters table', () => {
         .find('input')
         .click();
 
-      cy.get(`${BULK_SELECT}`).find('input').should('not.be.checked');
+      cy.get(`${BULK_SELECT}`).should('not.be.checked');
 
-      cy.get(`${BULK_SELECT}`)
+      cy.get(`[data-ouia-component-type="PF5/MenuToggle"]`)
         .find('.pf-v5-c-check__label')
         .contains(`1 selected`);
     });
@@ -314,9 +311,9 @@ describe('non-empty successful affected clusters table', () => {
       cy.ouiaId('BulkSelectList')
         .find('li')
         .should(($lis) => {
-          expect($lis).to.have.length(2);
-          expect($lis.eq(0)).to.contain('0');
-          expect($lis.eq(1)).to.contain(`${data.length}`);
+          expect($lis).to.have.length(3);
+          expect($lis.eq(1)).to.contain('0 items');
+          expect($lis.eq(2)).to.contain(`${data.length}`);
         });
     });
 
@@ -325,9 +322,9 @@ describe('non-empty successful affected clusters table', () => {
       // cy.ouiaId(BULK_SELECT).find('button').click();
       cy.ouiaId('BulkSelectList').find('li').contains('all').click();
 
-      cy.get(`${BULK_SELECT}`).find('input').should('be.checked');
+      cy.get(`${BULK_SELECT}`).should('be.checked');
       // contains right text
-      cy.get(`${BULK_SELECT}`)
+      cy.get(`[data-ouia-component-type="PF5/MenuToggle"]`)
         .find('.pf-v5-c-check__label')
         .contains(`${data.length} selected`);
       // checks all rows
@@ -347,10 +344,10 @@ describe('non-empty successful affected clusters table', () => {
     });
 
     it('button can select none', () => {
-      cy.get(`${BULK_SELECT}`).find('input').click();
+      cy.get(`${BULK_SELECT}`).click();
       cy.ouiaId('BulkSelectList').find('li').contains('none').click();
 
-      cy.get(`${BULK_SELECT}`).find('input').should('not.be.checked');
+      cy.get(`${BULK_SELECT}`).should('not.be.checked');
       // checks all rows
       cy.get(TABLE)
         .find(TABLE_ROW)
@@ -386,7 +383,7 @@ describe('non-empty successful affected clusters table', () => {
           }
         })
         .then(() => {
-          cy.get(`${BULK_SELECT}`)
+          cy.get(`[data-ouia-component-type="PF5/MenuToggle"]`)
             .find('.pf-v5-c-check__label')
             .contains(`${nSelectedRows} selected`);
         });

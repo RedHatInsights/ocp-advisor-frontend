@@ -18,6 +18,7 @@ import {
 } from '@redhat-cloud-services/frontend-components-utilities';
 
 const BREADCRUMBS = 'nav[class=pf-v5-c-breadcrumb]';
+const FILTER_TOGGLE = 'data-ouia-component-type="PF5/MenuToggle"';
 const WORKLOAD_HEADER = '#workload-header';
 const WORKLOAD_RULES_TABLE = '#workload-recs-list-table';
 const FILTER_CHIPS = 'li[class=pf-v5-c-chip-group__list-item]';
@@ -211,9 +212,7 @@ describe('Workload component renders and filters data', () => {
       `/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`,
       workload
     );
-    cy.get('div.ins-c-primary-toolbar__filter')
-      .find('button[data-ouia-component-id="ConditionalFilterToggle"]')
-      .click();
+    cy.get('div.ins-c-primary-toolbar__filter').find('button').click();
     cy.get('li[data-ouia-component-id="description"]')
       .contains('Description')
       .click();
@@ -225,9 +224,7 @@ describe('Workload component renders and filters data', () => {
       `/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`,
       workload
     );
-    cy.get('div.ins-c-primary-toolbar__filter')
-      .find('button[data-ouia-component-id="ConditionalFilterToggle"]')
-      .click();
+    cy.get('div.ins-c-primary-toolbar__filter').find('button').click();
     cy.get('li[data-ouia-component-id="object ID"]')
       .contains('Object ID')
       .click();
@@ -241,9 +238,7 @@ describe('Workload component renders and filters data', () => {
       `/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`,
       workload
     );
-    cy.get('div.ins-c-primary-toolbar__filter')
-      .find('button[data-ouia-component-id="ConditionalFilterToggle"]')
-      .click();
+    cy.get('div.ins-c-primary-toolbar__filter').find('button').click();
     cy.get('li[data-ouia-component-id="total risk"]')
       .contains('Total risk')
       .click();
