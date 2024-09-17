@@ -8,7 +8,6 @@ import {
   checkEmptyState,
   checkTableHeaders,
 } from '@redhat-cloud-services/frontend-components-utilities';
-import _ from 'lodash';
 
 const SEVERITY_MAPPING = {
   critical: 'Critical',
