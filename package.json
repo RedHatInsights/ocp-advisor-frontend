@@ -38,7 +38,7 @@
     "@redhat-cloud-services/frontend-components-notifications": "^4.1.0",
     "@redhat-cloud-services/frontend-components-translations": "^3.2.8",
     "@redhat-cloud-services/frontend-components-utilities": "^4.0.15",
-    "@reduxjs/toolkit": "^2.2.0",
+    "@reduxjs/toolkit": "^2.2.7",
     "@unleash/proxy-client-react": "^4.1.2",
     "axios": "^1.6.7",
     "lodash": "^4.17.21",
