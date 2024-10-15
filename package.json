@@ -29,7 +29,7 @@
     "postinstall": "ts-patch install"
   },
   "dependencies": {
-    "@patternfly/react-core": "^5.4.0",
+    "@patternfly/react-core": "^5.4.1",
     "@patternfly/react-icons": "^5.4.0",
     "@patternfly/react-table": "^5.4.0",
     "@redhat-cloud-services/frontend-components": "^4.2.15",
