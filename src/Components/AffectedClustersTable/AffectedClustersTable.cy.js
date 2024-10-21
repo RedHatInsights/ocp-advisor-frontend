@@ -57,6 +57,7 @@ import {
 // selectors
 const ROOT = 'div[id=affected-list-table]';
 const BULK_SELECT = '[data-ouia-component-type="PF5/MenuToggleCheckbox"]';
+const BULK_SELECT_TOGGLE = '[class="pf-v5-c-menu-toggle__controls"]'
 const SEARCH_ITEMS = ['ff', 'CUSTOM', 'Foobar', 'Not existing cluster'];
 const TABLE_HEADERS = _.map(AFFECTED_CLUSTERS_COLUMNS, (it) => it.title);
 
@@ -307,18 +308,18 @@ describe('non-empty successful affected clusters table', () => {
     });
 
     it('has buttons to select none or all', () => {
-      cy.get(`${BULK_SELECT}`).click();
+      cy.get(`${BULK_SELECT_TOGGLE}`).first().click();
       cy.ouiaId('BulkSelectList')
         .find('li')
         .should(($lis) => {
-          expect($lis).to.have.length(3);
-          expect($lis.eq(1)).to.contain('0 items');
-          expect($lis.eq(2)).to.contain(`${data.length}`);
+          expect($lis).to.have.length(2);
+          expect($lis.eq(0)).to.contain('0 items');
+          expect($lis.eq(1)).to.contain(`${data.length}`);
         });
     });
 
     it('button can select all', () => {
-      cy.get(`${BULK_SELECT}`).click();
+      cy.get(`${BULK_SELECT_TOGGLE}`).first().click();
       // cy.ouiaId(BULK_SELECT).find('button').click();
       cy.ouiaId('BulkSelectList').find('li').contains('all').click();
 
@@ -344,7 +345,7 @@ describe('non-empty successful affected clusters table', () => {
     });
 
     it('button can select none', () => {
-      cy.get(`${BULK_SELECT}`).click();
+      cy.get(`${BULK_SELECT_TOGGLE}`).first().click();
       cy.ouiaId('BulkSelectList').find('li').contains('none').click();
 
       cy.get(`${BULK_SELECT}`).should('not.be.checked');
