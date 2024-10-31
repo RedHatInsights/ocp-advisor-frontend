@@ -57,7 +57,7 @@ import {
 // selectors
 const ROOT = 'div[id=affected-list-table]';
 const BULK_SELECT = '[data-ouia-component-type="PF5/MenuToggleCheckbox"]';
-const BULK_SELECT_TOGGLE = '[class="pf-v5-c-menu-toggle__controls"]'
+const BULK_SELECT_TOGGLE = '[class="pf-v5-c-menu-toggle__controls"]';
 const SEARCH_ITEMS = ['ff', 'CUSTOM', 'Foobar', 'Not existing cluster'];
 const TABLE_HEADERS = _.map(AFFECTED_CLUSTERS_COLUMNS, (it) => it.title);
 
