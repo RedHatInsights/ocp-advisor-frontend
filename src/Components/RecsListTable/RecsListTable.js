@@ -64,7 +64,7 @@ import {
   RuleDetailsMessagesKeys,
 } from '@redhat-cloud-services/frontend-components-advisor-components';
 import { adjustOCPRule } from '../../Utilities/Rule';
-import Loading from '../Loading/Loading';
+import { SkeletonTable } from '@patternfly/react-component-groups';
 import inRange from 'lodash/inRange';
 import { BASE_PATH } from '../../Routes';
 
@@ -678,52 +678,53 @@ const RecsListTable = ({ query }) => {
         }}
         activeFiltersConfig={errorState ? undefined : activeFiltersConfig}
       />
-      <Table
-        aria-label="Table of recommendations"
-        ouiaId="recommendations"
-        variant={TableVariant.compact}
-        cells={RECS_LIST_COLUMNS}
-        rows={
-          errorState || loadingState || noMatch ? (
-            [
-              {
-                fullWidth: true,
-                cells: [
-                  {
-                    props: {
-                      colSpan: RECS_LIST_COLUMNS.length + 1,
+      {loadingState ? (
+        <SkeletonTable
+          columns={RECS_LIST_COLUMNS.map((c) => c.title)}
+          variant="compact"
+        />
+      ) : (
+        <Table
+          aria-label="Table of recommendations"
+          ouiaId="recommendations"
+          variant={TableVariant.compact}
+          cells={RECS_LIST_COLUMNS}
+          rows={
+            errorState || loadingState || noMatch ? (
+              [
+                {
+                  fullWidth: true,
+                  cells: [
+                    {
+                      props: {
+                        colSpan: RECS_LIST_COLUMNS.length + 1,
+                      },
+                      title: errorState ? <ErrorState /> : <NoMatchingRecs />,
                     },
-                    title: errorState ? (
-                      <ErrorState />
-                    ) : loadingState ? (
-                      <Loading />
-                    ) : (
-                      <NoMatchingRecs />
-                    ),
-                  },
-                ],
-              },
-            ]
-          ) : successState ? (
-            displayedRows
-          ) : (
-            <ErrorState />
-          )
-        }
-        onCollapse={handleOnCollapse} // TODO: set undefined when there is an empty state
-        sortBy={{
-          index: filters.sortIndex,
-          direction: filters.sortDirection,
-        }}
-        onSort={onSort}
-        actionResolver={actionResolver}
-        isStickyHeader
-        ouiaSafe={!loadingState}
-        canCollapseAll
-      >
-        <TableHeader />
-        <TableBody />
-      </Table>
+                  ],
+                },
+              ]
+            ) : successState ? (
+              displayedRows
+            ) : (
+              <ErrorState />
+            )
+          }
+          onCollapse={handleOnCollapse} // TODO: set undefined when there is an empty state
+          sortBy={{
+            index: filters.sortIndex,
+            direction: filters.sortDirection,
+          }}
+          onSort={onSort}
+          actionResolver={actionResolver}
+          isStickyHeader
+          ouiaSafe={!loadingState}
+          canCollapseAll
+        >
+          <TableHeader />
+          <TableBody />
+        </Table>
+      )}
       <Pagination
         ouiaId="pager"
         itemCount={filteredRows.length}

@@ -581,7 +581,7 @@ describe('clusters list table', () => {
 
   it('rows show cluster names instead uuids when available', () => {
     const names = _.map(data, 'name');
-    cy.get('[data-ouia-component-id=loading-skeleton]').should('not.exist');
+    cy.get('[data-ouia-component-id=SkeletonTable-tr-0]').should('not.exist');
     cy.get(`td[data-label="Name"]`)
       .then(($els) => {
         return _.map(Cypress.$.makeArray($els), 'innerText');
@@ -590,7 +590,7 @@ describe('clusters list table', () => {
   });
 
   it('names of rows are links', () => {
-    cy.get('[data-ouia-component-id=loading-skeleton]').should('not.exist');
+    cy.get('[data-ouia-component-id=SkeletonTable-tr-0]').should('not.exist');
     cy.get(TBODY)
       .children()
       .each(($el, index) => {
@@ -604,7 +604,7 @@ describe('clusters list table', () => {
   });
 
   it('total risk hits are mapped correctly', () => {
-    cy.get('[data-ouia-component-id=loading-skeleton]').should('not.exist');
+    cy.get('[data-ouia-component-id=SkeletonTable-tr-0]').should('not.exist');
     cy.get('table')
       .find(TBODY)
       .find(ROW)

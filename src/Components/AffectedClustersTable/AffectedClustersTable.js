@@ -30,7 +30,6 @@ import {
   AFFECTED_CLUSTERS_VERSION_CELL,
   FILTER_CATEGORIES,
 } from '../../AppConstants';
-import Loading from '../Loading/Loading';
 import {
   AFFECTED_CLUSTERS_INITIAL_STATE,
   resetFilters,
@@ -45,6 +44,7 @@ import {
   addFilterParam as _addFilterParam,
 } from '../Common/Tables';
 import { BASE_PATH } from '../../Routes';
+import { SkeletonTable } from '@patternfly/react-component-groups';
 
 const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
   const intl = useIntl();
@@ -97,7 +97,7 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
         type: conditionalFilterType.text,
         filterValues: {
           id: 'name-filter',
-          key: 'name-filter',
+          // key: 'name-filter',
           onChange: (event, value) => addFilterParam('text', value),
           value: filters.text,
         },
@@ -108,7 +108,7 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
         type: conditionalFilterType.checkbox,
         filterValues: {
           id: 'version-filter',
-          key: 'version-filter',
+          // key: 'version-filter',
           onChange: (event, value) => addFilterParam('version', value),
           value: filters.version,
           items: uniqBy(
@@ -384,59 +384,65 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
           ],
         }}
       />
-      <Table
-        aria-label="Table of affected clusters"
-        ouiaId="clusters"
-        ouiaSafe={!loadingState}
-        variant="compact"
-        cells={AFFECTED_CLUSTERS_COLUMNS}
-        rows={
-          errorState || loadingState || noMatch || noInput ? (
-            [
-              {
-                fullWidth: true,
-                cells: [
-                  {
-                    props: {
-                      colSpan: AFFECTED_CLUSTERS_COLUMNS.length + 1,
+      {loadingState ? (
+        <SkeletonTable
+          columns={AFFECTED_CLUSTERS_COLUMNS.map((c) => c.title)}
+          isSelectable
+          variant="compact"
+        />
+      ) : (
+        <Table
+          aria-label="Table of affected clusters"
+          ouiaId="clusters"
+          ouiaSafe={!loadingState}
+          variant="compact"
+          cells={AFFECTED_CLUSTERS_COLUMNS}
+          rows={
+            errorState || loadingState || noMatch || noInput ? (
+              [
+                {
+                  fullWidth: true,
+                  cells: [
+                    {
+                      props: {
+                        colSpan: AFFECTED_CLUSTERS_COLUMNS.length + 1,
+                      },
+                      title: errorState ? (
+                        <ErrorState />
+                      ) : noInput ? (
+                        <NoAffectedClusters />
+                      ) : (
+                        <NoMatchingClusters />
+                      ),
                     },
-                    title: errorState ? (
-                      <ErrorState />
-                    ) : loadingState ? (
-                      <Loading />
-                    ) : noInput ? (
-                      <NoAffectedClusters />
-                    ) : (
-                      <NoMatchingClusters />
-                    ),
-                  },
-                ],
-              },
-            ]
-          ) : successState ? (
-            displayedRows
-          ) : (
-            <ErrorState />
-          )
-        }
-        sortBy={{
-          index: filters.sortIndex,
-          direction: filters.sortDirection,
-        }}
-        onSort={onSort}
-        canSelectAll={false}
-        onSelect={displayedRows?.length > 0 ? onSelect : undefined}
-        actions={[
-          {
-            title: 'Disable recommendation for cluster',
-            onClick: (event, rowIndex) =>
-              handleModalToggle(true, filteredRows[rowIndex].id),
-          },
-        ]}
-      >
-        <TableHeader />
-        <TableBody />
-      </Table>
+                  ],
+                },
+              ]
+            ) : successState ? (
+              displayedRows
+            ) : (
+              <ErrorState />
+            )
+          }
+          sortBy={{
+            index: filters.sortIndex,
+            direction: filters.sortDirection,
+          }}
+          onSort={onSort}
+          canSelectAll={false}
+          onSelect={displayedRows?.length > 0 ? onSelect : undefined}
+          actions={[
+            {
+              title: 'Disable recommendation for cluster',
+              onClick: (event, rowIndex) =>
+                handleModalToggle(true, filteredRows[rowIndex].id),
+            },
+          ]}
+        >
+          <TableHeader />
+          <TableBody />
+        </Table>
+      )}
       <Pagination
         variant={PaginationVariant.bottom}
         itemCount={filteredRows.length}
