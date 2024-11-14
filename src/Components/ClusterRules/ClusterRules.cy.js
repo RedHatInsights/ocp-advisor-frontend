@@ -190,11 +190,8 @@ describe('cluster rules table', () => {
 
   it('expand one row then sort', () => {
     cy.get('#expandable-toggle2').click();
-    cy.get(TABLE)
-      .find('th[data-label=Description]')
-      .find('button')
-      .click()
-      .click();
+    cy.get(TABLE).find('th[data-label=Description]').find('button').click();
+    cy.get(TABLE).find('th[data-label=Description]').find('button').click();
     cy.get(EXPANDABLES).should('have.length', 2);
   });
 
@@ -413,7 +410,8 @@ describe('cluster rules table testing the first query parameter', () => {
       if (order === 'ascending') {
         cy.get(header).find('button').click();
       } else {
-        cy.get(header).find('button').click().click();
+        cy.get(header).find('button').click();
+        cy.get(header).find('button').click();
       }
       let sortedDescriptions = _.map(
         _.orderBy(

@@ -13,7 +13,6 @@ import {
   WORKLOAD_RULES_FILTER_CATEGORIES,
 } from '../../AppConstants';
 import PropTypes from 'prop-types';
-import Loading from '../Loading/Loading';
 import {
   ErrorState,
   NoMatchingRecsForWorkloads,
@@ -45,6 +44,7 @@ import {
 } from '../../Utilities/Workloads';
 import { useLocation } from 'react-router-dom';
 import './WorkloadRules.scss';
+import { SkeletonTable } from '@patternfly/react-component-groups';
 
 const WorkloadRules = ({ workload, namespaceName }) => {
   const dispatch = useDispatch();
@@ -277,57 +277,63 @@ const WorkloadRules = ({ workload, namespaceName }) => {
             : activeFiltersConfig
         }
       />
-      <Table
-        aria-label={'Workload recommendations table'}
-        ouiaId="workload-recommendations"
-        cells={WORKLOAD_RULES_COLUMNS}
-        ouiaSafe={!loadingState}
-        onCollapse={handleOnCollapse} // TODO: set undefined when there is an empty state
-        rows={
-          errorState || loadingState || noInput || noMatchingRecs ? (
-            [
-              {
-                fullWidth: true,
-                cells: [
-                  {
-                    props: {
-                      colSpan: WORKLOAD_RULES_COLUMNS.length + 1,
-                    },
-                    title: errorState ? (
-                      error?.status === 404 ? (
-                        <NoRecsForWorkloadsDetails />
+      {loadingState ? (
+        <SkeletonTable
+          columns={WORKLOAD_RULES_COLUMNS.map((c) => c.title)}
+          isExpandable
+          variant="compact"
+        />
+      ) : (
+        <Table
+          aria-label={'Workload recommendations table'}
+          ouiaId="workload-recommendations"
+          cells={WORKLOAD_RULES_COLUMNS}
+          ouiaSafe={!loadingState}
+          onCollapse={handleOnCollapse} // TODO: set undefined when there is an empty state
+          rows={
+            errorState || loadingState || noInput || noMatchingRecs ? (
+              [
+                {
+                  fullWidth: true,
+                  cells: [
+                    {
+                      props: {
+                        colSpan: WORKLOAD_RULES_COLUMNS.length + 1,
+                      },
+                      title: errorState ? (
+                        error?.status === 404 ? (
+                          <NoRecsForWorkloadsDetails />
+                        ) : (
+                          <NoWorkloadsRecsAvailable />
+                        )
+                      ) : noMatchingRecs ? (
+                        <NoMatchingRecsForWorkloads />
                       ) : (
-                        <NoWorkloadsRecsAvailable />
-                      )
-                    ) : loadingState ? (
-                      <Loading />
-                    ) : noMatchingRecs ? (
-                      <NoMatchingRecsForWorkloads />
-                    ) : (
-                      <NoRecsForWorkloadsDetails />
-                    ),
-                  },
-                ],
-              },
-            ]
-          ) : successState ? (
-            displayedRows
-          ) : (
-            <ErrorState />
-          )
-        }
-        variant={TableVariant.compact}
-        isStickyHeader
-        canCollapseAll
-        sortBy={{
-          index: filters.sortIndex,
-          direction: filters.sortDirection,
-        }}
-        onSort={onSort}
-      >
-        <TableHeader />
-        <TableBody />
-      </Table>
+                        <NoRecsForWorkloadsDetails />
+                      ),
+                    },
+                  ],
+                },
+              ]
+            ) : successState ? (
+              displayedRows
+            ) : (
+              <ErrorState />
+            )
+          }
+          variant={TableVariant.compact}
+          isStickyHeader
+          canCollapseAll
+          sortBy={{
+            index: filters.sortIndex,
+            direction: filters.sortDirection,
+          }}
+          onSort={onSort}
+        >
+          <TableHeader />
+          <TableBody />
+        </Table>
+      )}
     </div>
   );
 };

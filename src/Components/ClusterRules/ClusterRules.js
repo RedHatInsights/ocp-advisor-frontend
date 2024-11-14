@@ -15,6 +15,7 @@ import {
   TableHeader,
 } from '@patternfly/react-table/deprecated';
 import { Tooltip } from '@patternfly/react-core';
+import { SkeletonTable } from '@patternfly/react-component-groups';
 import { TooltipPosition } from '@patternfly/react-core/dist/js/components/Tooltip';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
 
@@ -50,7 +51,6 @@ import {
   updateClusterRulesFilters,
 } from '../../Services/Filters';
 import { getErrorKey, getPluginName } from '../../Utilities/Rule';
-import Loading from '../Loading/Loading';
 import { useGetClusterByIdQuery } from '../../Services/SmartProxy';
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 
@@ -456,57 +456,62 @@ const ClusterRules = () => {
             : activeFiltersConfig
         }
       />
-      <Table
-        aria-label={'Cluster recommendations table'}
-        ouiaId="recommendations"
-        ouiaSafe={!loadingState}
-        onCollapse={handleOnCollapse} // TODO: set undefined when there is an empty state
-        rows={
-          errorState || loadingState || noMatch || noInput ? (
-            [
-              {
-                fullWidth: true,
-                cells: [
-                  {
-                    props: {
-                      colSpan: CLUSTER_RULES_COLUMNS.length + 1,
-                    },
-                    title: errorState ? (
-                      error?.status === 404 ? (
-                        <NoInsightsResults /> // no Insights results received yet
+      {loadingState ? (
+        <SkeletonTable
+          columns={CLUSTER_RULES_COLUMNS.map((c) => c.title)}
+          variant="compact"
+        />
+      ) : (
+        <Table
+          aria-label={'Cluster recommendations table'}
+          ouiaId="recommendations"
+          ouiaSafe={!loadingState}
+          onCollapse={handleOnCollapse} // TODO: set undefined when there is an empty state
+          rows={
+            errorState || loadingState || noMatch || noInput ? (
+              [
+                {
+                  fullWidth: true,
+                  cells: [
+                    {
+                      props: {
+                        colSpan: CLUSTER_RULES_COLUMNS.length + 1,
+                      },
+                      title: errorState ? (
+                        error?.status === 404 ? (
+                          <NoInsightsResults /> // no Insights results received yet
+                        ) : (
+                          <NoRecsError /> // any other problem
+                        )
+                      ) : noInput ? (
+                        <NoRecsAffecting />
                       ) : (
-                        <NoRecsError /> // any other problem
-                      )
-                    ) : loadingState ? (
-                      <Loading />
-                    ) : noInput ? (
-                      <NoRecsAffecting />
-                    ) : (
-                      <NoMatchingRecs />
-                    ),
-                  },
-                ],
-              },
-            ]
-          ) : successState ? (
-            displayedRows
-          ) : (
-            <ErrorState />
-          )
-        }
-        cells={CLUSTER_RULES_COLUMNS}
-        sortBy={{
-          index: filters.sortIndex,
-          direction: filters.sortDirection,
-        }}
-        onSort={onSort}
-        variant={TableVariant.compact}
-        isStickyHeader
-        canCollapseAll
-      >
-        <TableHeader />
-        <TableBody />
-      </Table>
+                        <NoMatchingRecs />
+                      ),
+                    },
+                  ],
+                },
+              ]
+            ) : successState ? (
+              displayedRows
+            ) : (
+              <ErrorState />
+            )
+          }
+          cells={CLUSTER_RULES_COLUMNS}
+          sortBy={{
+            index: filters.sortIndex,
+            direction: filters.sortDirection,
+          }}
+          onSort={onSort}
+          variant={TableVariant.compact}
+          isStickyHeader
+          canCollapseAll
+        >
+          <TableHeader />
+          <TableBody />
+        </Table>
+      )}
     </div>
   );
 };
