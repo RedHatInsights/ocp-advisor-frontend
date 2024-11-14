@@ -176,9 +176,9 @@ function checkSorting(
         }
       });
   } else {
+    cy.get(header).find('button').click();
     cy.get(header)
       .find('button')
-      .click()
       .click() // TODO dblclick fails for unknown reason in RecsListTable when sorting by Clusters
       .then(() => {
         if (validateURL) {
