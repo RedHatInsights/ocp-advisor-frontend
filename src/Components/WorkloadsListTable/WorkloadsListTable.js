@@ -22,6 +22,7 @@ import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat';
 import { Link, useLocation } from 'react-router-dom';
 import { BASE_PATH } from '../../Routes';
 import { Pagination } from '@patternfly/react-core';
+import { SkeletonTable } from '@patternfly/react-component-groups';
 import { conditionalFilterType } from '@redhat-cloud-services/frontend-components/ConditionalFilter/conditionalFilterConstants';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -44,7 +45,6 @@ import {
   NoMatchingWorkloads,
   NoDVOInstalledOrDataCollected,
 } from '../MessageState/EmptyStates';
-import Loading from '../Loading/Loading';
 import ShieldSet from '../ShieldSet';
 import { filtersAreApplied } from '../../Utilities/Workloads';
 
@@ -312,49 +312,51 @@ const WorkloadsListTable = ({
           isError ? { showDeleteButton: false } : activeFiltersConfig
         }
       />
-      <Table
-        aria-label="Table of workloads"
-        ouiaId="workloads"
-        ouiaSafe={!loadingState}
-        variant={TableVariant.compact}
-        cells={WORKLOADS_LIST_COLUMNS}
-        rows={
-          errorState || loadingState || noMatch ? (
-            [
-              {
-                fullWidth: true,
-                cells: [
-                  {
-                    props: {
-                      colSpan: WORKLOADS_LIST_COLUMNS.length + 1,
+      {loadingState ? (
+        <SkeletonTable columns={WORKLOADS_LIST_COLUMNS.map((c) => c.title)} />
+      ) : (
+        <Table
+          aria-label="Table of workloads"
+          ouiaId="workloads"
+          ouiaSafe={!loadingState}
+          variant={TableVariant.compact}
+          cells={WORKLOADS_LIST_COLUMNS}
+          rows={
+            errorState || loadingState || noMatch ? (
+              [
+                {
+                  fullWidth: true,
+                  cells: [
+                    {
+                      props: {
+                        colSpan: WORKLOADS_LIST_COLUMNS.length + 1,
+                      },
+                      title: errorState ? (
+                        <ErrorState />
+                      ) : (
+                        <NoMatchingWorkloads />
+                      ),
                     },
-                    title: errorState ? (
-                      <ErrorState />
-                    ) : loadingState ? (
-                      <Loading />
-                    ) : (
-                      <NoMatchingWorkloads />
-                    ),
-                  },
-                ],
-              },
-            ]
-          ) : successState ? (
-            rows
-          ) : (
-            <ErrorState />
-          )
-        }
-        isStickyHeader
-        sortBy={{
-          index: filters.sortIndex,
-          direction: filters.sortDirection,
-        }}
-        onSort={onSort}
-      >
-        <TableHeader />
-        <TableBody />
-      </Table>
+                  ],
+                },
+              ]
+            ) : successState ? (
+              rows
+            ) : (
+              <ErrorState />
+            )
+          }
+          isStickyHeader
+          sortBy={{
+            index: filters.sortIndex,
+            direction: filters.sortDirection,
+          }}
+          onSort={onSort}
+        >
+          <TableHeader />
+          <TableBody />
+        </Table>
+      )}
       <Pagination
         ouiaId="pager"
         itemCount={filteredRows.length}

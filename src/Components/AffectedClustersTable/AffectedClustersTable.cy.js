@@ -163,13 +163,14 @@ describe('non-empty successful affected clusters table', () => {
   });
 
   it('renders table header', () => {
+    cy.get('[data-ouia-component-id=SkeletonTable-tr-0]').should('not.exist');
     checkTableHeaders(TABLE_HEADERS);
   });
 
   it('rows show cluster names instead uuids when available', () => {
     const names = _.map(data, 'name');
     // Wait for skeleton to disappear
-    cy.get('[data-ouia-component-id=loading-skeleton]').should('not.exist');
+    cy.get('[data-ouia-component-id=SkeletonTable-tr-0]').should('not.exist');
     cy.get(`td[data-label="Name"]`)
       .then(($els) => {
         return _.map(Cypress.$.makeArray($els), 'innerText');
@@ -178,7 +179,7 @@ describe('non-empty successful affected clusters table', () => {
   });
 
   it('names of rows are links', () => {
-    cy.get('[data-ouia-component-id=loading-skeleton]').should('not.exist');
+    cy.get('[data-ouia-component-id=SkeletonTable-tr-0]').should('not.exist');
     cy.get(TABLE)
       .find(TABLE_ROW)
       .each(($el, index) => {
@@ -641,6 +642,7 @@ describe('empty successful affected clusters table', () => {
   });
 
   it('renders table headers', () => {
+    cy.get('[data-ouia-component-id=SkeletonTable-tr-0]').should('not.exist');
     checkTableHeaders(TABLE_HEADERS);
   });
 });
