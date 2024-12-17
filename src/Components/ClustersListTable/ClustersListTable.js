@@ -15,6 +15,7 @@ import {
   TableHeader,
 } from '@patternfly/react-table/deprecated';
 import { Label, Pagination, Tooltip } from '@patternfly/react-core';
+import { SkeletonTable } from '@patternfly/react-component-groups';
 import { PaginationVariant } from '@patternfly/react-core/dist/js/components/Pagination/Pagination';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar/PrimaryToolbar';
 import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat';
@@ -44,7 +45,7 @@ import {
   compareSemVer,
   toValidSemVer,
 } from '../Common/Tables';
-import Loading from '../Loading/Loading';
+// import Loading from '../Loading/Loading';
 import messages from '../../Messages';
 import {
   ErrorState,
@@ -414,49 +415,54 @@ const ClustersListTable = ({
             filterConfig={{ items: filterConfigItems }}
             activeFiltersConfig={activeFiltersConfig}
           />
-          <Table
-            aria-label="Table of clusters"
-            ouiaId="clusters"
-            ouiaSafe={!loadingState}
-            variant={TableVariant.compact}
-            cells={CLUSTERS_LIST_COLUMNS}
-            rows={
-              errorState || loadingState || noMatch ? (
-                [
-                  {
-                    fullWidth: true,
-                    cells: [
-                      {
-                        props: {
-                          colSpan: CLUSTERS_LIST_COLUMNS.length + 1,
+          {loadingState ? (
+            <SkeletonTable
+              columns={CLUSTERS_LIST_COLUMNS.map((c) => c.title)}
+              variant="compact"
+            />
+          ) : (
+            <Table
+              aria-label="Table of clusters"
+              ouiaId="clusters"
+              ouiaSafe={!loadingState}
+              variant={TableVariant.compact}
+              cells={CLUSTERS_LIST_COLUMNS}
+              rows={
+                errorState || noMatch ? (
+                  [
+                    {
+                      fullWidth: true,
+                      cells: [
+                        {
+                          props: {
+                            colSpan: CLUSTERS_LIST_COLUMNS.length + 1,
+                          },
+                          title: errorState ? (
+                            <ErrorState />
+                          ) : (
+                            <NoMatchingClusters />
+                          ),
                         },
-                        title: errorState ? (
-                          <ErrorState />
-                        ) : loadingState ? (
-                          <Loading />
-                        ) : (
-                          <NoMatchingClusters />
-                        ),
-                      },
-                    ],
-                  },
-                ]
-              ) : successState ? (
-                displayedRows
-              ) : (
-                <ErrorState />
-              )
-            }
-            sortBy={{
-              index: filters.sortIndex,
-              direction: filters.sortDirection,
-            }}
-            onSort={onSort}
-            isStickyHeader
-          >
-            <TableHeader />
-            <TableBody />
-          </Table>
+                      ],
+                    },
+                  ]
+                ) : successState ? (
+                  displayedRows
+                ) : (
+                  <ErrorState />
+                )
+              }
+              sortBy={{
+                index: filters.sortIndex,
+                direction: filters.sortDirection,
+              }}
+              onSort={onSort}
+              isStickyHeader
+            >
+              <TableHeader />
+              <TableBody />
+            </Table>
+          )}
           <Pagination
             ouiaId="pager"
             itemCount={filteredRows.length}
