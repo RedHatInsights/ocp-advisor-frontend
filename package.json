@@ -54,14 +54,13 @@
     "semver": "^7.6.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.26.7",
+    "@babel/core": "^7.26.8",
     "@babel/plugin-proposal-object-rest-spread": "^7.20.7",
-    "@babel/plugin-transform-runtime": "^7.25.9",
-    "@babel/preset-env": "^7.26.7",
+    "@babel/plugin-transform-runtime": "^7.26.8",
+    "@babel/preset-env": "^7.26.8",
     "@babel/preset-react": "^7.26.3",
     "@cypress/code-coverage": "^3.13.11",
     "@cypress/react18": "^2.0.1",
-    "@cypress/webpack-dev-server": "^4.0.1",
     "@formatjs/cli": "^6.2.7",
     "@patternfly/patternfly": "^5.4.0",
     "@redhat-cloud-services/eslint-config-redhat-cloud-services": "^2.0.4",
@@ -75,7 +74,7 @@
     "babel-core": "6.26.3",
     "babel-jest": "^29.7.0",
     "babel-plugin-dual-import": "^1.2.1",
-    "babel-plugin-formatjs": "^10.5.34",
+    "babel-plugin-formatjs": "^10.5.35",
     "babel-plugin-istanbul": "^7.0.0",
     "babel-plugin-transform-imports": "^2.0.0",
     "cypress": "14.0.1",
@@ -95,9 +94,7 @@
     "stylelint-config-recommended-scss": "^14.0.0",
     "stylelint-scss": "^6.1.0",
     "ts-patch": "^3.1.2",
-    "typescript": "^5.4.3",
-    "webpack-bundle-analyzer": "^4.10.1",
-    "webpack-cli": "^5.1.4"
+    "typescript": "^5.4.3"
   },
   "release": {
     "branches": "master",
