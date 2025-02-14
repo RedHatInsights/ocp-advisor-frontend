@@ -53,4 +53,5 @@ module.exports = {
   exposes: {
     './RootApp': resolve(__dirname, '../src/AppEntry'),
   },
+  frontendCRDPath: 'deploy/frontend.yml',
 };
