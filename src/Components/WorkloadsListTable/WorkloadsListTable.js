@@ -212,7 +212,6 @@ const WorkloadsListTable = ({
       label: 'Cluster name',
       type: 'text',
       filterValues: {
-        // key: 'cluster_name',
         onChange: (_event, value) =>
           updateFilters({ ...filters, offset: 0, cluster_name: value }),
         value: filters.cluster_name,
@@ -223,7 +222,6 @@ const WorkloadsListTable = ({
       label: 'Namespace name',
       type: 'text',
       filterValues: {
-        // key: 'namespace_name',
         onChange: (_event, value) =>
           updateFilters({ ...filters, offset: 0, namespace_name: value }),
         value: filters.namespace_name,
@@ -236,7 +234,6 @@ const WorkloadsListTable = ({
       id: WORKLOADS_TABLE_FILTER_CATEGORIES.severity.urlParam,
       value: `checkbox-${WORKLOADS_TABLE_FILTER_CATEGORIES.severity.urlParam}`,
       filterValues: {
-        // key: `${WORKLOADS_TABLE_FILTER_CATEGORIES.severity.urlParam}-filter`,
         onChange: (_event, value) => addFilterParam('severity', value),
         value: filters.severity,
         items: WORKLOADS_TABLE_FILTER_CATEGORIES.severity.values,
