@@ -360,7 +360,6 @@ const RecsListTable = ({ query }) => {
       label: intl.formatMessage(messages.name).toLowerCase(),
       type: 'text',
       filterValues: {
-        key: 'text-filter',
         onChange: (_event, value) =>
           updateFilters({ ...filters, offset: 0, text: value }),
         value: searchText,
@@ -373,7 +372,6 @@ const RecsListTable = ({ query }) => {
       id: FILTER_CATEGORIES.total_risk.urlParam,
       value: `checkbox-${FILTER_CATEGORIES.total_risk.urlParam}`,
       filterValues: {
-        key: `${FILTER_CATEGORIES.total_risk.urlParam}-filter`,
         onChange: (_event, values) =>
           addFilterParam(FILTER_CATEGORIES.total_risk.urlParam, values),
         value: filters.total_risk,
@@ -386,7 +384,6 @@ const RecsListTable = ({ query }) => {
       id: FILTER_CATEGORIES.impact.urlParam,
       value: `checkbox-${FILTER_CATEGORIES.impact.urlParam}`,
       filterValues: {
-        key: `${FILTER_CATEGORIES.impact.urlParam}-filter`,
         onChange: (_event, values) =>
           addFilterParam(FILTER_CATEGORIES.impact.urlParam, values),
         value: filters.impact,
@@ -399,7 +396,6 @@ const RecsListTable = ({ query }) => {
       id: FILTER_CATEGORIES.likelihood.urlParam,
       value: `checkbox-${FILTER_CATEGORIES.likelihood.urlParam}`,
       filterValues: {
-        key: `${FILTER_CATEGORIES.likelihood.urlParam}-filter`,
         onChange: (_event, values) =>
           addFilterParam(FILTER_CATEGORIES.likelihood.urlParam, values),
         value: filters.likelihood,
@@ -412,7 +408,6 @@ const RecsListTable = ({ query }) => {
       id: FILTER_CATEGORIES.category.urlParam,
       value: `checkbox-${FILTER_CATEGORIES.category.urlParam}`,
       filterValues: {
-        key: `${FILTER_CATEGORIES.category.urlParam}-filter`,
         onChange: (_event, values) =>
           addFilterParam(FILTER_CATEGORIES.category.urlParam, values),
         value: filters.category,
@@ -425,7 +420,6 @@ const RecsListTable = ({ query }) => {
       id: FILTER_CATEGORIES.rule_status.urlParam,
       value: `radio-${FILTER_CATEGORIES.rule_status.urlParam}`,
       filterValues: {
-        key: `${FILTER_CATEGORIES.rule_status.urlParam}-filter`,
         onChange: (_event, value) => toggleRulesDisabled(value),
         value: `${filters.rule_status}`,
         items: FILTER_CATEGORIES.rule_status.values,
@@ -437,7 +431,6 @@ const RecsListTable = ({ query }) => {
       id: FILTER_CATEGORIES.impacting.urlParam,
       value: `checkbox-${FILTER_CATEGORIES.impacting.urlParam}`,
       filterValues: {
-        key: `${FILTER_CATEGORIES.impacting.urlParam}-filter`,
         onChange: (e, values) =>
           addFilterParam(FILTER_CATEGORIES.impacting.urlParam, values),
         value: filters.impacting,
@@ -450,7 +443,6 @@ const RecsListTable = ({ query }) => {
       id: FILTER_CATEGORIES.res_risk.urlParam,
       value: `checkbox-${FILTER_CATEGORIES.res_risk.urlParam}`,
       filterValues: {
-        key: `${FILTER_CATEGORIES.res_risk.urlParam}-filter`,
         onChange: (e, values) =>
           addFilterParam(FILTER_CATEGORIES.res_risk.urlParam, values),
         value: filters.res_risk,

@@ -506,7 +506,6 @@ export const WORKLOADS_RULES_FILTER_CONFIG = (filters, addParamFunction) => [
     label: 'description',
     type: 'text',
     filterValues: {
-      key: 'description',
       onChange: (_e, value) => addParamFunction('description', value),
       value: filters.description,
       placeholder: 'Filter by description',
@@ -516,7 +515,6 @@ export const WORKLOADS_RULES_FILTER_CONFIG = (filters, addParamFunction) => [
     label: 'total risk',
     type: 'checkbox',
     filterValues: {
-      key: `total_risk`,
       onChange: (_e, values) => addParamFunction('total_risk', values),
       value: filters.total_risk,
       items: [
@@ -531,7 +529,6 @@ export const WORKLOADS_RULES_FILTER_CONFIG = (filters, addParamFunction) => [
     label: 'object ID',
     type: 'text',
     filterValues: {
-      key: 'object_id',
       onChange: (_e, value) => addParamFunction('object_id', value),
       value: filters.object_id,
     },
@@ -540,7 +537,6 @@ export const WORKLOADS_RULES_FILTER_CONFIG = (filters, addParamFunction) => [
     label: 'object name',
     type: 'text',
     filterValues: {
-      key: 'object_name',
       onChange: (_e, value) => addParamFunction('object_name', value),
       value: filters.object_name,
       placeholder: 'Filter by object name',
