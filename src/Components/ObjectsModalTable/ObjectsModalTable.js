@@ -49,7 +49,6 @@ export const ObjectsModalTable = ({ objects, objectsWithNames }) => {
             label: 'Object name',
             type: 'text',
             filterValues: {
-              key: 'display_name',
               onChange: (_event, value) =>
                 updateFilters({ ...filters, offset: 0, display_name: value }),
               value: filters.display_name,
@@ -62,7 +61,6 @@ export const ObjectsModalTable = ({ objects, objectsWithNames }) => {
             label: 'Object ID',
             type: 'text',
             filterValues: {
-              key: 'object_id',
               onChange: (_event, value) =>
                 updateFilters({ ...filters, offset: 0, object_id: value }),
               value: filters.object_id,

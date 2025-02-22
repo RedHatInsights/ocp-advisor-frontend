@@ -97,7 +97,6 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
         type: conditionalFilterType.text,
         filterValues: {
           id: 'name-filter',
-          // key: 'name-filter',
           onChange: (event, value) => addFilterParam('text', value),
           value: filters.text,
         },
@@ -108,7 +107,6 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
         type: conditionalFilterType.checkbox,
         filterValues: {
           id: 'version-filter',
-          // key: 'version-filter',
           onChange: (event, value) => addFilterParam('version', value),
           value: filters.version,
           items: uniqBy(
