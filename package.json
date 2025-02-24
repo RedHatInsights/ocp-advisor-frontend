@@ -54,10 +54,10 @@
     "semver": "^7.6.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.26.8",
+    "@babel/core": "^7.26.9",
     "@babel/plugin-proposal-object-rest-spread": "^7.20.7",
-    "@babel/plugin-transform-runtime": "^7.26.8",
-    "@babel/preset-env": "^7.26.8",
+    "@babel/plugin-transform-runtime": "^7.26.9",
+    "@babel/preset-env": "^7.26.9",
     "@babel/preset-react": "^7.26.3",
     "@cypress/code-coverage": "^3.13.11",
     "@cypress/react18": "^2.0.1",
