@@ -20,10 +20,11 @@ yarn-debug.log*
 yarn-error.log*
 
 .DS_Store
-*coverage
 .nyc_output
-reports
-codecov*
+
+codecov
+coverage/*
+coverage-*
 
 # cypress
 cypress/downloads
