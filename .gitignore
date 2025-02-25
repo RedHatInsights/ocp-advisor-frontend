@@ -22,7 +22,7 @@ yarn-error.log*
 .DS_Store
 .nyc_output
 
-codecov
+coverage
 coverage/*
 coverage-*
 
