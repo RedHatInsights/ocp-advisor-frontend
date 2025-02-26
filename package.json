@@ -10,23 +10,21 @@
     "lint:js:fix": "eslint config src --fix",
     "lint:sass": "stylelint 'src/**/*.scss' --config .stylelintrc.json",
     "nightly": "npm run deploy",
+    "postinstall": "ts-patch install",
+    "release": "semantic-release",
     "start": "fec dev",
     "start:proxy": "PROXY=true fec dev",
     "start:mock": "PROXY=true MOCK=true fec dev",
-    "test:ct": "BABEL_ENV=component cypress run --component",
+    "test": "TZ=UTC jest --verbose --passWithNoTests --no-cache",
+    "test:coverage": "curl -sSL 'https://raw.githubusercontent.com/RedHatInsights/insights-interact-tools/refs/heads/main/scripts/coverage.sh' | bash",
+    "test:ct": "BABEL_ENV=componentTest cypress run --component",
     "test:openct": "BABEL_ENV=component cypress open --component",
-    "test:jest": "TZ=UTC jest --verbose --passWithNoTests --no-cache",
     "test:local": "TZ=UTC jest --verbose --collectCoverage=false",
-    "test": "npm run test:jest",
     "translations": "npm-run-all translations:*",
     "translations:extract": "formatjs extract 'src/**/*.js*' --out-file lang/en.json --id-interpolation-pattern '[sha512:contenthash:base64:6]'",
     "translations:compile": "formatjs compile lang/en.json --out-file compiled-lang/en.json",
-    "verify:local": "npm-run-all build lint test:local test:ct",
-    "verify": "npm-run-all build lint test",
-    "release": "semantic-release",
-    "coverage:clean": "rm -rf .nyc_output coverage reports",
-    "coverage": "bash coverage.sh && npm run coverage:clean",
-    "postinstall": "ts-patch install"
+    "travis:verify": "npm run test:coverage",
+    "verify": "npm-run-all build lint test"
   },
   "dependencies": {
     "@patternfly/react-component-groups": "^5.4.0",
@@ -148,7 +146,7 @@
       "!**/node_modules/**",
       "!**/vendor/**"
     ],
-    "coverageDirectory": "./jest-coverage",
+    "coverageDirectory": "coverage-jest",
     "moduleNameMapper": {
       "\\.(css|scss)$": "identity-obj-proxy"
     },
@@ -167,15 +165,13 @@
     ]
   },
   "nyc": {
-    "report-dir": "cypress-coverage",
+    "report-dir": "coverage-cypress",
     "include": [
-      "src/Components",
-      "src/Services",
-      "src/Utilities"
+      "src/**/*.{js,jsx}"
     ],
     "exclude": [
-      "src/**/*.spec.ct.js",
-      "src/**/*.test.js"
+      "src/**/*.test.js",
+      "src/**/*.cy.js"
     ]
   }
 }
