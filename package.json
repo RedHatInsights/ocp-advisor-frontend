@@ -24,7 +24,7 @@
     "translations:extract": "formatjs extract 'src/**/*.js*' --out-file lang/en.json --id-interpolation-pattern '[sha512:contenthash:base64:6]'",
     "translations:compile": "formatjs compile lang/en.json --out-file compiled-lang/en.json",
     "travis:verify": "npm run test:coverage",
-    "verify": "npm run travis:verify"
+    "verify": "npm-run-all build lint test"
   },
   "dependencies": {
     "@patternfly/react-component-groups": "^5.4.0",
