@@ -21,6 +21,4 @@ jobs:
       script: npx semantic-release
 env:
   global:
-    - REPO="git@github.com:RedHatInsights/ocp-advisor-frontend-build"
-    - REPO_DIR="ocp-advisor-frontend-build"
     - BRANCH=${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}

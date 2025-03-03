@@ -53,7 +53,6 @@
   },
   "devDependencies": {
     "@babel/core": "^7.26.8",
-    "@babel/plugin-proposal-object-rest-spread": "^7.20.7",
     "@babel/plugin-transform-runtime": "^7.26.8",
     "@babel/preset-env": "^7.26.8",
     "@babel/preset-react": "^7.26.3",
@@ -71,10 +70,8 @@
     "@testing-library/user-event": "^14.5.2",
     "babel-core": "6.26.3",
     "babel-jest": "^29.7.0",
-    "babel-plugin-dual-import": "^1.2.1",
     "babel-plugin-formatjs": "^10.5.35",
     "babel-plugin-istanbul": "^7.0.0",
-    "babel-plugin-transform-imports": "^2.0.0",
     "cypress": "14.1.0",
     "eslint": "8.56.0",
     "eslint-plugin-cypress": "^2.15.1",
