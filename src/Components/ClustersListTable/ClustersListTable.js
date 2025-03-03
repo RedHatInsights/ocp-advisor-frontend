@@ -302,7 +302,6 @@ const ClustersListTable = ({
       label: intl.formatMessage(messages.name).toLowerCase(),
       type: 'text',
       filterValues: {
-        key: 'text-filter',
         onChange: (_event, value) =>
           updateFilters({ ...filters, offset: 0, text: value }),
         value: filters.text,
@@ -315,7 +314,6 @@ const ClustersListTable = ({
       type: conditionalFilterType.checkbox,
       filterValues: {
         id: 'version-filter',
-        key: 'version-filter',
         onChange: (event, value) => addFilterParam('version', value),
         value: filters.version,
         items: uniqBy(
@@ -345,7 +343,6 @@ const ClustersListTable = ({
       id: CLUSTER_FILTER_CATEGORIES.hits.urlParam,
       value: `checkbox-${CLUSTER_FILTER_CATEGORIES.hits.urlParam}`,
       filterValues: {
-        key: `${CLUSTER_FILTER_CATEGORIES.hits.urlParam}-filter`,
         onChange: (_event, values) =>
           addFilterParam(CLUSTER_FILTER_CATEGORIES.hits.urlParam, values),
         value: filters.hits,

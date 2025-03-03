@@ -317,7 +317,6 @@ const ClusterRules = () => {
       label: 'description',
       type: 'text',
       filterValues: {
-        key: 'text-filter',
         onChange: (_e, value) => addFilterParam('text', value),
         value: filters.text,
       },
@@ -328,7 +327,6 @@ const ClusterRules = () => {
       id: FC.total_risk.urlParam,
       value: `checkbox-${FC.total_risk.urlParam}`,
       filterValues: {
-        key: `${FC.total_risk.urlParam}-filter`,
         onChange: (_e, values) =>
           addFilterParam(FILTER_CATEGORIES.total_risk.urlParam, values),
         value: filters.total_risk,
@@ -341,7 +339,6 @@ const ClusterRules = () => {
       id: FC.category.urlParam,
       value: `checkbox-${FC.category.urlParam}`,
       filterValues: {
-        key: `${FC.category.urlParam}-filter`,
         onChange: (_e, values) =>
           addFilterParam(FILTER_CATEGORIES.category.urlParam, values),
         value: filters.category,
