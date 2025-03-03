@@ -16,6 +16,7 @@
 // Import commands.js using ES2015 syntax:
 import './commands';
 import '@cypress/code-coverage/support';
+import { useChrome } from '../../config/overrideChrome';
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
@@ -23,6 +24,7 @@ import '@patternfly/patternfly/patternfly.scss';
 import { mount } from '@cypress/react18';
 
 Cypress.Commands.add('mount', mount);
+window.insights = { useChrome };
 
 // Example use:
 // cy.mount(<MyComponent />)
