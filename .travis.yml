@@ -4,7 +4,7 @@ notifications:
 sudo: required
 dist: focal
 node_js:
-  - 18
+  - 20
 install:
   - npm ci
 if: tag IS blank
