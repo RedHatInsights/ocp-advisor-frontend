@@ -4,7 +4,7 @@ notifications:
 sudo: required
 dist: focal
 node_js:
-  - 18
+  - 20
 install:
   - npm ci
 if: tag IS blank
@@ -16,9 +16,6 @@ jobs:
       script: npm run travis:verify
     - stage: Build
       script: npm run build
-    - stage: Tag
-      if: (fork = false) AND (branch = master)
-      script: npx semantic-release
 env:
   global:
     - BRANCH=${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}
