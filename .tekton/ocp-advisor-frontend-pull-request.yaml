@@ -407,7 +407,7 @@ spec:
         - name: SOURCE_ARTIFACT
           value: $(tasks.clone-repository-oci-ta.results.SOURCE_ARTIFACT)
         - name: CACHI2_ARTIFACT
-          value:  $(tasks.clone-repository-oci-ta.results..CACHI2_ARTIFACT)
+          value: $(tasks.clone-repository-oci-ta.results.CACHI2_ARTIFACT)
       runAfter:
         - build-image-index
       taskRef:
@@ -432,7 +432,7 @@ spec:
         - name: SOURCE_ARTIFACT
           value: $(tasks.clone-repository-oci-ta.results.SOURCE_ARTIFACT)
         - name: CACHI2_ARTIFACT
-          value:  $(tasks.clone-repository-oci-ta.results..CACHI2_ARTIFACT)
+          value: $(tasks.clone-repository-oci-ta.results.CACHI2_ARTIFACT)
       runAfter:
         - build-image-index
       taskRef:
