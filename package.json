@@ -97,7 +97,10 @@
     "collectCoverageFrom": [
       "src/**/*.{js,jsx}",
       "!**/node_modules/**",
-      "!**/vendor/**"
+      "!**/vendor/**",
+      "!src/**/*.cy.js",
+      "!src/**/*.fixtures.js",
+      "!src/{entry,entry-dev}.js"
     ],
     "coverageDirectory": "coverage-jest",
     "moduleNameMapper": {
