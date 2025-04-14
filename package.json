@@ -58,7 +58,7 @@
     "@cypress/code-coverage": "^3.13.12",
     "@cypress/react18": "^2.0.1",
     "@formatjs/cli": "^6.2.7",
-    "@patternfly/patternfly": "^5.4.0",
+    "@patternfly/patternfly": "^6.2.0",
     "@redhat-cloud-services/eslint-config-redhat-cloud-services": "^2.0.12",
     "@redhat-cloud-services/frontend-components-config": "^6.4.5",
     "@redhat-cloud-services/tsc-transform-imports": "^1.0.23",
