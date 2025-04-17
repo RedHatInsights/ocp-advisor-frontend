@@ -2,7 +2,6 @@ import React from 'react';
 import mockdata from '../../../cypress/fixtures/api/insights-results-aggregator/v2/workload/00000001-0001-0001-0001-000000000005-fad82c1f-96db-430f-b3ec-503fb9eeb7bb/info.json';
 import mockList from '../../../cypress/fixtures/api/insights-results-aggregator/v2/workload/list.json';
 import _ from 'lodash';
-import { featureFlagsInterceptors } from '../../../cypress/utils/interceptors';
 import { Workload } from './Workload';
 import { IntlProvider } from 'react-intl';
 import { MemoryRouter } from 'react-router-dom';
@@ -122,10 +121,6 @@ const mount = (
 };
 
 describe('Workload component renders and filters data', () => {
-  beforeEach(() => {
-    featureFlagsInterceptors.ocpWorkloadsSuccessful();
-  });
-
   it('renders main components', () => {
     mount(
       `/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`,

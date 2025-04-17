@@ -16,11 +16,6 @@ jest.mock('@redhat-cloud-services/frontend-components/useChrome', () => ({
   __esModule: true,
 }));
 
-jest.mock('../../Utilities/useFeatureFlag', () => ({
-  __esModule: true,
-  default: () => true,
-}));
-
 const dataShortened = cloneDeep(clusterDetailData.data);
 dataShortened.enabled = dataShortened.enabled.slice(0, 5);
 dataShortened.disabled = dataShortened.disabled.slice(0, 2);

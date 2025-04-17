@@ -8,10 +8,6 @@ import {
   EmptyState,
 } from '@patternfly/react-core';
 import InvalidObject from '@redhat-cloud-services/frontend-components/InvalidObject/InvalidObject';
-import useFeatureFlag, {
-  WORKLOADS_ENABLE_FLAG,
-} from './Utilities/useFeatureFlag';
-import { ErrorState } from './Components/MessageState/EmptyStates';
 
 const Cluster = lazy(() =>
   import(/* webpackChunkName: "ClusterDetails" */ './Components/Cluster')
@@ -40,7 +36,6 @@ const Workload = lazy(() =>
 export const BASE_PATH = '/openshift/insights/advisor';
 
 export const AppRoutes = () => {
-  const workloadsEnabled = useFeatureFlag(WORKLOADS_ENABLE_FLAG);
   return (
     <Suspense
       fallback={
@@ -97,31 +92,23 @@ export const AppRoutes = () => {
         <Route
           path="/workloads"
           element={
-            workloadsEnabled ? (
-              <WorkloadsList
-                /**
-                 * Generate random `key` to force component re-render,
-                 * temporary workaround for https://issues.redhat.com/browse/OCPADVISOR-59
-                 */ key={Math.random()}
-              />
-            ) : (
-              <ErrorState />
-            )
+            <WorkloadsList
+              /**
+               * Generate random `key` to force component re-render,
+               * temporary workaround for https://issues.redhat.com/browse/OCPADVISOR-59
+               */ key={Math.random()}
+            />
           }
         />
         <Route
           path="/workloads/:clusterId/:namespaceId"
           element={
-            workloadsEnabled ? (
-              <Workload
-                /**
-                 * Generate random `key` to force component re-render,
-                 * temporary workaround for https://issues.redhat.com/browse/OCPADVISOR-59
-                 */ key={Math.random()}
-              />
-            ) : (
-              <ErrorState />
-            )
+            <Workload
+              /**
+               * Generate random `key` to force component re-render,
+               * temporary workaround for https://issues.redhat.com/browse/OCPADVISOR-59
+               */ key={Math.random()}
+            />
           }
         />
         <Route
