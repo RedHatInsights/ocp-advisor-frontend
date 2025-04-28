@@ -67,7 +67,7 @@
     "@testing-library/user-event": "^14.5.2",
     "babel-core": "6.26.3",
     "babel-jest": "^29.7.0",
-    "babel-plugin-formatjs": "^10.5.35",
+    "babel-plugin-formatjs": "^10.5.37",
     "babel-plugin-istanbul": "^7.0.0",
     "cypress": "14.1.0",
     "eslint": "8.56.0",
