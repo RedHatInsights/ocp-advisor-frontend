@@ -1,4 +1,4 @@
-[![Build Status](https://app.travis-ci.com/RedHatInsights/ocp-advisor-frontend.svg?branch=master)](https://app.travis-ci.com/RedHatInsights/ocp-advisor-frontend) [![codecov](https://codecov.io/gh/RedHatInsights/ocp-advisor-frontend/branch/master/graph/badge.svg?token=XC4AD7NQFW)](https://codecov.io/gh/RedHatInsights/ocp-advisor-frontend)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/RedhatInsights/ocp-advisor-frontend/test.yml?branch=master)](https://github.com/RedHatInsights/ocp-advisor-frontend/actions/workflows/test.yml) [![codecov](https://codecov.io/gh/RedHatInsights/ocp-advisor-frontend/branch/master/graph/badge.svg?token=XC4AD7NQFW)](https://codecov.io/gh/RedHatInsights/ocp-advisor-frontend)
 
 
 # OCP Advisor Frontend
