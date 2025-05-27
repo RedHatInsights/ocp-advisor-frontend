@@ -21,7 +21,7 @@ import { useChrome } from '../../config/overrideChrome';
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 import '@patternfly/patternfly/patternfly.scss';
-import { mount } from '@cypress/react18';
+import { mount } from 'cypress/react';
 
 Cypress.Commands.add('mount', mount);
 window.insights = { useChrome };
