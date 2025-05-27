@@ -59,7 +59,7 @@
     "@commitlint/config-conventional": "^19.8.0",
     "@cypress/code-coverage": "^3.13.12",
     "@formatjs/cli": "^6.2.7",
-    "@patternfly/patternfly": "^5.4.0",
+    "@patternfly/patternfly": "^6.2.3",
     "@redhat-cloud-services/eslint-config-redhat-cloud-services": "^2.0.12",
     "@redhat-cloud-services/frontend-components-config": "^6.4.5",
     "@redhat-cloud-services/tsc-transform-imports": "^1.0.23",
