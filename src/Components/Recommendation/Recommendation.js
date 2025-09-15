@@ -1,7 +1,6 @@
 import './Recommendation.scss';
 
 import React, { useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import {
@@ -29,7 +28,7 @@ import {
   DropdownList,
 } from '@patternfly/react-core';
 import BellSlashIcon from '@patternfly/react-icons/dist/js/icons/bell-slash-icon';
-import { addNotification } from '@redhat-cloud-services/frontend-components-notifications/';
+import { useAddNotification } from '@redhat-cloud-services/frontend-components-notifications/hooks';
 import { ErrorState } from '@redhat-cloud-services/frontend-components/ErrorState';
 import {
   AdvisorProduct,
@@ -60,8 +59,8 @@ import inRange from 'lodash/inRange';
 
 const Recommendation = ({ rule, ack, clusters, recId }) => {
   const intl = useIntl();
-  const dispatch = useDispatch();
-  const notify = (data) => dispatch(addNotification(data));
+  const addNotification = useAddNotification();
+  const notify = (data) => addNotification(data);
   const [disableRuleModalOpen, setDisableRuleModalOpen] = useState(false);
   const [actionsDropdownOpen, setActionsDropdownOpen] = useState(false);
   const [viewSystemsModalOpen, setViewSystemsModalOpen] = useState(false);
@@ -219,7 +218,7 @@ const Recommendation = ({ rule, ack, clusters, recId }) => {
                     {content.tags &&
                       (Array.isArray(content.tags) ? (
                         <LabelGroup
-                          className="categoryLabels"
+                          className="categoryLabels pf-v6-u-ml-sm"
                           numLabels={1}
                           isCompact
                         >
@@ -318,7 +317,7 @@ const Recommendation = ({ rule, ack, clusters, recId }) => {
                 <Card className="cardOverride" ouiaId="hosts-acked">
                   <CardHeader>
                     <Title headingLevel="h4" size="xl">
-                      <Icon size="md">
+                      <Icon size="lg">
                         <BellSlashIcon />
                       </Icon>
                       &nbsp;
@@ -429,7 +428,11 @@ const Recommendation = ({ rule, ack, clusters, recId }) => {
               )}
               {!content?.disabled && (
                 <React.Fragment>
-                  <Title className="titleOverride" headingLevel="h3" size="2xl">
+                  <Title
+                    className="titleOverride pf-v6-u-mt-xl pf-v6-u-mb-md"
+                    headingLevel="h3"
+                    size="2xl"
+                  >
                     {intl.formatMessage(messages.affectedClusters)}
                   </Title>
                   <AffectedClustersTable

@@ -24,7 +24,7 @@ function itemsPerPage(totalLength, pageSize = DEFAULT_ROW_COUNT) {
 
 function checkPaginationTotal(n) {
   return cy
-    .get('.pf-v5-c-menu-toggle__text')
+    .get('.pf-v6-c-menu-toggle__text')
     .find('b')
     .eq(1)
     .should('have.text', n);
@@ -38,20 +38,16 @@ function checkCurrentPage(page) {
 
 function checkPaginationSelected(index) {
   cy.get(TOOLBAR).find(PAGINATION_MENU).find(DROPDOWN_TOGGLE).click();
-  cy.get(TOOLBAR)
-    .find(PAGINATION_MENU)
-    .find('ul[class=pf-v5-c-menu__list]')
+  cy.get('ul[class=pf-v6-c-menu__list]')
     .children()
     .eq(index)
     .find('button')
-    .should('have.class', 'pf-v5-c-menu__item pf-m-selected');
+    .should('have.class', 'pf-v6-c-menu__item pf-m-selected');
 }
 
 function checkPaginationValues(expectedValues) {
   cy.get(TOOLBAR).find(PAGINATION_MENU).find(DROPDOWN_TOGGLE).click();
-  cy.get(TOOLBAR)
-    .find(PAGINATION_MENU)
-    .find('ul[class=pf-v5-c-menu__list]')
+  cy.get('ul[class=pf-v6-c-menu__list]')
     .find('li')
     .each(($el, index) => {
       cy.wrap($el).should('have.text', `${expectedValues[index]} per page`);
@@ -61,9 +57,7 @@ function checkPaginationValues(expectedValues) {
 function changePagination(textInItem) {
   cy.get(TOOLBAR).find(PAGINATION_MENU).find(DROPDOWN_TOGGLE).click();
   return cy
-    .get(TOOLBAR)
-    .find(PAGINATION_MENU)
-    .find('ul[class=pf-v5-c-menu__list]')
+    .get('ul[class=pf-v6-c-menu__list]')
     .find(DROPDOWN_ITEM)
     .contains(`${textInItem}`)
     .click();

@@ -33,8 +33,8 @@ import { clusterReportsInterceptors as interceptors } from '../../../cypress/uti
 const data = singleClusterPageReport.report.data;
 
 const ROOT = 'div[id=cluster-recs-list-table]';
-// const EXPANDABLES = '[class="pf-v5-c-table__expandable-row pf-m-expanded"]';
-const EXPANDABLES = '[class*="pf-v5-c-table__expandable-row pf-m-expanded"]';
+// const EXPANDABLES = '[class="pf-v6-c-table__expandable-row pf-m-expanded"]';
+const EXPANDABLES = '[class*="pf-v6-c-table__expandable-row pf-m-expanded"]';
 const TABLE_HEADERS = _.map(CLUSTER_RULES_COLUMNS, (it) => it.title);
 
 const RULES_ENABLED = _.filter(data, (it) => !it.disabled).length;
@@ -313,7 +313,7 @@ describe('empty cluster rules table', () => {
   });
 
   it('cannot add filters', () => {
-    cy.get('input[data-ouia-component-type="PF5/TextInput"]').type('some text');
+    cy.get('input[data-ouia-component-type="PF6/TextInput"]').type('some text');
     cy.get(CHIP_GROUP).should('not.exist');
     cy.get('div.ins-c-conditional-filter')
       .find('button[class*="ins-c-conditional-filter__group"]')
@@ -336,7 +336,7 @@ describe('no rules cluster', () => {
   });
 
   it('cannot add filters', () => {
-    cy.get('input[data-ouia-component-type="PF5/TextInput"]').type('some text');
+    cy.get('input[data-ouia-component-type="PF6/TextInput"]').type('some text');
     cy.get(CHIP_GROUP).should('not.exist');
     cy.get('div.ins-c-conditional-filter')
       .find('button[class*="ins-c-conditional-filter__group"]')
@@ -356,7 +356,7 @@ describe('error response other than 404', () => {
   });
 
   it('cannot add filters', () => {
-    cy.get('input[data-ouia-component-type="PF5/TextInput"]').type('some text');
+    cy.get('input[data-ouia-component-type="PF6/TextInput"]').type('some text');
     cy.get(CHIP_GROUP).should('not.exist');
     cy.get('div.ins-c-conditional-filter')
       .find('button[class*="ins-c-conditional-filter__group"]')

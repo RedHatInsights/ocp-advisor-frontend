@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal as PfModal } from '@patternfly/react-core';
+import { Modal as PfModal } from '@patternfly/react-core/deprecated';
 import { ObjectsModalTable } from '../ObjectsModalTable/ObjectsModalTable';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';

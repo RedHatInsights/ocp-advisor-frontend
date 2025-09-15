@@ -6,6 +6,7 @@ import { useLocation, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import capitalize from 'lodash/capitalize';
 
+import ErrorState from '@redhat-cloud-services/frontend-components/ErrorState';
 import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat/DateFormat';
 import InsightsLabel from '@redhat-cloud-services/frontend-components/InsightsLabel';
 import { SortByDirection, TableVariant } from '@patternfly/react-table';
@@ -32,7 +33,6 @@ import {
 import { ReportDetails } from '@redhat-cloud-services/frontend-components-advisor-components';
 import RuleLabels from '../Labels/RuleLabels';
 import {
-  ErrorState,
   NoMatchingRecs,
   NoRecsError,
   NoInsightsResults,
@@ -452,6 +452,7 @@ const ClusterRules = () => {
             ? undefined
             : activeFiltersConfig
         }
+        className="pf-v6-u-mt-md"
       />
       {loadingState ? (
         <SkeletonTable

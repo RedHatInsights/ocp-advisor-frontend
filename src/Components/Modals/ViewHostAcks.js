@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { List } from 'react-content-loader';
 import { useIntl } from 'react-intl';
-import { useDispatch } from 'react-redux';
 
 import { cellWidth } from '@patternfly/react-table';
 import {
@@ -10,10 +9,11 @@ import {
   TableBody,
   TableHeader,
 } from '@patternfly/react-table/deprecated';
-import { Button, Icon, Modal } from '@patternfly/react-core';
+import { Button, Icon } from '@patternfly/react-core';
+import { Modal } from '@patternfly/react-core/deprecated';
 import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
 import OutlinedBellIcon from '@patternfly/react-icons/dist/js/icons/outlined-bell-icon';
-import { addNotification as notification } from '@redhat-cloud-services/frontend-components-notifications/';
+import { useAddNotification } from '@redhat-cloud-services/frontend-components-notifications/hooks';
 
 import messages from '../../Messages';
 import { enableRuleForCluster } from '../../Services/Acks';
@@ -26,8 +26,7 @@ const ViewHostAcks = ({
   afterFn,
 }) => {
   const intl = useIntl();
-  const dispatch = useDispatch();
-  const addNotification = (data) => dispatch(notification(data));
+  const addNotification = useAddNotification();
   const { data, isFetching, isLoading, refetch } = clusters;
   const hostAcks = data?.disabled || [];
   const [rows, setRows] = useState([]);
@@ -81,15 +80,17 @@ const ViewHostAcks = ({
         {
           title: (
             <Button
+              icon={
+                <Icon size="sm">
+                  <OutlinedBellIcon />
+                </Icon>
+              }
               key={item.cluster_id}
               ouiaId="enable"
               isInline
               variant="link"
               onClick={() => deleteAck(item)}
             >
-              <Icon size="sm">
-                <OutlinedBellIcon />
-              </Icon>
               {` ${intl.formatMessage(messages.enable)}`}
             </Button>
           ),

@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
 import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
 
 import {
   Button,
   Checkbox,
   Form,
   FormGroup,
-  Modal,
   TextInput,
 } from '@patternfly/react-core';
-import { addNotification } from '@redhat-cloud-services/frontend-components-notifications/';
+import { Modal } from '@patternfly/react-core/deprecated';
+import { useAddNotification } from '@redhat-cloud-services/frontend-components-notifications/hooks';
 
 import messages from '../../Messages';
 import { disableRuleForCluster, useSetAckMutation } from '../../Services/Acks';
@@ -29,8 +28,8 @@ const DisableRule = ({
   const [singleHost, setSingleHost] = useState(!!host);
   const [multipleHosts, setMultipleHosts] = useState(hosts.length > 0);
   const [setAck] = useSetAckMutation();
-  const dispatch = useDispatch();
-  const notify = (data) => dispatch(addNotification(data));
+  const addNotification = useAddNotification();
+  const notify = (data) => addNotification(data);
 
   const bulkHostActions = async () => {
     // disable for a group of hosts (clusters)

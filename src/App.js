@@ -5,9 +5,7 @@ import { Provider } from 'react-redux';
 import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
-import NotificationsPortal from '@redhat-cloud-services/frontend-components-notifications/NotificationPortal';
-import { getRegistry } from '@redhat-cloud-services/frontend-components-utilities/Registry/Registry';
-import { notificationsReducer } from '@redhat-cloud-services/frontend-components-notifications/redux';
+import NotificationsProvider from '@redhat-cloud-services/frontend-components-notifications/NotificationsProvider';
 import { Bullseye, Spinner } from '@patternfly/react-core';
 import LockIcon from '@patternfly/react-icons/dist/js/icons/lock-icon';
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
@@ -26,8 +24,6 @@ const App = ({ useLogger }) => {
 
   useEffect(() => {
     if (chrome) {
-      const registry = getRegistry();
-      registry.register({ notifications: notificationsReducer });
       chrome.auth.getUser().then(() => {
         setIsAuthenticated(true);
         setIsLoading(false);
@@ -43,8 +39,9 @@ const App = ({ useLogger }) => {
         </Bullseye>
       ) : isAuthenticated ? (
         <Provider store={getStore(useLogger)}>
-          <NotificationsPortal />
-          <AppRoutes />
+          <NotificationsProvider>
+            <AppRoutes />
+          </NotificationsProvider>
         </Provider>
       ) : (
         <Bullseye>
