@@ -30,6 +30,7 @@ import DefaultErrorMessage from '@redhat-cloud-services/frontend-components/Erro
 import MessageState from './MessageState';
 import messages from '../../Messages';
 import { BASE_PATH } from '../../Routes';
+import useFeatureFlag from '../../Utilities/useFeatureFlag';
 
 // Analogue for ErrorState from the frontend-components without the "Go to homepage" button
 // TODO: update ErrorState from the frontend-components and remove custom error here
@@ -108,6 +109,7 @@ const ComingSoon = () => {
 };
 
 const NoRecsForClusters = () => {
+  const lightspeedFeatureFlag = useFeatureFlag('platform.lightspeed-rebrand');
   const intl = useIntl();
   return (
     <EmptyState variant="sm">
@@ -119,7 +121,11 @@ const NoRecsForClusters = () => {
         headingLevel="h2"
       />
       <EmptyStateBody>
-        {intl.formatMessage(messages.noRecsForClusterListBody)}
+        {intl.formatMessage(
+          lightspeedFeatureFlag
+            ? messages.noRecsForClusterListBodyLightspeed
+            : messages.noRecsForClusterListBody
+        )}
       </EmptyStateBody>
       <EmptyStateFooter>
         <Button
@@ -151,13 +157,18 @@ const NoRecsForClusters = () => {
 };
 
 const NoInsightsResults = () => {
+  const lightspeedFeatureFlag = useFeatureFlag('platform.lightspeed-rebrand');
   const intl = useIntl();
   return (
     <MessageState
       title={intl.formatMessage(messages.noRecsFoundError)}
       text={
         <React.Fragment>
-          {intl.formatMessage(messages.noRecsFoundErrorDesc)}
+          {intl.formatMessage(
+            lightspeedFeatureFlag
+              ? messages.noRecsFoundErrorDescLightspeed
+              : messages.noRecsFoundErrorDesc
+          )}
           <a href="https://docs.openshift.com/container-platform/latest/support/getting-support.html">
             {' '}
             OpenShift documentation.
