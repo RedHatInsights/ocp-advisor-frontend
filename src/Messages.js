@@ -663,4 +663,16 @@ export default defineMessages({
     id: 'updateRisksNotCurrentlyAvailable',
     defaultMessage: 'Update risks are not currently available.',
   },
+  noRecsFoundErrorDescLightspeed: {
+    id: 'noRecsFoundErrorDescLightspeed',
+    description: 'Recommendations table, cluster recommendations table',
+    defaultMessage:
+      'Red Hat Lightspeed identifies and prioritizes risks to security, performance, availability, and stability of your clusters. This feature uses the Remote Health functionality of OpenShift Container Platform. For further details about Red Hat Lightspeed, see the',
+  },
+  noRecsForClusterListBodyLightspeed: {
+    id: 'noRecsForClusterListBodyLightspeed',
+    description: 'Cluster List Page received 0 clusters',
+    defaultMessage:
+      'To get started, create or register your cluster to get recommendations from Red Hat Lightspeed Advisor.',
+  },
 });
