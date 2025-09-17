@@ -6,8 +6,8 @@ import _ from 'lodash';
 
 import { CHIP_GROUP, CHIP } from './components';
 
-const FILTERS_DROPDOWN = 'ul[class=pf-v5-c-menu__list]';
-const FILTER_TOGGLE = '[class*=pf-v5-c-menu-toggle][aria-label="Options menu"]';
+const FILTERS_DROPDOWN = 'ul[class=pf-v6-c-menu__list]';
+const FILTER_TOGGLE = '[class*=pf-v6-c-menu-toggle][aria-label="Options menu"]';
 const VERSION_COMBINATIONS = [
   ['4.18.12'],
   ['4.17.9'],
@@ -39,7 +39,7 @@ function applyFilters(filters, filtersConf) {
     // open filter selector
     cy.get('div.ins-c-primary-toolbar__filter')
       .find(
-        'button[class*="pf-v5-c-menu-toggle ins-c-conditional-filter__group"]'
+        'button[class*="pf-v6-c-menu-toggle ins-c-conditional-filter__group"]'
       )
       .click();
 
@@ -52,7 +52,7 @@ function applyFilters(filters, filtersConf) {
     } else if (item.type === 'checkbox') {
       cy.get(FILTER_TOGGLE).click();
       value.forEach((it) => {
-        cy.get('ul[class=pf-v5-c-menu__list]')
+        cy.get('ul[class=pf-v6-c-menu__list]')
           .find('label')
           .contains(it)
           .parent()
@@ -63,7 +63,7 @@ function applyFilters(filters, filtersConf) {
       cy.get(FILTER_TOGGLE).click();
     } else if (item.type == 'radio') {
       cy.get(FILTER_TOGGLE).click();
-      cy.get('ul[class=pf-v5-c-menu__list]')
+      cy.get('ul[class=pf-v6-c-menu__list]')
         .find('label')
         .contains(value)
         .parent()
@@ -122,9 +122,8 @@ function removeAllChips() {
   //   .each(($el) => cy.wrap($el).click());
   cy.get(CHIP_GROUP)
     .find(CHIP)
-    .ouiaId('close', 'button')
     .each(() => {
-      cy.get(CHIP_GROUP).find(CHIP).ouiaId('close', 'button').eq(0).click();
+      cy.get(CHIP_GROUP).find(CHIP).find('button').eq(0).click();
     });
 }
 

@@ -28,7 +28,7 @@ export const Cluster = ({ cluster, clusterId }) => {
           {areUpdateRisksEnabled && <UpdateRisksAlert />}
         </Flex>
       </PageHeader>
-      <PageSection>
+      <PageSection hasBodyWrapper={false}>
         <ClusterTabs cluster={cluster} />
       </PageSection>
     </React.Fragment>

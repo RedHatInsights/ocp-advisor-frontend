@@ -167,15 +167,15 @@ describe.skip('workloads list "No workload recommendations" Empty state renderin
     );
   });
   it('renders the Empty State component', () => {
-    cy.get('div[class=pf-v5-c-empty-state__content]')
+    cy.get('div[class=pf-v6-c-empty-state__content]')
       .should('have.length', 1)
       .find('h5')
       .should('have.text', 'No workload recommendations');
-    cy.get('div[class=pf-v5-c-empty-state__body] p').should(
+    cy.get('div[class=pf-v6-c-empty-state__body] p').should(
       'have.text',
       'There are no workload-related recommendations for your clusters. This page only shows workloads if there are recommendations available.'
     );
-    cy.get('div[class=pf-v5-c-empty-state__body] button').should(
+    cy.get('div[class=pf-v6-c-empty-state__body] button').should(
       'have.text',
       'Return to previous page'
     );
@@ -207,19 +207,19 @@ describe.skip('workloads list "Workloads data unavailable" Empty state rendering
   });
 
   it('renders the Empty State component', () => {
-    cy.get('div[class=pf-v5-c-empty-state__content]')
+    cy.get('div[class=pf-v6-c-empty-state__content]')
       .should('have.length', 1)
       .find('h5')
       .should('have.text', 'Workloads data unavailable');
-    cy.get('div[class=pf-v5-c-empty-state__body] p').should(
+    cy.get('div[class=pf-v6-c-empty-state__body] p').should(
       'have.text',
       'Verify that your clusters are connected and sending data to Red Hat, and that the Deployment Validation Operator is installed and configured.'
     );
-    cy.get('div[class=pf-v5-c-empty-state__body] button').should(
+    cy.get('div[class=pf-v6-c-empty-state__body] button').should(
       'have.text',
       'Return to previous page'
     );
-    cy.get('div[class=pf-v5-c-empty-state__body] a').should(
+    cy.get('div[class=pf-v6-c-empty-state__body] a').should(
       'have.text',
       'View documentation'
     );
@@ -251,15 +251,15 @@ describe('workloads list "Configure your workloads" Empty state rendering', () =
   });
 
   it('renders the Empty State component', () => {
-    cy.get('div[class=pf-v5-c-empty-state__content]')
+    cy.get('div[class=pf-v6-c-empty-state__content]')
       .should('have.length', 1)
       .find('h5')
       .should('have.text', 'Configure your workloads');
-    cy.get('div[class=pf-v5-c-empty-state__body] p').should(
+    cy.get('div[class=pf-v6-c-empty-state__body] p').should(
       'have.text',
       'By enabling the advisor workloads feature, you can view namespace-level recommendations. To get started, install and configure the Deployment Validation Operator.'
     );
-    cy.get('div[class=pf-v5-c-empty-state__body] a').should(
+    cy.get('div[class=pf-v6-c-empty-state__body] a').should(
       'have.text',
       'Install Deployment Validation Operator'
     );

@@ -1,12 +1,4 @@
-import {
-  EmptyState,
-  EmptyStateIcon,
-  Flex,
-  Icon,
-  Label,
-  Spinner,
-  EmptyStateHeader,
-} from '@patternfly/react-core';
+import { EmptyState, Flex, Icon, Label, Spinner } from '@patternfly/react-core';
 import ExclamationTriangleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 import {
   ExpandableRowContent,
@@ -53,9 +45,7 @@ const UpdateRisksTable = () => {
   const noRisks = isSuccess && alerts.length === 0 && conditions.length === 0;
 
   return isUninitialized || isFetching ? (
-    <EmptyState>
-      <EmptyStateHeader icon={<EmptyStateIcon icon={Spinner} />} />
-    </EmptyState>
+    <EmptyState icon={Spinner}></EmptyState>
   ) : (
     <Table
       aria-label="Update risks table"
