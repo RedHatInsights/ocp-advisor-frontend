@@ -3,6 +3,7 @@ const { sentryWebpackPlugin } = require('@sentry/webpack-plugin');
 
 module.exports = {
   appUrl: '/openshift/insights/advisor',
+  publicPath: 'auto',
   debug: true,
   useProxy: process.env.PROXY === 'true',
   proxyVerbose: true,

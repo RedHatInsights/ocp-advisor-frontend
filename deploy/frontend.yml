@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/RedHatInsights/frontend-components/refs/heads/master/packages/config-utils/src/feo/spec/frontend-crd.schema.json
+---
 apiVersion: v1
 kind: Template
 metadata:
@@ -8,6 +10,7 @@ objects:
     metadata:
       name: ocp-advisor
     spec:
+      feoConfigEnabled: true
       envName: ${ENV_NAME}
       title: OCP Advisor
       deploymentRepo: https://github.com/RedHatInsights/ocp-advisor-frontend
@@ -18,26 +21,81 @@ objects:
         paths:
           - /apps/ccx-data-pipeline
       image: ${IMAGE}:${IMAGE_TAG}
-      navItems:
-        - title: Advisor
-          expandable: true
-          routes:
-            - appId: ocpAdvisor
-              title: Recommendations
-              href: /openshift/insights/advisor/recommendations
-              product: Red Hat OpenShift Cluster Manager
-            - appId: ocpAdvisor
-              title: Clusters
-              href: /openshift/insights/advisor/clusters
-              product: Red Hat OpenShift Cluster Manager
       module:
+        analytics:
+          APIKey: apRCg9V6oMXCcnTingqRYW6m1er4hkCW
+          APIKeyDev: aMINBssUhXV1okzk7ZBaqwdTgtA0ySpg
         manifestLocation: /apps/ocp-advisor/fed-mods.json
+        config:
+          supportCaseData:
+            product: Red Hat Insights
+            version: Advisor for OCP
         modules:
           - id: ocp-advisor
             module: ./RootApp
             routes:
               - pathname: /openshift/insights/advisor
-        moduleID: ocpAdvisor
+
+      bundleSegments:
+        - segmentId: ocp-advisor
+          bundleId: openshift
+          position: 500
+          navItems:
+            - id: advisor
+              title: Advisor
+              expandable: true
+              routes:
+                - id: recommendations
+                  title: Recommendations
+                  href: /openshift/insights/advisor/recommendations
+                  product: Red Hat OpenShift Cluster Manager
+                - id: clusters
+                  title: Clusters
+                  href: /openshift/insights/advisor/clusters
+                  product: Red Hat OpenShift Cluster Manager
+                - id: workloads
+                  title: Workloads
+                  href: /openshift/insights/advisor/workloads
+                  product: Red Hat OpenShift Cluster Manager
+
+      serviceTiles:
+        - id: ocp-advisor-observe
+          title: Advisor
+          description: "See targeted recommendations to optimize your OpenShift clusters’ availability, performance, and security."
+          href: /openshift/insights/advisor/recommendations
+          group: openshift
+          section: observe
+          icon: OpenShiftIcon
+
+      searchEntries:
+        - id: ocp-advisor
+          title: Clusters - Advisor
+          description: "See targeted recommendations to optimize your OpenShift clusters’ availability, performance, and security."
+          href: /openshift/insights/advisor/clusters
+          alt_title:
+            - OpenShift Advisor
+            - Advisor
+            - advisor
+            - Recommendations
+            - Proactive support
+            - Proactive support
+            - risk
+            - support
+            - update
+            - update risk
+            - update
+            - issues
+            - remediation
+            - cluster state
+            - recommendation
+            - cluster health
+            - remote health
+            - proactive
+            - support
+            - fix
+            - problem
+            - issue
+
 parameters:
   - name: ENV_NAME
     required: true
