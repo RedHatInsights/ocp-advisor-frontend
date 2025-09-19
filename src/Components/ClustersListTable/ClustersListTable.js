@@ -126,7 +126,7 @@ const ClustersListTable = ({
       if (paramsObject.sort) {
         const sortObj = translateSortParams(paramsObject.sort);
         paramsObject.sortIndex = CLUSTERS_LIST_COLUMNS_KEYS.indexOf(
-          sortObj.name
+          sortObj.name,
         );
         paramsObject.sortDirection = sortObj.direction;
       }
@@ -184,7 +184,7 @@ const ClustersListTable = ({
                 return compareSemVer(
                   toValidSemVer(a.it.cluster_version),
                   toValidSemVer(b.it.cluster_version),
-                  d
+                  d,
                 );
               case CLUSTERS_TABLE_CELL_LAST_SEEN:
                 fst = new Date(a.it.last_checked_at || 0);
@@ -202,7 +202,7 @@ const ClustersListTable = ({
   const buildDisplayedRows = async (items, signal) => {
     const paginatedItems = items?.slice(
       filters.limit * (page - 1),
-      filters.limit * (page - 1) + filters.limit
+      filters.limit * (page - 1) + filters.limit,
     );
 
     const clusterArr = paginatedItems?.map((cluster) => cluster.it.cluster_id);
@@ -215,7 +215,7 @@ const ClustersListTable = ({
           { clusters: clusterArr },
           {
             signal,
-          }
+          },
         );
       } catch (err) {
         console.log(err);
@@ -235,7 +235,7 @@ const ClustersListTable = ({
         !valid(coerce(it.cluster_version))
       ) {
         console.error(
-          `Cluster version ${it.cluster_version} has invalid format!`
+          `Cluster version ${it.cluster_version} has invalid format!`,
         );
       }
       const ver = toValidSemVer(it.cluster_version);
@@ -317,7 +317,8 @@ const ClustersListTable = ({
         items: uniqBy(
           clusters
             .filter(
-              (c) => c.cluster_version !== undefined && c.cluster_version !== ''
+              (c) =>
+                c.cluster_version !== undefined && c.cluster_version !== '',
             )
             .map((c) => ({
               label: c.cluster_version,
@@ -327,11 +328,11 @@ const ClustersListTable = ({
               compareSemVer(
                 toValidSemVer(a.cluster_version),
                 toValidSemVer(b.cluster_version),
-                1
-              )
+                1,
+              ),
             )
             .reverse(), // should start from the latest version
-          'value'
+          'value',
         ),
       },
     },
@@ -365,7 +366,7 @@ const ClustersListTable = ({
           const newFilter = {
             [item.urlParam]: Array.isArray(filters[item.urlParam])
               ? filters[item.urlParam].filter(
-                  (value) => String(value) !== String(item.chips[0].value)
+                  (value) => String(value) !== String(item.chips[0].value),
                 )
               : '',
           };

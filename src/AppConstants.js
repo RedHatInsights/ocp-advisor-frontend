@@ -11,11 +11,10 @@ const cache = createIntlCache();
 const locale = navigator.language.slice(0, 2);
 export const intl = createIntl(
   {
-    // eslint-disable-next-line no-console
     onError: console.error,
     locale,
   },
-  cache
+  cache,
 );
 const intlSettings = { locale };
 
@@ -122,21 +121,21 @@ export const FILTER_CATEGORIES = {
       {
         label: intlHelper(
           intl.formatMessage(messages.serviceAvailability),
-          intlSettings
+          intlSettings,
         ),
         value: `${RULE_CATEGORIES.service_availability}`,
       },
       {
         label: intlHelper(
           intl.formatMessage(messages.performance),
-          intlSettings
+          intlSettings,
         ),
         value: `${RULE_CATEGORIES.performance}`,
       },
       {
         label: intlHelper(
           intl.formatMessage(messages.faultTolerance),
-          intlSettings
+          intlSettings,
         ),
         value: `${RULE_CATEGORIES.fault_tolerance}`,
       },
@@ -147,7 +146,7 @@ export const FILTER_CATEGORIES = {
       {
         label: intlHelper(
           intl.formatMessage(messages.bestPractice),
-          intlSettings
+          intlSettings,
         ),
         value: `${RULE_CATEGORIES.best_practice}`,
       },
@@ -175,15 +174,15 @@ export const TOTAL_RISK_LABEL_LOWER = {
   1: intlHelper(intl.formatMessage(messages.low).toLowerCase(), intlSettings),
   2: intlHelper(
     intl.formatMessage(messages.moderate).toLowerCase(),
-    intlSettings
+    intlSettings,
   ),
   3: intlHelper(
     intl.formatMessage(messages.important).toLowerCase(),
-    intlSettings
+    intlSettings,
   ),
   4: intlHelper(
     intl.formatMessage(messages.critical).toLowerCase(),
-    intlSettings
+    intlSettings,
   ),
 };
 export const RECS_LIST_COLUMNS = [
@@ -326,24 +325,24 @@ export const IMPACT_LABEL_LOWER = {
   1: intlHelper(intl.formatMessage(messages.low).toLowerCase(), intlSettings),
   2: intlHelper(
     intl.formatMessage(messages.medium).toLowerCase(),
-    intlSettings
+    intlSettings,
   ),
   3: intlHelper(intl.formatMessage(messages.high).toLowerCase(), intlSettings),
   4: intlHelper(
     intl.formatMessage(messages.critical).toLowerCase(),
-    intlSettings
+    intlSettings,
   ),
 };
 export const LIKELIHOOD_LABEL_LOWER = {
   1: intlHelper(intl.formatMessage(messages.low).toLowerCase(), intlSettings),
   2: intlHelper(
     intl.formatMessage(messages.medium).toLowerCase(),
-    intlSettings
+    intlSettings,
   ),
   3: intlHelper(intl.formatMessage(messages.high).toLowerCase(), intlSettings),
   4: intlHelper(
     intl.formatMessage(messages.critical).toLowerCase(),
-    intlSettings
+    intlSettings,
   ),
 };
 export const CLUSTERS_LIST_COLUMNS_KEYS = [

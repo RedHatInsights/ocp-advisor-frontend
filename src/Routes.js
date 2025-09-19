@@ -9,28 +9,35 @@ import {
 } from '@patternfly/react-core';
 import InvalidObject from '@redhat-cloud-services/frontend-components/InvalidObject/InvalidObject';
 
-const Cluster = lazy(() =>
-  import(/* webpackChunkName: "ClusterDetails" */ './Components/Cluster')
+const Cluster = lazy(
+  () => import(/* webpackChunkName: "ClusterDetails" */ './Components/Cluster'),
 );
 
-const Recommendation = lazy(() =>
-  import(/* webpackChunkName: "Recommendation" */ './Components/Recommendation')
+const Recommendation = lazy(
+  () =>
+    import(
+      /* webpackChunkName: "Recommendation" */ './Components/Recommendation'
+    ),
 );
 
-const RecsList = lazy(() =>
-  import(/* webpackChunkName: "RecsList" */ './Components/RecsList')
+const RecsList = lazy(
+  () => import(/* webpackChunkName: "RecsList" */ './Components/RecsList'),
 );
 
-const ClustersList = lazy(() =>
-  import(/* webpackChunkName: "ClustersList" */ './Components/ClustersList')
+const ClustersList = lazy(
+  () =>
+    import(/* webpackChunkName: "ClustersList" */ './Components/ClustersList'),
 );
 
-const WorkloadsList = lazy(() =>
-  import(/* webpackChunkName: "WorkloadsList" */ './Components/WorkloadsList')
+const WorkloadsList = lazy(
+  () =>
+    import(
+      /* webpackChunkName: "WorkloadsList" */ './Components/WorkloadsList'
+    ),
 );
 
-const Workload = lazy(() =>
-  import(/* webpackChunkName: "Workload" */ './Components/Workload')
+const Workload = lazy(
+  () => import(/* webpackChunkName: "Workload" */ './Components/Workload'),
 );
 
 export const BASE_PATH = '/openshift/insights/advisor';

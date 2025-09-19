@@ -28,7 +28,7 @@ export const ObjectsModalTable = ({ objects, objectsWithNames }) => {
   const [displayedRows, setDisplayedRows] = useState([]);
   const [rowsFiltered, setRowsFiltered] = useState(false);
   const filters = useSelector(
-    ({ filters }) => filters.workloadsObjectsListState
+    ({ filters }) => filters.workloadsObjectsListState,
   );
   const page = Math.floor(filters.offset / filters.limit) + 1;
   const perPage = filters.limit;
@@ -87,7 +87,7 @@ export const ObjectsModalTable = ({ objects, objectsWithNames }) => {
         type: 'text',
         title: 'object name',
         urlParam: 'display_name',
-      }
+      },
     );
   };
 
@@ -100,14 +100,14 @@ export const ObjectsModalTable = ({ objects, objectsWithNames }) => {
         resetFilters(
           filters,
           WORKLOADS_OBJECTS_TABLE_INITIAL_STATE,
-          updateFilters
+          updateFilters,
         );
       } else {
         itemsToRemove.map((item) => {
           const newFilter = {
             [item.urlParam]: Array.isArray(filters[item.urlParam])
               ? filters[item.urlParam].filter(
-                  (value) => String(value) !== String(item.chips[0].value)
+                  (value) => String(value) !== String(item.chips[0].value),
                 )
               : '',
           };
@@ -266,13 +266,13 @@ ObjectsModalTable.propTypes = {
     PropTypes.shape({
       kind: PropTypes.string,
       uid: PropTypes.string,
-    })
+    }),
   ),
   objectsWithNames: PropTypes.arrayOf(
     PropTypes.shape({
       kind: PropTypes.string,
       uid: PropTypes.string,
       display_name: PropTypes.string,
-    })
+    }),
   ),
 };

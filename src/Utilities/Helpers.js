@@ -8,7 +8,7 @@ export const setSearchParameter = (name, value) => {
   window.history.replaceState(
     null,
     '',
-    window.location.pathname + '?' + current.toString()
+    window.location.pathname + '?' + current.toString(),
   );
 
   return current.toString();

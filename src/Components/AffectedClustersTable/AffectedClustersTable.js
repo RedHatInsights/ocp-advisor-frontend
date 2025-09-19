@@ -118,7 +118,7 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
               }))
               .sort((a, b) => compareSemVer(a.value, b.value, 1))
               .reverse(), // should start from the latest version
-            'value'
+            'value',
           ),
         },
       },
@@ -148,7 +148,7 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
     const rows = allRows.map((r) => {
       if (r.meta.cluster_version !== '' && !valid(r.meta.cluster_version)) {
         console.error(
-          `Cluster version ${r.meta.cluster_version} has invalid format!`
+          `Cluster version ${r.meta.cluster_version} has invalid format!`,
         );
       }
 
@@ -167,7 +167,7 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
       .filter((row) => {
         return (
           row?.cells[AFFECTED_CLUSTERS_NAME_CELL].toLowerCase().includes(
-            filters.text.toLowerCase()
+            filters.text.toLowerCase(),
           ) &&
           (filters.version.length === 0 ||
             filters.version.includes(row.cells[AFFECTED_CLUSTERS_VERSION_CELL]))
@@ -181,14 +181,14 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
             return (
               d *
               a?.cells[AFFECTED_CLUSTERS_NAME_CELL].localeCompare(
-                b?.cells[AFFECTED_CLUSTERS_NAME_CELL]
+                b?.cells[AFFECTED_CLUSTERS_NAME_CELL],
               )
             );
           case AFFECTED_CLUSTERS_VERSION_CELL:
             return compareSemVer(
               a.cells[AFFECTED_CLUSTERS_VERSION_CELL] || '0.0.0',
               b.cells[AFFECTED_CLUSTERS_VERSION_CELL] || '0.0.0',
-              d
+              d,
             );
           case AFFECTED_CLUSTERS_LAST_SEEN_CELL:
             fst = new Date(a.cells[AFFECTED_CLUSTERS_LAST_SEEN_CELL] || 0);
@@ -330,7 +330,7 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
                     resetFilters(
                       filters,
                       AFFECTED_CLUSTERS_INITIAL_STATE,
-                      updateFilters
+                      updateFilters,
                     );
                   } else {
                     itemsToRemove.map((item) => {
@@ -338,7 +338,7 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
                         [item.urlParam]: Array.isArray(filters[item.urlParam])
                           ? filters[item.urlParam].filter(
                               (value) =>
-                                String(value) !== String(item.chips[0].value)
+                                String(value) !== String(item.chips[0].value),
                             )
                           : '',
                       };

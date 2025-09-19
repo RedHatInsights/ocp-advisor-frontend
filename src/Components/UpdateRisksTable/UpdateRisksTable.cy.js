@@ -48,11 +48,11 @@ describe('successful with some risks', () => {
   it('shows correct risks number', () => {
     cy.get('#alerts-label').should(
       'have.text',
-      `${updateRisksFixtures.upgrade_recommendation.upgrade_risks_predictors.alerts.length} update risks`
+      `${updateRisksFixtures.upgrade_recommendation.upgrade_risks_predictors.alerts.length} update risks`,
     );
     cy.get('#operator-conditions-label').should(
       'have.text',
-      `${updateRisksFixtures.upgrade_recommendation.upgrade_risks_predictors.operator_conditions.length} update risks`
+      `${updateRisksFixtures.upgrade_recommendation.upgrade_risks_predictors.operator_conditions.length} update risks`,
     );
   });
 
@@ -90,7 +90,7 @@ describe('successful with some risks', () => {
             .find('.pf-v5-c-icon__content')
             .should(
               'have.class',
-              `pf-m-${SEVERITY_ICON_CLASS_MAPPING[alert.severity]}`
+              `pf-m-${SEVERITY_ICON_CLASS_MAPPING[alert.severity]}`,
             );
           cy.get($row)
             .find('.alerts__namespace')
@@ -188,7 +188,7 @@ describe('error, service down', () => {
     // can't apply checkEmptyState since "something went wrong" component doesn't use OUIA id
     cy.get('.pf-v5-c-empty-state h4').should(
       'have.text',
-      'Something went wrong'
+      'Something went wrong',
     );
     cy.get('.pf-v5-c-empty-state__icon').should('be.visible');
   });
@@ -223,7 +223,7 @@ describe('error, other', () => {
     // can't apply checkEmptyState since "something went wrong" component doesn't use OUIA id
     cy.get('.pf-v5-c-empty-state h4').should(
       'have.text',
-      'Something went wrong'
+      'Something went wrong',
     );
     cy.get('.pf-v5-c-empty-state__icon').should('be.visible');
   });

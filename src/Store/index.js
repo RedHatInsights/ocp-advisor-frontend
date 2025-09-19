@@ -25,7 +25,7 @@ const getStore = (useLogger) =>
         notificationsMiddleware({
           errorTitleKey: ['message'],
           errorDescriptionKey: ['response.data.detail'],
-        })
+        }),
       );
       if (useLogger) {
         middleware.concat(logger);

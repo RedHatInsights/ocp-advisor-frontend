@@ -64,7 +64,7 @@ const filtersConf = {
     filterFunc: (it, value) =>
       _.intersection(
         _.flatMap(value, (x) => CATEGORIES[x]),
-        it.tags
+        it.tags,
       ).length > 0,
   },
 };
@@ -103,12 +103,12 @@ describe('test data', () => {
   });
   it('all total risk values are present', () => {
     expect(_.uniq(_.map(data, 'total_risk'))).to.have.lengthOf(
-      TOTAL_RISK_VALUES.length
+      TOTAL_RISK_VALUES.length,
     );
   });
   it('all categories are present', () => {
     expect(_.uniq(_.flatMap(data, 'tags'))).to.have.lengthOf(
-      CATEGORY_TAGS.length
+      CATEGORY_TAGS.length,
     );
   });
   it('at least 2 descriptions are different', () => {
@@ -124,7 +124,7 @@ describe('test data', () => {
     expect(
       filterData({
         description: 'Not existing recommendation',
-      })
+      }),
     ).to.have.lengthOf(0);
   });
   it('the first combo filter has less rules hitting that the default and at least one', () => {
@@ -134,7 +134,7 @@ describe('test data', () => {
   });
   it('has at least 1 rule with missing impacted field', () => {
     expect(
-      data.map((rule) => !Object.hasOwn(rule, 'impacted')).length
+      data.map((rule) => !Object.hasOwn(rule, 'impacted')).length,
     ).to.be.gte(1);
   });
 });
@@ -199,7 +199,7 @@ describe('cluster rules table', () => {
     // all tables must preserve original ordering
     _.zip(
       ['description', 'created_at', 'impacted', 'total_risk'],
-      TABLE_HEADERS
+      TABLE_HEADERS,
     ).forEach(([category, label]) => {
       SORTING_ORDERS.forEach((order) => {
         it(`${order} by ${label}`, () => {
@@ -218,7 +218,7 @@ describe('cluster rules table', () => {
             'Description',
             'description',
             RULES_ENABLED,
-            null
+            null,
           );
         });
       });
@@ -280,7 +280,7 @@ describe('cluster rules table', () => {
               TABLE_HEADERS,
               'No matching recommendations found',
               false,
-              false
+              false,
             );
           });
         });
@@ -297,7 +297,7 @@ describe('cluster rules table', () => {
             TABLE_HEADERS,
             'No matching recommendations found',
             false,
-            false
+            false,
           );
         });
       });
@@ -323,7 +323,7 @@ describe('empty cluster rules table', () => {
   it('renders "the cluster is not affected" message', () => {
     checkEmptyState(
       'The cluster is not affected by any known recommendations',
-      true
+      true,
     );
   });
 });
@@ -371,7 +371,7 @@ describe('error response other than 404', () => {
     cy.get('#cluster-recs-list-table').should(
       'have.attr',
       'data-ouia-safe',
-      'true'
+      'true',
     );
   });
 });
@@ -385,7 +385,7 @@ describe('cluster rules table testing the first query parameter', () => {
       {
         statusCode: 200,
         body: report,
-      }
+      },
     );
     mount(['/clusters/123?first=external.rules.rule_n_one|ERROR_KEY_N2']);
     waitTableReady();
@@ -417,9 +417,9 @@ describe('cluster rules table testing the first query parameter', () => {
         _.orderBy(
           data_first_query_parameter,
           [category],
-          [order === 'descending' ? 'desc' : 'asc']
+          [order === 'descending' ? 'desc' : 'asc'],
         ),
-        'description'
+        'description',
       );
       cy.get(`td[data-label="Description"]`)
         .then(($els) => {

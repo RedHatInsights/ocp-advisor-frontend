@@ -99,7 +99,7 @@ const ClusterRules = () => {
       if (paramsObject.sort) {
         const sortObj = translateSortParams(paramsObject.sort);
         paramsObject.sortIndex = CLUSTER_RULES_COLUMNS_KEYS.indexOf(
-          sortObj.name
+          sortObj.name,
         );
         paramsObject.sortDirection = sortObj.direction;
       }
@@ -117,7 +117,11 @@ const ClusterRules = () => {
 
   useEffect(() => {
     setDisplayedRows(
-      buildDisplayedRows(filteredRows, filters.sortIndex, filters.sortDirection)
+      buildDisplayedRows(
+        filteredRows,
+        filters.sortIndex,
+        filters.sortDirection,
+      ),
     );
     setRowsFiltered(true);
   }, [filteredRows]);
@@ -130,13 +134,13 @@ const ClusterRules = () => {
         displayedRows.map((row) => ({
           ...row,
           isOpen: isOpen,
-        }))
+        })),
       );
     } else {
       setDisplayedRows(
         displayedRows.map((row, index) =>
-          index === rowId ? { ...row, isOpen } : row
-        )
+          index === rowId ? { ...row, isOpen } : row,
+        ),
       );
     }
   };
@@ -146,7 +150,7 @@ const ClusterRules = () => {
     const expandedRowsSet = new Set(
       displayedRows
         .filter((ruleExpanded) => ruleExpanded?.isOpen)
-        .map((object) => object?.rule?.rule_id)
+        .map((object) => object?.rule?.rule_id),
     );
 
     return allRows
@@ -181,7 +185,7 @@ const ClusterRules = () => {
                     <div key={key}>
                       <DateFormat
                         extraTitle={`${intl.formatMessage(
-                          messages.impacted
+                          messages.impacted,
                         )}: `}
                         date={value.impacted}
                         type="relative"
@@ -356,7 +360,7 @@ const ClusterRules = () => {
             const chips = Array.isArray(item[1])
               ? item[1].map((value) => {
                   const selectedCategoryValue = category.values.find(
-                    (values) => values.value === String(value)
+                    (values) => values.value === String(value),
                   );
                   return selectedCategoryValue
                     ? {
@@ -370,7 +374,7 @@ const ClusterRules = () => {
               : [
                   {
                     name: category.values.find(
-                      (values) => values.value === String(item[1])
+                      (values) => values.value === String(item[1]),
                     ).label,
                     value: item[1],
                   },
@@ -421,7 +425,7 @@ const ClusterRules = () => {
           const newFilter = {
             [item.urlParam]: Array.isArray(filters[item.urlParam])
               ? filters[item.urlParam].filter(
-                  (value) => String(value) !== String(item.chips[0].value)
+                  (value) => String(value) !== String(item.chips[0].value),
                 )
               : '',
           };

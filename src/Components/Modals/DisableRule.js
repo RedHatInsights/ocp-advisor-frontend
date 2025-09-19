@@ -40,7 +40,7 @@ const DisableRule = ({
           uuid: h.id,
           recId: rule.rule_id,
           justification,
-        })
+        }),
       );
       await Promise.all(requests);
       notify({

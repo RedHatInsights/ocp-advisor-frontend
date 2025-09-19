@@ -60,7 +60,7 @@ describe('recommendation page for enabled recommendation with clusters enabled a
             />
           </Provider>
         </Intl>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     cy.intercept('POST', '/api/insights-results-aggregator/v2/ack', {
@@ -72,7 +72,7 @@ describe('recommendation page for enabled recommendation with clusters enabled a
       '/api/insights-results-aggregator/v1/clusters/**/rules/**/error_key/**/enable',
       {
         statusCode: 200,
-      }
+      },
     ).as('enableRequest');
   });
 
@@ -89,15 +89,15 @@ describe('recommendation page for enabled recommendation with clusters enabled a
     cy.ouiaId('hosts-acked').within(() => {
       cy.get(TITLE).should(
         'include.text',
-        'Recommendation is disabled for some clusters'
+        'Recommendation is disabled for some clusters',
       );
       cy.get('.pf-v5-c-card__body').should(
         'include.text',
-        `${clusterDetails.data.disabled.length} cluster`
+        `${clusterDetails.data.disabled.length} cluster`,
       );
       cy.ouiaId('enable').should(
         'have.text',
-        'Enable this recommendation for all clusters'
+        'Enable this recommendation for all clusters',
       );
     });
   });
@@ -152,7 +152,7 @@ describe('recommendation page for enabled recommendation with clusters enabled a
         .should('have.length', clusterDetails.data.disabled.length);
       const clusters = _.map(
         clusterDetails.data.disabled,
-        (it) => it.cluster_name || it.cluster_id
+        (it) => it.cluster_name || it.cluster_id,
       );
       cy.get(`td[data-label="Cluster name"]`)
         .then(($els) => {
@@ -195,7 +195,7 @@ describe('recommendation page for enabled recommendation with clusters enabled a
           .should('have.length', 1)
           .and(
             'have.text',
-            'The change poses no risk to workloads on the cluster.'
+            'The change poses no risk to workloads on the cluster.',
           );
       });
     });
@@ -216,7 +216,7 @@ describe('recommendation page for enabled recommedation with nulled resolution r
             />
           </Provider>
         </Intl>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
   });
 
@@ -243,7 +243,7 @@ describe('recommendation page for enabled recommendation without disabled cluste
             />
           </Provider>
         </Intl>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     cy.intercept('POST', '/api/insights-results-aggregator/v2/ack', {
@@ -300,7 +300,7 @@ describe('recommendation page for disabled recommendation', () => {
             />
           </Provider>
         </Intl>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     cy.intercept('DELETE', '/api/insights-results-aggregator/v2/ack/*', {
@@ -312,7 +312,7 @@ describe('recommendation page for disabled recommendation', () => {
     cy.get(TITLE)
       .get('h1')
       .should(($el) =>
-        expect($el.text().trim()).to.equal(ruleDescription + ' Disabled')
+        expect($el.text().trim()).to.equal(ruleDescription + ' Disabled'),
       );
   });
 
@@ -321,7 +321,7 @@ describe('recommendation page for disabled recommendation', () => {
       cy.get(TITLE).should('include.text', 'Recommendation is disabled');
       cy.get('.pf-v5-c-card__body').should(
         'include.text',
-        `and has no results`
+        `and has no results`,
       );
       cy.ouiaId('enable').should('have.text', 'Enable recommendation');
     });
@@ -332,7 +332,7 @@ describe('recommendation page for disabled recommendation', () => {
     cy.ouiaId('empty-state').within(() => {
       cy.get('.pf-v5-c-empty-state__title-text').should(
         'include.text',
-        'Recommendation is disabled'
+        'Recommendation is disabled',
       );
     });
   });
@@ -349,9 +349,9 @@ describe('recommendation page for disabled recommendation', () => {
             cy.wait('@deackRequest').then((xhr) =>
               assert.isOk(
                 xhr.request.url.includes(
-                  encodeURIComponent(rule.content.rule_id)
-                )
-              )
+                  encodeURIComponent(rule.content.rule_id),
+                ),
+              ),
             );
           });
       });
@@ -379,7 +379,7 @@ describe('justification message', () => {
               />
             </Provider>
           </Intl>
-        </MemoryRouter>
+        </MemoryRouter>,
       );
     });
     it('should not display reason', () => {
@@ -412,14 +412,14 @@ describe('justification message', () => {
               />
             </Provider>
           </Intl>
-        </MemoryRouter>
+        </MemoryRouter>,
       );
     });
     it('should display reason', () => {
       cy.ouiaId('hosts-acked').within(() => {
         cy.get('.pf-v5-c-card__body').should(
           'include.text',
-          `because ${justification}`
+          `because ${justification}`,
         );
       });
     });
@@ -440,7 +440,7 @@ describe('category labels are displayed', () => {
       value.forEach((it) => (obj[it] = key));
       return obj;
     },
-    {}
+    {},
   );
 
   function tags2categories(tags) {
@@ -451,20 +451,20 @@ describe('category labels are displayed', () => {
   });
   it('at least one tag combination is only 1 valid category', () => {
     expect(
-      _.map(_.map(tagsCombinations, tags2categories), (it) => it.length)
+      _.map(_.map(tagsCombinations, tags2categories), (it) => it.length),
     ).to.include(1);
   });
   it('at least one tag combination has 0 valid categories', () => {
     expect(
-      _.map(_.map(tagsCombinations, tags2categories), (it) => it.length)
+      _.map(_.map(tagsCombinations, tags2categories), (it) => it.length),
     ).to.include(0);
   });
   it('at least one tag combination is >1 valid categories', () => {
     expect(
       _.filter(
         _.map(_.map(tagsCombinations, tags2categories), (it) => it.length),
-        (it) => it >= 2
-      )
+        (it) => it >= 2,
+      ),
     ).to.have.length.gte(1);
   });
 
@@ -486,7 +486,7 @@ describe('category labels are displayed', () => {
                 />
               </Provider>
             </Intl>
-          </MemoryRouter>
+          </MemoryRouter>,
         );
       });
 
