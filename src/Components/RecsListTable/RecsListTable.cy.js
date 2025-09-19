@@ -141,7 +141,7 @@ const filtersConf = {
     filterFunc: (it, value) =>
       _.intersection(
         _.flatMap(value, (x) => CATEGORIES[x]),
-        it.tags
+        it.tags,
       ).length > 0,
     urlParam: 'category',
     urlValue: (it) =>
@@ -181,7 +181,7 @@ const filterApply = (filters) => applyFilters(filters, filtersConf);
 
 const DEFAULT_DISPLAYED_SIZE = Math.min(
   filterData(DEFAULT_FILTERS).length,
-  DEFAULT_ROW_COUNT
+  DEFAULT_ROW_COUNT,
 );
 
 const filterCombos = [{ impacting: ['1 or more'] }];
@@ -248,12 +248,12 @@ describe('data', () => {
   });
   it('at least one recommendation in default list has only 1 cluster hit', () => {
     expect(
-      _.filter(filterData(), (it) => it.impacted_clusters_count === 1)
+      _.filter(filterData(), (it) => it.impacted_clusters_count === 1),
     ).to.have.length.gte(1);
   });
   it('at least one recommendation in default list has more than 1 cluster hit', () => {
     expect(
-      _.filter(filterData(), (it) => it.impacted_clusters_count > 1)
+      _.filter(filterData(), (it) => it.impacted_clusters_count > 1),
     ).to.have.length.gte(1);
   });
   it('at least one rule has no affecting clutsers', () => {
@@ -261,7 +261,7 @@ describe('data', () => {
       filterData({
         impacting: ['None'],
       }),
-      (it) => it.impacted_clusters_count === 0
+      (it) => it.impacted_clusters_count === 0,
     ).to.have.length.gte(1);
   });
   it('at least one recommendation in default list has resolution risk set to non 0 value', () => {
@@ -269,16 +269,16 @@ describe('data', () => {
       filterData().filter(
         ({ resolution_risk, description }) =>
           resolution_risk >= 1 &&
-          description.includes('1Lorem ipsum dolor sit amet')
-      ).length
+          description.includes('1Lorem ipsum dolor sit amet'),
+      ).length,
     ).to.gte(1);
   });
   it('at least one recommendation in default list has resolution risk set to 0', () => {
     expect(
       filterData().filter(
         ({ resolution_risk, description }) =>
-          resolution_risk === 0 && description.includes('Super atomic nuclear')
-      ).length
+          resolution_risk === 0 && description.includes('Super atomic nuclear'),
+      ).length,
     ).to.gte(1);
   });
 });
@@ -312,7 +312,7 @@ urlParamsList.forEach((urlParams, index) => {
               />
             </Provider>
           </Intl>
-        </MemoryRouter>
+        </MemoryRouter>,
       );
     });
 
@@ -322,7 +322,7 @@ urlParamsList.forEach((urlParams, index) => {
         if (key == 'text') {
           hasChip('Name', value);
           cy.get(
-            '.pf-m-fill [data-ouia-component-type="PF6/TextInput"]'
+            '.pf-m-fill [data-ouia-component-type="PF6/TextInput"]',
           ).should('have.value', value);
         } else {
           value.split(',').forEach((it) => {
@@ -334,7 +334,7 @@ urlParamsList.forEach((urlParams, index) => {
       // do not get more chips than expected
       cy.get(CHIP_GROUP).should(
         'have.length',
-        Array.from(urlSearchParameters).length
+        Array.from(urlSearchParameters).length,
       );
     });
   });
@@ -361,7 +361,7 @@ describe('successful non-empty recommendations list table', () => {
             />
           </Provider>
         </Intl>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
   });
 
@@ -388,7 +388,7 @@ describe('successful non-empty recommendations list table', () => {
     cy.get(ROOT)
       .should('have.length', 1)
       .find(
-        'button[class*="pf-v6-c-menu-toggle ins-c-conditional-filter__group"]'
+        'button[class*="pf-v6-c-menu-toggle ins-c-conditional-filter__group"]',
       )
       .should('have.length', 1)
       .click();
@@ -418,7 +418,7 @@ describe('successful non-empty recommendations list table', () => {
       const column = 'Total risk';
       tableIsSortedBy(column);
       expect(window.location.search).to.contain(
-        `sort=-${columnName2UrlParam(column)}`
+        `sort=-${columnName2UrlParam(column)}`,
       );
     });
 
@@ -434,13 +434,13 @@ describe('successful non-empty recommendations list table', () => {
         }
 
         expect(window.location.search).to.contain(
-          `${conf.urlParam}=${conf.urlValue(value)}`
+          `${conf.urlParam}=${conf.urlValue(value)}`,
         );
       }
       // do not get more chips than expected
       cy.get(CHIP_GROUP).should(
         'have.length',
-        Object.keys(DEFAULT_FILTERS).length
+        Object.keys(DEFAULT_FILTERS).length,
       );
     });
 
@@ -479,7 +479,7 @@ describe('successful non-empty recommendations list table', () => {
       cy.wrap(itemsPerPage(filterData().length)).each((el, index, list) => {
         checkRowGroupCounts(Math.min(el, filterData().length)).then(() => {
           expect(window.location.search).to.contain(
-            `offset=${DEFAULT_ROW_COUNT * index}`
+            `offset=${DEFAULT_ROW_COUNT * index}`,
           );
         });
         cy.get(TOOLBAR)
@@ -506,7 +506,7 @@ describe('successful non-empty recommendations list table', () => {
         'resolution_risk',
         'impacted_clusters_count',
       ],
-      TABLE_HEADERS
+      TABLE_HEADERS,
     ).forEach(([category, label]) => {
       SORTING_ORDERS.forEach((order) => {
         it(`${order} by ${label}`, () => {
@@ -517,8 +517,8 @@ describe('successful non-empty recommendations list table', () => {
             sortingParameter = (it) =>
               _.first(
                 it.tags.filter((string) =>
-                  Object.keys(RULE_CATEGORIES).includes(string)
-                )
+                  Object.keys(RULE_CATEGORIES).includes(string),
+                ),
               );
           }
 
@@ -530,7 +530,7 @@ describe('successful non-empty recommendations list table', () => {
             'Name',
             'description',
             DEFAULT_DISPLAYED_SIZE,
-            label === 'Risk of change' ? 'res_risk' : label
+            label === 'Risk of change' ? 'res_risk' : label,
           );
         });
       });
@@ -551,7 +551,7 @@ describe('successful non-empty recommendations list table', () => {
       hasChip('Status', 'Enabled');
       cy.get('div.pf-v6-c-label-group.pf-m-category').should(
         'have.length',
-        Object.keys(DEFAULT_FILTERS).length
+        Object.keys(DEFAULT_FILTERS).length,
       );
       cy.get('button').contains('Reset filters').should('exist');
       checkRowGroupCounts(DEFAULT_DISPLAYED_SIZE);
@@ -568,7 +568,7 @@ describe('successful non-empty recommendations list table', () => {
 
     it('no filters show all recommendations', () => {
       cy.get('li.pf-v6-c-label-group__list-item button.pf-v6-c-button').each(
-        ($el) => cy.wrap($el).click()
+        ($el) => cy.wrap($el).click(),
       );
       checkRowGroupCounts(Math.min(DEFAULT_ROW_COUNT, data.length));
       checkPaginationTotal(data.length);
@@ -591,13 +591,13 @@ describe('successful non-empty recommendations list table', () => {
               filtersConf,
               _.map(filterData(filters, modifiedData), 'description').slice(
                 0,
-                DEFAULT_ROW_COUNT
+                DEFAULT_ROW_COUNT,
               ),
               'Name',
               TABLE_HEADERS,
               'No matching recommendations found',
               true,
-              true
+              true,
             );
           });
         });
@@ -620,13 +620,13 @@ describe('successful non-empty recommendations list table', () => {
             filtersConf,
             _.map(filterData(filters, modifiedData), 'description').slice(
               0,
-              DEFAULT_ROW_COUNT
+              DEFAULT_ROW_COUNT,
             ),
             'Name',
             TABLE_HEADERS,
             'No matching recommendations found',
             true,
-            true
+            true,
           );
         });
       });
@@ -679,7 +679,7 @@ describe('successful non-empty recommendations list table', () => {
 
     it('absent resolution risk is shown as not available', () => {
       cy.getRowByName(
-        'Super atomic nuclear cluster on the brink of the world destruction'
+        'Super atomic nuclear cluster on the brink of the world destruction',
       )
         .find('[data-label="Risk of change"]')
         .should('have.text', 'Not available');
@@ -687,7 +687,7 @@ describe('successful non-empty recommendations list table', () => {
 
     it('absent resolution risk is not shown in expanded details', () => {
       cy.getRowByName(
-        'Super atomic nuclear cluster on the brink of the world destruction'
+        'Super atomic nuclear cluster on the brink of the world destruction',
       )
         .find('.pf-v6-c-table__toggle button')
         .click();
@@ -715,7 +715,7 @@ describe('successful non-empty recommendations list table', () => {
 
     it('view affected link is present for rules affecting at least one cluster', () => {
       cy.getRowByName(
-        'Super atomic nuclear cluster on the brink of the world destruction'
+        'Super atomic nuclear cluster on the brink of the world destruction',
       )
         .find('[aria-label="Details"]')
         .click();
@@ -726,7 +726,7 @@ describe('successful non-empty recommendations list table', () => {
 
     it('view affected link is missing for non-affecting rules', () => {
       cy.get('li.pf-v6-c-label-group__list-item button.pf-v6-c-button').each(
-        ($el) => cy.wrap($el).click()
+        ($el) => cy.wrap($el).click(),
       );
       filterApply({
         impacting: ['None'],
@@ -761,26 +761,26 @@ describe('successful non-empty recommendations list table', () => {
 
     it('enabled rule has the disable action', () => {
       cy.clickOnRowKebab(
-        'Super atomic nuclear cluster on the brink of the world destruction'
+        'Super atomic nuclear cluster on the brink of the world destruction',
       );
       cy.get('[data-ouia-component-type="PF6/DropdownItem"]').should(
         'have.text',
-        'Disable recommendation'
+        'Disable recommendation',
       );
     });
 
     it('disabled rule has the enable action', () => {
       cy.get('li.pf-v6-c-label-group__list-item button.pf-v6-c-button').each(
-        ($el) => cy.wrap($el).click()
+        ($el) => cy.wrap($el).click(),
       );
       const firstDisabledRecommendation = _.filter(
         filterData({}),
-        (it) => it.disabled
+        (it) => it.disabled,
       )[0];
       cy.clickOnRowKebab(firstDisabledRecommendation.description);
       cy.get('[data-ouia-component-type="PF6/DropdownItem"]').should(
         'have.text',
-        'Enable recommendation'
+        'Enable recommendation',
       );
     });
   });
@@ -794,7 +794,7 @@ describe('successful non-empty recommendations list table', () => {
       .each((el, index) => {
         // contains description
         cy.wrap(el).contains(
-          'Sed ut perspiciatis unde omnis iste natus error.'
+          'Sed ut perspiciatis unde omnis iste natus error.',
         );
         // contain total risk label
         cy.wrap(el).find('.ins-c-rule-details__stack');
@@ -805,12 +805,12 @@ describe('successful non-empty recommendations list table', () => {
           .should(
             'have.attr',
             'href',
-            `/openshift/insights/advisor/recommendations/${recommendationData.rule_id}`
+            `/openshift/insights/advisor/recommendations/${recommendationData.rule_id}`,
           );
         cy.wrap(el).and(($a) => {
           expect($a).to.contains.text(
             // toLocaleString() method is used to put comma in the thousands
-            `${recommendationData.impacted_clusters_count.toLocaleString()}`
+            `${recommendationData.impacted_clusters_count.toLocaleString()}`,
           );
         });
       });
@@ -837,7 +837,7 @@ describe('empty recommendations list table', () => {
             />
           </Provider>
         </Intl>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
   });
 
@@ -866,7 +866,7 @@ describe('error recommendations list table', () => {
             />
           </Provider>
         </Intl>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
   });
 

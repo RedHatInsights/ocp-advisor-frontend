@@ -26,23 +26,23 @@ export const Acks = createApi({
 const enableRuleForCluster = async ({ uuid, recId }) => {
   await Put(
     `${BASE_URL}/v1/clusters/${uuid}/rules/${getPluginName(
-      recId
-    )}.report/error_key/${getErrorKey(recId)}/enable`
+      recId,
+    )}.report/error_key/${getErrorKey(recId)}/enable`,
   );
 };
 
 const disableRuleForCluster = async ({ uuid, recId, justification = '' }) => {
   await Put(
     `${BASE_URL}/v1/clusters/${uuid}/rules/${getPluginName(
-      recId
-    )}.report/error_key/${getErrorKey(recId)}/disable`
+      recId,
+    )}.report/error_key/${getErrorKey(recId)}/disable`,
   );
   await Post(
     `${BASE_URL}/v1/clusters/${uuid}/rules/${getPluginName(
-      recId
+      recId,
     )}.report/error_key/${getErrorKey(recId)}/disable_feedback`,
     {},
-    { message: justification }
+    { message: justification },
   );
 };
 

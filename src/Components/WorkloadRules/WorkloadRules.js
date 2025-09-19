@@ -83,7 +83,11 @@ const WorkloadRules = ({ workload, namespaceName }) => {
 
   useEffect(() => {
     setDisplayedRows(
-      buildDisplayedRows(filteredRows, filters.sortIndex, filters.sortDirection)
+      buildDisplayedRows(
+        filteredRows,
+        filters.sortIndex,
+        filters.sortDirection,
+      ),
     );
     setFiltersApplied(filtersAreApplied(filters));
     setRowsFiltered(true);
@@ -91,7 +95,7 @@ const WorkloadRules = ({ workload, namespaceName }) => {
 
   const filterConfigItems = WORKLOADS_RULES_FILTER_CONFIG(
     filters,
-    addFilterParam
+    addFilterParam,
   );
 
   useEffect(() => {
@@ -100,7 +104,7 @@ const WorkloadRules = ({ workload, namespaceName }) => {
       if (paramsObject.sort) {
         const sortObj = translateSortParams(paramsObject.sort);
         paramsObject.sortIndex = WORKLOADS_RULES_COLUMNS_KEYS.indexOf(
-          sortObj.description
+          sortObj.description,
         );
         paramsObject.sortDirection = sortObj.direction;
       }
@@ -132,13 +136,13 @@ const WorkloadRules = ({ workload, namespaceName }) => {
           ...row,
           // Don't show expand button for expanded content
           ...(Object.hasOwn(row, 'parent') ? null : { isOpen }),
-        }))
+        })),
       );
     } else {
       setDisplayedRows(
         displayedRows.map((row, index) =>
-          index === rowId ? { ...row, isOpen } : row
-        )
+          index === rowId ? { ...row, isOpen } : row,
+        ),
       );
     }
   };
@@ -149,11 +153,11 @@ const WorkloadRules = ({ workload, namespaceName }) => {
     const expandedRowsSet = new Set(
       displayedRows
         .filter((ruleExpanded) => ruleExpanded?.isOpen)
-        .map((object) => object?.rule?.details)
+        .map((object) => object?.rule?.details),
     );
     return allRows
       .filter((recs) =>
-        filtersArePresent ? passFilterWorkloadsRecs(recs, filters) : true
+        filtersArePresent ? passFilterWorkloadsRecs(recs, filters) : true,
       )
       .map((value, key) => [
         {
@@ -211,7 +215,7 @@ const WorkloadRules = ({ workload, namespaceName }) => {
     delete localFilters.sortDirection;
     return pruneWorkloadsRulesFilters(
       localFilters,
-      WORKLOAD_RULES_FILTER_CATEGORIES
+      WORKLOAD_RULES_FILTER_CATEGORIES,
     );
   };
 
@@ -224,14 +228,14 @@ const WorkloadRules = ({ workload, namespaceName }) => {
         resetFilters(
           filters,
           WORKLOADS_RECS_TABLE_INITIAL_STATE,
-          updateFilters
+          updateFilters,
         );
       } else {
         itemsToRemove.map((item) => {
           const newFilter = {
             [item.urlParam]: Array.isArray(filters[item.urlParam])
               ? filters[item.urlParam].filter(
-                  (value) => String(value) !== String(item.chips[0].value)
+                  (value) => String(value) !== String(item.chips[0].value),
                 )
               : '',
           };
@@ -365,10 +369,10 @@ WorkloadRules.propTypes = {
             PropTypes.shape({
               kind: PropTypes.string,
               uid: PropTypes.string,
-            })
+            }),
           ),
           remediation: PropTypes.string,
-        })
+        }),
       ),
     }),
   }),

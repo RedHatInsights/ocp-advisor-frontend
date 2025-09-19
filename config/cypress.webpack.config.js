@@ -8,7 +8,7 @@ const { config: webpackConfig, plugins } = config({
 });
 
 plugins.push(
-  new webpack.DefinePlugin({ insights: { chrome: { isProd: false } } })
+  new webpack.DefinePlugin({ insights: { chrome: { isProd: false } } }),
 );
 
 // required to mock the chrome functionss
@@ -17,7 +17,7 @@ webpackConfig.module.rules.push({
     alias: {
       '@redhat-cloud-services/frontend-components/useChrome': resolve(
         __dirname,
-        './overrideChrome.js'
+        './overrideChrome.js',
       ),
     },
   },

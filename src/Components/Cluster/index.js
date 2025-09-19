@@ -25,7 +25,7 @@ const ClusterWrapper = () => {
       cluster?.data?.report?.meta?.cluster_name || clusterId
     } - ${intl.formatMessage(messages.clusters)}`;
     chrome.updateDocumentTitle(
-      intl.formatMessage(messages.documentTitle, { subnav })
+      intl.formatMessage(messages.documentTitle, { subnav }),
     );
   }, [cluster, clusterId]);
   return <Cluster cluster={cluster} clusterId={clusterId} />;

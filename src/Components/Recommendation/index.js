@@ -21,7 +21,7 @@ const RecommendationWrapper = () => {
   if (rule.isSuccess && rule.data?.content?.description) {
     const subnav = `${rule.data.content.description} - Recommendations`;
     chrome.updateDocumentTitle(
-      intl.formatMessage(messages.documentTitle, { subnav })
+      intl.formatMessage(messages.documentTitle, { subnav }),
     );
   }
   const clusters = useGetAffectedClustersQuery(recommendationId);

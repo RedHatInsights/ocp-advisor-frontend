@@ -4,8 +4,9 @@ import { useParams } from 'react-router-dom';
 import { useGetClusterInfoState } from '../../Services/SmartProxy';
 
 const useUpdateRisksFeature = (clusterId) => {
-  const id = clusterId || useParams().clusterId;
-  const clusterInfo = useGetClusterInfoState({ id }); // doesn't request new data, uses cache
+  const { clusterId: paramsClusterId } = useParams();
+  const id = clusterId || paramsClusterId;
+  const clusterInfo = useGetClusterInfoState({ id });
   const isManaged = get(clusterInfo, 'data.managed', true);
 
   return !isManaged;

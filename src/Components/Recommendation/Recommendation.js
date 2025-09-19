@@ -103,7 +103,7 @@ const Recommendation = ({ rule, ack, clusters, recId }) => {
   const enableRecForHosts = async ({ uuids }) => {
     try {
       const requests = uuids.map((uuid) =>
-        enableRuleForCluster({ uuid, recId })
+        enableRuleForCluster({ uuid, recId }),
       );
       await Promise.all(requests);
       refetch();
@@ -148,7 +148,7 @@ const Recommendation = ({ rule, ack, clusters, recId }) => {
 
   const messagesValues = useMemo(
     () => (content ? mapContentToValues(intl, content) : {}),
-    [intl, content]
+    [intl, content],
   );
 
   return (
@@ -192,7 +192,7 @@ const Recommendation = ({ rule, ack, clusters, recId }) => {
               messages={formatMessages(
                 intl,
                 RuleDetailsMessagesKeys,
-                messagesValues
+                messagesValues,
               )}
               product={AdvisorProduct.ocp}
               rule={content}
@@ -235,7 +235,7 @@ const Recommendation = ({ rule, ack, clusters, recId }) => {
                                       RULE_CATEGORIES[tag] - 1
                                     ].label
                                   }
-                                </Label>
+                                </Label>,
                               );
                             }
                             return labels;
@@ -326,7 +326,7 @@ const Recommendation = ({ rule, ack, clusters, recId }) => {
                           ackedClusters?.length > 0) &&
                           !content?.disabled
                           ? messages.ruleIsDisabledForClusters
-                          : messages.ruleIsDisabled
+                          : messages.ruleIsDisabled,
                       )}
                     </Title>
                   </CardHeader>
@@ -339,7 +339,7 @@ const Recommendation = ({ rule, ack, clusters, recId }) => {
                           messages.ruleIsDisabledForClustersBody,
                           {
                             clusters: ackedClusters?.length,
-                          }
+                          },
                         )}
                         {!clustersIsFetching && ackedClusters?.length > 0 ? (
                           <React.Fragment>
@@ -374,7 +374,7 @@ const Recommendation = ({ rule, ack, clusters, recId }) => {
                                     </span>
                                   ),
                                   reason: ackData.justification,
-                                }
+                                },
                               )
                             : intl.formatMessage(
                                 messages.ruleIsDisabledWithoutJustificaiton,
@@ -387,7 +387,7 @@ const Recommendation = ({ rule, ack, clusters, recId }) => {
                                       />
                                     </span>
                                   ),
-                                }
+                                },
                               )}
                         </React.Fragment>
                       )

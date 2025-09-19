@@ -44,12 +44,12 @@ const dataUnsorted = _.cloneDeep(values);
 const data = _.orderBy(
   values,
   [(it) => it.metadata.last_checked_at || '1970-01-01T01:00:00.001Z'],
-  ['desc']
+  ['desc'],
 );
 
 const ROOT = 'div[id=workloads-list-table]';
 const TABLE_HEADERS = _.map(WORKLOADS_LIST_COLUMNS, (it, index) =>
-  index === 0 ? 'Name' : it.title
+  index === 0 ? 'Name' : it.title,
 );
 
 // const TOTAL_RISK_VALUES = Object.keys(TOTAL_RISK);
@@ -113,7 +113,7 @@ describe('data', () => {
   });
   it('at least one namespace has a cluster name', () => {
     expect(
-      _.filter(filterData(), (it) => it.cluster.display_name)
+      _.filter(filterData(), (it) => it.cluster.display_name),
     ).to.have.length.gte(1);
   });
   it('data contains at least one namespace without clustername', () => {
@@ -121,18 +121,18 @@ describe('data', () => {
     expect(
       _.filter(
         filterData().slice(0, itemsInFirstPage),
-        (it) => it.cluster.display_name === ''
-      )
+        (it) => it.cluster.display_name === '',
+      ),
     ).to.have.length.gte(1);
   });
   it('at least one entry has last seen', () => {
     expect(
-      _.filter(filterData(), (it) => it.metadata.last_checked_at)
+      _.filter(filterData(), (it) => it.metadata.last_checked_at),
     ).to.have.length.gte(1);
   });
   it('at least one entry does not have last seen', () => {
     expect(
-      _.filter(filterData(), (it) => it.metadata.last_checked_at === '')
+      _.filter(filterData(), (it) => it.metadata.last_checked_at === ''),
     ).to.have.length.gte(1);
   });
   it('at least two clusters match foo for their names', () => {
@@ -140,7 +140,7 @@ describe('data', () => {
   });
   it('at least one namespace matches foo bar in the name of the namespace', () => {
     expect(
-      filterData({ namespace_name: 'foo bar namespace' })
+      filterData({ namespace_name: 'foo bar namespace' }),
     ).to.have.length.gt(1);
   });
 });
@@ -163,7 +163,7 @@ describe.skip('workloads list "No workload recommendations" Empty state renderin
             }}
           />
         </Provider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
   });
   it('renders the Empty State component', () => {
@@ -173,11 +173,11 @@ describe.skip('workloads list "No workload recommendations" Empty state renderin
       .should('have.text', 'No workload recommendations');
     cy.get('div[class=pf-v6-c-empty-state__body] p').should(
       'have.text',
-      'There are no workload-related recommendations for your clusters. This page only shows workloads if there are recommendations available.'
+      'There are no workload-related recommendations for your clusters. This page only shows workloads if there are recommendations available.',
     );
     cy.get('div[class=pf-v6-c-empty-state__body] button').should(
       'have.text',
-      'Return to previous page'
+      'Return to previous page',
     );
     cy.get('div[id=workloads-list-table]').should('not.exist');
   });
@@ -202,7 +202,7 @@ describe.skip('workloads list "Workloads data unavailable" Empty state rendering
             }}
           />
         </Provider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
   });
 
@@ -213,15 +213,15 @@ describe.skip('workloads list "Workloads data unavailable" Empty state rendering
       .should('have.text', 'Workloads data unavailable');
     cy.get('div[class=pf-v6-c-empty-state__body] p').should(
       'have.text',
-      'Verify that your clusters are connected and sending data to Red Hat, and that the Deployment Validation Operator is installed and configured.'
+      'Verify that your clusters are connected and sending data to Red Hat, and that the Deployment Validation Operator is installed and configured.',
     );
     cy.get('div[class=pf-v6-c-empty-state__body] button').should(
       'have.text',
-      'Return to previous page'
+      'Return to previous page',
     );
     cy.get('div[class=pf-v6-c-empty-state__body] a').should(
       'have.text',
-      'View documentation'
+      'View documentation',
     );
     cy.get('div[id=workloads-list-table]').should('not.exist');
   });
@@ -246,7 +246,7 @@ describe('workloads list "Configure your workloads" Empty state rendering', () =
             }}
           />
         </Provider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
   });
 
@@ -257,11 +257,11 @@ describe('workloads list "Configure your workloads" Empty state rendering', () =
       .should('have.text', 'Configure your workloads');
     cy.get('div[class=pf-v6-c-empty-state__body] p').should(
       'have.text',
-      'By enabling the advisor workloads feature, you can view namespace-level recommendations. To get started, install and configure the Deployment Validation Operator.'
+      'By enabling the advisor workloads feature, you can view namespace-level recommendations. To get started, install and configure the Deployment Validation Operator.',
     );
     cy.get('div[class=pf-v6-c-empty-state__body] a').should(
       'have.text',
-      'Install Deployment Validation Operator'
+      'Install Deployment Validation Operator',
     );
     cy.get('div[id=workloads-list-table]').should('not.exist');
   });
@@ -286,7 +286,7 @@ describe('workloads list table', () => {
             }}
           />
         </Provider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
   });
 
@@ -342,7 +342,7 @@ describe('workloads list table', () => {
       cy.wrap(itemsPerPage(data.length)).each((el, index, list) => {
         checkRowCounts(el).then(() => {
           expect(window.location.search).to.contain(
-            `offset=${DEFAULT_ROW_COUNT * index}`
+            `offset=${DEFAULT_ROW_COUNT * index}`,
           );
         });
         cy.get(TOOLBAR)
@@ -362,7 +362,7 @@ describe('workloads list table', () => {
   describe('sorting', () => {
     _.zip(
       ['name', 'recommendations', 'severity', 'objects', 'last_seen'],
-      TABLE_HEADERS
+      TABLE_HEADERS,
     ).forEach(([category, label]) => {
       SORTING_ORDERS.forEach((order) => {
         it(`${order} by ${label}`, () => {
@@ -399,7 +399,7 @@ describe('workloads list table', () => {
                 it.namespace.name || it.namespace.uuid
               }`,
             Math.min(DEFAULT_ROW_COUNT, dataUnsorted.length),
-            null
+            null,
           );
         });
       });
@@ -412,7 +412,7 @@ describe('workloads list table', () => {
       filterApply(filterCombos[0]);
       cy.get(CHIP_GROUP).should(
         'have.length',
-        Object.keys(filterCombos[0]).length
+        Object.keys(filterCombos[0]).length,
       );
       cy.get(CHIP_GROUP).should('exist');
       cy.get('button').contains('Reset filters').should('exist').click();
@@ -460,13 +460,13 @@ describe('workloads list table', () => {
                 (val) =>
                   `${val.cluster.display_name || val.cluster.uuid}\n\n${
                     val.namespace.name || val.namespace.uuid
-                  }`
+                  }`,
               ),
               'column-0',
               TABLE_HEADERS,
               'No matching workloads found',
               false,
-              false
+              false,
             );
           });
         });
@@ -484,13 +484,13 @@ describe('workloads list table', () => {
               (val) =>
                 `${val.cluster.display_name || val.cluster.uuid}\n\n${
                   val.namespace.name || val.namespace.uuid
-                }`
+                }`,
             ),
             'column-0',
             TABLE_HEADERS,
             'No matching workloads found',
             false,
-            false
+            false,
           );
         });
       });

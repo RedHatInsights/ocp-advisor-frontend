@@ -8,8 +8,8 @@ import messages from '../../Messages';
 import { Title } from '@patternfly/react-core';
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 
-const RecsListTable = lazy(() =>
-  import(/* webpackChunkName: 'RulesTable' */ '../RecsListTable/')
+const RecsListTable = lazy(
+  () => import(/* webpackChunkName: 'RulesTable' */ '../RecsListTable/'),
 );
 
 const RecsList = () => {
@@ -19,7 +19,7 @@ const RecsList = () => {
   chrome.updateDocumentTitle(
     intl.formatMessage(messages.documentTitle, {
       subnav: intl.formatMessage(messages.recommendations),
-    })
+    }),
   );
 
   return (

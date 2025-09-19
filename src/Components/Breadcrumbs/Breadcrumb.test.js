@@ -22,17 +22,19 @@ describe('breadcrumbs', () => {
         <IntlProvider locale="en">
           <Breadcrumbs {...props} />
         </IntlProvider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.getAllByTestId('breadcrumb-item')).toHaveLength(1);
     expect(
       screen.getByRole('link', {
         name: /advisor recommendations/i,
-      })
+      }),
     ).toBeInTheDocument();
     expect(
-      screen.getByText('Cluster update will fail when default SCC gets changed')
+      screen.getByText(
+        'Cluster update will fail when default SCC gets changed',
+      ),
     ).toBeInTheDocument();
   });
 
@@ -50,14 +52,14 @@ describe('breadcrumbs', () => {
         <IntlProvider locale="en">
           <Breadcrumbs {...props} />
         </IntlProvider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.getAllByTestId('breadcrumb-item')).toHaveLength(1);
     expect(
       screen.getByRole('link', {
         name: /advisor clusters/i,
-      })
+      }),
     ).toBeInTheDocument();
     expect(screen.getByText('Cluster with issues')).toBeInTheDocument();
   });
@@ -77,19 +79,19 @@ describe('breadcrumbs', () => {
         <IntlProvider locale="en">
           <Breadcrumbs {...props} />
         </IntlProvider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.getAllByTestId('breadcrumb-item')).toHaveLength(1);
     expect(
       screen.getByRole('link', {
         name: /advisor workloads/i,
-      })
+      }),
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        'Cluster name 000000001 | Namespace name c1-94f525441c75'
-      )
+        'Cluster name 000000001 | Namespace name c1-94f525441c75',
+      ),
     ).toBeInTheDocument();
   });
 });

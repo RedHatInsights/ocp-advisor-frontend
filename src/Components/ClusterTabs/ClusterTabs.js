@@ -25,7 +25,7 @@ const ClusterTabs = () => {
     setActiveKey(
       updateRisksEnabled && CLUSTER_TABS.includes(tabKey)
         ? tabKey
-        : 'recommendations'
+        : 'recommendations',
     );
   }, [updateRisksEnabled]);
 

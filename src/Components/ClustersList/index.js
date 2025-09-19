@@ -15,7 +15,7 @@ const ClustersList = () => {
   chrome.updateDocumentTitle(
     intl.formatMessage(messages.documentTitle, {
       subnav: intl.formatMessage(messages.clusters),
-    })
+    }),
   );
 
   return (

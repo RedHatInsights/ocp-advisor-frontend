@@ -1,6 +1,5 @@
 import capitalize from 'lodash/capitalize';
 import cloneDeep from 'lodash/cloneDeep';
-import { useEffect, useState } from 'react';
 import { coerce, compare, valid } from 'semver';
 import {
   CLUSTER_FILTER_CATEGORIES,
@@ -23,7 +22,7 @@ export const passFilters = (rule, filters) =>
         return filterValue.includes(String(rule.total_risk));
       case FILTER_CATEGORIES.category.urlParam:
         return rule.tags.find((c) =>
-          filterValue.includes(String(RULE_CATEGORIES[c]))
+          filterValue.includes(String(RULE_CATEGORIES[c])),
         );
       case FILTER_CATEGORIES.impact.urlParam:
         return filterValue.includes(String(rule.impact));
@@ -88,7 +87,7 @@ const pruneFilters = (localFilters, filterCategories) => {
       const chips = Array.isArray(item)
         ? item.map((value) => {
             const selectedCategoryValue = category.values.find(
-              (values) => values.value === String(value)
+              (values) => values.value === String(value),
             );
             return selectedCategoryValue
               ? {
@@ -101,7 +100,7 @@ const pruneFilters = (localFilters, filterCategories) => {
         : [
             {
               name: category.values.find(
-                (values) => values.value === String(item)
+                (values) => values.value === String(item),
               ).label,
               value: item,
             },
@@ -205,11 +204,11 @@ export const paramParser = (search) => {
       ].includes(key)
         ? value // just copy the full value
         : value === 'true' || value === 'false'
-        ? JSON.parse(value) // parse boolean
-        : // parse array of values
-          value.split(','),
+          ? JSON.parse(value) // parse boolean
+          : // parse array of values
+            value.split(','),
     }),
-    {}
+    {},
   );
 };
 
@@ -227,27 +226,12 @@ export const translateSortValue = (index, indexMapping, direction) => {
   return `${direction === 'asc' ? '' : '-'}${indexMapping[index]}`;
 };
 
-// TODO: remove since unused
-export const debounce = (value, delay) => {
-  const [debouncedValue, setDebouncedValue] = useState(value);
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedValue(value);
-    }, delay);
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [delay, value]);
-
-  return debouncedValue;
-};
-
 export const updateSearchParams = (filters = {}, columnMapping) => {
   const url = new URL(window.location.origin + window.location.pathname);
   // separately check the sort param
   url.searchParams.set(
     'sort',
-    translateSortValue(filters.sortIndex, columnMapping, filters.sortDirection)
+    translateSortValue(filters.sortIndex, columnMapping, filters.sortDirection),
   );
   // check the rest of filters
   Object.entries(filters).forEach(([key, value]) => {
@@ -276,12 +260,12 @@ export const removeFilterParam = (currentFilters, updateFilters, param) => {
     ...(param === 'text'
       ? { text: '' }
       : param === 'hits'
-      ? { hits: [] }
-      : param === 'version'
-      ? { version: [] }
-      : param === 'object_id'
-      ? { object_id: '' }
-      : {}),
+        ? { hits: [] }
+        : param === 'version'
+          ? { version: [] }
+          : param === 'object_id'
+            ? { object_id: '' }
+            : {}),
   });
 };
 
@@ -297,7 +281,7 @@ export const addFilterParam = (currentFilters, updateFilters, param, values) =>
 export const passFilterWorkloads = (workloads, filters) => {
   const generalSeverityRemapped = remappingSeverity(
     workloads.metadata.hits_by_severity,
-    'general'
+    'general',
   );
 
   return Object.entries(filters).every(([filterKey, filterValue]) => {

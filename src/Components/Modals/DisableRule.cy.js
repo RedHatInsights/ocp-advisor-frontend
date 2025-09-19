@@ -28,7 +28,7 @@ describe('modal without hosts', () => {
             />
           </Provider>
         </Intl>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     cy.intercept('POST', '/api/insights-results-aggregator/v2/ack', {
@@ -55,14 +55,14 @@ describe('modal without hosts', () => {
     cy.get(TEXT_INPUT).type('query');
     cy.ouiaId(SAVE_BUTTON).click();
     cy.wait('@ackRequest').then((xhr) =>
-      expect(xhr.request.body.justification).to.eq('query')
+      expect(xhr.request.body.justification).to.eq('query'),
     );
   });
 
   it('justification note can be empty', () => {
     cy.ouiaId(SAVE_BUTTON).click();
     cy.wait('@ackRequest').then(
-      (xhr) => expect(xhr.request.body.justification).to.be.empty
+      (xhr) => expect(xhr.request.body.justification).to.be.empty,
     );
   });
 });
@@ -80,7 +80,7 @@ describe('modal with 1 host', () => {
             />
           </Provider>
         </Intl>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     cy.intercept('POST', '/api/insights-results-aggregator/v2/ack', {
@@ -92,7 +92,7 @@ describe('modal with 1 host', () => {
       '/api/insights-results-aggregator/v1/clusters/**/rules/**/error_key/**/disable',
       {
         statusCode: 200,
-      }
+      },
     ).as('disableRequest');
   });
 
@@ -112,7 +112,7 @@ describe('modal with 1 host', () => {
     cy.get(CHECKBOX).click().should('not.be.checked');
     cy.ouiaId(SAVE_BUTTON).click();
     cy.wait('@ackRequest').then((xhr) =>
-      expect(xhr.request.body.rule_id).to.eq('foo|BAR')
+      expect(xhr.request.body.rule_id).to.eq('foo|BAR'),
     );
   });
 });
@@ -137,7 +137,7 @@ describe('modal with multiple hosts', () => {
             />
           </Provider>
         </Intl>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     cy.intercept('POST', '/api/insights-results-aggregator/v2/ack', {
@@ -149,7 +149,7 @@ describe('modal with multiple hosts', () => {
       '/api/insights-results-aggregator/v1/clusters/**/rules/**/error_key/**/disable',
       {
         statusCode: 200,
-      }
+      },
     ).as('disableRequest');
   });
 
@@ -164,9 +164,9 @@ describe('modal with multiple hosts', () => {
       (xhr) =>
         expect(
           /084ac7a7-1c7d-49ff-b56e-f94881da242d|7795cbcd-0353-4e59-b920-fc1c39a27014/.test(
-            xhr.request.url
-          )
-        ).to.be.true
+            xhr.request.url,
+          ),
+        ).to.be.true,
     );
 
     // TODO check page is reloaded afterwards
@@ -176,7 +176,7 @@ describe('modal with multiple hosts', () => {
     cy.get(CHECKBOX).click().should('not.be.checked');
     cy.ouiaId(SAVE_BUTTON).click();
     cy.wait('@ackRequest').then((xhr) =>
-      expect(xhr.request.body.rule_id).to.eq('foo|BAR')
+      expect(xhr.request.body.rule_id).to.eq('foo|BAR'),
     );
   });
 });
@@ -199,7 +199,7 @@ describe('call order checking', () => {
             />
           </Provider>
         </Intl>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     cy.intercept(
@@ -208,7 +208,7 @@ describe('call order checking', () => {
       {
         statusCode: 200,
         delay: 2 * 1000, // 2 secs
-      }
+      },
     ).as('disableRequest');
 
     cy.ouiaId(SAVE_BUTTON).click();
@@ -242,7 +242,7 @@ describe('call order checking', () => {
             />
           </Provider>
         </Intl>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     cy.intercept(
@@ -251,7 +251,7 @@ describe('call order checking', () => {
       {
         statusCode: 200,
         delay: 2 * 1000, // 2 secs
-      }
+      },
     ).as('disableRequest');
 
     cy.ouiaId(SAVE_BUTTON).click();
@@ -276,7 +276,7 @@ describe('call order checking', () => {
             />
           </Provider>
         </Intl>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     cy.intercept('POST', '/api/insights-results-aggregator/v2/ack', {

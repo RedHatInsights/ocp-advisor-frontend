@@ -17,7 +17,7 @@ const ObjectsModal = ({
 }) => {
   const dispatch = useDispatch();
   const filters = useSelector(
-    ({ filters }) => filters.workloadsObjectsListState
+    ({ filters }) => filters.workloadsObjectsListState,
   );
   const updateFilters = (payload) =>
     dispatch(updateWorkloadsObjectsListFilters(payload));
@@ -52,14 +52,14 @@ ObjectsModal.propTypes = {
       kind: PropTypes.string,
       uid: PropTypes.string,
       display_name: PropTypes.string,
-    })
+    }),
   ),
   objectsNamesArePresent: PropTypes.arrayOf(
     PropTypes.shape({
       kind: PropTypes.string,
       uid: PropTypes.string,
       display_name: PropTypes.string,
-    })
+    }),
   ),
   objectsWithNames: PropTypes.bool,
 };

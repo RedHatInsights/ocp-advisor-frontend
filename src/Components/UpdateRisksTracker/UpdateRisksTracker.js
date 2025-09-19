@@ -20,7 +20,7 @@ const UpdateRisksTracker = () => {
         upgrade_recommended: get(
           data,
           'upgrade_recommendation.upgrade_recommended',
-          null
+          null,
         ),
       });
     }

@@ -8,7 +8,6 @@ import clusterDetailData from '../../../cypress/fixtures/api/insights-results-ag
 import { Intl } from '../../Utilities/intlHelper';
 import getStore from '../../Store';
 
-/* eslint-disable camelcase */
 import {
   TOOLBAR,
   PAGINATION,
@@ -63,7 +62,8 @@ const TABLE_HEADERS = _.map(AFFECTED_CLUSTERS_COLUMNS, (it) => it.title);
 
 let values = _.cloneDeep(clusterDetailData.data['enabled']);
 values.forEach(
-  (it) => (it['name'] = it['cluster_name'] ? it['cluster_name'] : it['cluster'])
+  (it) =>
+    (it['name'] = it['cluster_name'] ? it['cluster_name'] : it['cluster']),
 );
 const dataUnsorted = _.cloneDeep(values);
 // default sorting
@@ -110,20 +110,20 @@ describe('test data', () => {
   it('"Not existing cluster" is in the list of names to search and there are no enabled clusters matching it', () => {
     expect(filterData({ name: 'Not existing cluster' })).to.have.lengthOf(0);
     expect(_.map(SEARCH_ITEMS, (it) => it.toLowerCase())).to.include(
-      'not existing cluster'
+      'not existing cluster',
     );
   });
   _.uniq(_.flatten(VERSION_COMBINATIONS)).map((c) =>
     it(`has at least one cluster with version ${c}`, () => {
       expect(filterData({ version: [c] })).to.have.length.gte(1);
-    })
+    }),
   );
   it(`has at least one cluster without a version`, () => {
     expect(filterData({ version: [''] })).to.have.length.gte(1);
   });
   it('has at least one enabled cluster with missing impacted date', () => {
     expect(values.filter((v) => v['impacted'] === undefined).length).to.be.gte(
-      1
+      1,
     );
   });
   it('has at least one enabled cluster with empty impacted date', () => {
@@ -151,7 +151,7 @@ describe('non-empty successful affected clusters table', () => {
             />
           </Provider>
         </Intl>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
   });
 
@@ -423,7 +423,7 @@ describe('non-empty successful affected clusters table', () => {
                 cy.wrap($button).click();
               }
             });
-        }
+        },
       );
     });
   });
@@ -431,7 +431,7 @@ describe('non-empty successful affected clusters table', () => {
   describe('sorting', () => {
     _.zip(
       ['name', 'meta.cluster_version', 'last_checked_at', 'impacted'],
-      TABLE_HEADERS
+      TABLE_HEADERS,
     ).forEach(([category, label]) => {
       SORTING_ORDERS.forEach((order) => {
         it(`${order} by ${label}`, () => {
@@ -462,7 +462,7 @@ describe('non-empty successful affected clusters table', () => {
             'Name',
             'name',
             Math.min(DEFAULT_ROW_COUNT, dataUnsorted.length),
-            null
+            null,
           );
         });
       });
@@ -488,7 +488,7 @@ describe('non-empty successful affected clusters table', () => {
               TABLE_HEADERS,
               'No matching clusters found',
               false,
-              false
+              false,
             );
           });
         });
@@ -506,7 +506,7 @@ describe('non-empty successful affected clusters table', () => {
             TABLE_HEADERS,
             'No matching clusters found',
             false,
-            false
+            false,
           );
         });
       });
@@ -563,14 +563,14 @@ describe('non-empty successful affected clusters table', () => {
         '/api/insights-results-aggregator/v1/clusters/**/rules/**/error_key/**/disable',
         {
           statusCode: 200,
-        }
+        },
       ).as('disableRequest');
       cy.intercept(
         'POST',
         '/api/insights-results-aggregator/v1/clusters/**/rules/**/error_key/**/disable_feedback',
         {
           statusCode: 200,
-        }
+        },
       ).as('disableFeedbackRequest');
     });
 
@@ -582,7 +582,7 @@ describe('non-empty successful affected clusters table', () => {
         .eq(AFFECTED_CLUSTERS_COLUMNS.length + 1)
         .click()
         .then(() =>
-          cy.get('button.pf-v6-c-menu__item').contains('Disable').click()
+          cy.get('button.pf-v6-c-menu__item').contains('Disable').click(),
         );
 
       cy.get(MODAL_CONTENT)
@@ -629,7 +629,7 @@ describe('empty successful affected clusters table', () => {
             />
           </Provider>
         </Intl>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
   });
 
@@ -665,7 +665,7 @@ describe('empty failed affected clusters table', () => {
             />
           </Provider>
         </Intl>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
   });
 
@@ -680,7 +680,7 @@ describe('empty failed affected clusters table', () => {
 
   it('renders table header', () => {
     TABLE_HEADERS.map((h, i) =>
-      cy.get(TABLE).find('th').eq(i).should('have.text', h)
+      cy.get(TABLE).find('th').eq(i).should('have.text', h),
     );
   });
 });
