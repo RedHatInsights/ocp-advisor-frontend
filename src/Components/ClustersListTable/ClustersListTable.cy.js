@@ -698,7 +698,7 @@ describe('update risk', () => {
 
     it('displays one label', () => {
       cy.get(
-        'span[class=pf-v5-c-label__content]:contains("Update risk")',
+        'span[class=pf-v6-c-label__content]:contains("Update risk")',
       ).should('have.length', 1);
     });
   });
@@ -712,7 +712,7 @@ describe('update risk', () => {
 
     it('displays two labels', () => {
       cy.get(
-        'span[class=pf-v5-c-label__content]:contains("Update risk")',
+        'span[class=pf-v6-c-label__content]:contains("Update risk")',
       ).should('have.length', 2);
     });
   });
@@ -726,7 +726,7 @@ describe('update risk', () => {
 
     it('displays no labels', () => {
       cy.get(
-        'span[class=pf-v5-c-label__content]:contains("Update risk")',
+        'span[class=pf-v6-c-label__content]:contains("Update risk")',
       ).should('have.length', 0);
     });
   });
@@ -739,7 +739,7 @@ describe('update risk', () => {
 
     it('displays no labels', () => {
       cy.get(
-        'span[class=pf-v5-c-label__content]:contains("Update risk")',
+        'span[class=pf-v6-c-label__content]:contains("Update risk")',
       ).should('have.length', 0);
     });
   });

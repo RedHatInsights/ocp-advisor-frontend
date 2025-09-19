@@ -222,7 +222,7 @@ describe('Workload component renders and filters data', () => {
     cy.get('li[data-ouia-component-id="object ID"]')
       .contains('Object ID')
       .click();
-    cy.get('input[data-ouia-component-type="PF5/TextInput"]').type(
+    cy.get('input[data-ouia-component-type="PF6/TextInput"]').type(
       '4381b689-02eb-465a-90cf-55b3e2305d8d',
     );
   });

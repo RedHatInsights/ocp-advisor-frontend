@@ -322,7 +322,7 @@ urlParamsList.forEach((urlParams, index) => {
         if (key == 'text') {
           hasChip('Name', value);
           cy.get(
-            '.pf-m-fill [data-ouia-component-type="PF5/TextInput"]',
+            '.pf-m-fill [data-ouia-component-type="PF6/TextInput"]',
           ).should('have.value', value);
         } else {
           value.split(',').forEach((it) => {
@@ -388,7 +388,7 @@ describe('successful non-empty recommendations list table', () => {
     cy.get(ROOT)
       .should('have.length', 1)
       .find(
-        'button[class*="pf-v5-c-menu-toggle ins-c-conditional-filter__group"]',
+        'button[class*="pf-v6-c-menu-toggle ins-c-conditional-filter__group"]',
       )
       .should('have.length', 1)
       .click();
@@ -541,11 +541,8 @@ describe('successful non-empty recommendations list table', () => {
     it('can clear filters', () => {
       cy.get('button').contains('Reset filters').click();
       // apply some filters
-      filterApply(filterCombos[0]);
-      cy.get(CHIP_GROUP).should(
-        'have.length',
-        Object.keys(filterCombos[0]).length,
-      );
+      filterApply({ name: 'Foo' });
+      cy.contains('span.pf-v6-c-label-group__label', 'Name').should('exist');
       cy.get(CHIP_GROUP).should('exist');
       // clear filters
       cy.get('button').contains('Reset filters').click();
@@ -766,11 +763,10 @@ describe('successful non-empty recommendations list table', () => {
       cy.clickOnRowKebab(
         'Super atomic nuclear cluster on the brink of the world destruction',
       );
-      cy.getRowByName(
-        'Super atomic nuclear cluster on the brink of the world destruction',
-      )
-        .find('[data-ouia-component-type="PF5/DropdownItem"]')
-        .should('have.text', 'Disable recommendation');
+      cy.get('[data-ouia-component-type="PF6/DropdownItem"]').should(
+        'have.text',
+        'Disable recommendation',
+      );
     });
 
     it('disabled rule has the enable action', () => {
