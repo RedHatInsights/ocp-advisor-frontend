@@ -55,8 +55,8 @@ import {
 
 // selectors
 const ROOT = 'div[id=affected-list-table]';
-const BULK_SELECT = '[data-ouia-component-type="PF5/MenuToggleCheckbox"]';
-const BULK_SELECT_TOGGLE = '[class="pf-v5-c-menu-toggle__controls"]';
+const BULK_SELECT = '[data-ouia-component-type="PF6/MenuToggleCheckbox"]';
+const BULK_SELECT_TOGGLE = '[class="pf-v6-c-menu-toggle__controls"]';
 const SEARCH_ITEMS = ['ff', 'CUSTOM', 'Foobar', 'Not existing cluster'];
 const TABLE_HEADERS = _.map(AFFECTED_CLUSTERS_COLUMNS, (it) => it.title);
 
@@ -221,7 +221,7 @@ describe('non-empty successful affected clusters table', () => {
       cy.get(`${BULK_SELECT}`).click().should('be.checked');
       // contains right text
       cy.get(TOOLBAR)
-        .find('.pf-v5-c-check__label')
+        .find('.pf-v6-c-check__label')
         .contains(`${filterData({}).length} selected`);
       // checks all rows
       cy.get(TABLE)
@@ -231,7 +231,7 @@ describe('non-empty successful affected clusters table', () => {
         });
       // bulk disabling button is enabled
       cy.get(TOOLBAR).find('.pf-m-spacer-sm').find(MENU_TOGGLE).click();
-      cy.get('.pf-m-spacer-sm .pf-v5-c-menu__list-item')
+      cy.get('.pf-m-spacer-sm .pf-v6-c-menu__list-item')
         .should('not.have.class', 'pf-m-disabled')
         .contains('Disable recommendation for selected clusters');
       // modal is opened
@@ -276,15 +276,15 @@ describe('non-empty successful affected clusters table', () => {
         .find('input')
         .click();
       cy.get(`${BULK_SELECT}`).should('not.be.checked');
-      cy.get(`[data-ouia-component-type="PF5/MenuToggle"]`)
-        .find('.pf-v5-c-check__label')
+      cy.get(`[data-ouia-component-type="PF6/MenuToggle"]`)
+        .find('.pf-v6-c-check__label')
         .should('have.text', `1 selected`);
       // bulk disabling button is still enabled
       cy.get(TOOLBAR)
         .find('.pf-m-spacer-sm')
-        .find('.pf-v5-c-menu-toggle')
+        .find('.pf-v6-c-menu-toggle')
         .click();
-      cy.get('.pf-m-spacer-sm .pf-v5-c-menu__list-item')
+      cy.get('.pf-m-spacer-sm .pf-v6-c-menu__list-item')
         .should('not.have.class', 'pf-m-disabled')
         .contains('Disable recommendation for selected clusters');
     });
@@ -303,8 +303,8 @@ describe('non-empty successful affected clusters table', () => {
 
       cy.get(`${BULK_SELECT}`).should('not.be.checked');
 
-      cy.get(`[data-ouia-component-type="PF5/MenuToggle"]`)
-        .find('.pf-v5-c-check__label')
+      cy.get(`[data-ouia-component-type="PF6/MenuToggle"]`)
+        .find('.pf-v6-c-check__label')
         .contains(`1 selected`);
     });
 
@@ -326,8 +326,8 @@ describe('non-empty successful affected clusters table', () => {
 
       cy.get(`${BULK_SELECT}`).should('be.checked');
       // contains right text
-      cy.get(`[data-ouia-component-type="PF5/MenuToggle"]`)
-        .find('.pf-v5-c-check__label')
+      cy.get(`[data-ouia-component-type="PF6/MenuToggle"]`)
+        .find('.pf-v6-c-check__label')
         .contains(`${data.length} selected`);
       // checks all rows
       cy.get(TABLE)
@@ -338,9 +338,9 @@ describe('non-empty successful affected clusters table', () => {
       // bulk disabling button is enabled
       cy.get(TOOLBAR)
         .find('.pf-m-spacer-sm')
-        .find('.pf-v5-c-menu-toggle')
+        .find('.pf-v6-c-menu-toggle')
         .click();
-      cy.get('.pf-m-spacer-sm .pf-v5-c-menu__list-item')
+      cy.get('.pf-m-spacer-sm .pf-v6-c-menu__list-item')
         .should('not.have.class', 'pf-m-disabled')
         .contains('Disable recommendation for selected clusters');
     });
@@ -363,13 +363,13 @@ describe('non-empty successful affected clusters table', () => {
       // bulk disabling button is enabled
       cy.get(TOOLBAR)
         .find('.pf-m-spacer-sm')
-        .find('.pf-v5-c-menu-toggle')
+        .find('.pf-v6-c-menu-toggle')
         .click();
-      cy.get('.pf-m-spacer-sm .pf-v5-c-menu__list-item')
+      cy.get('.pf-m-spacer-sm .pf-v6-c-menu__list-item')
         .should('have.class', 'pf-m-disabled')
         .contains('Disable recommendation for selected clusters');
       cy.get(`${BULK_SELECT}`)
-        .find('.pf-v5-c-check__label')
+        .find('.pf-v6-c-check__label')
         .should('not.exist');
     });
 
@@ -385,8 +385,8 @@ describe('non-empty successful affected clusters table', () => {
           }
         })
         .then(() => {
-          cy.get(`[data-ouia-component-type="PF5/MenuToggle"]`)
-            .find('.pf-v5-c-check__label')
+          cy.get(`[data-ouia-component-type="PF6/MenuToggle"]`)
+            .find('.pf-v6-c-check__label')
             .contains(`${nSelectedRows} selected`);
         });
     });
@@ -550,9 +550,9 @@ describe('non-empty successful affected clusters table', () => {
     cy.get(TABLE)
       .find(TABLE_ROW)
       .eq(0)
-      .find('.pf-v5-c-table__action button')
+      .find('.pf-v6-c-table__action button')
       .click();
-    cy.get(TABLE).find(TABLE_ROW).eq(0).find('.pf-v5-c-menu__item').click();
+    cy.get('li.pf-v6-c-menu__list-item').click();
     cy.get(MODAL_CONTENT).should('have.length', 1);
   });
 
@@ -581,11 +581,12 @@ describe('non-empty successful affected clusters table', () => {
         .find('td')
         .eq(AFFECTED_CLUSTERS_COLUMNS.length + 1)
         .click()
-        .contains('Disable')
-        .click();
+        .then(() =>
+          cy.get('button.pf-v6-c-menu__item').contains('Disable').click()
+        );
 
       cy.get(MODAL_CONTENT)
-        .find('.pf-v5-c-check label')
+        .find('.pf-v6-c-check label')
         .should('have.text', 'Disable only for this cluster');
 
       cy.get(MODAL_CONTENT).find(CHECKBOX).should('be.checked');

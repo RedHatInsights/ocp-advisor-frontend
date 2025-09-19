@@ -5,6 +5,7 @@ import {
   TableBody,
   TableHeader,
 } from '@patternfly/react-table/deprecated';
+import ErrorState from '@redhat-cloud-services/frontend-components/ErrorState';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
 import {
   WORKLOADS_RULES_COLUMNS_KEYS,
@@ -14,7 +15,6 @@ import {
 } from '../../AppConstants';
 import PropTypes from 'prop-types';
 import {
-  ErrorState,
   NoMatchingRecsForWorkloads,
   NoRecsForWorkloadsDetails,
   NoWorkloadsRecsAvailable,

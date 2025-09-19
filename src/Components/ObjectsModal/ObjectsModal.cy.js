@@ -38,7 +38,7 @@ const mount = (url, objects, objectsWithNames) => {
   );
 };
 
-const FILTER_CHIPS = 'li[class=pf-v5-c-chip-group__list-item]';
+const FILTER_CHIPS = 'li[class=pf-v6-c-label-group__list-item]';
 const DEFAULT_ROW_COUNT = 50;
 const DEFAULT_DISPLAYED_SIZE = Math.min(mockObjects.length, DEFAULT_ROW_COUNT);
 let values = _.cloneDeep(mockObjects);
@@ -66,7 +66,7 @@ describe('Objects modal renders and filters data', () => {
     cy.get('#objects-list-table')
       .ouiaId('empty-state')
       .should('have.length', 1);
-    cy.get(`h5[class="pf-v5-c-empty-state__title-text"]`).should(
+    cy.get(`h5[class="pf-v6-c-empty-state__title-text"]`).should(
       'have.text',
       'No matching workloads found',
     );
@@ -95,7 +95,7 @@ describe('Objects modal renders and filters data', () => {
       false,
     );
     cy.get('#objects-list-table');
-    cy.get('input[data-ouia-component-type="PF5/TextInput"]').type(
+    cy.get('input[data-ouia-component-type="PF6/TextInput"]').type(
       'wrong filter',
       {
         force: true,
@@ -104,7 +104,7 @@ describe('Objects modal renders and filters data', () => {
     cy.get(FILTER_CHIPS).each(($el) =>
       expect($el.text()).to.be.oneOf(['Object id', 'wrong filter']),
     );
-    cy.get(`h5[class="pf-v5-c-empty-state__title-text"]`).should(
+    cy.get(`h5[class="pf-v6-c-empty-state__title-text"]`).should(
       'have.text',
       'No matching workloads found',
     );
@@ -200,7 +200,7 @@ describe('Objects modal with names', () => {
     cy.get('#objects-list-table')
       .ouiaId('empty-state')
       .should('have.length', 1);
-    cy.get(`h5[class="pf-v5-c-empty-state__title-text"]`).should(
+    cy.get(`h5[class="pf-v6-c-empty-state__title-text"]`).should(
       'have.text',
       'No matching workloads found',
     );
@@ -241,7 +241,7 @@ describe('Objects modal with names', () => {
     cy.get(FILTER_CHIPS).each(($el) =>
       expect($el.text()).to.be.oneOf(['Object id', 'wrong filter']),
     );
-    cy.get(`h5[class="pf-v5-c-empty-state__title-text"]`).should(
+    cy.get(`h5[class="pf-v6-c-empty-state__title-text"]`).should(
       'have.text',
       'No matching workloads found',
     );

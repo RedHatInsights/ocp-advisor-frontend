@@ -7,6 +7,7 @@ import { valid } from 'semver';
 import uniqBy from 'lodash/uniqBy';
 
 import { conditionalFilterType } from '@redhat-cloud-services/frontend-components/ConditionalFilter/conditionalFilterConstants';
+import ErrorState from '@redhat-cloud-services/frontend-components/ErrorState';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
 import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
 import { Tooltip, Pagination } from '@patternfly/react-core';
@@ -18,7 +19,6 @@ import {
 } from '@patternfly/react-table/deprecated';
 
 import {
-  ErrorState,
   NoAffectedClusters,
   NoMatchingClusters,
 } from '../MessageState/EmptyStates';
@@ -406,7 +406,7 @@ const AffectedClustersTable = ({ query, rule, afterDisableFn }) => {
                         colSpan: AFFECTED_CLUSTERS_COLUMNS.length + 1,
                       },
                       title: errorState ? (
-                        <ErrorState />
+                        <ErrorState data-ouia-component-type="PF6/EmptyState" />
                       ) : noInput ? (
                         <NoAffectedClusters />
                       ) : (

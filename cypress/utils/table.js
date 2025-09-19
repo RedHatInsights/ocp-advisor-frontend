@@ -2,7 +2,14 @@
 
 import _ from 'lodash';
 
-import { ROW, TBODY, TABLE, CHIP_GROUP, CHIP } from './components';
+import {
+  ROW,
+  TBODY,
+  TABLE,
+  CHIP_GROUP,
+  CHIP_GROUP_LABEL,
+  CHIP,
+} from './components';
 import { removeAllChips, applyFilters } from './filters';
 // eslint-disable-next-line rulesdir/disallow-fec-relative-imports
 import { checkEmptyState } from '@redhat-cloud-services/frontend-components-utilities';
@@ -42,7 +49,7 @@ function tableIsSortedBy(columnTitle) {
   return cy
     .get('table')
     .find(`th[data-label="${columnTitle}"]`)
-    .should('have.class', 'pf-v5-c-table__sort pf-m-selected');
+    .should('have.class', 'pf-v6-c-table__sort pf-m-selected');
 }
 
 function checkNoMatchingClusters() {
@@ -99,6 +106,7 @@ function checkFiltering(
 
   // validate chips and url params
   cy.get(CHIP_GROUP)
+    .find('div.pf-v6-c-label-group.pf-m-category')
     .should('have.length', Object.keys(filters).length)
     .then(() => {
       if (validateURL) {
@@ -124,6 +132,9 @@ function checkFiltering(
       .parents(CHIP_GROUP)
       .then((chipGroup) => {
         cy.wrap(chipGroup)
+          .find('div.pf-v6-c-label-group.pf-m-category')
+          .contains(CHIP_GROUP_LABEL, groupName)
+          .closest('div.pf-v6-c-label-group.pf-m-category')
           .find(CHIP)
           .its('length')
           .should('be.eq', Math.min(3, nExpectedItems)); // limited to show 3

@@ -50,7 +50,6 @@ import {
   tableIsSortedBy,
   filter,
   hasChip,
-  removeAllChips,
   urlParamConvert,
   checkEmptyState,
   TABLE_ROW,
@@ -62,7 +61,7 @@ import { SORTING_ORDERS } from '../../../cypress/utils/globals';
 // selectors
 const ROOT = 'div[id=recs-list-table]';
 const ROW = 'tbody[role=rowgroup]'; // FIXME use ROW from components
-const EXPANDABLES = '[class*="pf-v5-c-table__expandable-row pf-m-expanded"]';
+const EXPANDABLES = '[class*="pf-v6-c-table__expandable-row pf-m-expanded"]';
 // TODO refer to https://github.com/RedHatInsights/ocp-advisor-frontend/blob/master/src/Services/Filters.js#L13
 const DEFAULT_FILTERS = {
   impacting: ['1 or more'],
@@ -207,7 +206,7 @@ Cypress.Commands.add('getRowByName', (name) => {
   cy.contains(ROW, name);
 });
 Cypress.Commands.add('clickOnRowKebab', (name) => {
-  cy.contains(ROW, name).find('.pf-v5-c-menu-toggle').click();
+  cy.contains(ROW, name).find('.pf-v6-c-menu-toggle').click();
 });
 Cypress.Commands.add('getColumns', () => {
   /* patternfly/react-table-4.71.16, for some reason, renders extra empty `th` container;
@@ -383,8 +382,8 @@ describe('successful non-empty recommendations list table', () => {
   });
 
   it('Expected filters available', () => {
-    const FILTERS_DROPDOWN = 'ul[class=pf-v5-c-menu__list]';
-    const FILTER_ITEM = 'button[class=pf-v5-c-menu__item]';
+    const FILTERS_DROPDOWN = 'ul[class=pf-v6-c-menu__list]';
+    const FILTER_ITEM = 'button[class=pf-v6-c-menu__item]';
 
     cy.get(ROOT)
       .should('have.length', 1)
@@ -409,7 +408,7 @@ describe('successful non-empty recommendations list table', () => {
     });
 
     it(`pagination is set to ${DEFAULT_ROW_COUNT}`, () => {
-      cy.get('.pf-v5-c-menu-toggle__text')
+      cy.get('.pf-v6-c-menu-toggle__text')
         .find('b')
         .eq(0)
         .should('have.text', `1 - ${DEFAULT_DISPLAYED_SIZE}`);
@@ -540,7 +539,7 @@ describe('successful non-empty recommendations list table', () => {
 
   describe('filtering', () => {
     it('can clear filters', () => {
-      removeAllChips();
+      cy.get('button').contains('Reset filters').click();
       // apply some filters
       filterApply(filterCombos[0]);
       cy.get(CHIP_GROUP).should(
@@ -553,7 +552,7 @@ describe('successful non-empty recommendations list table', () => {
       // check default filters
       hasChip('Clusters impacted', '1 or more');
       hasChip('Status', 'Enabled');
-      cy.get(CHIP_GROUP).should(
+      cy.get('div.pf-v6-c-label-group.pf-m-category').should(
         'have.length',
         Object.keys(DEFAULT_FILTERS).length,
       );
@@ -562,7 +561,7 @@ describe('successful non-empty recommendations list table', () => {
     });
 
     it('empty state is displayed when filters do not match any rule', () => {
-      removeAllChips();
+      cy.get('button').contains('Reset filters').click();
       filterApply({
         name: 'Not existing recommendation',
       });
@@ -571,7 +570,9 @@ describe('successful non-empty recommendations list table', () => {
     });
 
     it('no filters show all recommendations', () => {
-      removeAllChips();
+      cy.get('li.pf-v6-c-label-group__list-item button.pf-v6-c-button').each(
+        ($el) => cy.wrap($el).click(),
+      );
       checkRowGroupCounts(Math.min(DEFAULT_ROW_COUNT, data.length));
       checkPaginationTotal(data.length);
     });
@@ -644,7 +645,7 @@ describe('successful non-empty recommendations list table', () => {
           expect(window.location.search).to.not.contain('text=');
         });
       cy.get(TOOLBAR_FILTER)
-        .find('.pf-v5-c-form-control > input')
+        .find('.pf-v6-c-form-control > input')
         .should('be.empty');
     });
 
@@ -659,7 +660,7 @@ describe('successful non-empty recommendations list table', () => {
           expect(window.location.search).to.not.contain('text=');
         });
       cy.get(TOOLBAR_FILTER)
-        .find('.pf-v5-c-form-control > input')
+        .find('.pf-v6-c-form-control > input')
         .should('be.empty');
     });
 
@@ -691,7 +692,7 @@ describe('successful non-empty recommendations list table', () => {
       cy.getRowByName(
         'Super atomic nuclear cluster on the brink of the world destruction',
       )
-        .find('.pf-v5-c-table__toggle button')
+        .find('.pf-v6-c-table__toggle button')
         .click();
       cy.get(EXPANDABLES)
         .eq(0)
@@ -702,7 +703,7 @@ describe('successful non-empty recommendations list table', () => {
 
     it('present resolution risk is shown in expanded details', () => {
       cy.getRowByName('1Lorem ipsum dolor sit amet')
-        .find('.pf-v5-c-table__toggle button')
+        .find('.pf-v6-c-table__toggle button')
         .click();
       cy.get(EXPANDABLES)
         .eq(0)
@@ -727,7 +728,9 @@ describe('successful non-empty recommendations list table', () => {
     });
 
     it('view affected link is missing for non-affecting rules', () => {
-      removeAllChips();
+      cy.get('li.pf-v6-c-label-group__list-item button.pf-v6-c-button').each(
+        ($el) => cy.wrap($el).click(),
+      );
       filterApply({
         impacting: ['None'],
       });
@@ -741,13 +744,13 @@ describe('successful non-empty recommendations list table', () => {
 
   describe('enabling/disabling', () => {
     it('disabled rule has a label', () => {
-      removeAllChips();
+      cy.get('button').contains('Reset filters').click();
       filterApply({ status: 'Disabled' });
       // according to data specs there should be at least 1 disabled row
       cy.get(`td[data-label="Name"]`).then(($els) => {
         cy.wrap($els).each(($el) => {
           cy.wrap($el)
-            .find('span[class=pf-v5-c-label__content]')
+            .find('span[class=pf-v6-c-label__content]')
             .should('have.text', 'Disabled');
         });
       });
@@ -755,7 +758,7 @@ describe('successful non-empty recommendations list table', () => {
 
     it('each row has a kebab', () => {
       cy.get(TABLE)
-        .find('tbody[role=rowgroup] .pf-v5-c-menu-toggle')
+        .find('tbody[role=rowgroup] .pf-v6-c-menu-toggle')
         .should('have.length', DEFAULT_DISPLAYED_SIZE);
     });
 
@@ -771,15 +774,18 @@ describe('successful non-empty recommendations list table', () => {
     });
 
     it('disabled rule has the enable action', () => {
-      removeAllChips();
+      cy.get('li.pf-v6-c-label-group__list-item button.pf-v6-c-button').each(
+        ($el) => cy.wrap($el).click(),
+      );
       const firstDisabledRecommendation = _.filter(
         filterData({}),
         (it) => it.disabled,
       )[0];
       cy.clickOnRowKebab(firstDisabledRecommendation.description);
-      cy.getRowByName(firstDisabledRecommendation.description)
-        .find('[data-ouia-component-type="PF5/DropdownItem"]')
-        .should('have.text', 'Enable recommendation');
+      cy.get('[data-ouia-component-type="PF6/DropdownItem"]').should(
+        'have.text',
+        'Enable recommendation',
+      );
     });
   });
 
@@ -787,8 +793,8 @@ describe('successful non-empty recommendations list table', () => {
     const recommendationList = filterData();
     cy.get(ROWS_TOGGLER).click();
     cy.get(TABLE)
-      // .find('.pf-v5-c-table__expandable-row.pf-m-expanded')
-      .find('.pf-v5-c-table__tbody.pf-m-expanded')
+      // .find('.pf-v6-c-table__expandable-row.pf-m-expanded')
+      .find('.pf-v6-c-table__tbody.pf-m-expanded')
       .each((el, index) => {
         // contains description
         cy.wrap(el).contains(

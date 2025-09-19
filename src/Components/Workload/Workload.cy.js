@@ -16,10 +16,10 @@ import {
   checkEmptyState,
 } from '@redhat-cloud-services/frontend-components-utilities';
 
-const BREADCRUMBS = 'nav[class=pf-v5-c-breadcrumb]';
+const BREADCRUMBS = 'nav[class=pf-v6-c-breadcrumb]';
 const WORKLOAD_HEADER = '#workload-header';
 const WORKLOAD_RULES_TABLE = '#workload-recs-list-table';
-const FILTER_CHIPS = 'li[class=pf-v5-c-chip-group__list-item]';
+const FILTER_CHIPS = 'li[class=pf-v6-c-label-group__list-item]';
 const TABLE_HEADERS = _.map(WORKLOAD_RULES_COLUMNS, (it) => it.title);
 const SEARCH_ITEMS_DESCRIPTION = ['ff', 'CUSTOM', 'Foobar'];
 const SEARCH_ITEMS_OBJECTS = [
@@ -210,7 +210,7 @@ describe('Workload component renders and filters data', () => {
     cy.get('li[data-ouia-component-id="description"]')
       .contains('Description')
       .click();
-    cy.get('input[data-ouia-component-type="PF5/TextInput"]').type('Foobar');
+    cy.get('input[data-ouia-component-type="PF6/TextInput"]').type('Foobar');
   });
 
   it('Setting objects filter', () => {
@@ -237,7 +237,7 @@ describe('Workload component renders and filters data', () => {
       .contains('Total risk')
       .click();
     cy.get('button[aria-label="Options menu"]').click();
-    cy.get('div[data-ouia-component-type="PF5/Select"]')
+    cy.get('div[data-ouia-component-type="PF6/Select"]')
       .find('label')
       .contains('Critical')
       .parent()
@@ -255,7 +255,7 @@ describe('header rendered correct', () => {
 
     cy.get(BREADCRUMBS)
       .should('have.length', 1)
-      .get('.pf-v5-c-breadcrumb__list > :nth-child(2)')
+      .get('.pf-v6-c-breadcrumb__list > :nth-child(2)')
       .should('have.text', 'Cluster name | Namespace name');
   });
 
@@ -287,7 +287,7 @@ describe('header rendered correct', () => {
 
     cy.get(BREADCRUMBS)
       .should('have.length', 1)
-      .get('.pf-v5-c-breadcrumb__list > :nth-child(2)')
+      .get('.pf-v6-c-breadcrumb__list > :nth-child(2)')
       .should(
         'have.text',
         'Cluster name | 7eb1d18b-701b-4f51-aea0-5f235daf1e07',
@@ -322,7 +322,7 @@ describe('header rendered correct', () => {
 
     cy.get(BREADCRUMBS)
       .should('have.length', 1)
-      .get('.pf-v5-c-breadcrumb__list > :nth-child(2)')
+      .get('.pf-v6-c-breadcrumb__list > :nth-child(2)')
       .should(
         'have.text',
         '00000001-0001-0001-0001-000000000001 | 7eb1d18b-701b-4f51-aea0-5f235daf1e07',

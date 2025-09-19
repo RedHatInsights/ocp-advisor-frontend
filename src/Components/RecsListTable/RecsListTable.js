@@ -20,7 +20,8 @@ import isEqual from 'lodash/isEqual';
 import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
 import { InsightsLabel } from '@redhat-cloud-services/frontend-components/InsightsLabel';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar/PrimaryToolbar';
-import { addNotification } from '@redhat-cloud-services/frontend-components-notifications/';
+import { useAddNotification } from '@redhat-cloud-services/frontend-components-notifications/';
+import ErrorState from '@redhat-cloud-services/frontend-components/ErrorState';
 
 import {
   FILTER_CATEGORIES,
@@ -45,7 +46,7 @@ import {
 import RuleLabels from '../Labels/RuleLabels';
 import { formatMessages, mapContentToValues } from '../../Utilities/intlHelper';
 import { strong } from '../../Utilities/Helpers';
-import { ErrorState, NoMatchingRecs } from '../MessageState/EmptyStates';
+import { NoMatchingRecs } from '../MessageState/EmptyStates';
 import {
   passFilters,
   paramParser,
@@ -81,7 +82,8 @@ const RecsListTable = ({ query }) => {
   const [disableRuleOpen, setDisableRuleOpen] = useState(false);
   const [selectedRule, setSelectedRule] = useState({});
   const [isAllExpanded, setIsAllExpanded] = useState(false);
-  const notify = (data) => dispatch(addNotification(data));
+  const addNotification = useAddNotification();
+  const notify = (data) => addNotification(data);
   const { search } = useLocation();
   const [filterBuilding, setFilterBuilding] = useState(true);
   // helps to distinguish the state when the API data received but not yet filtered
@@ -695,7 +697,11 @@ const RecsListTable = ({ query }) => {
                       props: {
                         colSpan: RECS_LIST_COLUMNS.length + 1,
                       },
-                      title: errorState ? <ErrorState /> : <NoMatchingRecs />,
+                      title: errorState ? (
+                        <ErrorState data-ouia-component-type="PF6/EmptyState" />
+                      ) : (
+                        <NoMatchingRecs />
+                      ),
                     },
                   ],
                 },

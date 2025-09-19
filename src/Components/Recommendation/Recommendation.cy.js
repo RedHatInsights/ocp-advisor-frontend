@@ -91,7 +91,7 @@ describe('recommendation page for enabled recommendation with clusters enabled a
         'include.text',
         'Recommendation is disabled for some clusters',
       );
-      cy.get('.pf-v5-c-card__body').should(
+      cy.get('.pf-v6-c-card__body').should(
         'include.text',
         `${clusterDetails.data.disabled.length} cluster`,
       );
@@ -167,7 +167,7 @@ describe('recommendation page for enabled recommendation with clusters enabled a
       cy.get('.ins-c-rule-details__stack').within(() => {
         cy.get('.ins-c-rule-details__total-risk').contains('Moderate');
         cy.get('.ins-c-rule-details__total-risk')
-          .find('.pf-v5-c-label__icon')
+          .find('.pf-v6-c-label__icon')
           .should('have.length', 1); // contains an icon
       });
     });
@@ -319,7 +319,7 @@ describe('recommendation page for disabled recommendation', () => {
   it('shows info about the recommendation being acked', () => {
     cy.ouiaId('hosts-acked').within(() => {
       cy.get(TITLE).should('include.text', 'Recommendation is disabled');
-      cy.get('.pf-v5-c-card__body').should(
+      cy.get('.pf-v6-c-card__body').should(
         'include.text',
         `and has no results`,
       );
@@ -330,7 +330,7 @@ describe('recommendation page for disabled recommendation', () => {
   it('table is not displayed', () => {
     cy.get('#affected-list-table').should('not.exist');
     cy.ouiaId('empty-state').within(() => {
-      cy.get('.pf-v5-c-empty-state__title-text').should(
+      cy.get('.pf-v6-c-empty-state__title-text').should(
         'include.text',
         'Recommendation is disabled',
       );
@@ -384,7 +384,7 @@ describe('justification message', () => {
     });
     it('should not display reason', () => {
       cy.ouiaId('hosts-acked').within(() => {
-        cy.get('.pf-v5-c-card__body')
+        cy.get('.pf-v6-c-card__body')
           .should('not.include.text', 'because')
           .and('not.include.text', 'None');
       });
@@ -417,7 +417,7 @@ describe('justification message', () => {
     });
     it('should display reason', () => {
       cy.ouiaId('hosts-acked').within(() => {
-        cy.get('.pf-v5-c-card__body').should(
+        cy.get('.pf-v6-c-card__body').should(
           'include.text',
           `because ${justification}`,
         );

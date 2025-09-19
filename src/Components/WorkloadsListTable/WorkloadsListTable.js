@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
+import ErrorState from '@redhat-cloud-services/frontend-components/ErrorState';
 import { TableVariant } from '@patternfly/react-table';
 import {
   Table,
@@ -41,7 +42,6 @@ import {
   updateSearchParams,
 } from '../Common/Tables';
 import {
-  ErrorState,
   NoMatchingWorkloads,
   NoDVOInstalledOrDataCollected,
 } from '../MessageState/EmptyStates';

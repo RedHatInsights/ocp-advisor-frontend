@@ -15,6 +15,7 @@ import {
   TableHeader,
 } from '@patternfly/react-table/deprecated';
 import { Label, Pagination, Tooltip } from '@patternfly/react-core';
+import ErrorState from '@redhat-cloud-services/frontend-components/ErrorState';
 import { SkeletonTable } from '@patternfly/react-component-groups';
 import { PaginationVariant } from '@patternfly/react-core/dist/js/components/Pagination/Pagination';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar/PrimaryToolbar';
@@ -48,7 +49,6 @@ import {
 // import Loading from '../Loading/Loading';
 import messages from '../../Messages';
 import {
-  ErrorState,
   NoMatchingClusters,
   NoRecsForClusters,
 } from '../MessageState/EmptyStates';
@@ -223,7 +223,6 @@ const ClustersListTable = ({
 
       // Return early, when request is cancelled to prevent unwanted state update
       if (res === undefined) return 'cancel';
-
       if (res?.status === 'ok')
         upgradeArr = res.predictions.map((item) => item);
     }
@@ -247,16 +246,16 @@ const ClustersListTable = ({
       return {
         entity: it,
         cells: [
-          <span key={it.cluster_id} className="pf-v5-l-flex">
+          <span key={it.cluster_id} className="pf-v6-l-flex">
             <Link
               key={`${it.cluster_id}-link`}
               to={`${BASE_PATH}/clusters/${it.cluster_id}`}
-              className="pf-v5-l-flex__item"
+              className="pf-v6-l-flex__item"
             >
               {it.cluster_name || it.cluster_id}
             </Link>
             {upgrade && (
-              <Label isCompact color="orange" className="pf-v5-l-flex__item">
+              <Label isCompact color="orange" className="pf-v6-l-flex__item">
                 Update risk
               </Label>
             )}
