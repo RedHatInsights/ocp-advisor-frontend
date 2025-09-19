@@ -2,7 +2,7 @@ import React from 'react';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
-import { ErrorState } from '../Components/MessageState/EmptyStates';
+import ErrorState from '@redhat-cloud-services/frontend-components/ErrorState';
 import { Bullseye } from '@patternfly/react-core';
 
 class ErrorBoundary extends React.Component {

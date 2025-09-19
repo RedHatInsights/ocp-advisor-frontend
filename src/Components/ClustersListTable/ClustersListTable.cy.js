@@ -34,6 +34,7 @@ import {
   TOOLBAR,
   PAGINATION,
   CHIP_GROUP,
+  CHIP,
   TABLE,
   checkPaginationTotal,
   checkPaginationValues,
@@ -43,7 +44,6 @@ import {
   tableIsSortedBy,
   filter,
   hasChip,
-  removeAllChips,
   urlParamConvert,
 } from '@redhat-cloud-services/frontend-components-utilities';
 
@@ -297,7 +297,7 @@ urlParamsList.forEach((urlParams, index) => {
       for (const [key, value] of urlSearchParameters) {
         if (key == 'text') {
           hasChip('Name', value);
-          cy.get('.pf-m-fill > .pf-v5-c-form-control > input').should(
+          cy.get('.pf-m-fill > .pf-v6-c-form-control > input').should(
             'have.value',
             value
           );
@@ -377,7 +377,7 @@ describe('clusters list table', () => {
     });
 
     it(`pagination is set to ${DEFAULT_ROW_COUNT}`, () => {
-      cy.get('.pf-v5-c-menu-toggle__text')
+      cy.get('.pf-v6-c-menu-toggle__text')
         .find('b')
         .eq(0)
         .should('have.text', `1 - ${DEFAULT_DISPLAYED_SIZE}`);
@@ -393,7 +393,7 @@ describe('clusters list table', () => {
 
     it('applies total risk "All clusters" filter', () => {
       hasChip('Total risk', 'All clusters');
-      cy.get(CHIP_GROUP).find('.pf-v5-c-chip__text').should('have.length', 1);
+      cy.get(CHIP_GROUP).find(CHIP).should('have.length', 1);
       expect(window.location.search).to.contain(`hits=all`);
     });
 
@@ -491,7 +491,7 @@ describe('clusters list table', () => {
 
   describe('filtering', () => {
     it('can clear filters', () => {
-      removeAllChips();
+      cy.get('button').contains('Reset filters').click();
       // apply some filters
       filterApply(filterCombos[0]);
       cy.get(CHIP_GROUP).should(
@@ -529,7 +529,7 @@ describe('clusters list table', () => {
     });
 
     it('empty state is displayed when filters do not match any rule', () => {
-      removeAllChips();
+      cy.get('button').contains('Reset filters').click();
       filterApply({
         name: 'Not existing clusters',
         risk: ['Critical', 'Moderate'],
@@ -662,23 +662,23 @@ describe('cluster list Empty state rendering', () => {
   });
 
   it('renders the Empty State component', () => {
-    cy.get('div[class=pf-v5-c-empty-state__content]')
+    cy.get('div[class=pf-v6-c-empty-state__content]')
       .should('have.length', 1)
       .find('h2')
       .should('have.text', 'No clusters yet');
-    cy.get('div[class=pf-v5-c-empty-state__body]').should(
+    cy.get('div[class=pf-v6-c-empty-state__body]').should(
       'have.text',
       'To get started, create or register your cluster to get recommendations from Insights Advisor.'
     );
-    cy.get('div[class=pf-v5-c-empty-state__footer]')
+    cy.get('div[class=pf-v6-c-empty-state__footer]')
       .find('a')
       .eq(0)
       .should('have.text', 'Create cluster');
-    cy.get('div[class=pf-v5-c-empty-state__footer]')
+    cy.get('div[class=pf-v6-c-empty-state__footer]')
       .find('a')
       .eq(1)
       .should('have.text', 'Register cluster');
-    cy.get('div[class=pf-v5-c-empty-state__footer]')
+    cy.get('div[class=pf-v6-c-empty-state__footer]')
       .find('a')
       .eq(2)
       .should('have.text', 'Assisted Installer clusters');
@@ -690,11 +690,12 @@ describe('update risk', () => {
     beforeEach(() => {
       clustersUpdateRisksInterceptors['successful']();
       mountLessClusters();
+      cy.wait('@clustersUpdateRisksOKOne');
     });
 
     it('displays one label', () => {
       cy.get(
-        'span[class=pf-v5-c-label__content]:contains("Update risk")'
+        'span[class=pf-v6-c-label__content]:contains("Update risk")'
       ).should('have.length', 1);
     });
   });
@@ -703,11 +704,12 @@ describe('update risk', () => {
     beforeEach(() => {
       clustersUpdateRisksInterceptors['successful, two labels']();
       mountLessClusters();
+      cy.wait('@clustersUpdateRisksOKTwo');
     });
 
     it('displays two labels', () => {
       cy.get(
-        'span[class=pf-v5-c-label__content]:contains("Update risk")'
+        'span[class=pf-v6-c-label__content]:contains("Update risk")'
       ).should('have.length', 2);
     });
   });
@@ -716,11 +718,12 @@ describe('update risk', () => {
     beforeEach(() => {
       clustersUpdateRisksInterceptors['successful, no labels']();
       mountLessClusters();
+      cy.wait('@clustersUpdateRisksOKNoLabels');
     });
 
     it('displays no labels', () => {
       cy.get(
-        'span[class=pf-v5-c-label__content]:contains("Update risk")'
+        'span[class=pf-v6-c-label__content]:contains("Update risk")'
       ).should('have.length', 0);
     });
   });
@@ -733,7 +736,7 @@ describe('update risk', () => {
 
     it('displays no labels', () => {
       cy.get(
-        'span[class=pf-v5-c-label__content]:contains("Update risk")'
+        'span[class=pf-v6-c-label__content]:contains("Update risk")'
       ).should('have.length', 0);
     });
   });

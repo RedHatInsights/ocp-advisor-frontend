@@ -30,7 +30,7 @@ const mount = (initialEntries = [`/clusters/${CLUSTER_ID}`]) => {
   });
 };
 
-const TABLE_ROW = '[data-ouia-component-type="PF5/TableRow"]';
+const TABLE_ROW = '[data-ouia-component-type="PF6/TableRow"]';
 
 describe('successful with some risks', () => {
   beforeEach(() => {
@@ -58,10 +58,10 @@ describe('successful with some risks', () => {
 
   it('shows correct icons', () => {
     cy.get('.alerts__header')
-      .find('.pf-v5-c-icon__content')
+      .find('.pf-v6-c-icon__content')
       .should('have.class', 'pf-m-danger');
     cy.get('.operators__header')
-      .find('.pf-v5-c-icon__content')
+      .find('.pf-v6-c-icon__content')
       .should('have.class', 'pf-m-warning');
   });
 
@@ -87,7 +87,7 @@ describe('successful with some risks', () => {
             .find('.alerts__severity')
             .should('contain.text', SEVERITY_MAPPING[alert.severity]);
           cy.get($row)
-            .find('.pf-v5-c-icon__content')
+            .find('.pf-v6-c-icon__content')
             .should(
               'have.class',
               `pf-m-${SEVERITY_ICON_CLASS_MAPPING[alert.severity]}`
@@ -126,7 +126,7 @@ describe('successful with some risks', () => {
             .find('.operators__status')
             .should('contain.text', condition.condition);
           cy.get($row)
-            .find('.operators__status .pf-v5-c-icon__content')
+            .find('.operators__status .pf-v6-c-icon__content')
             .should('have.class', `pf-m-warning`);
           cy.get($row)
             .find('.operators__message')
@@ -136,10 +136,10 @@ describe('successful with some risks', () => {
   });
 
   it('can hide content', () => {
-    cy.get('.pf-v5-c-table__toggle button').eq(0).click();
+    cy.get('.pf-v6-c-table__toggle button').eq(0).click();
     cy.get('.alerts__content').should('not.be.visible');
 
-    cy.get('.pf-v5-c-table__toggle button').eq(1).click();
+    cy.get('.pf-v6-c-table__toggle button').eq(1).click();
     cy.get('.operators__content').should('not.be.visible');
   });
 });
@@ -158,7 +158,7 @@ describe('successful, only cluster operators', () => {
 
   it('shows check icon', () => {
     cy.get('.alerts__header')
-      .find('.pf-v5-c-icon__content')
+      .find('.pf-v6-c-icon__content')
       .should('have.class', 'pf-m-success');
   });
 });
@@ -186,11 +186,11 @@ describe('error, service down', () => {
 
   it('renders empty state', () => {
     // can't apply checkEmptyState since "something went wrong" component doesn't use OUIA id
-    cy.get('.pf-v5-c-empty-state h4').should(
+    cy.get('.pf-v6-c-empty-state h4').should(
       'have.text',
       'Something went wrong'
     );
-    cy.get('.pf-v5-c-empty-state__icon').should('be.visible');
+    cy.get('.pf-v6-c-empty-state__icon').should('be.visible');
   });
 
   it('header is present', () => {
@@ -221,11 +221,11 @@ describe('error, other', () => {
 
   it('renders empty state', () => {
     // can't apply checkEmptyState since "something went wrong" component doesn't use OUIA id
-    cy.get('.pf-v5-c-empty-state h4').should(
+    cy.get('.pf-v6-c-empty-state h4').should(
       'have.text',
       'Something went wrong'
     );
-    cy.get('.pf-v5-c-empty-state__icon').should('be.visible');
+    cy.get('.pf-v6-c-empty-state__icon').should('be.visible');
   });
 
   it('header is present', () => {
@@ -240,7 +240,7 @@ describe('loading', () => {
   });
 
   it('renders spinner', () => {
-    cy.get('.pf-v5-c-spinner').should('be.visible');
+    cy.get('.pf-v6-c-spinner').should('be.visible');
     cy.get('#update-risks-table').should('not.exist');
   });
 });

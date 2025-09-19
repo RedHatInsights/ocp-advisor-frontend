@@ -24,7 +24,7 @@ export const Workload = ({ workload, namespaceId, clusterId }) => {
           </FlexItem>
         </Flex>
       </PageHeader>
-      <PageSection>
+      <PageSection hasBodyWrapper={false}>
         <Title className="pf-u-mb-lg" headingLevel="h3" size="2xl">
           Recommendations
         </Title>

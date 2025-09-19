@@ -17,6 +17,7 @@
 import './commands';
 import '@cypress/code-coverage/support';
 import { useChrome } from '../../config/overrideChrome';
+import mockChrome from '../../config/mockChrome';
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
@@ -28,3 +29,6 @@ window.insights = { useChrome };
 
 // Example use:
 // cy.mount(<MyComponent />)
+global.window.insights = {
+  chrome: mockChrome,
+};

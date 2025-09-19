@@ -81,7 +81,7 @@ Cypress.Commands.add('checkEmptyState', (title, checkIcon) => {
         'have.length',
         checkIcon ? 1 : 0
       );
-      cy.get(`h5[class="pf-v5-c-empty-state__title-text"]`).should(
+      cy.get(`h5[class="pf-v6-c-empty-state__title-text"]`).should(
         'have.text',
         title
       );

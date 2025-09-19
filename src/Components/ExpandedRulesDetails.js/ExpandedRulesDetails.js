@@ -63,7 +63,7 @@ const OpenshiftCodeBlocks = () => {
     <>
       <CodeBlock
         actions={action(code1.concat('\n', code2))}
-        className="pf-v5-u-mt-md"
+        className="pf-v6-u-mt-md"
       >
         <CodeBlockCode>{code1}</CodeBlockCode>
         <CodeBlockCode>{code2}</CodeBlockCode>
@@ -86,7 +86,10 @@ const ExpandedRulesDetails = ({
   const objectsWithNames = objects?.filter((object) => object.display_name);
 
   return (
-    <Card className="ins-c-report-details" style={{ boxShadow: 'none' }}>
+    <Card
+      className="ins-c-report-details pf-v6-u-mt-md"
+      style={{ boxShadow: 'none' }}
+    >
       <CardBody>
         <ObjectsModal
           isModalOpen={objectsModalOpen}
