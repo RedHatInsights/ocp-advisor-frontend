@@ -17,7 +17,7 @@ const getStore = (useLogger) =>
     middleware: (getDefaultMiddleware) => {
       const middleware = getDefaultMiddleware().concat(
         SmartProxyApi.middleware,
-        Acks.middleware
+        Acks.middleware,
       );
       if (useLogger) {
         middleware.concat(logger);

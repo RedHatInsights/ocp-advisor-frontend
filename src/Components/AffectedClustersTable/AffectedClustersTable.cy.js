@@ -582,7 +582,7 @@ describe('non-empty successful affected clusters table', () => {
         .eq(AFFECTED_CLUSTERS_COLUMNS.length + 1)
         .click()
         .then(() =>
-          cy.get('button.pf-v6-c-menu__item').contains('Disable').click()
+          cy.get('button.pf-v6-c-menu__item').contains('Disable').click(),
         );
 
       cy.get(MODAL_CONTENT)
