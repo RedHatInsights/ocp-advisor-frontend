@@ -19,7 +19,7 @@ objects:
           - v1
       frontend:
         paths:
-          - /apps/ccx-data-pipeline
+          - /apps/ocp-advisor
       image: ${IMAGE}:${IMAGE_TAG}
       module:
         analytics:
