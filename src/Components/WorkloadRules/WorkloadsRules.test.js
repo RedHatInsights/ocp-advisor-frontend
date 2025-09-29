@@ -164,7 +164,7 @@ describe('workloadsRulesRemoveFilterParam', () => {
     workloadsRulesRemoveFilterParam(
       currentFilters,
       updateFiltersMock,
-      'description'
+      'description',
     );
 
     expect(updateFiltersMock).toHaveBeenCalledWith({
@@ -185,7 +185,7 @@ describe('workloadsRulesRemoveFilterParam', () => {
     workloadsRulesRemoveFilterParam(
       currentFilters,
       updateFiltersMock,
-      'total_risk'
+      'total_risk',
     );
 
     expect(updateFiltersMock).toHaveBeenCalledWith({
@@ -206,7 +206,7 @@ describe('workloadsRulesRemoveFilterParam', () => {
     workloadsRulesRemoveFilterParam(
       currentFilters,
       updateFiltersMock,
-      'object_name'
+      'object_name',
     );
 
     expect(updateFiltersMock).toHaveBeenCalledWith({
@@ -230,7 +230,7 @@ describe('workloadsRulesAddFilterParam', () => {
       currentFilters,
       updateFiltersMock,
       'total_risk',
-      [1, 2, 3]
+      [1, 2, 3],
     );
 
     expect(updateFiltersMock).toHaveBeenCalledWith({
@@ -252,7 +252,7 @@ describe('workloadsRulesAddFilterParam', () => {
       currentFilters,
       updateFiltersMock,
       'total_risk',
-      []
+      [],
     );
 
     expect(updateFiltersMock).toHaveBeenCalledWith({

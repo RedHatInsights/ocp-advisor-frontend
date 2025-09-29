@@ -102,7 +102,7 @@ const WorkloadsListTable = ({
       if (paramsObject.sort) {
         const sortObj = translateSortParams(paramsObject.sort);
         paramsObject.sortIndex = WORKLOADS_LIST_COLUMNS_KEYS.indexOf(
-          sortObj.name
+          sortObj.name,
         );
         paramsObject.sortDirection = sortObj.direction;
       }
@@ -258,7 +258,7 @@ const WorkloadsListTable = ({
           const newFilter = {
             [item.urlParam]: Array.isArray(filters[item.urlParam])
               ? filters[item.urlParam].filter(
-                  (value) => String(value) !== String(item.chips[0].value)
+                  (value) => String(value) !== String(item.chips[0].value),
                 )
               : '',
           };

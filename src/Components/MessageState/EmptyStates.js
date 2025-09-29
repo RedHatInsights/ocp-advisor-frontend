@@ -94,7 +94,7 @@ const NoRecsForClusters = () => {
         {intl.formatMessage(
           lightspeedFeatureFlag
             ? messages.noRecsForClusterListBodyLightspeed
-            : messages.noRecsForClusterListBody
+            : messages.noRecsForClusterListBody,
         )}
       </EmptyStateBody>
       <EmptyStateFooter>
@@ -137,7 +137,7 @@ const NoInsightsResults = () => {
           {intl.formatMessage(
             lightspeedFeatureFlag
               ? messages.noRecsFoundErrorDescLightspeed
-              : messages.noRecsFoundErrorDesc
+              : messages.noRecsFoundErrorDesc,
           )}
           <a href="https://docs.openshift.com/container-platform/latest/support/getting-support.html">
             {' '}

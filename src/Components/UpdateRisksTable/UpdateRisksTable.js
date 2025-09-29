@@ -82,7 +82,7 @@ const UpdateRisksTable = () => {
                     ? ALERTS_SEVERITY_ICONS['success']
                     : ALERTS_SEVERITY_ICONS[ // this algorithm helps to decide which icon (the most severe) to show
                         ALERTS_SEVERITY_ORDER.filter((s) =>
-                          alerts.some(({ severity }) => s === severity)
+                          alerts.some(({ severity }) => s === severity),
                         )[0]
                       ]}
                   <b>Alerts firing</b>

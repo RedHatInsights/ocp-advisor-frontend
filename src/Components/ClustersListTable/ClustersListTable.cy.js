@@ -65,7 +65,7 @@ const lessClusters = {
 let values = _.cloneDeep(clusters['data']);
 values.forEach(
   (it) =>
-    (it['name'] = it['cluster_name'] ? it['cluster_name'] : it['cluster_id'])
+    (it['name'] = it['cluster_name'] ? it['cluster_name'] : it['cluster_id']),
 );
 // fill possible missing values
 values.forEach((it) => {
@@ -80,7 +80,7 @@ const dataUnsorted = _.cloneDeep(values);
 const data = _.orderBy(
   values,
   [(it) => it.last_checked_at || '1970-01-01T01:00:00.001Z'],
-  ['desc']
+  ['desc'],
 );
 
 const ROOT = 'div[id=clusters-list-table]';
@@ -121,7 +121,7 @@ const filtersConf = {
   version: {
     selectorText: 'Version',
     values: Array.from(
-      cumulativeCombinations(_.uniq(_.flatten(VERSION_COMBINATIONS)))
+      cumulativeCombinations(_.uniq(_.flatten(VERSION_COMBINATIONS))),
     ),
     type: 'checkbox',
     filterFunc: (it, value) => {
@@ -141,7 +141,7 @@ const filterData = (filters = DEFAULT_FILTERS, values = data) => {
     return filter(
       filtersConf,
       _.filter(values, (it) => it.total_hit_count > 0),
-      filters
+      filters,
     );
   }
   return filter(filtersConf, values, filters);
@@ -176,7 +176,7 @@ const mountLessClusters = () => {
           </Provider>
         </Intl>
       </MemoryRouter>
-    </FlagProvider>
+    </FlagProvider>,
   );
 };
 
@@ -194,31 +194,34 @@ describe('data', () => {
   });
   it('at least one cluster has cluster name', () => {
     expect(_.filter(filterData(), (it) => it.cluster_name)).to.have.length.gte(
-      1
+      1,
     );
   });
   it('first page items contains at least one cluster without name', () => {
     const itemsInFirstPage = DEFAULT_DISPLAYED_SIZE;
     expect(
-      _.filter(filterData().slice(0, itemsInFirstPage), (it) => it.cluster_name)
+      _.filter(
+        filterData().slice(0, itemsInFirstPage),
+        (it) => it.cluster_name,
+      ),
     ).to.have.length.lt(itemsInFirstPage);
   });
   it('at least one entry has last seen', () => {
     expect(
-      _.filter(filterData(), (it) => it.last_checked_at)
+      _.filter(filterData(), (it) => it.last_checked_at),
     ).to.have.length.gte(1);
   });
   it('at least one entry does not have last seen', () => {
     expect(
-      _.filter(filterData(), (it) => it.last_checked_at === undefined)
+      _.filter(filterData(), (it) => it.last_checked_at === undefined),
     ).to.have.length.gte(1);
   });
   it('at least one entry in the original data does not have all values for total risk categories', () => {
     expect(
       _.filter(
         filterData(DEFAULT_FILTERS, clusters['data']),
-        (it) => Object.keys(it['hits_by_total_risk']).length < 4
-      )
+        (it) => Object.keys(it['hits_by_total_risk']).length < 4,
+      ),
     ).to.have.length.gte(1);
   });
   _.uniq(_.flatten(VERSION_COMBINATIONS)).map((c) =>
@@ -226,7 +229,7 @@ describe('data', () => {
       cy.wrap(_.filter(data, (it) => it.cluster_version === c))
         .its('length')
         .should('be.gte', 1);
-    })
+    }),
   );
   it(`has at least one cluster without a version`, () => {
     cy.wrap(_.filter(data, (it) => it.cluster_version === ''))
@@ -288,7 +291,7 @@ urlParamsList.forEach((urlParams, index) => {
               </Provider>
             </Intl>
           </MemoryRouter>
-        </FlagProvider>
+        </FlagProvider>,
       );
     });
 
@@ -299,14 +302,14 @@ urlParamsList.forEach((urlParams, index) => {
           hasChip('Name', value);
           cy.get('.pf-m-fill > .pf-v6-c-form-control > input').should(
             'have.value',
-            value
+            value,
           );
         } else {
           value.split(',').forEach((it) => {
             const [group, item] = urlParamConvert(
               key,
               it,
-              CLUSTER_FILTER_CATEGORIES
+              CLUSTER_FILTER_CATEGORIES,
             );
             hasChip(group, item);
           });
@@ -315,7 +318,7 @@ urlParamsList.forEach((urlParams, index) => {
       // do not get more chips than expected
       cy.get(CHIP_GROUP).should(
         'have.length',
-        Array.from(urlSearchParameters).length
+        Array.from(urlSearchParameters).length,
       );
     });
   });
@@ -351,7 +354,7 @@ describe('clusters list table', () => {
             </Provider>
           </Intl>
         </MemoryRouter>
-      </FlagProvider>
+      </FlagProvider>,
     );
   });
 
@@ -387,7 +390,7 @@ describe('clusters list table', () => {
       const column = 'Last seen';
       tableIsSortedBy(column);
       expect(window.location.search).to.contain(
-        `sort=-${columnName2UrlParam(column)}`
+        `sort=-${columnName2UrlParam(column)}`,
       );
     });
 
@@ -424,7 +427,7 @@ describe('clusters list table', () => {
       cy.wrap(itemsPerPage(data.length)).each((el, index, list) => {
         checkRowCounts(el).then(() => {
           expect(window.location.search).to.contain(
-            `offset=${DEFAULT_ROW_COUNT * index}`
+            `offset=${DEFAULT_ROW_COUNT * index}`,
           );
         });
         cy.get(TOOLBAR)
@@ -453,12 +456,12 @@ describe('clusters list table', () => {
         'hits_by_total_risk.1',
         'last_checked_at',
       ],
-      TABLE_HEADERS
+      TABLE_HEADERS,
     ).forEach(([category, label]) => {
       SORTING_ORDERS.forEach((order) => {
         it(`${order} by ${label}`, () => {
           cy.get('[data-ouia-component-id=loading-skeleton]').should(
-            'not.exist'
+            'not.exist',
           );
           let sortingParameter = category;
           // modify sortingParameters for certain values
@@ -482,7 +485,7 @@ describe('clusters list table', () => {
             'Name',
             'name',
             DEFAULT_DISPLAYED_SIZE,
-            label
+            label,
           );
         });
       });
@@ -496,7 +499,7 @@ describe('clusters list table', () => {
       filterApply(filterCombos[0]);
       cy.get(CHIP_GROUP).should(
         'have.length',
-        Object.keys(filterCombos[0]).length
+        Object.keys(filterCombos[0]).length,
       );
       cy.get(CHIP_GROUP).should('exist');
       // clear filters
@@ -551,7 +554,7 @@ describe('clusters list table', () => {
               TABLE_HEADERS,
               'No matching clusters found',
               true,
-              true
+              true,
             );
           });
         });
@@ -569,7 +572,7 @@ describe('clusters list table', () => {
             TABLE_HEADERS,
             'No matching clusters found',
             true,
-            true
+            true,
           );
         });
       });
@@ -594,7 +597,7 @@ describe('clusters list table', () => {
         cy.wrap($el)
           .find('td[data-label=Name]')
           .find(
-            `a[href="/openshift/insights/advisor/clusters/${data[index]['cluster_id']}"]`
+            `a[href="/openshift/insights/advisor/clusters/${data[index]['cluster_id']}"]`,
           )
           .should('have.text', data[index]['name']);
       });
@@ -620,7 +623,7 @@ describe('clusters list table', () => {
           .find(`td[data-label="Recommendations"]`)
           .should(($el) => {
             const totalHitsNumber = Object.values(
-              data[index].hits_by_total_risk
+              data[index].hits_by_total_risk,
             ).reduce((acc, it) => acc + it, 0);
             expect($el.text()).to.eq(totalHitsNumber.toString());
           });
@@ -657,7 +660,7 @@ describe('cluster list Empty state rendering', () => {
             </Provider>
           </Intl>
         </MemoryRouter>
-      </FlagProvider>
+      </FlagProvider>,
     );
   });
 
@@ -668,7 +671,7 @@ describe('cluster list Empty state rendering', () => {
       .should('have.text', 'No clusters yet');
     cy.get('div[class=pf-v6-c-empty-state__body]').should(
       'have.text',
-      'To get started, create or register your cluster to get recommendations from Insights Advisor.'
+      'To get started, create or register your cluster to get recommendations from Insights Advisor.',
     );
     cy.get('div[class=pf-v6-c-empty-state__footer]')
       .find('a')
@@ -695,7 +698,7 @@ describe('update risk', () => {
 
     it('displays one label', () => {
       cy.get(
-        'span[class=pf-v6-c-label__content]:contains("Update risk")'
+        'span[class=pf-v6-c-label__content]:contains("Update risk")',
       ).should('have.length', 1);
     });
   });
@@ -709,7 +712,7 @@ describe('update risk', () => {
 
     it('displays two labels', () => {
       cy.get(
-        'span[class=pf-v6-c-label__content]:contains("Update risk")'
+        'span[class=pf-v6-c-label__content]:contains("Update risk")',
       ).should('have.length', 2);
     });
   });
@@ -723,7 +726,7 @@ describe('update risk', () => {
 
     it('displays no labels', () => {
       cy.get(
-        'span[class=pf-v6-c-label__content]:contains("Update risk")'
+        'span[class=pf-v6-c-label__content]:contains("Update risk")',
       ).should('have.length', 0);
     });
   });
@@ -736,7 +739,7 @@ describe('update risk', () => {
 
     it('displays no labels', () => {
       cy.get(
-        'span[class=pf-v6-c-label__content]:contains("Update risk")'
+        'span[class=pf-v6-c-label__content]:contains("Update risk")',
       ).should('have.length', 0);
     });
   });

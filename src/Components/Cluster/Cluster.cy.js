@@ -11,7 +11,6 @@ import {
   updateRisksInterceptors,
 } from '../../../cypress/utils/interceptors';
 
-/* eslint-disable camelcase */
 import { TAB_BUTTON } from '@redhat-cloud-services/frontend-components-utilities';
 
 // selectors
@@ -60,7 +59,7 @@ describe('cluster page', () => {
       cy.get(CLUSTER_HEADER).should('have.length', 1);
       cy.get(RULES_TABLE);
       cy.get(FILTER_CHIPS).each(($el) =>
-        expect($el.text()).to.be.oneOf(['foo bar', 'Low', 'Performance'])
+        expect($el.text()).to.be.oneOf(['foo bar', 'Low', 'Performance']),
       );
       checkNoMatchingRecs();
     });
@@ -76,7 +75,7 @@ describe('cluster page', () => {
           'foo',
           'Moderate',
           'Service Availability',
-        ])
+        ]),
       );
       checkNoMatchingRecs();
     });
@@ -174,7 +173,7 @@ describe('update risks', () => {
       cy.ouiaId('recommendations').should(
         'have.attr',
         'data-ouia-safe',
-        'true'
+        'true',
       );
       cy.wait('@clusterInfo');
 
@@ -202,7 +201,7 @@ describe('update risks', () => {
     cy.ouiaId('update-risks-alert').within(() => {
       cy.get('h4').should(
         'contain.text',
-        'No known update risks identified for this cluster.'
+        'No known update risks identified for this cluster.',
       );
     });
   });
@@ -215,7 +214,7 @@ describe('update risks', () => {
     cy.ouiaId('update-risks-alert').within(() => {
       cy.get('h4').should(
         'contain.text',
-        'Update risks are not currently available.'
+        'Update risks are not currently available.',
       );
     });
   });
@@ -240,7 +239,7 @@ describe('update risks', () => {
       cy.ouiaId('update-risks-tab').should(
         'have.attr',
         'aria-selected',
-        'true'
+        'true',
       );
     });
 
@@ -249,7 +248,7 @@ describe('update risks', () => {
       cy.ouiaId('recommendations-tab').should(
         'have.attr',
         'aria-selected',
-        'true'
+        'true',
       );
     });
   });
