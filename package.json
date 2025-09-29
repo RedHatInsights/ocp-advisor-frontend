@@ -63,7 +63,7 @@
     "@formatjs/cli": "^6.2.7",
     "@patternfly/patternfly": "^6.3.1",
     "@redhat-cloud-services/eslint-config-redhat-cloud-services": "^3.0.0",
-    "@redhat-cloud-services/frontend-components-config": "^6.4.5",
+    "@redhat-cloud-services/frontend-components-config": "^6.7.1",
     "@redhat-cloud-services/frontend-components-config-utilities": "^4.7.0",
     "@redhat-cloud-services/tsc-transform-imports": "^1.0.23",
     "@testing-library/jest-dom": "^6.4.2",
