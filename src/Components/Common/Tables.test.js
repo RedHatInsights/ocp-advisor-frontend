@@ -4,7 +4,7 @@ import { sortBy } from 'lodash';
 const filterItems = (workloads, filters) =>
   sortBy(
     workloads.filter((workload) => passFilterWorkloads(workload, filters)),
-    (x) => x.cluster.uuid
+    (x) => x.cluster.uuid,
   );
 
 describe('Tables', () => {

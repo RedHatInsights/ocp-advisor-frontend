@@ -101,7 +101,7 @@ export const capitalize = (str) => {
 export const createChips = (category, value) => {
   if (category.values) {
     const selectedCategoryValue = category.values.find(
-      (values) => values.value === String(value)
+      (values) => values.value === String(value),
     );
 
     return selectedCategoryValue
@@ -176,8 +176,8 @@ export const sortWithSwitch = (sortIndex, sortDirection, filteredRows) => {
         return switchSort(sortIndex, a) > switchSort(sortIndex, b)
           ? d
           : switchSort(sortIndex, b) > switchSort(sortIndex, a)
-          ? -d
-          : 0;
+            ? -d
+            : 0;
       })
     : [...filteredRows];
 };
@@ -218,7 +218,7 @@ export const passObjectsFilters = (objects, filters) => {
 export const workloadsRulesRemoveFilterParam = (
   currentFilters,
   updateFilters,
-  param
+  param,
 ) => {
   const { [param]: omitted, ...newFilters } = { ...currentFilters };
   updateFilters({
@@ -226,12 +226,12 @@ export const workloadsRulesRemoveFilterParam = (
     ...(param === 'description'
       ? { description: '' }
       : param === 'total_risk'
-      ? { total_risk: [] }
-      : param === 'object_id'
-      ? { object_id: '' }
-      : param === 'object_name'
-      ? { object_name: '' }
-      : {}),
+        ? { total_risk: [] }
+        : param === 'object_id'
+          ? { object_id: '' }
+          : param === 'object_name'
+            ? { object_name: '' }
+            : {}),
   });
 };
 
@@ -239,7 +239,7 @@ export const workloadsRulesAddFilterParam = (
   currentFilters,
   updateFilters,
   param,
-  values
+  values,
 ) =>
   values.length > 0
     ? updateFilters({
@@ -264,7 +264,7 @@ export const passFilterWorkloadsRecs = (recommendation, filters) => {
         return (
           filterValue &&
           recommendation.objects.some((obj) =>
-            obj.uid.toLowerCase().includes(filterValue.toLowerCase())
+            obj.uid.toLowerCase().includes(filterValue.toLowerCase()),
           )
         );
       case 'total_risk':
@@ -275,7 +275,7 @@ export const passFilterWorkloadsRecs = (recommendation, filters) => {
         return (
           filterValue &&
           recommendation.objects.some((obj) =>
-            obj.display_name.toLowerCase().includes(filterValue.toLowerCase())
+            obj.display_name.toLowerCase().includes(filterValue.toLowerCase()),
           )
         );
       default:

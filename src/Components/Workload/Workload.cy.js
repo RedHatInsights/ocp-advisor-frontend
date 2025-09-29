@@ -10,7 +10,7 @@ import getStore from '../../Store';
 import { checkRowCounts, checkSorting } from '../../../cypress/utils/table';
 import { SORTING_ORDERS } from '../../../cypress/utils/globals';
 import { WORKLOAD_RULES_COLUMNS } from '../../AppConstants';
-// eslint-disable-next-line rulesdir/disallow-fec-relative-imports
+
 import {
   applyFilters,
   checkEmptyState,
@@ -54,7 +54,7 @@ const filtersConf = {
     type: 'input',
     filterFunc: (it, value) =>
       it.objects.some((obj) =>
-        obj.uid.toLowerCase().includes(value.toLowerCase())
+        obj.uid.toLowerCase().includes(value.toLowerCase()),
       ),
   },
   total_risk: {
@@ -103,7 +103,7 @@ if (mockList.includes(uuid)) {
 
 const mount = (
   url = '/openshift/insights/advisor/workloads/clustername/namespacename',
-  customWorkload
+  customWorkload,
 ) => {
   cy.mount(
     <MemoryRouter initialEntries={[url]} initialIndex={0}>
@@ -116,7 +116,7 @@ const mount = (
           />
         </Provider>
       </IntlProvider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 };
 
@@ -124,7 +124,7 @@ describe('Workload component renders and filters data', () => {
   it('renders main components', () => {
     mount(
       `/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`,
-      workload
+      workload,
     );
     cy.get(BREADCRUMBS)
       .should('have.length', 1)
@@ -140,7 +140,7 @@ describe('Workload component renders and filters data', () => {
   it('adds additional filters passed by the query parameters, 1', () => {
     mount(
       '/openshift/insights/advisor/workloads/clustername/namespacename?description=name&total_risk=4',
-      workload
+      workload,
     );
 
     cy.get(BREADCRUMBS).should('have.length', 1);
@@ -152,7 +152,7 @@ describe('Workload component renders and filters data', () => {
         'Description',
         'Total risk',
         'Critical',
-      ])
+      ]),
     );
     checkEmptyState('No matching recommendations found');
   });
@@ -160,35 +160,35 @@ describe('Workload component renders and filters data', () => {
   it('adds additional filters passed by the query parameters, 2', () => {
     mount(
       '/openshift/insights/advisor/workloads/clustername/namespacename?description=foobar',
-      workload
+      workload,
     );
 
     cy.get(BREADCRUMBS).should('have.length', 1);
     cy.get(WORKLOAD_HEADER).should('have.length', 1);
     cy.get(WORKLOAD_RULES_TABLE);
     cy.get(FILTER_CHIPS).each(($el) =>
-      expect($el.text()).to.be.oneOf(['foobar', 'description'])
+      expect($el.text()).to.be.oneOf(['foobar', 'description']),
     );
   });
 
   it('adds additional filters passed by the query parameters, 3', () => {
     mount(
       '/openshift/insights/advisor/workloads/clustername/namespacename?total_risk=2',
-      workload
+      workload,
     );
 
     cy.get(BREADCRUMBS).should('have.length', 1);
     cy.get(WORKLOAD_HEADER).should('have.length', 1);
     cy.get(WORKLOAD_RULES_TABLE);
     cy.get(FILTER_CHIPS).each(($el) =>
-      expect($el.text()).to.be.oneOf(['Total risk', 'Moderate'])
+      expect($el.text()).to.be.oneOf(['Total risk', 'Moderate']),
     );
   });
 
   it('adds additional filters passed by the query parameters, 4', () => {
     mount(
       '/openshift/insights/advisor/workloads/clustername/namespacename?object_id=bb78507b-cc1c-4c53-af2c-7807d9cbeab4',
-      workload
+      workload,
     );
 
     cy.get(BREADCRUMBS).should('have.length', 1);
@@ -198,13 +198,13 @@ describe('Workload component renders and filters data', () => {
       expect($el.text()).to.be.oneOf([
         'Object ID',
         'bb78507b-cc1c-4c53-af2c-7807d9cbeab4',
-      ])
+      ]),
     );
   });
   it('Setting text filter', () => {
     mount(
       `/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`,
-      workload
+      workload,
     );
     cy.get('div.ins-c-primary-toolbar__filter').find('button').click();
     cy.get('li[data-ouia-component-id="description"]')
@@ -216,21 +216,21 @@ describe('Workload component renders and filters data', () => {
   it('Setting objects filter', () => {
     mount(
       `/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`,
-      workload
+      workload,
     );
     cy.get('div.ins-c-primary-toolbar__filter').find('button').click();
     cy.get('li[data-ouia-component-id="object ID"]')
       .contains('Object ID')
       .click();
     cy.get('input[data-ouia-component-type="PF6/TextInput"]').type(
-      '4381b689-02eb-465a-90cf-55b3e2305d8d'
+      '4381b689-02eb-465a-90cf-55b3e2305d8d',
     );
   });
 
   it('Setting critical severity filter', () => {
     mount(
       `/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`,
-      workload
+      workload,
     );
     cy.get('div.ins-c-primary-toolbar__filter').find('button').click();
     cy.get('li[data-ouia-component-id="total risk"]')
@@ -250,7 +250,7 @@ describe('header rendered correct', () => {
   it('breadcrumb with only names', () => {
     mount(
       `/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`,
-      workload
+      workload,
     );
 
     cy.get(BREADCRUMBS)
@@ -282,7 +282,7 @@ describe('header rendered correct', () => {
     };
     mount(
       `/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`,
-      customWorkload
+      customWorkload,
     );
 
     cy.get(BREADCRUMBS)
@@ -290,7 +290,7 @@ describe('header rendered correct', () => {
       .get('.pf-v6-c-breadcrumb__list > :nth-child(2)')
       .should(
         'have.text',
-        'Cluster name | 7eb1d18b-701b-4f51-aea0-5f235daf1e07'
+        'Cluster name | 7eb1d18b-701b-4f51-aea0-5f235daf1e07',
       );
   });
 
@@ -317,7 +317,7 @@ describe('header rendered correct', () => {
     };
     mount(
       `/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`,
-      customWorkload
+      customWorkload,
     );
 
     cy.get(BREADCRUMBS)
@@ -325,18 +325,18 @@ describe('header rendered correct', () => {
       .get('.pf-v6-c-breadcrumb__list > :nth-child(2)')
       .should(
         'have.text',
-        '00000001-0001-0001-0001-000000000001 | 7eb1d18b-701b-4f51-aea0-5f235daf1e07'
+        '00000001-0001-0001-0001-000000000001 | 7eb1d18b-701b-4f51-aea0-5f235daf1e07',
       );
   });
 
   it('title with names', () => {
     mount(
       `/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`,
-      workload
+      workload,
     );
     cy.get('#workloads-header-title').should(
       'have.text',
-      'Cluster nameNamespace name'
+      'Cluster nameNamespace name',
     );
   });
 
@@ -363,11 +363,11 @@ describe('header rendered correct', () => {
     };
     mount(
       `/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`,
-      customWorkload
+      customWorkload,
     );
     cy.get('#workloads-header-title').should(
       'have.text',
-      'Cluster name7eb1d18b-701b-4f51-aea0-5f235daf1e07'
+      'Cluster name7eb1d18b-701b-4f51-aea0-5f235daf1e07',
     );
   });
 
@@ -394,33 +394,33 @@ describe('header rendered correct', () => {
     };
     mount(
       `/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`,
-      customWorkload
+      customWorkload,
     );
     cy.get('#workloads-header-title').should(
       'have.text',
-      '00000001-0001-0001-0001-0000000000017eb1d18b-701b-4f51-aea0-5f235daf1e07'
+      '00000001-0001-0001-0001-0000000000017eb1d18b-701b-4f51-aea0-5f235daf1e07',
     );
   });
 
   it('cluster id and namespace id', () => {
     mount(
       `/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`,
-      workload
+      workload,
     );
     cy.get('#workload-header-uuid').should(
       'have.text',
-      'Cluster UUID: 00000001-0001-0001-0001-000000000001 Namespace UUID: 7eb1d18b-701b-4f51-aea0-5f235daf1e07'
+      'Cluster UUID: 00000001-0001-0001-0001-000000000001 Namespace UUID: 7eb1d18b-701b-4f51-aea0-5f235daf1e07',
     );
   });
 
   it('last seen values', () => {
     mount(
       `/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`,
-      workload
+      workload,
     );
     cy.get('#workload-header-last-seen').should(
       'have.text',
-      'Last seen: 23 Jan 2024 11:57 UTC'
+      'Last seen: 23 Jan 2024 11:57 UTC',
     );
   });
 });
@@ -429,13 +429,13 @@ describe('sorting', () => {
   // all tables must preserve original ordering
   _.zip(
     ['description', 'total_risk', 'objects', 'modified'],
-    TABLE_HEADERS
+    TABLE_HEADERS,
   ).forEach(([category, label]) => {
     SORTING_ORDERS.forEach((order) => {
       it(`${order} by ${label}`, () => {
         mount(
           `/openshift/insights/advisor/workloads/${clusterId}/${namespaceId}`,
-          workload
+          workload,
         );
         let sortingParameter = category;
         if (category === 'description') {
@@ -456,7 +456,7 @@ describe('sorting', () => {
           'Description',
           'details',
           5,
-          null
+          null,
         );
       });
     });

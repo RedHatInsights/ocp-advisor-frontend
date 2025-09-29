@@ -38,16 +38,16 @@ describe('AffectedClustersTable', () => {
             />
           </Provider>
         </Intl>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     await userEvent.click(
       screen.getByRole('checkbox', {
         name: /select all/i,
-      })
+      }),
     );
     expect(
-      screen.getByText(`${dataShortened.enabled.length} selected`)
+      screen.getByText(`${dataShortened.enabled.length} selected`),
     ).toBeVisible();
   });
 
@@ -79,26 +79,26 @@ describe('AffectedClustersTable', () => {
               />
             </Provider>
           </Intl>
-        </MemoryRouter>
+        </MemoryRouter>,
       );
 
       await userEvent.click(
         screen.getByRole('checkbox', {
           name: /select all/i,
-        })
+        }),
       );
       await userEvent.click(
         screen.getByRole('button', {
           name: /kebab dropdown toggle/i,
-        })
+        }),
       );
       await userEvent.click(
-        screen.getByText('Disable recommendation for selected clusters')
+        screen.getByText('Disable recommendation for selected clusters'),
       );
       await userEvent.click(
         screen.getByRole('button', {
           name: /save/i,
-        })
+        }),
       );
       await waitFor(() => {
         expect(spyDisable).toHaveBeenCalledTimes(dataShortened.enabled.length);
@@ -126,26 +126,26 @@ describe('AffectedClustersTable', () => {
               />
             </Provider>
           </Intl>
-        </MemoryRouter>
+        </MemoryRouter>,
       );
 
       await userEvent.click(
         screen.getByRole('checkbox', {
           name: /select all/i,
-        })
+        }),
       );
       await userEvent.click(
         screen.getByRole('button', {
           name: /kebab dropdown toggle/i,
-        })
+        }),
       );
       await userEvent.click(
-        screen.getByText('Disable recommendation for selected clusters')
+        screen.getByText('Disable recommendation for selected clusters'),
       );
       await userEvent.click(
         screen.getByRole('button', {
           name: /cancel/i,
-        })
+        }),
       );
       expect(spyDisable).not.toHaveBeenCalled();
       expect(refreshFn).not.toHaveBeenCalled();

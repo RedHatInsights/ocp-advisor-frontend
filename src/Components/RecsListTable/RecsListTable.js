@@ -103,7 +103,11 @@ const RecsListTable = ({ query }) => {
 
   useEffect(() => {
     setDisplayedRows(
-      buildDisplayedRows(filteredRows, filters.sortIndex, filters.sortDirection)
+      buildDisplayedRows(
+        filteredRows,
+        filters.sortIndex,
+        filters.sortDirection,
+      ),
     );
     setRowsFiltered(true);
   }, [
@@ -213,7 +217,7 @@ const RecsListTable = ({ query }) => {
                           TOTAL_RISK_LABEL_LOWER[value.total_risk] ||
                           intl.formatMessage(messages.undefined),
                         strong,
-                      }
+                      },
                     )}
                   >
                     {value?.total_risk ? (
@@ -262,7 +266,7 @@ const RecsListTable = ({ query }) => {
                       messages={formatMessages(
                         intl,
                         RuleDetailsMessagesKeys,
-                        mapContentToValues(intl, adjustOCPRule(value))
+                        mapContentToValues(intl, adjustOCPRule(value)),
                       )}
                       product={AdvisorProduct.ocp}
                       rule={adjustOCPRule(value)}
@@ -275,7 +279,7 @@ const RecsListTable = ({ query }) => {
                                   messages.viewAffectedClusters,
                                   {
                                     clusters: value.impacted_clusters_count,
-                                  }
+                                  },
                                 )}
                               </Link>
                             ),
@@ -319,7 +323,7 @@ const RecsListTable = ({ query }) => {
           return (
             d *
             extractCategories(fst.tags)[0].localeCompare(
-              extractCategories(snd.tags)[0]
+              extractCategories(snd.tags)[0],
             )
           );
         case RECS_LIST_TOTAL_RISK_CELL:
@@ -341,7 +345,7 @@ const RecsListTable = ({ query }) => {
     return sortingRows
       .slice(
         filters.limit * (page - 1),
-        filters.limit * (page - 1) + filters.limit
+        filters.limit * (page - 1) + filters.limit,
       )
       .flatMap((row, index) => {
         const updatedRow = [...row];
@@ -471,7 +475,7 @@ const RecsListTable = ({ query }) => {
             const chips = Array.isArray(item[1])
               ? item[1].map((value) => {
                   const selectedCategoryValue = category.values.find(
-                    (values) => values.value === String(value)
+                    (values) => values.value === String(value),
                   );
                   return selectedCategoryValue
                     ? {
@@ -485,7 +489,7 @@ const RecsListTable = ({ query }) => {
               : [
                   {
                     name: category.values.find(
-                      (values) => values.value === String(item[1])
+                      (values) => values.value === String(item[1]),
                     ).label,
                     value: item[1],
                   },
@@ -544,7 +548,7 @@ const RecsListTable = ({ query }) => {
           const newFilter = {
             [item.urlParam]: Array.isArray(filters[item.urlParam])
               ? filters[item.urlParam].filter(
-                  (value) => String(value) !== String(item.chips[0].value)
+                  (value) => String(value) !== String(item.chips[0].value),
                 )
               : '',
           };
@@ -564,13 +568,13 @@ const RecsListTable = ({ query }) => {
         displayedRows.map((row) => ({
           ...row,
           isOpen,
-        }))
+        })),
       );
     } else {
       setDisplayedRows(
         displayedRows.map((row, index) =>
-          index === rowId ? { ...row, isOpen } : row
-        )
+          index === rowId ? { ...row, isOpen } : row,
+        ),
       );
     }
   };

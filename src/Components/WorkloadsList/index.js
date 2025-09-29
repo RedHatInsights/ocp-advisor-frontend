@@ -15,7 +15,7 @@ const WorkloadsList = () => {
   chrome.updateDocumentTitle(
     intl.formatMessage(messages.documentTitle, {
       subnav: 'Workloads',
-    })
+    }),
   );
 
   return (

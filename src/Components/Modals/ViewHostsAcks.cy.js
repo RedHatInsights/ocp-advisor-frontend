@@ -32,7 +32,7 @@ describe('modal with hosts', () => {
             />
           </Provider>
         </Intl>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     cy.intercept(
@@ -40,7 +40,7 @@ describe('modal with hosts', () => {
       '/api/insights-results-aggregator/v1/clusters/**/rules/**/error_key/**/enable',
       {
         statusCode: 200,
-      }
+      },
     ).as('enableRequest');
   });
 
@@ -51,7 +51,7 @@ describe('modal with hosts', () => {
   it('empty justification notes are rendered as None', () => {
     const justifications = _.map(
       clusterDetails.data.disabled,
-      (it) => it.justification || 'None'
+      (it) => it.justification || 'None',
     );
     cy.get(`td[data-label="Justification note"]`)
       .then(($els) => {
@@ -70,7 +70,7 @@ describe('modal with hosts', () => {
       .then(() => {
         cy.wait('@enableRequest').then((xhr) => {
           expect(xhr.request.url).to.contain(
-            clusterDetails.data.disabled[0].cluster_id
+            clusterDetails.data.disabled[0].cluster_id,
           );
           expect(xhr.request.url).to.contain('abc.report');
           expect(xhr.request.url).to.contain('xyz');

@@ -3,7 +3,6 @@ import React from 'react';
 import { Intl } from '../../Utilities/intlHelper';
 import { ClusterHeader } from './ClusterHeader';
 
-/* eslint-disable camelcase */
 import {
   MENU_ITEM,
   MENU_TOGGLE,
@@ -44,7 +43,7 @@ describe('cluster page header', () => {
     cy.mount(
       <Intl>
         <ClusterHeader {...props} />
-      </Intl>
+      </Intl>,
     );
     // check title
     cy.get(HEADER_TITLE).should('have.text', 'Cluster with issues');
@@ -65,7 +64,7 @@ describe('cluster page header', () => {
     cy.mount(
       <Intl>
         <ClusterHeader {...props} />
-      </Intl>
+      </Intl>,
     );
     // check title
     cy.get(HEADER_TITLE).should('have.length', 1);
@@ -81,7 +80,7 @@ describe('cluster page header', () => {
     cy.mount(
       <Intl>
         <ClusterHeader {...props} />
-      </Intl>
+      </Intl>,
     );
     // check title
     cy.get(HEADER_TITLE).should('have.text', 'foobar');
@@ -93,7 +92,7 @@ describe('cluster page header', () => {
     cy.mount(
       <Intl>
         <ClusterHeader {...props} />
-      </Intl>
+      </Intl>,
     );
     cy.get(MENU_TOGGLE).click();
     cy.get(MENU_ITEM)
