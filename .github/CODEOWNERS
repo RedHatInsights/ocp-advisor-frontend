@@ -1,6 +1,6 @@
 * @RedHatInsights/team-interact
 
-.tekton/*
+.tekton/* red-hat-konflux[bot]
 
-build-tools
-.gitmodules
+build-tools red-hat-konflux[bot]
+.gitmodules red-hat-konflux[bot]
