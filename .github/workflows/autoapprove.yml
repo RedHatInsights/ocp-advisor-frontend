@@ -1,13 +1,13 @@
 name: Auto-Approve Konflux PRs
 
 on:
-  pull_request_target:
+  pull_request:
     types: [opened, reopened]
 
 jobs:
   auto-approve:
     runs-on: ubuntu-latest
-    if: github.actor == 'red-hat-konflux[bot]'
+    if: github.event.pull_request.user.login == 'red-hat-konflux[bot]'
 
     permissions:
       pull-requests: write
