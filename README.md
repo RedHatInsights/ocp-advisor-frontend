@@ -53,3 +53,4 @@ The stage environment uses and always deploys the last commit available on the m
 ### Travis
 
 - Travis uploads results to RedHatInsight's [codecov](https://codecov.io) account. To change the account, modify CODECOV_TOKEN on https://travis-ci.com/.
+
