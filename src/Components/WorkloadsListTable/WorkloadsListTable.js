@@ -311,7 +311,9 @@ const WorkloadsListTable = ({
       />
       {loadingState ? (
         <SkeletonTable
-          columns={WORKLOADS_LIST_COLUMNS.map((c) => c.title)}
+          columns={WORKLOADS_LIST_COLUMNS.map((c, index) =>
+            index === 0 ? 'Name' : c.title,
+          )}
           variant="compact"
         />
       ) : (
