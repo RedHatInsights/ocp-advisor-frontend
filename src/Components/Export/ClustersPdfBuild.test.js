@@ -6,14 +6,18 @@ import ClustersPdfBuild, { fetchData } from './ClustersPdfBuild';
 describe('ClustersPdfBuild', () => {
   describe('fetchData', () => {
     it('calls createAsyncRequest with correct parameters', async () => {
-      const mockCreateAsyncRequest = jest.fn().mockResolvedValue([
-        {
-          cluster_id: '123',
-          cluster_name: 'test-cluster',
-          version: '4.14.0',
-          hits: 5,
-        },
-      ]);
+      const mockCreateAsyncRequest = jest.fn().mockResolvedValue({
+        data: [
+          {
+            cluster_id: '123',
+            cluster_name: 'test-cluster',
+            cluster_version: '4.14.0',
+            total_hit_count: 5,
+          },
+        ],
+        meta: {},
+        status: 'ok',
+      });
       const options = {
         filters: { limit: 50, offset: 0 },
       };
@@ -22,29 +26,28 @@ describe('ClustersPdfBuild', () => {
 
       expect(mockCreateAsyncRequest).toHaveBeenCalledWith('advisor-backend', {
         method: 'GET',
-        url: '/api/ocp-advisor/v1/cluster/',
-        params: {
-          filters: options.filters,
-          limit: 500,
-          offset: 0,
-        },
+        url: '/api/insights-results-aggregator/v2/clusters',
       });
     });
 
     it('returns data and options', async () => {
-      const mockData = [
+      const mockClustersData = [
         {
           cluster_id: '123',
           cluster_name: 'test-cluster',
         },
       ];
-      const mockCreateAsyncRequest = jest.fn().mockResolvedValue(mockData);
+      const mockCreateAsyncRequest = jest.fn().mockResolvedValue({
+        data: mockClustersData,
+        meta: {},
+        status: 'ok',
+      });
       const options = { filters: {} };
 
       const result = await fetchData(mockCreateAsyncRequest, options);
 
       expect(result).toEqual({
-        data: mockData,
+        data: mockClustersData,
         options,
       });
     });

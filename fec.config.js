@@ -62,12 +62,5 @@ module.exports = {
       ),
     },
   },
-  routes: {
-    ...(process.env.PROXY === 'true' && {
-      '/api/crc-pdf-generator': {
-        host: 'http://localhost:8000',
-      },
-    }),
-  },
   frontendCRDPath: 'deploy/frontend.yml',
 };

@@ -6,19 +6,33 @@ import BuildExecReport, { fetchData } from './BuildExecReport';
 describe('BuildExecReport', () => {
   describe('fetchData', () => {
     it('calls createAsyncRequest for all required endpoints', async () => {
-      const mockStatsReports = {
-        total: 100,
-        total_risk: { 1: 10, 2: 20, 3: 30, 4: 40 },
-        category: {},
+      const mockClustersResponse = {
+        data: [
+          {
+            cluster_id: '1',
+            hits_by_total_risk: { 1: 10, 2: 20, 3: 30, 4: 40 },
+          },
+        ],
+        meta: {},
+        status: 'ok',
       };
-      const mockStatsClusters = { total: 25 };
-      const mockTopRec = { data: [] };
+      const mockRecommendationsResponse = {
+        recommendations: [
+          {
+            rule_id: 'rule1',
+            total_risk: 4,
+            impacted_clusters_count: 15,
+            disabled: false,
+            tags: ['performance', 'security'],
+          },
+        ],
+        status: 'ok',
+      };
 
       const mockCreateAsyncRequest = jest
         .fn()
-        .mockResolvedValueOnce(mockStatsReports)
-        .mockResolvedValueOnce(mockStatsClusters)
-        .mockResolvedValueOnce(mockTopRec);
+        .mockResolvedValueOnce(mockClustersResponse)
+        .mockResolvedValueOnce(mockRecommendationsResponse);
 
       const options = {
         limit: 3,
@@ -28,50 +42,106 @@ describe('BuildExecReport', () => {
 
       await fetchData(mockCreateAsyncRequest, options);
 
-      expect(mockCreateAsyncRequest).toHaveBeenCalledTimes(3);
+      expect(mockCreateAsyncRequest).toHaveBeenCalledTimes(2);
       expect(mockCreateAsyncRequest).toHaveBeenCalledWith('advisor-backend', {
         method: 'GET',
-        url: '/api/ocp-advisor/v1/stats/reports/',
+        url: '/api/insights-results-aggregator/v2/clusters',
       });
       expect(mockCreateAsyncRequest).toHaveBeenCalledWith('advisor-backend', {
         method: 'GET',
-        url: '/api/ocp-advisor/v1/stats/clusters/',
-      });
-      expect(mockCreateAsyncRequest).toHaveBeenCalledWith('advisor-backend', {
-        method: 'GET',
-        url: '/api/ocp-advisor/v1/rule/',
-        params: options,
+        url: '/api/insights-results-aggregator/v2/rule',
       });
     });
 
     it('returns array of data', async () => {
-      const mockData = [{ total: 100 }, { total: 25 }, { data: [] }];
+      const mockClustersResponse = {
+        data: [
+          {
+            cluster_id: '1',
+            hits_by_total_risk: { 1: 10, 2: 20, 3: 30, 4: 40 },
+          },
+        ],
+        status: 'ok',
+      };
+      const mockRecommendationsResponse = {
+        recommendations: [
+          {
+            rule_id: 'rule1',
+            total_risk: 4,
+            impacted_clusters_count: 15,
+            disabled: false,
+            tags: ['performance'],
+          },
+        ],
+        status: 'ok',
+      };
+
       const mockCreateAsyncRequest = jest
         .fn()
-        .mockResolvedValueOnce(mockData[0])
-        .mockResolvedValueOnce(mockData[1])
-        .mockResolvedValueOnce(mockData[2]);
+        .mockResolvedValueOnce(mockClustersResponse)
+        .mockResolvedValueOnce(mockRecommendationsResponse);
 
       const result = await fetchData(mockCreateAsyncRequest, {});
 
-      expect(result).toEqual(mockData);
+      expect(result).toHaveLength(3);
+      expect(result[0]).toHaveProperty('total');
+      expect(result[0]).toHaveProperty('total_risk');
+      expect(result[0]).toHaveProperty('category');
+      expect(result[1]).toHaveProperty('total');
+      expect(result[2]).toHaveProperty('data');
     });
 
-    it('uses default values for options', async () => {
-      const mockCreateAsyncRequest = jest.fn().mockResolvedValue({});
-
-      await fetchData(mockCreateAsyncRequest, {});
-
-      expect(mockCreateAsyncRequest).toHaveBeenCalledWith(
-        'advisor-backend',
-        expect.objectContaining({
-          params: {
-            limit: 3,
-            sort: '-total_risk,-impacted_count',
-            impacting: true,
+    it('calculates stats correctly from v2 API responses', async () => {
+      const mockClustersResponse = {
+        data: [
+          {
+            cluster_id: '1',
+            hits_by_total_risk: { 1: 10, 2: 20, 3: 30, 4: 40 },
           },
-        }),
-      );
+          {
+            cluster_id: '2',
+            hits_by_total_risk: { 1: 5, 2: 10, 3: 15, 4: 20 },
+          },
+        ],
+        status: 'ok',
+      };
+      const mockRecommendationsResponse = {
+        recommendations: [
+          {
+            rule_id: 'rule1',
+            total_risk: 4,
+            impacted_clusters_count: 15,
+            disabled: false,
+            tags: ['performance', 'security'],
+          },
+          {
+            rule_id: 'rule2',
+            total_risk: 3,
+            impacted_clusters_count: 10,
+            disabled: false,
+            tags: ['service_availability'],
+          },
+        ],
+        status: 'ok',
+      };
+
+      const mockCreateAsyncRequest = jest
+        .fn()
+        .mockResolvedValueOnce(mockClustersResponse)
+        .mockResolvedValueOnce(mockRecommendationsResponse);
+
+      const result = await fetchData(mockCreateAsyncRequest, {});
+
+      // Check statsReports
+      expect(result[0].total).toBe(150); // Sum of all hits
+      expect(result[0].total_risk).toEqual({ 1: 15, 2: 30, 3: 45, 4: 60 });
+
+      // Check statsClusters
+      expect(result[1].total).toBe(2);
+
+      // Check topActiveRec
+      expect(result[2].data).toHaveLength(2);
+      expect(result[2].data[0].total_risk).toBe(4); // Sorted by total_risk desc
     });
   });
 
