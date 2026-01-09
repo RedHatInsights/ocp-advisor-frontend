@@ -10,28 +10,80 @@ import { InsightsLabel } from '@redhat-cloud-services/frontend-components/Insigh
 import RecommendationCharts from './RecommendationCharts';
 
 export const fetchData = async (createAsyncRequest, options) => {
-  const statsReports = createAsyncRequest('advisor-backend', {
+  // Using the correct v2 endpoints from insights-results-aggregator
+  const clusters = createAsyncRequest('advisor-backend', {
     method: 'GET',
-    url: '/api/ocp-advisor/v1/stats/reports/',
+    url: '/api/insights-results-aggregator/v2/clusters',
   });
 
-  const statsClusters = createAsyncRequest('advisor-backend', {
+  const recommendations = createAsyncRequest('advisor-backend', {
     method: 'GET',
-    url: '/api/ocp-advisor/v1/stats/clusters/',
+    url: '/api/insights-results-aggregator/v2/rule',
   });
 
-  const topActiveRec = createAsyncRequest('advisor-backend', {
-    method: 'GET',
-    url: '/api/ocp-advisor/v1/rule/',
-    params: {
-      limit: options.limit || 3,
-      sort: options.sort || '-total_risk,-impacted_count',
-      impacting: options.impacting || true,
-    },
+  const data = await Promise.all([clusters, recommendations]);
+  const [clustersResponse, recsResponse] = data;
+
+  // Calculate stats from the v2 responses
+  // clustersResponse: { data: [{cluster_id, hits_by_total_risk: {"1": n, "2": n, ...}}, ...], meta: {...}, status: "ok" }
+  // recsResponse: { recommendations: [{rule_id, total_risk, tags, impacted_clusters_count, ...}], status: "ok" }
+
+  const clusterData = clustersResponse.data || [];
+  const recData = recsResponse.recommendations || [];
+
+  // Calculate total recommendations by severity (total_risk)
+  const totalRiskCounts = { 1: 0, 2: 0, 3: 0, 4: 0 };
+  clusterData.forEach((cluster) => {
+    const hitsByRisk = cluster.hits_by_total_risk || {};
+    Object.keys(hitsByRisk).forEach((risk) => {
+      totalRiskCounts[risk] = (totalRiskCounts[risk] || 0) + hitsByRisk[risk];
+    });
   });
 
-  const data = await Promise.all([statsReports, statsClusters, topActiveRec]);
-  return data;
+  // Calculate total recommendations by category (from tags)
+  const categoryMap = {
+    service_availability: 0,
+    performance: 0,
+    security: 0,
+    fault_tolerance: 0,
+  };
+  recData.forEach((rec) => {
+    (rec.tags || []).forEach((tag) => {
+      if (categoryMap.hasOwnProperty(tag)) {
+        categoryMap[tag] += rec.impacted_clusters_count || 0;
+      }
+    });
+  });
+
+  const totalRecs = Object.values(totalRiskCounts).reduce((a, b) => a + b, 0);
+
+  const topRecs = recData
+    .filter((rec) => !rec.disabled)
+    .sort((a, b) => {
+      if (b.total_risk !== a.total_risk) {
+        return b.total_risk - a.total_risk;
+      }
+      return (
+        (b.impacted_clusters_count || 0) - (a.impacted_clusters_count || 0)
+      );
+    })
+    .slice(0, options.limit || 3);
+
+  const statsReports = {
+    total: totalRecs,
+    total_risk: totalRiskCounts,
+    category: categoryMap,
+  };
+
+  const statsClusters = {
+    total: clusterData.length,
+  };
+
+  const topActiveRec = {
+    data: topRecs,
+  };
+
+  return [statsReports, statsClusters, topActiveRec];
 };
 
 const BuildExecReport = ({ asyncData }) => {
@@ -40,7 +92,6 @@ const BuildExecReport = ({ asyncData }) => {
   const calcPercent = (value, total) =>
     Math.round(Number((value / total) * 100));
 
-  // Severity breakdown
   const severityRows = Object.entries(statsReports.total_risk)
     .map(([key, value]) => [
       ['Low', 'Moderate', 'Important', 'Critical'][parseInt(key) - 1],
@@ -48,7 +99,6 @@ const BuildExecReport = ({ asyncData }) => {
     ])
     .reverse();
 
-  // Category breakdown
   const categoryRows = Object.entries(statsReports.category || {}).map(
     ([key, value]) => [
       key.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase()),

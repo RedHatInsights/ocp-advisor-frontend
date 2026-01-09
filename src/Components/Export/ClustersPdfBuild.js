@@ -23,16 +23,11 @@ const styles = {
 export const fetchData = async (createAsyncRequest, options) => {
   const clusters = createAsyncRequest('advisor-backend', {
     method: 'GET',
-    url: '/api/ocp-advisor/v1/cluster/',
-    params: {
-      filters: options.filters,
-      limit: 500,
-      offset: 0,
-    },
+    url: '/api/insights-results-aggregator/v2/clusters',
   });
 
   const data = await Promise.all([clusters]);
-  return { data: data[0], options };
+  return { data: data[0].data, options };
 };
 
 const ClustersPdfBuild = ({ asyncData }) => {
