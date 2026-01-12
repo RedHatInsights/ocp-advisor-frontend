@@ -3,7 +3,7 @@ import React from 'react';
 import { truncate } from 'lodash';
 import { Flex, FlexItem } from '@patternfly/react-core';
 import {
-  t_global_color_nonstatus_red_default,
+  t_color_red_50,
   t_global_text_color_regular,
 } from '@patternfly/react-tokens';
 import { InsightsLabel } from '@redhat-cloud-services/frontend-components/InsightsLabel';
@@ -120,7 +120,7 @@ const BuildExecReport = ({ asyncData }) => {
       <span
         style={{
           fontSize: '24px',
-          color: t_global_color_nonstatus_red_default.value,
+          color: t_color_red_50.value,
         }}
       >
         Red Hat Insights
@@ -129,7 +129,7 @@ const BuildExecReport = ({ asyncData }) => {
       <span
         style={{
           fontSize: '32px',
-          color: t_global_color_nonstatus_red_default.value,
+          color: t_color_red_50.value,
         }}
       >
         Executive report: OpenShift Advisor
@@ -151,7 +151,7 @@ const BuildExecReport = ({ asyncData }) => {
         header="Recommendations by Category"
         rows={categoryRows}
       />
-      <span style={{ color: t_global_color_nonstatus_red_default.value }}>
+      <span style={{ color: t_color_red_50.value }}>
         Top 3 Recommendations by Impact
       </span>
       {topActiveRec.data?.map((rule, key) => (

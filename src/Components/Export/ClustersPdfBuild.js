@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import {
-  t_global_color_nonstatus_red_default,
+  t_color_red_50,
   t_global_font_weight_heading_default,
   t_global_text_color_link_default,
   t_global_spacer_md,
@@ -38,7 +38,7 @@ const ClustersPdfBuild = ({ asyncData }) => {
       <span
         style={{
           fontSize: '24px',
-          color: t_global_color_nonstatus_red_default.value,
+          color: t_color_red_50.value,
         }}
       >
         Red Hat Insights
@@ -47,7 +47,7 @@ const ClustersPdfBuild = ({ asyncData }) => {
       <span
         style={{
           fontSize: '32px',
-          color: t_global_color_nonstatus_red_default.value,
+          color: t_color_red_50.value,
         }}
       >
         OpenShift Advisor: Clusters

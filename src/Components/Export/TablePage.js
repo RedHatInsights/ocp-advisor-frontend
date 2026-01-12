@@ -16,27 +16,27 @@ export const TablePage = ({ clusters, styles }) => {
     { value: 'Name', style: { fontSize: 8, width: '200px' } },
     {
       value: 'Version',
-      style: { fontSize: 8, textAlign: 'center', width: '80px' },
+      style: { fontSize: 8, textAlign: 'left', width: '80px' },
     },
     {
       value: 'Recommendations',
-      style: { fontSize: 8, textAlign: 'center', width: '80px' },
+      style: { fontSize: 8, textAlign: 'left', width: '80px' },
     },
     {
       value: 'Critical',
-      style: { fontSize: 8, textAlign: 'center', width: '60px' },
+      style: { fontSize: 8, textAlign: 'left', width: '60px' },
     },
     {
       value: 'Important',
-      style: { fontSize: 8, textAlign: 'center', width: '60px' },
+      style: { fontSize: 8, textAlign: 'left', width: '60px' },
     },
     {
       value: 'Moderate',
-      style: { fontSize: 8, textAlign: 'center', width: '60px' },
+      style: { fontSize: 8, textAlign: 'left', width: '60px' },
     },
     {
       value: 'Low',
-      style: { fontSize: 8, textAlign: 'center', width: '60px' },
+      style: { fontSize: 8, textAlign: 'left', width: '60px' },
     },
     { value: 'Last Seen', style: { fontSize: 8, width: '120px' } },
   ];

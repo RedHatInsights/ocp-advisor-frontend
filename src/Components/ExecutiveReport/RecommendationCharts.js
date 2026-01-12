@@ -11,18 +11,18 @@ import {
   TableVariant,
 } from '@patternfly/react-table';
 import {
-  t_global_color_nonstatus_red_default,
+  t_color_red_50,
   t_global_background_color_primary_default,
 } from '@patternfly/react-tokens';
 
 const RecommendationCharts = ({ columnHeader, header, rows }) => {
   return (
     <React.Fragment>
-      <span style={{ color: t_global_color_nonstatus_red_default.value }}>
+      <span style={{ color: t_color_red_50.value }}>
         {header}
       </span>
       <Flex spaceItems={{ default: 'spaceItemsLg' }}>
-        <FlexItem style={{ width: '40%' }}>
+        <FlexItem style={{ width: '60%' }}>
           <Table
             aria-label={'recommendation-chart-table'}
             ouiaId={'recommendation-chart-table'}
