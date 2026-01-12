@@ -50,9 +50,17 @@ module.exports = {
         },
       },
     ],
-  },
-  exposes: {
-    './RootApp': resolve(__dirname, '../src/AppEntry'),
+    exposes: {
+      './RootApp': resolve(__dirname, 'src/AppEntry'),
+      './ClustersPdfBuild': resolve(
+        __dirname,
+        'src/Components/Export/ClustersPdfBuild',
+      ),
+      './BuildExecReport': resolve(
+        __dirname,
+        'src/Components/ExecutiveReport/BuildExecReport',
+      ),
+    },
   },
   frontendCRDPath: 'deploy/frontend.yml',
 };

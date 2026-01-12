@@ -5,8 +5,9 @@ import PageHeader from '@redhat-cloud-services/frontend-components/PageHeader';
 
 import Loading from '../Loading/Loading';
 import messages from '../../Messages';
-import { Title } from '@patternfly/react-core';
+import { Title, Level, LevelItem } from '@patternfly/react-core';
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
+import { DownloadExecReport } from '../ExecutiveReport';
 
 const RecsListTable = lazy(
   () => import(/* webpackChunkName: 'RulesTable' */ '../RecsListTable/'),
@@ -25,11 +26,18 @@ const RecsList = () => {
   return (
     <React.Fragment>
       <PageHeader className="ins-c-recommendations-header">
-        <Title headingLevel="h1" ouiaId="page-header">
-          {`${intl.formatMessage(messages.insightsHeader)} ${intl
-            .formatMessage(messages.recommendations)
-            .toLowerCase()}`}
-        </Title>
+        <Level>
+          <LevelItem>
+            <Title headingLevel="h1" ouiaId="page-header">
+              {`${intl.formatMessage(messages.insightsHeader)} ${intl
+                .formatMessage(messages.recommendations)
+                .toLowerCase()}`}
+            </Title>
+          </LevelItem>
+          <LevelItem>
+            <DownloadExecReport />
+          </LevelItem>
+        </Level>
       </PageHeader>
       <section className="pf-l-page__main-section pf-c-page__main-section">
         <Suspense fallback={<Loading />}>

@@ -55,6 +55,7 @@ import {
 import { coerce } from 'semver';
 import { BASE_PATH } from '../../Routes';
 import { useAxiosWithPlatformInterceptors } from '@redhat-cloud-services/frontend-components-utilities/interceptors';
+import { ClustersPdf } from '../Export';
 
 const ClustersListTable = ({
   query: { isError, isUninitialized, isFetching, isSuccess, data, refetch },
@@ -409,6 +410,11 @@ const ClustersListTable = ({
             }}
             filterConfig={{ items: filterConfigItems }}
             activeFiltersConfig={activeFiltersConfig}
+            actionsConfig={{
+              actions: [
+                <ClustersPdf key="clusters-pdf-export" filters={filters} />,
+              ],
+            }}
           />
           {loadingState ? (
             <SkeletonTable
