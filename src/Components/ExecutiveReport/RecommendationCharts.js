@@ -18,9 +18,7 @@ import {
 const RecommendationCharts = ({ columnHeader, header, rows }) => {
   return (
     <React.Fragment>
-      <span style={{ color: t_color_red_50.value }}>
-        {header}
-      </span>
+      <span style={{ color: t_color_red_50.value }}>{header}</span>
       <Flex spaceItems={{ default: 'spaceItemsLg' }}>
         <FlexItem style={{ width: '60%' }}>
           <Table

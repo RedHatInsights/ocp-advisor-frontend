@@ -21,7 +21,7 @@ const styles = {
 };
 
 export const fetchData = async (createAsyncRequest, options) => {
-  const clusters = createAsyncRequest('advisor-backend', {
+  const clusters = createAsyncRequest('ccx-data-pipeline', {
     method: 'GET',
     url: '/api/insights-results-aggregator/v2/clusters',
   });

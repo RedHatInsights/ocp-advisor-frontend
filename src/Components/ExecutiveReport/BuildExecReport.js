@@ -11,12 +11,12 @@ import RecommendationCharts from './RecommendationCharts';
 
 export const fetchData = async (createAsyncRequest, options) => {
   // Using the correct v2 endpoints from insights-results-aggregator
-  const clusters = createAsyncRequest('advisor-backend', {
+  const clusters = createAsyncRequest('ccx-data-pipeline', {
     method: 'GET',
     url: '/api/insights-results-aggregator/v2/clusters',
   });
 
-  const recommendations = createAsyncRequest('advisor-backend', {
+  const recommendations = createAsyncRequest('ccx-data-pipeline', {
     method: 'GET',
     url: '/api/insights-results-aggregator/v2/rule',
   });
