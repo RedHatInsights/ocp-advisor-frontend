@@ -43,11 +43,11 @@ describe('BuildExecReport', () => {
       await fetchData(mockCreateAsyncRequest, options);
 
       expect(mockCreateAsyncRequest).toHaveBeenCalledTimes(2);
-      expect(mockCreateAsyncRequest).toHaveBeenCalledWith('ccx-data-pipeline', {
+      expect(mockCreateAsyncRequest).toHaveBeenCalledWith('ccx-smart-proxy', {
         method: 'GET',
         url: '/api/insights-results-aggregator/v2/clusters',
       });
-      expect(mockCreateAsyncRequest).toHaveBeenCalledWith('ccx-data-pipeline', {
+      expect(mockCreateAsyncRequest).toHaveBeenCalledWith('ccx-smart-proxy', {
         method: 'GET',
         url: '/api/insights-results-aggregator/v2/rule',
       });

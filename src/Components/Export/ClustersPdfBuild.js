@@ -21,7 +21,7 @@ const styles = {
 };
 
 export const fetchData = async (createAsyncRequest, options) => {
-  const clusters = createAsyncRequest('ccx-data-pipeline', {
+  const clusters = createAsyncRequest('ccx-smart-proxy', {
     method: 'GET',
     url: '/api/insights-results-aggregator/v2/clusters',
   });

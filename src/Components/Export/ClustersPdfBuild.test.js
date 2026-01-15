@@ -24,7 +24,7 @@ describe('ClustersPdfBuild', () => {
 
       await fetchData(mockCreateAsyncRequest, options);
 
-      expect(mockCreateAsyncRequest).toHaveBeenCalledWith('ccx-data-pipeline', {
+      expect(mockCreateAsyncRequest).toHaveBeenCalledWith('ccx-smart-proxy', {
         method: 'GET',
         url: '/api/insights-results-aggregator/v2/clusters',
       });
