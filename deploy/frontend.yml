@@ -35,11 +35,8 @@ objects:
             module: ./RootApp
             routes:
               - pathname: /openshift/insights/advisor
-
-      bundleSegments:
-        - segmentId: ocp-advisor
-          bundleId: openshift
-          position: 500
+      navigationSegments:
+        - segmentId: openshift-ocp-advisor
           navItems:
             - id: advisor
               title: Advisor
@@ -57,7 +54,6 @@ objects:
                   title: Workloads
                   href: /openshift/insights/advisor/workloads
                   product: Red Hat OpenShift Cluster Manager
-
       serviceTiles:
         - id: ocp-advisor-observe
           title: Advisor
