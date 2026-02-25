@@ -1,0 +1,45 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  annotations:
+    build.appstudio.openshift.io/repo: https://github.com/RedHatInsights/ocp-advisor-frontend?rev={{revision}}
+    build.appstudio.redhat.com/commit_sha: '{{revision}}'
+    build.appstudio.redhat.com/target_branch: '{{target_branch}}'
+    pipelinesascode.tekton.dev/cancel-in-progress: "false"
+    pipelinesascode.tekton.dev/max-keep-runs: "3"
+    pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch == "master"
+    pipelinesascode.tekton.dev/pipeline: https://github.com/RedHatInsights/konflux-pipelines/raw/v1.61.0/pipelines/docker-build-oci-ta.yaml
+  creationTimestamp: null
+  labels:
+    appstudio.openshift.io/application: insights-ocp-advisor
+    appstudio.openshift.io/component: ocp-advisor-frontend
+    pipelines.appstudio.openshift.io/type: build
+  name: ocp-advisor-frontend-on-push
+  namespace: obsint-processing-tenant
+spec:
+  params:
+  - name: git-url
+    value: '{{source_url}}'
+  - name: revision
+    value: '{{revision}}'
+  - name: output-image
+    value: quay.io/redhat-user-workloads/obsint-processing-tenant/insights-ocp-advisor/ocp-advisor-frontend:{{revision}}
+  - name: dockerfile
+    value: build-tools/Dockerfile
+  - name: path-context
+    value: .
+  - name: build-container-additional-secret
+    value: build-container-additional-secret
+  - name: build-args
+    value:
+      - ENABLE_SENTRY=true
+      - SENTRY_RELEASE={{revision}}
+  pipelineRef:
+    name: docker-build-oci-ta
+  taskRunTemplate:
+    serviceAccountName: build-pipeline-ocp-advisor-frontend
+  workspaces:
+  - name: git-auth
+    secret:
+      secretName: '{{ git_auth_secret }}'
+status: {}
