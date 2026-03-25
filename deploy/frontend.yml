@@ -98,4 +98,4 @@ parameters:
   - name: IMAGE_TAG
     required: true
   - name: IMAGE
-    value: quay.io/cloudservices/ocp-advisor-frontend
+    value: quay.io/redhat-services-prod/obsint-processing-tenant/insights-ocp-advisor/ocp-advisor-frontend
