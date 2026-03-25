@@ -1,61 +1,37 @@
 {
-  "extends": [
-    "github>konflux-ci/mintmaker//config/renovate/renovate.json"
-  ],
-  "ignorePaths": [
-    ".pre-commit-config.yaml"
-  ],
-  "customManagers": [
-    {
-      "customType": "regex",
-      "managerFilePatterns": [
-        "/\\.tekton/.*\\.yaml$/"
-      ],
-      "matchStrings": [
-        "RedHatInsights/konflux-pipelines/raw/v(?<currentValue>[\\d.]+)"
-      ],
-      "depNameTemplate": "RedHatInsights/konflux-pipelines",
-      "datasourceTemplate": "github-releases"
-    }
-  ],
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "packageRules": [
     {
-      "matchPackageNames": [
-        "RedHatInsights/konflux-pipelines"
-      ],
-      "matchUpdateTypes": [
-        "minor",
-        "patch"
-      ],
+      "matchDatasources": ["pypi"],
+      "groupName": "Python dependencies",
+      "groupSlug": "python-deps",
+      "separateMajorMinor": false,
       "automerge": true,
       "platformAutomerge": true
     },
     {
-      "description": "Automerge build-tools submodule updates",
-      "matchManagers": ["git-submodules"],
-      "matchDepNames": ["build-tools"],
-      "matchUpdateTypes": ["digest"],
+      "matchManagers": ["pre-commit"],
+      "groupName": "Pre-commit hooks",
+      "groupSlug": "pre-commit-hooks",
+      "separateMajorMinor": false,
       "automerge": true,
       "platformAutomerge": true
     },
     {
-      "description": "Disable all npm dependency updates",
-      "matchManagers": [
-        "npm"
-      ],
-      "enabled": false
+      "matchManagers": ["gomod"],
+      "groupName": "Go dependencies",
+      "groupSlug": "go-deps",
+      "separateMajorMinor": false,
+      "automerge": true,
+      "platformAutomerge": true
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "groupName": "GitHub Actions",
+      "groupSlug": "github-actions",
+      "separateMajorMinor": false,
+      "automerge": true,
+      "platformAutomerge": true
     }
-  ],
-  "tekton": {
-    "enabled": true,
-    "packageRules": [
-      {
-        "matchUpdateTypes": [
-          "digest"
-        ],
-        "platformAutomerge": true,
-        "automerge": true
-      }
-    ]
-  }
+  ]
 }
