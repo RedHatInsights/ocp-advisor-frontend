@@ -1,7 +1,4 @@
-// Importing Global Variables
-/* stylelint-disable-next-line scss/load-no-partial-leading-underscore */
-@import "~@redhat-cloud-services/frontend-components-utilities/styles/_all";
-
+// Styles only — variables/tokens come from PatternFly + Chrome at runtime.
 #coming-soon-message {
     .pf-c-empty-state__content {
         .pf-c-empty-state__body {
@@ -34,6 +31,22 @@
     }
 }
 
+// ReportDetails / ExpandedRulesDetails render Markdown as <pre><code>; Advisor package sets a
+// near-black `color` on `pre`. PF CodeBlocks use `.pf-v6-c-code-block__pre` without an explicit color
+// but can inherit a bad cascade. Scope matches FEC `sassPrefix` (see fec.config.js + bootstrap.js).
+.ins-c-report-details .ins-c-report-details__cards-stack pre,
+.ins-c-report-details .ins-c-report-details__cards-stack pre code,
+.ins-c-report-details .ins-c-report-details__cards-stack .pf-v6-c-code-block__pre,
+.ins-c-report-details .ins-c-report-details__cards-stack .pf-v6-c-code-block__code {
+    color: var(--pf-t--global--text--color--regular);
+}
+
+.pf-v6-theme-dark .ins-c-report-details .ins-c-report-details__cards-stack pre,
+.pf-v6-theme-dark .ins-c-report-details .ins-c-report-details__cards-stack pre code,
+.pf-v6-theme-dark .ins-c-report-details .ins-c-report-details__cards-stack .pf-v6-c-code-block__pre,
+.pf-v6-theme-dark .ins-c-report-details .ins-c-report-details__cards-stack .pf-v6-c-code-block__code {
+    color: var(--pf-t--color--white, #fff);
+}
 .disabled-shield {
     text-decoration: none;
     cursor: default;

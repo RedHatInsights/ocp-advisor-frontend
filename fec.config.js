@@ -10,7 +10,8 @@ module.exports = {
   /**
    * Change to false after your app is registered in configuration files
    */
-  sassPrefix: 'ocp-advisor, ocpAdvisor',
+  // Class selectors (leading dots) so nested rules compile to `.ocp-advisor .foo`, not tag `ocp-advisor .foo`
+  sassPrefix: '.ocp-advisor, .ocpAdvisor',
   /**
    * Add additional webpack plugins
    */
