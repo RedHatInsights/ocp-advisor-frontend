@@ -26,6 +26,8 @@ jobs:
       - run: npm run ci:verify
       - name: Upload code coverage
         uses: codecov/codecov-action@v6.0.1
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         with:
           fail_ci_if_error: true
           files: ./coverage/coverage-final.json,./coverage-jest/coverage-final.json,./coverage-cypress/coverage-final.json
