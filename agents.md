@@ -62,6 +62,27 @@ deploy/
   frontend.yml              # Kubernetes Frontend CRD template
 ```
 
+## First Time Setup
+
+1. Add entries to `/etc/hosts` (one-time setup per machine). Follow the [initial etc/hosts setup from frontend-starter-app](https://github.com/RedHatInsights/frontend-starter-app#initial-etchosts-setup):
+   ```
+   127.0.0.1 <your-fqdn> localhost prod.foo.redhat.com stage.foo.redhat.com
+   ```
+
+2. Make sure you have Node.js and npm installed ([maintained versions](https://nodejs.org/en/about/releases/)).
+
+3. Make sure you are using Red Hat proxy.
+
+4. Install dependencies: `npm install`
+
+## Running Locally
+
+- **Stage environment**: `npm run start:proxy` then choose `stage` and `preview` or `stable`.
+  Available at `https://stage.foo.redhat.com:1337/openshift/insights/advisor`
+
+- **Production environment**: `npm run start:proxy` then choose `prod` and `preview` or `stable`.
+  Available at `https://prod.foo.redhat.com:1337/openshift/insights/advisor`
+
 ## Development Commands
 
 ```bash
