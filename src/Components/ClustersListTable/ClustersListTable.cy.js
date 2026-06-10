@@ -34,7 +34,6 @@ import {
   TOOLBAR,
   PAGINATION,
   CHIP_GROUP,
-  CHIP,
   TABLE,
   checkPaginationTotal,
   checkPaginationValues,
@@ -43,13 +42,14 @@ import {
   columnName2UrlParam,
   tableIsSortedBy,
   filter,
-  hasChip,
   urlParamConvert,
 } from '@redhat-cloud-services/frontend-components-utilities';
+import { CHIP } from '../../../cypress/utils/components';
 
 import {
   VERSION_COMBINATIONS,
   applyFilters,
+  hasChip,
 } from '../../../cypress/utils/filters';
 import { clustersUpdateRisksInterceptors } from '../../../cypress/utils/interceptors';
 

@@ -3,7 +3,7 @@
 const TOOLBAR = 'div[id="ins-primary-data-toolbar"]';
 const CHIP_GROUP = 'span[class="ins-c-chip-filters"]';
 const CHIP_GROUP_LABEL = '.pf-v6-c-label-group__label';
-const CHIP = '[data-ouia-component-type="PF6/Chip"]';
+const CHIP = '.pf-v6-c-label';
 const ROW =
   '[data-ouia-component-type="PF6/TableRow"]:not([class~="pf-v6-c-table__expandable-row"])';
 const PAGINATION = 'div[data-ouia-component-type="PF6/Pagination"]';

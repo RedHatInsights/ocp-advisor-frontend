@@ -38,7 +38,6 @@ import {
 
 import {
   TOOLBAR,
-  CHIP,
   CHIP_GROUP,
   PAGINATION,
   TABLE,
@@ -49,11 +48,12 @@ import {
   columnName2UrlParam,
   tableIsSortedBy,
   filter,
-  hasChip,
   urlParamConvert,
   checkEmptyState,
   TABLE_ROW,
 } from '@redhat-cloud-services/frontend-components-utilities';
+import { CHIP } from '../../../cypress/utils/components';
+import { hasChip } from '../../../cypress/utils/filters';
 
 import { SORTING_ORDERS } from '../../../cypress/utils/globals';
 // TODO make more use of ../../../cypress/utils/components
@@ -191,15 +191,15 @@ Cypress.Commands.add('getAllRows', () => cy.get(TABLE).find(ROW));
 Cypress.Commands.add('removeStatusFilter', () => {
   cy.get(CHIP)
     .contains('Enabled')
-    .parent()
-    .find('button[data-ouia-component-id=close]')
+    .closest(CHIP)
+    .find('.pf-v6-c-label__actions button')
     .click();
 });
 Cypress.Commands.add('removeImpactingFilter', () => {
   cy.get(CHIP)
     .contains('1 or more')
-    .parent()
-    .find('button[data-ouia-component-id=close]')
+    .closest(CHIP)
+    .find('.pf-v6-c-label__actions button')
     .click();
 });
 Cypress.Commands.add('getRowByName', (name) => {
