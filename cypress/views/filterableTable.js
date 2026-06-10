@@ -4,7 +4,7 @@ const PAGINATION_MENU = `${TOOLBAR} ${PAGINATION} div[data-ouia-component-type="
 const PAGINATION_NEXT = `${TOOLBAR} ${PAGINATION} button[data-action="next"]`;
 const CHIPS = `${TOOLBAR} .pf-v6-c-label-group`;
 const CHIP_GROUP = '.pf-v6-c-label-group';
-const CHIP = '.pf-v6-c-label';
+const CHIP = '.pf-v6-c-label:not(.pf-m-overflow)';
 const EMPTY_STATE = 'table .pf-v6-c-empty-state';
 const TOGGLE_CHECKBOX = `${TOOLBAR} [data-ouia-component-id="clusters-selector-toggle-checkbox"]`;
 const TOGGLE_CHECKBOX_TEXT = `${TOOLBAR} #toggle-checkbox-text`;
