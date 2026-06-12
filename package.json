@@ -65,7 +65,7 @@
     "@cypress/code-coverage": "^3.14.7",
     "@eslint/eslintrc": "^3.3.5",
     "@eslint/js": "^9.39.4",
-    "@formatjs/cli": "^6.16.7",
+    "@formatjs/cli": "^6.16.8",
     "@redhat-cloud-services/eslint-config-redhat-cloud-services": "3.2.0",
     "@redhat-cloud-services/frontend-components-config": "6.11.2",
     "@redhat-cloud-services/tsc-transform-imports": "1.2.1",
