@@ -48,6 +48,14 @@
       "platformAutomerge": true
     },
     {
+      "matchManagers": ["docker"],
+      "groupName": "Docker dependencies",
+      "groupSlug": "docker-deps",
+      "separateMajorMinor": false,
+      "automerge": true,
+      "platformAutomerge": true
+    },
+    {
       "matchManagers": ["npm"],
       "rangeStrategy": "bump"
     },
@@ -55,7 +63,9 @@
       "matchManagers": ["npm"],
       "matchUpdateTypes": ["minor", "patch"],
       "groupName": "npm minor and patch dependencies",
-      "enabled": true
+      "enabled": true,
+      "automerge": true,
+      "platformAutomerge": true
     },
     {
       "matchManagers": ["npm"],
