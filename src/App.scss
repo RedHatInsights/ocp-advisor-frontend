@@ -1,0 +1,57 @@
+// Styles only — variables/tokens come from PatternFly + Chrome at runtime.
+#coming-soon-message {
+    .pf-c-empty-state__content {
+        .pf-c-empty-state__body {
+            margin-bottom: 1rem;
+        }
+    }
+}
+
+.pf-c-table tr > *:first-child {
+    --pf-c-table--cell--PaddingLeft: 1rem;
+    --pf-c-table--cell--PaddingRight: 1rem;
+}
+
+#cluster-header-dropdown {
+    justify-self: end;
+}
+.grey-icon {
+    color: var(--pf-global--Color--200);
+}
+
+.nowrap {
+    white-space: nowrap;
+}
+
+.shield-set {
+    span {
+        vertical-align: 2px;
+        margin-left: 4px;
+        margin-right: 16px;
+    }
+}
+
+// ReportDetails / ExpandedRulesDetails render Markdown as <pre><code>; Advisor package sets a
+// near-black `color` on `pre`. PF CodeBlocks use `.pf-v6-c-code-block__pre` without an explicit color
+// but can inherit a bad cascade. Scope matches FEC `sassPrefix` (see fec.config.js + bootstrap.js).
+.ins-c-report-details .ins-c-report-details__cards-stack pre,
+.ins-c-report-details .ins-c-report-details__cards-stack pre code,
+.ins-c-report-details .ins-c-report-details__cards-stack .pf-v6-c-code-block__pre,
+.ins-c-report-details .ins-c-report-details__cards-stack .pf-v6-c-code-block__code {
+    color: var(--pf-t--global--text--color--regular);
+}
+
+.pf-v6-theme-dark .ins-c-report-details .ins-c-report-details__cards-stack pre,
+.pf-v6-theme-dark .ins-c-report-details .ins-c-report-details__cards-stack pre code,
+.pf-v6-theme-dark .ins-c-report-details .ins-c-report-details__cards-stack .pf-v6-c-code-block__pre,
+.pf-v6-theme-dark .ins-c-report-details .ins-c-report-details__cards-stack .pf-v6-c-code-block__code {
+    color: var(--pf-t--color--white, #fff);
+}
+.disabled-shield {
+    text-decoration: none;
+    cursor: default;
+
+    span {
+        color: var(--pf-global--disabled-color--100);
+    }
+}

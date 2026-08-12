@@ -1,0 +1,6 @@
+* @RedHatInsights/obsint-processing
+
+.tekton/*
+
+build-tools
+.gitmodules

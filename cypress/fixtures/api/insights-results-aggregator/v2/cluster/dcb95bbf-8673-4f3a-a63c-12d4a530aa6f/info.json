@@ -1,0 +1,9 @@
+{
+  "cluster": {
+    "cluster_id": "dcb95bbf-8673-4f3a-a63c-12d4a530aa6f",
+    "display_name": "Cluster With Issues",
+    "managed": false,
+    "status": "Stale"
+  },
+  "status": "ok"
+}

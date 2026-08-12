@@ -1,0 +1,40 @@
+{
+  "status": "ok",
+  "upgrade_recommendation": {
+    "upgrade_recommended": false,
+    "upgrade_risks_predictors": {
+      "alerts": [
+        {
+          "name": "ClusterOperatorDown",
+          "namespace": "openshift-monitoring",
+          "severity": "critical",
+          "url": "https://redhat.com/alert1"
+        },
+        {
+          "name": "PostDisruptionBudgetLimit",
+          "namespace": "openshift-etcd",
+          "severity": "warning",
+          "url": "https://redhat.com/alert2"
+        },
+        {
+          "name": "Cluster operators",
+          "namespace": "openshift-kube-apiserver",
+          "severity": "info"
+        }
+      ],
+      "operator_conditions": [
+        {
+          "name": "Version",
+          "condition": "failing",
+          "url": "https://redhat.com/oc1"
+        },
+        {
+          "name": "Node-tuning",
+          "condition": "degraded",
+          "reason": "Multiple tasks failed",
+          "url": "https://redhat.com/oc2"
+        }
+      ]
+    }
+  }
+}

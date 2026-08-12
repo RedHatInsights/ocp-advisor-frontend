@@ -1,0 +1,20 @@
+{
+  "meta": {
+    "count": 12
+  },
+  "data": [
+    { "cluster": "694d3942-9cb7-42b8-aad2-1f28cc7f0a3b" },
+    { "cluster": "bcbd9c24-bf3f-4141-9a6c-019f5404164e" },
+    { "cluster": "685de527-ad9e-426c-a83f-07d797dd28e8" },
+    { "cluster": "4bc920df-7935-4882-a946-e1e735439620" },
+    { "cluster": "41c30565-b4c9-49f2-a4ce-3277ad22b258" },
+    { "cluster": "6810f59e-c37c-420a-ae52-c23ccaccffc9" },
+    { "cluster": "5d5892d3-1f74-4ccf-22af-548dfc9767bb" },
+    { "cluster": "444cf4e5-a983-4894-9852-cb8b441b7006" },
+    { "cluster": "00d404e4-9e83-46ee-9ddd-83c06fa65d67" },
+    { "cluster": "e73ee8b2-f60f-4bb0-abc7-be3093debfe7" },
+    { "cluster": "f7331e9a-2f59-484d-af52-338d56165df5" },
+    { "cluster": "56f646b2-cf9f-46b2-9553-0e399465b966" }
+  ],
+  "status": "ok"
+}
