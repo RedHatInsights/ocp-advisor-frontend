@@ -263,8 +263,8 @@ export const removeFilterParam = (currentFilters, updateFilters, param) => {
         ? { hits: [] }
         : param === 'version'
           ? { version: [] }
-          : param === 'object_id'
-            ? { object_id: '' }
+          : param === 'object_id' || param === 'display_name'
+            ? { [param]: '' }
             : {}),
   });
 };

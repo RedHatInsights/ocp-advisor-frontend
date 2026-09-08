@@ -8,6 +8,7 @@ import mockObjects from '../../../cypress/fixtures/api/insights-results-aggregat
 import objectsWithNames from '../../../cypress/fixtures/api/insights-results-aggregator/objectsWithNames.json';
 import _ from 'lodash';
 import {
+  CHIP_GROUP,
   MENU_TOGGLE,
   PAGINATION,
   PAGINATION_NEXT,
@@ -95,7 +96,7 @@ describe('Objects modal renders and filters data', () => {
       false,
     );
     cy.get('#objects-list-table');
-    cy.get('input[data-ouia-component-type="PF6/TextInput"]').type(
+    cy.get('input[data-ouia-component-id="ConditionalFilter"]').type(
       'wrong filter',
       {
         force: true,
@@ -223,6 +224,27 @@ describe('Objects modal with names', () => {
       expect($el.text()).to.be.oneOf(['Name', 'display name']),
     );
     checkRowCounts(1, true);
+  });
+
+  it('clears name filter field after chip removal', () => {
+    mount(
+      '/openshift/insights/advisor/workloads/clustername/namespacename',
+      objectsWithNames,
+      true,
+    );
+    cy.get('input[data-ouia-component-id="ConditionalFilter"]').type(
+      'display name',
+      {
+        force: true,
+      },
+    );
+    cy.contains(CHIP_GROUP, 'Name').find('button').click();
+    cy.get('input[data-ouia-component-id="ConditionalFilter"]').should(
+      'have.value',
+      '',
+    );
+    cy.get(FILTER_CHIPS).should('not.exist');
+    checkRowCounts(Math.min(objectsWithNames.length, DEFAULT_ROW_COUNT), true);
   });
 
   it('Adds filters and produces empty state with no results', () => {
