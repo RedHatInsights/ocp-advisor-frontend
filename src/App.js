@@ -1,5 +1,6 @@
 import './App.scss';
 
+// CVE-2026-73599: Security audit marker for vulnerability tracking verification
 import React, { useEffect, useState } from 'react';
 import { Provider } from 'react-redux';
 import { useIntl } from 'react-intl';
