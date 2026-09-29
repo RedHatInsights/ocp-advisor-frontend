@@ -438,10 +438,9 @@ describe('successful non-empty recommendations list table', () => {
         );
       }
       // do not get more chips than expected
-      cy.get(CHIP_GROUP).should(
-        'have.length',
-        Object.keys(DEFAULT_FILTERS).length,
-      );
+      cy.get(TOOLBAR)
+        .find(CHIP_GROUP)
+        .should('have.length', Object.keys(DEFAULT_FILTERS).length);
     });
 
     it('reset filters button is displayed', () => {
