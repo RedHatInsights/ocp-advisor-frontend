@@ -276,9 +276,7 @@ describe('non-empty successful affected clusters table', () => {
         .find('input')
         .click();
       cy.get(`${BULK_SELECT}`).should('not.be.checked');
-      cy.get(`[data-ouia-component-type="PF6/MenuToggle"]`)
-        .find('.pf-v6-c-check__label')
-        .should('have.text', `1 selected`);
+      cy.get(BULK_SELECT).closest('label').should('have.text', `1 selected`);
       // bulk disabling button is still enabled
       cy.get(TOOLBAR)
         .find('.pf-m-spacer-sm')
@@ -303,9 +301,7 @@ describe('non-empty successful affected clusters table', () => {
 
       cy.get(`${BULK_SELECT}`).should('not.be.checked');
 
-      cy.get(`[data-ouia-component-type="PF6/MenuToggle"]`)
-        .find('.pf-v6-c-check__label')
-        .contains(`1 selected`);
+      cy.get(BULK_SELECT).closest('label').contains(`1 selected`);
     });
 
     it('has buttons to select none or all', () => {
@@ -326,9 +322,7 @@ describe('non-empty successful affected clusters table', () => {
 
       cy.get(`${BULK_SELECT}`).should('be.checked');
       // contains right text
-      cy.get(`[data-ouia-component-type="PF6/MenuToggle"]`)
-        .find('.pf-v6-c-check__label')
-        .contains(`${data.length} selected`);
+      cy.get(BULK_SELECT).closest('label').contains(`${data.length} selected`);
       // checks all rows
       cy.get(TABLE)
         .find(TABLE_ROW)
@@ -385,8 +379,8 @@ describe('non-empty successful affected clusters table', () => {
           }
         })
         .then(() => {
-          cy.get(`[data-ouia-component-type="PF6/MenuToggle"]`)
-            .find('.pf-v6-c-check__label')
+          cy.get(BULK_SELECT)
+            .closest('label')
             .contains(`${nSelectedRows} selected`);
         });
     });
