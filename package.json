@@ -37,10 +37,10 @@
     "@redhat-cloud-services/frontend-components": "7.10.17",
     "@redhat-cloud-services/frontend-components-advisor-components": "3.10.17",
     "@redhat-cloud-services/frontend-components-config-utilities": "4.14.4",
-    "@redhat-cloud-services/frontend-components-notifications": "6.11.18",
+    "@redhat-cloud-services/frontend-components-notifications": "6.11.19",
     "@redhat-cloud-services/frontend-components-translations": "4.5.14",
     "@redhat-cloud-services/frontend-components-utilities": "7.5.13",
-    "@reduxjs/toolkit": "2.13.0",
+    "@reduxjs/toolkit": "2.14.0",
     "@sentry/webpack-plugin": "3.6.1",
     "@unleash/proxy-client-react": "5.1.0",
     "axios": "1.21.0",
@@ -52,11 +52,11 @@
     "react-router-dom": "6.30.6",
     "redux": "4.2.1",
     "redux-logger": "3.0.6",
-    "semver": "7.8.5"
+    "semver": "7.8.6"
   },
   "devDependencies": {
-    "@babel/core": "7.29.7",
-    "@babel/eslint-parser": "7.29.9",
+    "@babel/core": "7.29.13",
+    "@babel/eslint-parser": "7.29.13",
     "@babel/plugin-transform-runtime": "7.29.7",
     "@babel/preset-env": "7.29.7",
     "@babel/preset-react": "7.29.7",
